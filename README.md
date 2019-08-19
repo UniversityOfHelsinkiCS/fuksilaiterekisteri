@@ -96,7 +96,7 @@ task:
 - contact person email
 
 
-## Below are the relevant toskaboiler information
+## Below are the relevant fuksilaiterekisteri information
 - The project is split into 2 parts: client and server while index.js in root works as the main file. The project contains no database dependant parts.
 - ApiConnection is a custom redux middleware that is used in most toska software. It is used to simplify redux usage by wrapping axios.
 - You can see redux example using apiConnection in client/components/MessageComponent. 

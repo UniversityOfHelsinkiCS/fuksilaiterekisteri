@@ -2,7 +2,22 @@ version: "3.5"
 
 services:
   app:
-    build: https://github.com/UniversityOfHelsinkiCS/toskaboiler.git
+    build:
+      context: ./
+      dockerfile: config/dev.Dockerfile
+    image: fuksilaiterekisteri_dev
+    volumes:
+      - ./:/usr/src/app
     ports:
       - 8000:8000
-    container_name: toskaboiler
+    container_name: fuksilaiterekisteri_dev
+  db:
+    image: postgres:11
+    container_name: fuksilaiterekisteri_db
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  pg_data:
