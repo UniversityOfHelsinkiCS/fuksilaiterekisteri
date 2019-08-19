@@ -6,7 +6,7 @@ RUN dpkg-reconfigure -f noninteractive tzdata
 
 # Setup
 WORKDIR /usr/src/app
-COPY .. .
+COPY . .
 
 RUN npm ci
 
