@@ -22,8 +22,13 @@ module.exports = (env, argv) => {
 
   const additionalEntries = mode === 'production' ? [] : ['webpack-hot-middleware/client?http://localhost:8000']
 
+  const BASE_PATH = process.env.BASE_PATH || '/'
+
   return {
     mode,
+    output: {
+      publicPath: BASE_PATH,
+    },
     entry: [
       '@babel/polyfill', // so we don't need to import it anywhere
       './client',
@@ -64,6 +69,9 @@ module.exports = (env, argv) => {
     },
     plugins: [
       // Skip the part where we would make a html template
+      new webpack.DefinePlugin({
+        'process.env.BASE_PATH': JSON.stringify(BASE_PATH),
+      }),
       new HtmlWebpackPlugin({
         title: 'Toska Boilerplate',
         favicon: path.resolve(__dirname, 'client/assets/favicon-32x32.png'),

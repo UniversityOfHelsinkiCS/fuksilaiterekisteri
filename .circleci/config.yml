@@ -10,7 +10,7 @@ jobs:
     steps:
       - checkout
 
-      - run: docker build . -t toska/fuksilaiterekisteri:production
+      - run: docker build . -t toska/fuksilaiterekisteri:production --build-arg BASE_PATH=/fuksilaite/
 
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
 
