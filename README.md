@@ -9,7 +9,19 @@
 - Arvostelija = Päivittävät tehtävästatuksia oppilaiden suoritettua tehtäviä.
 - Jakelija = Luovuttaa koneita, tarkistettuaan hakijan henkilöllisyyden ja luvan.
 
-## Käyttökokemukset
+## Roadmap
+### v0.1
+- Kannassa on lista oikeutetuista opiskelijoista.
+- Shibboleth-kirjauduttuaan opiskelija näkee onko oikeutettu...
+- ja voi ilmaista haluavansa koneen.
+- Admin voi merkitä opiskelijalle luvan.
+- Ohjelmisto kertoo jakelijalle onko opiskelijalla oikeus ja lupa
+- Admin voi merkitä koneen luovutetuksi.
+
+### v0.2
+- tehtävätuki
+
+## Käyttäjäkokemukset
 
 ### Opiskelija
 **Kirjaudu Shibbolethin avulla sisään. (student id)**
@@ -20,12 +32,12 @@
 
 2) 'Et ole oikeutettu läppäriin. **Syy.** Lisätietoja opintoesimies@cs.helsinki.fi'
 
-### Arvostelijat
+### Arvostelija
 **Kirjaudu Shibbolethin avulla sisään. (employee id)**
 - raportointinäkymä, valitse osasto, valitse tehtävä, pastea lista opiskelijanumeroista (yksi opiskelijanumero per rivi), vahvista lähetys
 - haku opiskelijanumerolla, näe hakijan osasto ja tehtävien status (jotta voidaan varmistaa status tarvittaessa)
 
-### Lenovon jakelijat
+### Lenovon jakelija
 **Tarvitsee oman, shibbolethittoman APIn: saako tälle henkilölle (ks. henkkarit) antaa koneen?**
 -> kysely hakijan opiskelijanumerolla -> jos oikeutettu, API vastaa nimellä, jos ei, API vastaa 'tehtävät suorittamatta' tai 'ei laiteoikeutta'. 
 -> lisää laitteen numero ja oma luovuttajatunnus, vahvista laite luovutetuksi
@@ -36,21 +48,17 @@
 
 
 ## Järjestelmälogiikka
-DATA:
-kirjautuessa tiedot shibbosta -> saa ilmoittautua jos täyttää ehdot
+- kirjautuessa tiedot shibbosta -> saa ilmoittautua jos täyttää ehdot
 
-ehdot:
--"aito fuksi"
+oikeus:
+- "aito fuksi"
+- tiedekunnalta opiskelijanumerot hyväksytyistä
 
--matlu -> eri tehtävät per osasto
-tehtävät:
+lupa:
 -ehops
 -digitaidot? DIGI100A
 
-tiedekunnalta opiskelijanumerot hyväksytyistä
-
-adminille override-nappi, joka lisää opiskelijalle oikeuden ja/tai luvan
-
+- päivittäinen scripti tarkastaa puuttuvia lupia APIen kautta
 
 ## Muuta selvitettävää
 - kuka luo tehtävät? devaajat suoraan kantaan?
@@ -58,8 +66,7 @@ adminille override-nappi, joka lisää opiskelijalle oikeuden ja/tai luvan
 - gdpr?
 - läppäreiden takaisinperintä?
 - sovelluksen jatkokäyttö?
-
-
+- adminille override-nappi, joka lisää opiskelijalle oikeuden ja/tai luvan
 
 ## Tietokanta
 user:
