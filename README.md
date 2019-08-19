@@ -1,24 +1,24 @@
 # Fuksilaiterekisteri
 
 ## Sanasto
-Opiskelija = kuka vaan jolla on HY:n (tai Avoimen) opiskelijatunnus.
-Oikeutettu opiskelija = opiskelija, jolla on oikeus fuksiläppäriin.
-Oikeus = oikeus saada fuksiläppäri
-Tehtävä = Oikeutettujen opiskelijoiden täytyy suorittaa osastonsa määrittelemät tehtävät jotta hän saa luvan läppäriin.
-Lupa = Opiskelijalla, jolla on sekä oikeus, että kaikki tehtävät suoritettuna, on lupa saada fuksiläppäri.
-Arvostelija = Päivittävät tehtävästatuksia oppilaiden suoritettua tehtäviä.
-Jakelija = Luovuttaa koneita, tarkistettuaan hakijan henkilöllisyyden ja luvan.
+- Opiskelija = kuka vaan jolla on HY:n (tai Avoimen) opiskelijatunnus.
+- Oikeutettu opiskelija = opiskelija, jolla on oikeus fuksiläppäriin.
+- Oikeus = oikeus saada fuksiläppäri
+- Tehtävä = Oikeutettujen opiskelijoiden täytyy suorittaa osastonsa määrittelemät tehtävät jotta hän saa luvan läppäriin.
+- Lupa = Opiskelijalla, jolla on sekä oikeus, että kaikki tehtävät suoritettuna, on lupa saada fuksiläppäri.
+- Arvostelija = Päivittävät tehtävästatuksia oppilaiden suoritettua tehtäviä.
+- Jakelija = Luovuttaa koneita, tarkistettuaan hakijan henkilöllisyyden ja luvan.
 
 ## Käyttökokemukset
 
 ### Opiskelija
 **Kirjaudu Shibbolethin avulla sisään. (student id)**
-a) 'Olet oikeutettu läppäriin. Lue ehdot ja klikkaa "Haluan fuksiläppärin".'
+1) 'Olet oikeutettu läppäriin. Lue ehdot ja klikkaa "Haluan fuksiläppärin".'
 -> Opiskelija näkee, ja voi aina tulla tarkistamaan tehtäviensä statuksen. Arvostelijat päivittävät tehtävästatuksia suoritusten myötä.
 -> Kun kaikki tehtävät on suoritettu, säpö 'olet jonotuslistalla numerolla #'. -> Opiskelija voi tarkistaa jonotusnumeronsa.
 -> Kun kone on tarjolla, opiskelija saa noutotiedot säpönä.
 
-b) 'Et ole oikeutettu läppäriin. <Syy>. Lisätietoja opintoesimies@cs.helsinki.fi'
+2) 'Et ole oikeutettu läppäriin. **Syy.** Lisätietoja opintoesimies@cs.helsinki.fi'
 
 ### Arvostelijat
 **Kirjaudu Shibbolethin avulla sisään. (employee id)**
@@ -41,7 +41,6 @@ kirjautuessa tiedot shibbosta -> saa ilmoittautua jos täyttää ehdot
 
 ehdot:
 -"aito fuksi"
-
 
 -matlu -> eri tehtävät per osasto
 tehtävät:
@@ -90,7 +89,7 @@ task:
 - contact person email
 
 
-* Below this are the relevant toskaboiler information *
+## Below are the relevant toskaboiler information
 - The project is split into 2 parts: client and server while index.js in root works as the main file. The project contains no database dependant parts.
 - ApiConnection is a custom redux middleware that is used in most toska software. It is used to simplify redux usage by wrapping axios.
 - You can see redux example using apiConnection in client/components/MessageComponent. 
