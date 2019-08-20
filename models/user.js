@@ -35,6 +35,10 @@ module.exports = (sequelize, DataTypes) => {
         field: 'device_given_at',
       },
       eligible: DataTypes.BOOLEAN,
+      wantsDevice: {
+        type: DataTypes.BOOLEAN,
+        field: 'wants_device',
+      },
       digiSkillsCompleted: {
         type: DataTypes.BOOLEAN,
         field: 'digi_skills_completed',

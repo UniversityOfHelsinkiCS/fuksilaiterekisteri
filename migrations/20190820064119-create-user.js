@@ -42,6 +42,9 @@ module.exports = {
     eligible: {
       type: Sequelize.BOOLEAN,
     },
+    wants_device: {
+      type: Sequelize.BOOLEAN,
+    },
     digi_skills_completed: {
       type: Sequelize.BOOLEAN,
     },
