@@ -9,6 +9,7 @@
       "error",
       "never"
     ],
+    "camelcase": 0,
     "import/no-unresolved": "off",
     "react/jsx-filename-extension": "off",
     "react/prop-types": [
