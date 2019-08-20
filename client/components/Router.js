@@ -6,6 +6,7 @@ import AdminPage from 'Components/AdminPage'
 import DistributorPage from 'Components/DistributorPage'
 import StaffPage from 'Components/StaffPage'
 import StudentPage from 'Components/StudentPage'
+import UnauthorizedPage from 'Components/UnauthorizedPage'
 import NotFoundPage from 'Components/NotFoundPage'
 
 export default () => (
@@ -16,6 +17,7 @@ export default () => (
       <Route exact path="/distributor" component={DistributorPage} />
       <Route exact path="/staff" component={StaffPage} />
       <Route exact path="/student" component={StudentPage} />
+      <Route exact path="/unauthorized" component={UnauthorizedPage} />
       <Route path="*" component={NotFoundPage} />
     </Switch>
   </div>
