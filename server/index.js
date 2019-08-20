@@ -37,7 +37,11 @@ if (!inProduction) {
     })
   })
 } else {
-  app.use('/*', express.static('dist/'))
+  const DIST_PATH = path.resolve(__dirname, '../dist')
+  const INDEX_PATH = path.resolve(DIST_PATH, 'index.html')
+
+  app.use(express.static(DIST_PATH))
+  app.get('*', (req, res) => res.sendFile(INDEX_PATH))
 }
 
 app.listen(PORT, () => { logger.info(`Started on port ${PORT}`) })
