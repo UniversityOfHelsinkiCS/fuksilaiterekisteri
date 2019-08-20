@@ -7,7 +7,7 @@ export default () => {
   const nextGreeting = `${greetings[greetings.length - 1]}!`
   return (
     <div>
-      <h1>Hei, olet jaakkola</h1>
+      <h1>Hei, olet lenovo</h1>
       {greetings.join(' ')}
       <br />
       <Button color="purple" onClick={() => setGreetings([...greetings, nextGreeting])}>
