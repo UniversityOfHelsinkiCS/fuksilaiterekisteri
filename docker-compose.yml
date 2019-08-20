@@ -6,6 +6,9 @@ services:
       context: ./
       dockerfile: config/dev.Dockerfile
     image: fuksilaiterekisteri_dev
+    environment:
+      - STUDENT_API_URL=https://oodikone.cs.helsinki.fi/fukrek/mock
+      - STUDENT_API_TOKEN=test
     volumes:
       - ./:/usr/src/app
     ports:
