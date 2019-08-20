@@ -74,7 +74,7 @@ module.exports = (env, argv) => {
         'process.env.BUILT_AT': JSON.stringify(new Date().toLocaleString()),
       }),
       new HtmlWebpackPlugin({
-        title: 'Toska Boilerplate',
+        title: 'FukRek',
         favicon: path.resolve(__dirname, 'client/assets/favicon-32x32.png'),
         inject: false,
         template: htmlTemplate,

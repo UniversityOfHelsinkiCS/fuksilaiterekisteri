@@ -1,20 +1,17 @@
-import React, { useState } from 'react'
-import { Button } from 'semantic-ui-react'
+import React from 'react'
+import { connect } from 'react-redux'
 
-import MessageComponent from 'Components/MessageComponent'
-
-export default () => {
-  const [greetings, setGreetings] = useState(['Hello'])
-
-  const nextGreeting = `${greetings[greetings.length - 1]}!`
+const MainPage = ({ user }) => {
+  console.log('Main page, user:', user)
   return (
     <div>
-      {greetings.join(' ')}
-      <br />
-      <Button color="purple" onClick={() => setGreetings([...greetings, nextGreeting])}>
-        {nextGreeting}
-      </Button>
-      <MessageComponent />
+      Hei, tällä sivulla on oikeastaan vain redirectit riippuen siitä mitkä oikeudet sinulla on.
     </div>
   )
 }
+
+const mapStateToProps = ({ user }) => ({
+  user: user.data,
+})
+
+export default connect(mapStateToProps)(MainPage)

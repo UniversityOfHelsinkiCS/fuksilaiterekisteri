@@ -1,16 +1,20 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
 import {
   Sidebar, Segment, Menu, Icon,
 } from 'semantic-ui-react'
-import { possibleUsers, getHeaders, setHeaders } from 'Utilities/fakeShibboleth'
 
-const FakeShibboBar = ({ children }) => {
+import { possibleUsers, getHeaders, setHeaders } from 'Utilities/fakeShibboleth'
+import { getUserAction } from 'Utilities/redux/userReducer'
+
+const FakeShibboBar = ({ children, getUser }) => {
   const [sidebarVisible, setSidebarVisible] = useState(false)
   const [uid, setUid] = useState(getHeaders().uid)
 
   const chooseUser = ({ target }) => {
     setUid(target.id)
     setHeaders(target.id)
+    getUser()
   }
 
   const handleShow = () => setSidebarVisible(true)
@@ -50,4 +54,10 @@ const FakeShibboBar = ({ children }) => {
   )
 }
 
-export default FakeShibboBar
+
+const mapDispatchToProps = dispatch => ({
+  getUser: () => dispatch(getUserAction()),
+})
+
+
+export default connect(undefined, mapDispatchToProps)(FakeShibboBar)
