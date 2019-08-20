@@ -71,10 +71,10 @@ module.exports = (env, argv) => {
       // Skip the part where we would make a html template
       new webpack.DefinePlugin({
         'process.env.BASE_PATH': JSON.stringify(BASE_PATH),
-        'process.env.BUILT_AT': JSON.stringify(new Date().toLocaleString()),
+        'process.env.BUILT_AT': JSON.stringify(new Date().toISOString()),
       }),
       new HtmlWebpackPlugin({
-        title: 'Toska Boilerplate',
+        title: 'FukRek',
         favicon: path.resolve(__dirname, 'client/assets/favicon-32x32.png'),
         inject: false,
         template: htmlTemplate,

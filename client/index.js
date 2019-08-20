@@ -6,11 +6,12 @@ import 'semantic-ui-css/semantic.min.css'
 import 'Assets/custom.css'
 
 import store from 'Utilities/store'
+import { basePath } from 'Utilities/common'
 import App from 'Components/App'
 
 const refresh = () => render(
   <Provider store={store}>
-    <BrowserRouter>
+    <BrowserRouter basename={basePath}>
       <App />
     </BrowserRouter>
   </Provider>,

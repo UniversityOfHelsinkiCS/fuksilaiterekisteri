@@ -1,3 +1,5 @@
+const ITEM_NAME = 'fakeUser'
+
 export const possibleUsers = [
   {
     uid: 'admin',
@@ -25,10 +27,14 @@ export const setHeaders = (uid) => {
   const user = possibleUsers.find(u => u.uid === uid)
   if (!user) return
 
-  localStorage.setItem('fakeUser', JSON.stringify(user))
+  localStorage.setItem(ITEM_NAME, JSON.stringify(user))
 }
 
 export const getHeaders = () => {
-  const user = JSON.parse(localStorage.getItem('fakeUser') || '{}')
+  const user = JSON.parse(localStorage.getItem(ITEM_NAME) || '{}')
   return user
+}
+
+export const clearHeaders = () => {
+  localStorage.removeItem(ITEM_NAME)
 }
