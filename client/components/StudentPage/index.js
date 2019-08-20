@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Button, Input, Segment } from 'semantic-ui-react'
-import { newDeviceRequestAction } from 'Utilities/redux/deviceRequestReducer'
+import { deviceRequestAction } from 'Utilities/redux/deviceRequestReducer'
 
 const StudentPage = ({ requestDevice }) => {
   const [email, setEmail] = useState('')
@@ -54,7 +54,7 @@ const mapStateToProps = ({ deviceRequest }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  requestDevice: payload => dispatch(newDeviceRequestAction(payload)),
+  requestDevice: payload => dispatch(deviceRequestAction(payload)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudentPage)

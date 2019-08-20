@@ -1,6 +1,6 @@
 const Router = require('express')
-const messageController = require('@controllers/messageController')
 const userController = require('@controllers/userController')
+const studentController = require('@controllers/studentController')
 const authenticationMiddleware = require('@util/authenticationMiddleware')
 
 const router = Router()
@@ -12,10 +12,10 @@ router.use('/', authenticationMiddleware)
 router.get('/ping', (req, res) => res.send('pong'))
 
 router.post('/login', userController.getUser)
-router.post('/device_request', userController.requestDevice)
+router.post('/request_device', userController.requestDevice)
+router.post('/claim_device', userController.claimDevice)
 
-router.get('/messages', messageController.getMessages)
-router.post('/messages', messageController.createMessage)
+router.get('/student/:studentNumber', studentController.getStudent)
 
 router.use('*', (req, res) => res.sendStatus(404))
 
