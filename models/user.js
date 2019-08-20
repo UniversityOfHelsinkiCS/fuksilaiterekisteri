@@ -26,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         field: 'date_of_birth',
       },
+      device_distributed_by: {
+        type: DataTypes.STRING,
+        field: 'device_distributed_by',
+      },
       deviceSerial: {
         type: DataTypes.STRING,
         field: 'device_serial',

@@ -33,6 +33,9 @@ module.exports = {
     date_of_birth: {
       type: Sequelize.STRING,
     },
+    device_distributed_by: {
+      type: Sequelize.STRING,
+    },
     device_serial: {
       type: Sequelize.STRING,
     },
