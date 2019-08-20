@@ -1,7 +1,12 @@
 const getUser = (req, res) => {
-  res.send({}).end()
+  res.send({})
+}
+
+const requestDevice = (req, res) => {
+  res.sendStatus(200)
 }
 
 module.exports = {
   getUser,
+  requestDevice,
 }

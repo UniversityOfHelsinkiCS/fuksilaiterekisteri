@@ -4,7 +4,9 @@ import {
   Sidebar, Segment, Menu, Icon,
 } from 'semantic-ui-react'
 
-import { possibleUsers, getHeaders, setHeaders } from 'Utilities/fakeShibboleth'
+import {
+  possibleUsers, getHeaders, setHeaders, clearHeaders,
+} from 'Utilities/fakeShibboleth'
 import { getUserAction } from 'Utilities/redux/userReducer'
 
 const FakeShibboBar = ({ children, getUser }) => {
@@ -14,6 +16,12 @@ const FakeShibboBar = ({ children, getUser }) => {
   const chooseUser = ({ target }) => {
     setUid(target.id)
     setHeaders(target.id)
+    getUser()
+  }
+
+  const clearUser = () => {
+    setUid(undefined)
+    clearHeaders()
     getUser()
   }
 
@@ -33,10 +41,14 @@ const FakeShibboBar = ({ children, getUser }) => {
         width="thin"
       >
         {possibleUsers.map(u => (
-          <Menu.Item color="pink" key={u.uid} id={u.uid} onClick={chooseUser} disabled={uid === u.uid}>
+          <Menu.Item key={u.uid} id={u.uid} onClick={chooseUser} disabled={uid === u.uid}>
             {u.uid}
           </Menu.Item>
         ))}
+        <Menu.Item onClick={clearUser} disabled={!uid}>
+          <Icon name="home" />
+          Clear
+        </Menu.Item>
       </Sidebar>
       <Sidebar.Pusher>
         <Icon
@@ -53,7 +65,6 @@ const FakeShibboBar = ({ children, getUser }) => {
 
   )
 }
-
 
 const mapDispatchToProps = dispatch => ({
   getUser: () => dispatch(getUserAction()),

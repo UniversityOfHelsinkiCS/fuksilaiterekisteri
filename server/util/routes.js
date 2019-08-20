@@ -12,6 +12,7 @@ router.use('/', authenticationMiddleware)
 router.get('/ping', (req, res) => res.send('pong'))
 
 router.post('/login', userController.getUser)
+router.post('/device_request', userController.requestDevice)
 
 router.get('/messages', messageController.getMessages)
 router.post('/messages', messageController.createMessage)
