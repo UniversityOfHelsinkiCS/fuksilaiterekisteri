@@ -1,4 +1,4 @@
-version: "3.5"
+version: '3.5'
 
 services:
   app:
@@ -6,6 +6,8 @@ services:
       context: ./
       dockerfile: config/dev.Dockerfile
     image: fuksilaiterekisteri_dev
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/development
     volumes:
       - ./:/usr/src/app
     ports:
