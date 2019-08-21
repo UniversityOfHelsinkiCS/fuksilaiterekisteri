@@ -9,10 +9,18 @@ export const getStudentAction = (studentNumber) => {
   return callBuilder(route, prefix)
 }
 
+export const clearStudentAction = () => ({
+  type: 'CLEAR_STUDENT',
+})
+
 // Reducer
 // You can include more app wide actions such as "selected: []" into the state
-export default (state = { data: undefined }, action) => {
+const INITIAL_STATE = { data: undefined }
+
+export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case 'CLEAR_STUDENT':
+      return INITIAL_STATE
     case 'GET_STUDENT_SUCCESS':
       return {
         ...state,
