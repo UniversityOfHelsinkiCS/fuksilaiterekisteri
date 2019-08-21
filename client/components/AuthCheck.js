@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import useAuth from 'Utilities/useAuth'
 
-const AuthCheck = ({
-  user, location, children, history,
-}) => {
+const AuthCheck = ({ location, children, history }) => {
+  const user = useSelector(state => state.user.data)
   const authorized = useAuth(user, location.pathname.split('/')[1])
 
   useEffect(() => {
@@ -17,8 +16,4 @@ const AuthCheck = ({
   return <>{children}</>
 }
 
-const mapStateToProps = ({ user }) => ({
-  user: user.data,
-})
-
-export default connect(mapStateToProps)(withRouter(AuthCheck))
+export default withRouter(AuthCheck)

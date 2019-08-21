@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import MainPage from 'Components/MainPage'
 import AdminPage from 'Components/AdminPage'
@@ -10,7 +10,8 @@ import StudentPage from 'Components/StudentPage'
 import UnauthorizedPage from 'Components/UnauthorizedPage'
 import NotFoundPage from 'Components/NotFoundPage'
 
-const Router = ({ user }) => {
+const Router = () => {
+  const user = useSelector(state => state.user.data)
   if (!user) return <div> Loading </div>
   // Filter router based on user
   console.log('Router, user', user)
@@ -29,8 +30,5 @@ const Router = ({ user }) => {
   )
 }
 
-const mapStateToProps = ({ user }) => ({
-  user: user.data,
-})
 
-export default connect(mapStateToProps)(Router)
+export default Router

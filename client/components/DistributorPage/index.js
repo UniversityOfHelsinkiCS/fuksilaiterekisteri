@@ -1,26 +1,32 @@
 import React, { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Button, Input, Segment } from 'semantic-ui-react'
 import { claimDeviceAction } from 'Utilities/redux/deviceClaimReducer'
 import { getStudentAction, clearStudentAction } from 'Utilities/redux/studentReducer'
-
 
 const StudentInfo = ({ student }) => {
   if (!student) return null
   return (
     <div>
-      Etunimi:
-      <span>{student.name}</span>
-      Syntymäaika:
-      <span>{student.dateOfBirth}</span>
+      <div>
+        {`Etunimi: ${student.name}`}
+      </div>
+      <div>
+        {`Syntymäaika: ${student.dateOfBirth}`}
+      </div>
     </div>
   )
 }
-const DistributorPage = ({
-  claimDevice, getStudent, clearStudent, student, deviceClaim,
-}) => {
+
+const DistributorPage = () => {
+  const dispatch = useDispatch()
+  const deviceClaim = useSelector(state => state.deviceClaim)
+  const student = useSelector(state => state.student)
   const [studentNumber, setStudentNumber] = useState('')
   const [studentNumberValid, setStudentNumberValid] = useState(false)
+  const claimDevice = payload => dispatch(claimDeviceAction(payload))
+  const clearStudent = () => dispatch(clearStudentAction())
+  const getStudent = payload => dispatch(getStudentAction(payload))
 
   useEffect(() => {
     if (!deviceClaim || deviceClaim.pending || deviceClaim.error || !deviceClaim.data) return
@@ -40,7 +46,7 @@ const DistributorPage = ({
   }
 
   const handleClaimClick = () => {
-    if (!studentNumberValid) return
+    if (!student.data) return
 
     claimDevice({ studentNumber })
   }
@@ -48,7 +54,7 @@ const DistributorPage = ({
   const handleStudentClick = () => getStudent(studentNumber)
 
   const inputRed = !studentNumberValid
-  const buttonDisabled = !studentNumberValid
+  const buttonDisabled = !student.data
   return (
     <Segment>
       <h1>Hei, lenovo. Olet jakamassa laitteita opiskelijoille </h1>
@@ -60,7 +66,7 @@ const DistributorPage = ({
       />
       <Button onClick={handleStudentClick}>Hae</Button>
 
-      <StudentInfo student={student} />
+      <StudentInfo student={student.data} />
       <Button color="purple" onClick={handleClaimClick} disabled={buttonDisabled}>
         Anna laite
       </Button>
@@ -68,16 +74,4 @@ const DistributorPage = ({
   )
 }
 
-const mapStateToProps = ({ deviceClaim, student }) => ({
-  deviceClaim,
-  student,
-})
-
-const mapDispatchToProps = dispatch => ({
-  claimDevice: payload => dispatch(claimDeviceAction(payload)),
-  clearStudent: () => dispatch(clearStudentAction()),
-  getStudent: studentNumber => dispatch(getStudentAction(studentNumber)),
-})
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(DistributorPage)
+export default DistributorPage
