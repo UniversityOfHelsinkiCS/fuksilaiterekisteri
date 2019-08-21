@@ -44,7 +44,6 @@ const authentication = async (req, res, next) => {
   })
 
   const {
-    employeenumber: employeeNumber = null,
     givenname: givenName = null,
     mail = null,
     schacdateofbirth: schacDateOfBirth = null,
@@ -52,6 +51,8 @@ const authentication = async (req, res, next) => {
     sn = null,
     uid = null,
   } = req.headers
+
+  console.log('HEADERS', req.headers)
 
   if (!uid) return res.status(403).json({ error: 'forbidden' })
 
@@ -69,7 +70,8 @@ const authentication = async (req, res, next) => {
     hyEmail: mail,
     name: `${givenName} ${sn}`,
     dateOfBirth: schacDateOfBirth,
-    staff: !!employeeNumber,
+    staff: false,
+    distributor: false,
     studentNumber,
   }
 
