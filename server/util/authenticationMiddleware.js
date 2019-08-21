@@ -1,10 +1,10 @@
 const db = require('@models')
 const { getStudentStatus, isEligible } = require('@services/student')
+const { inProduction } = require('./common')
 
-// Plz rename, idk what's happening
 const createUserStudyprogrammes = async (studyrights, user) => {
   const allStudyprograms = await db.studyProgram.findAll({
-    attributes: ['id', 'code']
+    attributes: ['id', 'code'],
   })
 
   const studyprogramCodeToId = allStudyprograms.reduce((acc, { id, code }) => {
@@ -15,25 +15,23 @@ const createUserStudyprogrammes = async (studyrights, user) => {
 
   return Promise.all([
     studyrights.data.map(
-      ({ elements }) =>
-        new Promise(async (resolveStudyright) => {
-          await Promise.all([
-            elements.map(
-              ({ code }) =>
-                new Promise(async (resolveElement) => {
-                  if (allStudyprogramCodes.has(code)) {
-                    await db.userStudyProgram.create({
-                      user_id: user.id,
-                      study_program_id: studyprogramCodeToId[code]
-                    })
-                    resolveElement()
-                  }
+      ({ elements }) => new Promise(async (resolveStudyright) => {
+        await Promise.all([
+          elements.map(
+            ({ code }) => new Promise(async (resolveElement) => {
+              if (allStudyprogramCodes.has(code)) {
+                await db.userStudyProgram.create({
+                  user_id: user.id,
+                  study_program_id: studyprogramCodeToId[code],
                 })
-            )
-          ])
-          resolveStudyright()
-        })
-    )
+                resolveElement()
+              }
+            }),
+          ),
+        ])
+        resolveStudyright()
+      }),
+    ),
   ])
 }
 
@@ -41,7 +39,7 @@ const authentication = async (req, res, next) => {
   // Headers are in by default lower case, we don't like that.
   db.user.destroy({
     where: {},
-    truncate: { cascade: true }
+    truncate: { cascade: true },
   })
 
   const {
@@ -50,7 +48,7 @@ const authentication = async (req, res, next) => {
     schacdateofbirth: schacDateOfBirth = null,
     schacpersonaluniquecode: schacPersonalUniqueCode = null,
     sn = null,
-    uid = null
+    uid = null,
   } = req.headers
 
   if (!uid) return res.status(403).json({ error: 'forbidden' })
@@ -72,15 +70,14 @@ const authentication = async (req, res, next) => {
     name: `${givenName} ${sn}`,
     dateOfBirth: schacDateOfBirth,
     staff: false,
-    distributor: false,
-    studentNumber
+    distributor: false || (!!(uid === 'jakelija' && !inProduction)),
+    studentNumber,
+    admin: false || !!(uid === 'admin' && !inProduction),
   }
-
-  // Is a student
 
   if (!studentNumber) {
     const newUser = await db.user.create({
-      ...defaultParams
+      ...defaultParams,
     })
 
     req.user = newUser
@@ -91,14 +88,14 @@ const authentication = async (req, res, next) => {
     const { studyrights, eligible } = await isEligible(studentNumber)
     const { digiSkills, hasEnrollments } = await getStudentStatus(
       studentNumber,
-      studyrights
+      studyrights,
     )
 
     const newUser = await db.user.create({
       ...defaultParams,
       eligible,
       digiSkillsCompleted: digiSkills,
-      courseRegistrationCompleted: hasEnrollments
+      courseRegistrationCompleted: hasEnrollments,
     })
 
     await createUserStudyprogrammes(studyrights, newUser)
@@ -109,7 +106,7 @@ const authentication = async (req, res, next) => {
     console.log(
       'Creating student failed',
       e.response.status,
-      e.response.statusText
+      e.response.statusText,
     )
     return res.status(500)
   }
