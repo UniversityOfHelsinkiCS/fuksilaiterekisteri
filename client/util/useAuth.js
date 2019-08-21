@@ -16,15 +16,13 @@ const parseUserRights = (user) => {
   return res
 }
 
-const checkAuth = (user, path) => parseUserRights(user).some(r => (
-  !pathAccessRights[path] ? true : pathAccessRights[path].includes(r)
-))
+const checkAuth = (user, path) => {
+  if (!pathAccessRights[path]) return true
+  return parseUserRights(user).some(r => pathAccessRights[path].includes(r))
+}
 
 export default (user, path) => {
   const [authorized, setAuthorized] = useState(checkAuth(user, path))
-
-  console.log('u', user)
-  console.log('p', path)
 
   useEffect(() => {
     setAuthorized(checkAuth(user, path))
