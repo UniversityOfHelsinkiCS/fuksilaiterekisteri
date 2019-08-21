@@ -67,7 +67,7 @@ const authentication = async (req, res, next) => {
     hyEmail: mail,
     name: `${givenName} ${sn}`,
     dateOfBirth: schacDateOfBirth,
-    employeeNumber,
+    staff: !!employeeNumber,
   }
 
   // Is a student
