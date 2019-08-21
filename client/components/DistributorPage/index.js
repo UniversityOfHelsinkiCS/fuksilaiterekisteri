@@ -8,10 +8,12 @@ const StudentInfo = ({ student }) => {
   if (!student) return null
   return (
     <div>
-      Etunimi:
-      <span>{student.name}</span>
-      Syntymäaika:
-      <span>{student.dateOfBirth}</span>
+      <div>
+        {`Etunimi: ${student.name}`}
+      </div>
+      <div>
+        {`Syntymäaika: ${student.dateOfBirth}`}
+      </div>
     </div>
   )
 }
@@ -44,7 +46,7 @@ const DistributorPage = () => {
   }
 
   const handleClaimClick = () => {
-    if (!studentNumberValid) return
+    if (!student.data) return
 
     claimDevice({ studentNumber })
   }
@@ -52,7 +54,7 @@ const DistributorPage = () => {
   const handleStudentClick = () => getStudent(studentNumber)
 
   const inputRed = !studentNumberValid
-  const buttonDisabled = !studentNumberValid
+  const buttonDisabled = !student.data
   return (
     <Segment>
       <h1>Hei, lenovo. Olet jakamassa laitteita opiskelijoille </h1>
@@ -64,7 +66,7 @@ const DistributorPage = () => {
       />
       <Button onClick={handleStudentClick}>Hae</Button>
 
-      <StudentInfo student={student} />
+      <StudentInfo student={student.data} />
       <Button color="purple" onClick={handleClaimClick} disabled={buttonDisabled}>
         Anna laite
       </Button>

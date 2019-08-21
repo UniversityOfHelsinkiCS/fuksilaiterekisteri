@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { getUserAction } from 'Utilities/redux/userReducer'
+import AuthCheck from 'Components/AuthCheck'
 import FakeShibboBar from 'Components/FakeShibboBar'
 import NavBar from 'Components/NavBar'
 import Footer from 'Components/Footer'
@@ -23,11 +24,13 @@ const App = () => {
   }
 
   return (
-    <FakeShibboBar>
-      <NavBar />
-      <Router />
-      <Footer />
-    </FakeShibboBar>
+    <AuthCheck>
+      <FakeShibboBar>
+        <NavBar />
+        <Router />
+        <Footer />
+      </FakeShibboBar>
+    </AuthCheck>
   )
 }
 export default App
