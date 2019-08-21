@@ -9,6 +9,7 @@
       "error",
       "never"
     ],
+    "max-len": [1, 200],
     "camelcase": 0,
     "import/no-unresolved": "off",
     "react/jsx-filename-extension": "off",
