@@ -62,17 +62,19 @@ const authentication = async (req, res, next) => {
     return next()
   }
 
+  const studentNumber = schacPersonalUniqueCode ? schacPersonalUniqueCode.split(':')[6] : null
+
   const defaultParams = {
     userId: uid,
     hyEmail: mail,
     name: `${givenName} ${sn}`,
     dateOfBirth: schacDateOfBirth,
-    employeeNumber,
+    staff: !!employeeNumber,
+    studentNumber,
   }
 
   // Is a student
 
-  const studentNumber = schacPersonalUniqueCode ? schacPersonalUniqueCode.split(':')[6] : null
   if (!studentNumber) {
     const newUser = await db.user.create({
       ...defaultParams,

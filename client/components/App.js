@@ -32,9 +32,8 @@ const mapStateToProps = ({ user }) => ({
   user,
 })
 
-const mapDispatchToProps = dispatch => ({
-  getUser: () => dispatch(getUserAction()),
-})
-
+const mapDispatchToProps = {
+  getUser: getUserAction,
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
