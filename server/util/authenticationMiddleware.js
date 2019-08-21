@@ -2,7 +2,7 @@ const db = require('@models')
 const { getStudentStatus, isEligible } = require('@services/student')
 
 // Plz rename, idk what's happening
-const doSomethingForStudyRights = async (studyrights, user) => {
+const createUserStudyprogrammes = async (studyrights, user) => {
   const allStudyprograms = await db.studyProgram.findAll({
     attributes: ['id', 'code'],
   })
@@ -95,7 +95,7 @@ const authentication = async (req, res, next) => {
       courseRegistrationCompleted: hasEnrollments,
     })
 
-    doSomethingForStudyRights(studyrights, newUser)
+    await createUserStudyprogrammes(studyrights, newUser)
 
     req.user = newUser
     return next()
