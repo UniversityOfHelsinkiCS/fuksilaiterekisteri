@@ -1,5 +1,5 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 
 const getRedirectPathForUser = (user) => {
@@ -10,10 +10,9 @@ const getRedirectPathForUser = (user) => {
   return '/unauthorized'
 }
 
-const MainPage = ({ user }) => <Redirect to={getRedirectPathForUser(user)} />
+const MainPage = () => {
+  const user = useSelector(state => state.user.data)
+  return <Redirect to={getRedirectPathForUser(user)} />
+}
 
-const mapStateToProps = ({ user }) => ({
-  user: user.data,
-})
-
-export default connect(mapStateToProps)(MainPage)
+export default MainPage

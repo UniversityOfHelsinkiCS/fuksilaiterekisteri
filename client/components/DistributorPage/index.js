@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Button, Input, Segment } from 'semantic-ui-react'
 import { claimDeviceAction } from 'Utilities/redux/deviceClaimReducer'
 import { getStudentAction, clearStudentAction } from 'Utilities/redux/studentReducer'
-
 
 const StudentInfo = ({ student }) => {
   if (!student) return null
@@ -16,11 +15,16 @@ const StudentInfo = ({ student }) => {
     </div>
   )
 }
-const DistributorPage = ({
-  claimDevice, getStudent, clearStudent, student, deviceClaim,
-}) => {
+
+const DistributorPage = () => {
+  const dispatch = useDispatch()
+  const deviceClaim = useSelector(state => state.deviceClaim)
+  const student = useSelector(state => state.student)
   const [studentNumber, setStudentNumber] = useState('')
   const [studentNumberValid, setStudentNumberValid] = useState(false)
+  const claimDevice = payload => dispatch(claimDeviceAction(payload))
+  const clearStudent = () => dispatch(clearStudentAction())
+  const getStudent = payload => dispatch(getStudentAction(payload))
 
   useEffect(() => {
     if (!deviceClaim || deviceClaim.pending || deviceClaim.error || !deviceClaim.data) return
@@ -68,16 +72,4 @@ const DistributorPage = ({
   )
 }
 
-const mapStateToProps = ({ deviceClaim, student }) => ({
-  deviceClaim,
-  student,
-})
-
-const mapDispatchToProps = dispatch => ({
-  claimDevice: payload => dispatch(claimDeviceAction(payload)),
-  clearStudent: () => dispatch(clearStudentAction()),
-  getStudent: studentNumber => dispatch(getStudentAction(studentNumber)),
-})
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(DistributorPage)
+export default DistributorPage

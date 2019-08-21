@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { getUserAction } from 'Utilities/redux/userReducer'
 import FakeShibboBar from 'Components/FakeShibboBar'
 import NavBar from 'Components/NavBar'
 import Footer from 'Components/Footer'
 import Router from 'Components/Router'
 
-const App = ({ getUser, user }) => {
+const App = () => {
+  const user = useSelector(state => state.user.data)
+  const dispatch = useDispatch()
+
   useEffect(() => {
-    getUser()
+    dispatch(getUserAction())
   }, [])
 
   if (!user) {
@@ -27,13 +30,4 @@ const App = ({ getUser, user }) => {
     </FakeShibboBar>
   )
 }
-
-const mapStateToProps = ({ user }) => ({
-  user,
-})
-
-const mapDispatchToProps = {
-  getUser: getUserAction,
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default App
