@@ -4,7 +4,7 @@ const { getStudentStatus, isEligible } = require('@services/student')
 // Plz rename, idk what's happening
 const createUserStudyprogrammes = async (studyrights, user) => {
   const allStudyprograms = await db.studyProgram.findAll({
-    attributes: ['id', 'code'],
+    attributes: ['id', 'code']
   })
 
   const studyprogramCodeToId = allStudyprograms.reduce((acc, { id, code }) => {
@@ -14,33 +14,34 @@ const createUserStudyprogrammes = async (studyrights, user) => {
   const allStudyprogramCodes = new Set(allStudyprograms.map(({ code }) => code))
 
   return Promise.all([
-    studyrights.data.map(({ elements }) => (
-      new Promise(async (resolveStudyright) => {
-        await Promise.all([
-          elements.map(({ code }) => (
-            new Promise(async (resolveElement) => {
-              if (allStudyprogramCodes.has(code)) {
-                await db.userStudyProgram.create({
-                  user_id: user.id,
-                  study_program_id: studyprogramCodeToId[code],
+    studyrights.data.map(
+      ({ elements }) =>
+        new Promise(async (resolveStudyright) => {
+          await Promise.all([
+            elements.map(
+              ({ code }) =>
+                new Promise(async (resolveElement) => {
+                  if (allStudyprogramCodes.has(code)) {
+                    await db.userStudyProgram.create({
+                      user_id: user.id,
+                      study_program_id: studyprogramCodeToId[code]
+                    })
+                    resolveElement()
+                  }
                 })
-                resolveElement()
-              }
-            })
-          )),
-        ])
-        resolveStudyright()
-      })
-    )),
+            )
+          ])
+          resolveStudyright()
+        })
+    )
   ])
 }
-
 
 const authentication = async (req, res, next) => {
   // Headers are in by default lower case, we don't like that.
   db.user.destroy({
     where: {},
-    truncate: { cascade: true },
+    truncate: { cascade: true }
   })
 
   const {
@@ -49,10 +50,8 @@ const authentication = async (req, res, next) => {
     schacdateofbirth: schacDateOfBirth = null,
     schacpersonaluniquecode: schacPersonalUniqueCode = null,
     sn = null,
-    uid = null,
+    uid = null
   } = req.headers
-
-  console.log('HEADERS', req.headers)
 
   if (!uid) return res.status(403).json({ error: 'forbidden' })
 
@@ -63,7 +62,9 @@ const authentication = async (req, res, next) => {
     return next()
   }
 
-  const studentNumber = schacPersonalUniqueCode ? schacPersonalUniqueCode.split(':')[6] : null
+  const studentNumber = schacPersonalUniqueCode
+    ? schacPersonalUniqueCode.split(':')[6]
+    : null
 
   const defaultParams = {
     userId: uid,
@@ -72,31 +73,32 @@ const authentication = async (req, res, next) => {
     dateOfBirth: schacDateOfBirth,
     staff: false,
     distributor: false,
-    studentNumber,
+    studentNumber
   }
 
   // Is a student
 
   if (!studentNumber) {
     const newUser = await db.user.create({
-      ...defaultParams,
+      ...defaultParams
     })
 
     req.user = newUser
     return next()
   }
 
-  console.log('Creating student with number', studentNumber)
   try {
     const { studyrights, eligible } = await isEligible(studentNumber)
-    const { digiSkills, hasEnrollments } = await getStudentStatus(studentNumber, studyrights)
+    const { digiSkills, hasEnrollments } = await getStudentStatus(
+      studentNumber,
+      studyrights
+    )
 
-    console.log(eligible)
     const newUser = await db.user.create({
       ...defaultParams,
       eligible,
       digiSkillsCompleted: digiSkills,
-      courseRegistrationCompleted: hasEnrollments,
+      courseRegistrationCompleted: hasEnrollments
     })
 
     await createUserStudyprogrammes(studyrights, newUser)
@@ -104,7 +106,11 @@ const authentication = async (req, res, next) => {
     req.user = newUser
     return next()
   } catch (e) {
-    console.log('Creating student failed', e.response.status, e.response.statusText)
+    console.log(
+      'Creating student failed',
+      e.response.status,
+      e.response.statusText
+    )
     return res.status(500)
   }
 }
