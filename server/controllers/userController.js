@@ -13,5 +13,5 @@ const claimDevice = (req, res) => {
 module.exports = {
   getUser,
   requestDevice,
-  claimDevice
+  claimDevice,
 }

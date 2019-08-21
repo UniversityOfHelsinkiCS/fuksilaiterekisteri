@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Button, Input, Segment } from 'semantic-ui-react'
-import { claimDeviceAction } from 'Utilities/redux/deviceRequestReducer'
+import { claimDeviceAction } from 'Utilities/redux/deviceClaimReducer'
 import { getStudentAction } from 'Utilities/redux/studentReducer'
 
 const DistributorPage = ({ claimDevice, student }) => {

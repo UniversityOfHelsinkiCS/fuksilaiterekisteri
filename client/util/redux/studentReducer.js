@@ -3,7 +3,7 @@ import callBuilder from '../apiConnection'
 /**
  * Actions and reducers are in the same file for readability
  */
-export const getStudent = (studentNumber) => {
+export const getStudentAction = (studentNumber) => {
   const route = `/student/${studentNumber}`
   const prefix = 'GET_STUDENT'
   return callBuilder(route, prefix)

@@ -54,7 +54,7 @@ const isEligible = async (studentNumber) => {
   })
   return {
     studyrights,
-    eligible: (!hasPreviousStudyright && hasNewStudyright) || (!inProduction && studentNumber === 'fuksi'),
+    eligible: (!hasPreviousStudyright && hasNewStudyright) || (!inProduction && studentNumber === 'fuksi'),
   }
 }
 

@@ -38,18 +38,18 @@ const fakeUsers = {
     schacDateOfBirth: null,
     schacPersonalUniqueCode: null,
     sn: 'non-admin-staff',
-  }
+  },
 }
 
 const authentication = async (req, res, next) => {
   const {
-    uid
+    uid,
   } = req.headers
 
   if (uid) {
     req.headers = {
       ...req.headers,
-      ...fakeUsers[uid]
+      ...fakeUsers[uid],
     }
   }
 

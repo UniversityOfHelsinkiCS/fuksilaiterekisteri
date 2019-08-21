@@ -2,14 +2,15 @@ const db = require('../../models')
 const { getStudentStatus, isEligible } = require('../services/student')
 
 const authentication = async (req, res, next) => {
+  // Headers are in by default lower case, we don't like that.
   const {
-    employeeNumber = null,
-    givenName = null,
+    employeenumber: employeeNumber = null,
+    givenname: givenName = null,
     mail = null,
-    schacDateOfBirth = null,
-    schacPersonalUniqueCode = null,
+    schacdateofbirth: schacDateOfBirth = null,
+    schacdersonaluniquecode: schacPersonalUniqueCode = null,
     sn = null,
-    uid = null
+    uid = null,
   } = req.headers
 
   if (uid) {
@@ -17,8 +18,8 @@ const authentication = async (req, res, next) => {
     try {
       const foundUser = await db.user.findOne({
         where: {
-          userId: uid
-        }
+          userId: uid,
+        },
       })
 
       if (foundUser) {
@@ -31,33 +32,33 @@ const authentication = async (req, res, next) => {
         hyEmail: mail,
         name: `${givenName} ${sn}`,
         dateOfBirth: schacDateOfBirth,
-        employeeNumber
+        employeeNumber,
       }
 
       if (studentNumber) {
         const {
           studyrights,
-          eligible
+          eligible,
         } = await isEligible(studentNumber)
         const {
           digiSkills,
-          hasEnrollments
+          hasEnrollments,
         } = await getStudentStatus(studentNumber, studyrights)
 
         const newUser = await db.user.create({
           ...defaultParams,
           eligible,
           digiSkillsCompleted: digiSkills,
-          courseRegistrationCompleted: hasEnrollments
+          courseRegistrationCompleted: hasEnrollments,
         })
 
         const allStudyprograms = await db.studyProgram.findAll({
-          attributes: ['id', 'code']
+          attributes: ['id', 'code'],
         })
 
-        const studyprogramCodeToId = allStudyprograms.reduce((res, { id, code }) => {
-          res[code] = id
-          return res
+        const studyprogramCodeToId = allStudyprograms.reduce((acc, { id, code }) => {
+          acc[code] = id
+          return acc
         }, {})
         const allStudyprogramCodes = new Set(allStudyprograms.map(({ code }) => code))
 
@@ -70,16 +71,16 @@ const authentication = async (req, res, next) => {
                     if (allStudyprogramCodes.has(code)) {
                       await db.userStudyProgram.create({
                         user_id: newUser.id,
-                        study_program_id: studyprogramCodeToId[code]
+                        study_program_id: studyprogramCodeToId[code],
                       })
                       resolveElement()
                     }
                   })
-                ))
+                )),
               ])
               resolveStudyright()
             })
-          ))
+          )),
         ])
 
         req.user = newUser
@@ -87,10 +88,11 @@ const authentication = async (req, res, next) => {
       }
 
       const newUser = await db.user.create({
-        ...defaultParams
+        ...defaultParams,
       })
-      
+
       req.user = newUser
+      return next()
     } catch (e) {
       console.log(e)
       return res.status(403).json({ error: 'forbidden' })
@@ -98,7 +100,6 @@ const authentication = async (req, res, next) => {
   } else {
     return res.status(403).json({ error: 'forbidden' })
   }
-  next()
 }
 
 

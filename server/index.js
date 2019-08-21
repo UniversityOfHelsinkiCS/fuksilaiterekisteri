@@ -18,7 +18,10 @@ initializeDatabaseConnection()
      */
     if (!inProduction) {
       /* eslint-disable */
+      console.time(1)
+      console.timeLog(1, 1)
       const webpack = require('webpack')
+      console.timeLog(1, 2)
       const middleware = require('webpack-dev-middleware')
       const hotMiddleWare = require('webpack-hot-middleware')
       const webpackConf = require('@root/webpack.config')
