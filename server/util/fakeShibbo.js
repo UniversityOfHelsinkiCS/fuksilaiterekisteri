@@ -1,35 +1,29 @@
-const ITEM_NAME = 'fakeUser'
-
-export const possibleUsers = [
-  {
-    uid: 'admin',
+const fakeUsers = {
+  admin: {
     employeeNumber: null,
     givenName: 'admin',
     mail: null,
     schacDateOfBirth: null,
     schacPersonalUniqueCode: null,
-    sn: 'admin'
+    sn: 'admin',
   },
-  {
-    uid: 'jakelija',
+  jakelija: {
     employeeNumber: 1234,
     givenName: 'jakelija',
     mail: null,
     schacDateOfBirth: null,
     schacPersonalUniqueCode: null,
-    sn: 'jakelija'
+    sn: 'jakelija',
   },
-  {
-    uid: 'fuksi',
+  fuksi: {
     employeeNumber: null,
     givenName: 'fuksi',
     mail: null,
     schacDateOfBirth: null,
     schacPersonalUniqueCode: '::::::fuksi',
-    sn: 'fuksi'
+    sn: 'fuksi',
   },
-  {
-    uid: 'non_fuksi_student',
+  non_fuksi_student: {
     employeeNumber: null,
     givenName: 'non-fuksi',
     mail: null,
@@ -37,29 +31,30 @@ export const possibleUsers = [
     schacPersonalUniqueCode: '::::::non-fuksi',
     sn: 'non-fuksi',
   },
-  {
-    uid: 'non_admin_staff',
+  non_admin_staff: {
     employeeNumber: 1234,
     givenName: 'non-admin-staff',
     mail: null,
     schacDateOfBirth: null,
     schacPersonalUniqueCode: null,
-    sn: 'non-admin-staff'
-  },
-]
-
-export const setHeaders = (uid) => {
-  const user = possibleUsers.find(u => u.uid === uid)
-  if (!user) return
-
-  localStorage.setItem(ITEM_NAME, JSON.stringify(user))
+    sn: 'non-admin-staff',
+  }
 }
 
-export const getHeaders = () => {
-  const user = JSON.parse(localStorage.getItem(ITEM_NAME) || '{}')
-  return user
+const authentication = async (req, res, next) => {
+  const {
+    uid
+  } = req.headers
+
+  if (uid) {
+    req.headers = {
+      ...req.headers,
+      ...fakeUsers[uid]
+    }
+  }
+
+  next()
 }
 
-export const clearHeaders = () => {
-  localStorage.removeItem(ITEM_NAME)
-}
+
+module.exports = authentication

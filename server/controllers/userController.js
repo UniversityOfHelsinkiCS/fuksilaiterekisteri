@@ -1,5 +1,5 @@
 const getUser = (req, res) => {
-  res.send({})
+  res.send(req.user)
 }
 
 const requestDevice = (req, res) => {
@@ -13,5 +13,5 @@ const claimDevice = (req, res) => {
 module.exports = {
   getUser,
   requestDevice,
-  claimDevice,
+  claimDevice
 }

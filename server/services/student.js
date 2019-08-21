@@ -1,6 +1,6 @@
 const axios = require('axios')
 const https = require('https')
-const { STUDENT_API_URL, STUDENT_API_TOKEN } = require('../util/common')
+const { STUDENT_API_URL, STUDENT_API_TOKEN, inProduction } = require('../util/common')
 
 const userApi = axios.create({
   httpsAgent: new https.Agent({
@@ -54,7 +54,7 @@ const isEligible = async (studentNumber) => {
   })
   return {
     studyrights,
-    eligible: (!hasPreviousStudyright && hasNewStudyright),
+    eligible: (!hasPreviousStudyright && hasNewStudyright) || (!inProduction && studentNumber === 'fuksi'),
   }
 }
 
