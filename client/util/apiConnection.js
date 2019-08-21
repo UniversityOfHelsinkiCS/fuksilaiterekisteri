@@ -9,8 +9,13 @@ import { basePath } from 'Utilities/common'
 const getAxios = axios.create({ baseURL: `${basePath}api` })
 
 const callApi = async (url, method = 'get', data) => {
-  const options = { headers: { ...getHeaders() } }
-  return getAxios[method](url, data, options)
+  const headers = { ...getHeaders() }
+  return getAxios({
+    method,
+    url,
+    data,
+    headers,
+  })
 }
 
 export default (route, prefix, method = 'get', data, query) => (

@@ -1,25 +1,40 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Button, Input, Segment } from 'semantic-ui-react'
 import { claimDeviceAction } from 'Utilities/redux/deviceClaimReducer'
-import { getStudentAction } from 'Utilities/redux/studentReducer'
+import { getStudentAction, clearStudentAction } from 'Utilities/redux/studentReducer'
 
-const DistributorPage = ({ claimDevice, student }) => {
+
+const StudentInfo = ({ student }) => {
+  if (!student) return null
+  return (
+    <div>
+      Etunimi:
+      <span>{student.name}</span>
+      Syntymäaika:
+      <span>{student.dateOfBirth}</span>
+    </div>
+  )
+}
+const DistributorPage = ({
+  claimDevice, getStudent, clearStudent, student, deviceClaim,
+}) => {
   const [studentNumber, setStudentNumber] = useState('')
   const [studentNumberValid, setStudentNumberValid] = useState(false)
 
-  const validateEmail = (checkEmail) => {
-    const validationRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+  useEffect(() => {
+    if (!deviceClaim || deviceClaim.pending || deviceClaim.error || !deviceClaim.data) return
 
-    // Returns true if valid
-    return validationRegex.test(checkEmail) && !checkEmail.includes('helsinki.') && !checkEmail.includes('@cs.')
-  }
+    console.log('Handle device claim success here by emptying existing student')
+    setStudentNumber('')
+    clearStudent()
+  }, deviceClaim)
 
   const changeStudentNumber = ({ target }) => {
     const { value } = target
     setStudentNumber(value)
 
-    if (!validateEmail(value)) return setStudentNumberValid(false)
+    if (value.length !== 9) return setStudentNumberValid(false)
 
     return setStudentNumberValid(true)
   }
@@ -30,15 +45,13 @@ const DistributorPage = ({ claimDevice, student }) => {
     claimDevice({ studentNumber })
   }
 
-  const handleStudentClick = () => {
-
-  }
+  const handleStudentClick = () => getStudent(studentNumber)
 
   const inputRed = !studentNumberValid
   const buttonDisabled = !studentNumberValid
   return (
     <Segment>
-      <h1>Hei, olet oikeutettu opiskelija etkä ole hakenut vielä laitettasi </h1>
+      <h1>Hei, lenovo. Olet jakamassa laitteita opiskelijoille </h1>
       <Input
         error={inputRed}
         label="Studentnumber"
@@ -46,10 +59,8 @@ const DistributorPage = ({ claimDevice, student }) => {
         onChange={changeStudentNumber}
       />
       <Button onClick={handleStudentClick}>Hae</Button>
-      <br />
-      {student && student.name}
-      {student && student.dateOfBirth}
-      <br />
+
+      <StudentInfo student={student} />
       <Button color="purple" onClick={handleClaimClick} disabled={buttonDisabled}>
         Anna laite
       </Button>
@@ -64,6 +75,7 @@ const mapStateToProps = ({ deviceClaim, student }) => ({
 
 const mapDispatchToProps = dispatch => ({
   claimDevice: payload => dispatch(claimDeviceAction(payload)),
+  clearStudent: () => dispatch(clearStudentAction()),
   getStudent: studentNumber => dispatch(getStudentAction(studentNumber)),
 })
 
