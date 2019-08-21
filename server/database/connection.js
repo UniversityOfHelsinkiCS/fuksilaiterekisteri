@@ -1,4 +1,4 @@
-const { sequelize, Sequelize } = require('@root/models')
+const { sequelize, Sequelize } = require('@models')
 const Umzug = require('umzug')
 
 const DB_CONNECTION_RETRY_LIMIT = 60
