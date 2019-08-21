@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { getUserAction } from 'Utilities/redux/userReducer'
+import AuthCheck from 'Components/AuthCheck'
 import FakeShibboBar from 'Components/FakeShibboBar'
 import NavBar from 'Components/NavBar'
 import Footer from 'Components/Footer'
@@ -20,16 +21,18 @@ const App = ({ getUser, user }) => {
   }
 
   return (
-    <FakeShibboBar>
-      <NavBar />
-      <Router />
-      <Footer />
-    </FakeShibboBar>
+    <AuthCheck>
+      <FakeShibboBar>
+        <NavBar />
+        <Router />
+        <Footer />
+      </FakeShibboBar>
+    </AuthCheck>
   )
 }
 
 const mapStateToProps = ({ user }) => ({
-  user,
+  user: user.data,
 })
 
 const mapDispatchToProps = {
