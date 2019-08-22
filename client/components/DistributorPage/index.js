@@ -19,7 +19,7 @@ const getOs = (code) => {
 
   if (cubbli.includes(code)) {
     return <p style={{ marginLeft: '10px', fontWeight: 'bold', color: 'orange' }}>Cubbli</p>
-  } 
+  }
   return <p style={{ marginLeft: '10px', fontWeight: 'bold', color: 'blue' }}>Windows</p>
 }
 
