@@ -108,6 +108,7 @@ const DistributorPage = () => {
   const renderStudentData = () => {
     if (!student && !error) return null
     if (error) return <p>Opiskelijaa ei löytynyt!</p>
+    if (student.deviceGivenAt) return <p>Opiskelija on jo saanut laitteen!</p>
     if (!isEligibleForDevice()) return <p>Ei oikeutettu laitteeseen!</p>
     return (
       <>

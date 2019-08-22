@@ -57,7 +57,7 @@ const claimDevice = async (req, res) => {
 
     if (!student) return res.status(404).json({ error: 'student not found' })
 
-    if (!(student.eligible && student.wantsDevice && student.digiSkillsCompleted && student.courseRegistrationCompleted)) {
+    if (!(student.eligible && student.wantsDevice && student.digiSkillsCompleted && student.courseRegistrationCompleted && !student.deviceGivenAt)) {
       return res.status(403).json({ error: 'student not egilible for device' })
     }
 
