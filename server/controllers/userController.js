@@ -1,5 +1,12 @@
 const db = require('@models')
 
+const validateEmail = (checkEmail) => {
+  const validationRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+
+  // Returns true if valid
+  return validationRegex.test(checkEmail) && !checkEmail.includes('helsinki.') && !checkEmail.includes('@cs.')
+}
+
 const getUser = (req, res) => {
   res.send(req.user)
 }
@@ -11,6 +18,14 @@ const requestDevice = async (req, res) => {
       .json({ error: 'Not eligible.' })
       .end()
   }
+
+  if (!validateEmail(req.body.email)) {
+    return res
+      .status(400)
+      .json({ error: 'Invalid email.' })
+      .end()
+  }
+
   try {
     const updatedUser = await req.user.update({ wantsDevice: true, personalEmail: req.body.email })
 
