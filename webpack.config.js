@@ -20,7 +20,9 @@ module.exports = (env, argv) => {
     }
     : {}
 
-  const additionalEntries = mode === 'production' ? [] : ['webpack-hot-middleware/client?http://localhost:8000']
+  const additionalEntries = mode === 'production'
+    ? []
+    : ['webpack-hot-middleware/client?http://localhost:8000']
 
   const BASE_PATH = process.env.BASE_PATH || '/'
 
@@ -74,7 +76,7 @@ module.exports = (env, argv) => {
         'process.env.BUILT_AT': JSON.stringify(new Date().toISOString()),
       }),
       new HtmlWebpackPlugin({
-        title: 'FukRek',
+        title: 'Fuksilaite',
         favicon: path.resolve(__dirname, 'client/assets/favicon-32x32.png'),
         inject: false,
         template: htmlTemplate,

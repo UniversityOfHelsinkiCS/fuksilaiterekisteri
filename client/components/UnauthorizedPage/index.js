@@ -7,10 +7,16 @@ export default () => {
   const nextGreeting = `${greetings[greetings.length - 1]}!`
   return (
     <div>
-      <h1>Hei, sinä et ole mitään</h1>
+      <h1>
+        Hei, sinulla ei ole oikeuksia fuksilaite-palveluun. Ota yhteyttä
+        grp-toska@cs.helsinki.fi jos sinulla kuuluisi olla oikeudet.
+      </h1>
       {greetings.join(' ')}
       <br />
-      <Button color="purple" onClick={() => setGreetings([...greetings, nextGreeting])}>
+      <Button
+        color="purple"
+        onClick={() => setGreetings([...greetings, nextGreeting])}
+      >
         {nextGreeting}
       </Button>
     </div>
