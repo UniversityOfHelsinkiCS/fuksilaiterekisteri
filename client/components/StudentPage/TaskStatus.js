@@ -25,7 +25,7 @@ const Task = ({ task, completed }) => {
 const StudentStatusPage = () => {
   const user = useSelector(state => state.user.data)
   return (
-    <>
+    <Segment.Group>
       <StudentInfo />
       <Segment>
         <div>Tasks:</div>
@@ -37,7 +37,7 @@ const StudentStatusPage = () => {
         {user.eligible && user.digiSkillsCompleted && user.courseRegistrationCompleted ? <ClaimingInfo /> : null}
       </Segment>
       <Terms />
-    </>
+    </Segment.Group>
   )
 }
 
