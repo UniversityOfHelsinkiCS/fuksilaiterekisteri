@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Loader } from 'semantic-ui-react'
 import { getUserAction } from 'Utilities/redux/userReducer'
 import AuthCheck from 'Components/AuthCheck'
 import FakeShibboBar from 'Components/FakeShibboBar'
@@ -18,7 +19,11 @@ const App = () => {
   if (!user) {
     return (
       <FakeShibboBar>
-        <div> There is no user </div>
+        <NavBar />
+        <div className="content">
+          <Loader active inline="centered">Loading</Loader>
+        </div>
+        <Footer />
       </FakeShibboBar>
     )
   }
