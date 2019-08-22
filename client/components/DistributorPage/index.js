@@ -16,7 +16,6 @@ const formatDateOfBirth = (dateOfBirth) => {
 
 const StudentInfo = ({ student }) => {
   if (!student) return null
-  formatDateOfBirth(student.dateOfBirth)
   return (
     <div>
       <div>
@@ -24,6 +23,16 @@ const StudentInfo = ({ student }) => {
       </div>
       <div>
         {`Syntymäaika: ${formatDateOfBirth(student.dateOfBirth)}`}
+      </div>
+      <div style={{ marginTop: '10px', marginBottom: '10px' }}>
+        <h4>Opinto-ohjelma(t):</h4>
+        {
+          student.studyPrograms.map(({ code, name }) => (
+            <p key={code}>
+              {`- ${name}, ${code}`}
+            </p>
+          ))
+        }
       </div>
     </div>
   )

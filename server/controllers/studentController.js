@@ -14,7 +14,10 @@ const getStudent = async (req, res) => {
     digiSkillsCompleted: student.digiSkillsCompleted,
     courseRegistrationCompleted: student.courseRegistrationCompleted,
     wantsDevice: student.wantsDevice,
-    studyPrograms: student.studyPrograms,
+    studyPrograms: student.studyPrograms.map(s => ({
+      name: s.name,
+      code: s.code,
+    })),
   }
 
   return res.send(response)
