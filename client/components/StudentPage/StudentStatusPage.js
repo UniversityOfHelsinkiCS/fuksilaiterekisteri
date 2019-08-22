@@ -1,38 +1,41 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Segment, Icon } from 'semantic-ui-react'
+import StudentInfo from './StudentInfo'
+import Terms from './Terms'
 
 const Task = ({ task, completed }) => {
   if (completed) {
     return (
-      <div style={{ background: '#d2f3db' }}>
+      <Segment style={{ background: '#d2f3db' }}>
         {task}
         <Icon name="checkmark" />
-      </div>
+      </Segment>
     )
   }
   return (
-    <div style={{ background: '#fddede' }}>
+    <Segment style={{ background: '#fddede' }}>
       {task}
       <Icon name="cancel" />
-    </div>
+    </Segment>
   )
 }
 
 const StudentStatusPage = () => {
   const user = useSelector(state => state.user)
   return (
-    <Segment>
-      <div>{`Name ${user.data.name}`}</div>
-      <div>{`Student number ${user.data.studentNumber}`}</div>
-      <div>Tasks:</div>
-      <Task task="True Fuksi " completed={user.data.eligible} />
-      <Task task="DIGI-100A completed " completed={user.data.digiSkillsCompleted} />
-      <Task
-        task="Registered to relevant course "
-        completed={user.data.courseRegistrationCompleted}
-      />
-    </Segment>
+    <>
+      <StudentInfo />
+      <Segment>
+        <div>Tasks:</div>
+        <Segment.Group horizontal>
+          <Task task="True Fuksi " completed={user.data.eligible} />
+          <Task task="DIGI-100A completed " completed={user.data.digiSkillsCompleted} />
+          <Task task="Registered to relevant course " completed={user.data.courseRegistrationCompleted} />
+        </Segment.Group>
+      </Segment>
+      <Terms />
+    </>
   )
 }
 
