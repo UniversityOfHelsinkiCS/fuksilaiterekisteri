@@ -2,8 +2,14 @@ module.exports = (sequelize, DataTypes) => {
   const userStudyProgram = sequelize.define(
     'userStudyProgram',
     {
-      user_id: DataTypes.INTEGER,
-      study_program_id: DataTypes.INTEGER,
+      userId: {
+        type: DataTypes.INTEGER,
+        field: 'user_id',
+      },
+      studyProgramId: {
+        type: DataTypes.INTEGER,
+        field: 'study_program_id',
+      },
     },
     {
       underscored: true,

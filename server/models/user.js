@@ -60,7 +60,6 @@ module.exports = (sequelize, DataTypes) => {
   user.associate = (models) => {
     user.belongsToMany(models.studyProgram, {
       through: 'user_study_programs',
-      as: 'studyPrograms',
     })
   }
   return user

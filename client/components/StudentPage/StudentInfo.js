@@ -11,6 +11,7 @@ const StudentInfo = () => {
       <div>{`Student number: ${user.studentNumber}`}</div>
       <div>{`University email: ${user.hyEmail}`}</div>
       <div>{`Personal email: ${user.personalEmail}`}</div>
+      <div>{`Study Program(s): ${user.studyPrograms.map(sp => sp.name).join(', ')}`}</div>
     </Segment>
   )
 }
