@@ -21,8 +21,8 @@ const createUserStudyprogrammes = async (studyrights, user) => {
             ({ code }) => new Promise(async (resolveElement) => {
               if (allStudyprogramCodes.has(code)) {
                 await db.userStudyProgram.create({
-                  user_id: user.id,
-                  study_program_id: studyprogramCodeToId[code],
+                  userId: user.id,
+                  studyProgramId: studyprogramCodeToId[code],
                 })
                 resolveElement()
               }

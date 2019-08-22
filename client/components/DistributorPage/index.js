@@ -91,8 +91,9 @@ const DistributorPage = () => {
   const changeDeviceId = (e, { value }) => setDeviceId(value)
 
   const handleClaimClick = () => {
-    if (!student) return
-    claimDevice({ studentNumber: student.studentNumber, deviceId })
+    if (!student || !deviceId) return
+    const res = window.confirm(`Haluatko varmasti antaa laitteen ${deviceId}?`)
+    if (res) claimDevice({ studentNumber: student.studentNumber, deviceId })
   }
 
   const handleStudentClick = () => {
