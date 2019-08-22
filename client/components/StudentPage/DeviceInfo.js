@@ -8,14 +8,14 @@ const DeviceInfo = () => {
   const user = useSelector(state => state.user.data)
 
   return (
-    <>
+    <Segment.Group>
       <StudentInfo />
       <Segment>
         <div>{`Device serial: ${user.deviceSerial}`}</div>
         <div>{`Device given at: ${user.deviceGivenAt}`}</div>
       </Segment>
       <Terms />
-    </>
+    </Segment.Group>
   )
 }
 
