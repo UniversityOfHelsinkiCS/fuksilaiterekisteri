@@ -22,9 +22,9 @@ const NotEligible = () => (
         <b>Unfortunately you are not eligible for the fresher device.</b>
       </p>
       <p>
-        The devices are only available for students who are currently officially
-        present for the first time for Bachelor level studies in the Faculty of
-        Science (excluding exchange students). There are rare exceptions to this
+        The devices are only available for non-exchange students who are
+        currently officially present for the first time for Bachelor level
+        studies in the Faculty of Science. There are rare exceptions to this
         rule, such as people who have previously been present for studies, but
         before the lending of devices began (e.g. present before 2008 for
         Computer Science). If you consider yourself eligible, but are seeing
