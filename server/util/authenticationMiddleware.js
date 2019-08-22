@@ -53,7 +53,17 @@ const authentication = async (req, res, next) => {
 
   if (!uid) return res.status(403).json({ error: 'forbidden' })
 
-  const foundUser = await db.user.findOne({ where: { userId: uid } })
+  const foundUser = await db.user.findOne({
+    where: { userId: uid },
+    include: [
+      {
+        model: db.studyProgram,
+        as: 'studyPrograms',
+        through: { attributes: [] },
+        attributes: ['name', 'code'],
+      },
+    ],
+  })
 
   if (foundUser) {
     req.user = foundUser
