@@ -4,8 +4,27 @@ const getUser = (req, res) => {
   res.send(req.user)
 }
 
-const requestDevice = (req, res) => {
-  res.sendStatus(200)
+const requestDevice = async (req, res) => {
+  if (!req.user.eligible) {
+    return res
+      .status(403)
+      .json({ error: 'Not eligible.' })
+      .end()
+  }
+  try {
+    const updatedUser = await req.user.update({ wantsDevice: true, personalEmail: req.body.email })
+
+    return res
+      .status(200)
+      .json({ wantsDevice: updatedUser.wantsDevice, personalEmail: updatedUser.personalEmail })
+      .end()
+  } catch (error) {
+    console.log('Error requesting device: ', error)
+    return res
+      .status(500)
+      .json({ error: 'Database error.' })
+      .end()
+  }
 }
 
 const claimDevice = (req, res) => {

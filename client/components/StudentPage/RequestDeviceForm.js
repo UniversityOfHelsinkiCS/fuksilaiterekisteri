@@ -8,16 +8,11 @@ const RequestDeviceForm = () => {
   const [emailValid, setEmailValid] = useState(false)
   const dispatch = useDispatch()
   const user = useSelector(state => state.user.data)
-
   const validateEmail = (checkEmail) => {
     const validationRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
 
     // Returns true if valid
-    return (
-      validationRegex.test(checkEmail)
-      && !checkEmail.includes('helsinki.')
-      && !checkEmail.includes('@cs.')
-    )
+    return validationRegex.test(checkEmail) && !checkEmail.includes('helsinki.') && !checkEmail.includes('@cs.')
   }
 
   const changeEmail = ({ target }) => {
