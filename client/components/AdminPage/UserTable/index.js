@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Button, Input, Segment, Header } from 'semantic-ui-react'
+import {
+  Button, Input, Segment, Header,
+} from 'semantic-ui-react'
 import {
   markStudentEligible as markStudentEligibleAction,
   toggleUserStaff as toggleUserStaffAction,
@@ -24,7 +26,7 @@ const UserTable = ({ users }) => {
     const res = []
     data.forEach((obj) => {
       let flag = false
-      Object.values(obj).forEach(val => {
+      Object.values(obj).forEach((val) => {
         if (!searchQuery || (val && String(val).trim().toLowerCase().includes(searchQuery.trim().toLowerCase()))) {
           flag = true
         }
@@ -108,8 +110,8 @@ const UserTable = ({ users }) => {
   return (
     <div>
       <Segment>
-        <Header as='h2'>Search</Header>
-        <Input type='text' onChange={handleChange} name='search' />
+        <Header as="h2">Search</Header>
+        <Input type="text" onChange={handleChange} name="search" />
       </Segment>
       <SortedTable
         getRowKey={({ id }) => id}
