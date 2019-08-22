@@ -14,6 +14,15 @@ const formatDateOfBirth = (dateOfBirth) => {
   return `${day}.${month}.${year}`
 }
 
+const getOs = (code) => {
+  const cubbli = ['KH50_002', 'KH50_005']
+
+  if (cubbli.includes(code)) {
+    return <p style={{ marginLeft: '10px', fontWeight: 'bold', color: 'orange' }}>Cubbli</p>
+  } 
+  return <p style={{ marginLeft: '10px', fontWeight: 'bold', color: 'blue' }}>Windows</p>
+}
+
 const StudentInfo = ({ student }) => {
   if (!student) return null
   return (
@@ -28,9 +37,10 @@ const StudentInfo = ({ student }) => {
         <h4>Opinto-ohjelma(t):</h4>
         {
           student.studyPrograms.map(({ code, name }) => (
-            <p key={code}>
-              {`- ${name}, ${code}`}
-            </p>
+            <div key={code} style={{ display: 'flex' }}>
+              <p>{`- ${name}, ${code}`}</p>
+              { getOs(code) }
+            </div>
           ))
         }
       </div>
@@ -119,7 +129,7 @@ const DistributorPage = () => {
   return (
     <Segment>
       <Form>
-        <Header as="h1">Hei, lenovo. Olet jakamassa laitteita opiskelijoille</Header>
+        <Header as="h1">Hei, jakelija. Olet jakamassa laitteita opiskelijoille</Header>
         <Form.Group inline>
           <Ref innerRef={handleStudentRef}>
             <Form.Input
