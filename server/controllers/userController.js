@@ -8,15 +8,45 @@ const requestDevice = (req, res) => {
   res.sendStatus(200)
 }
 
-const claimDevice = (req, res) => {
-  res.sendStatus(200)
+const claimDevice = async (req, res) => {
+  try {
+    const { user, body: { studentNumber, deviceId } } = req
+
+    if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
+    if (!deviceId) return res.status(400).json({ error: 'device id missing' })
+
+    const student = await db.user.findOne({
+      where: {
+        studentNumber,
+      },
+    })
+
+    if (!student) return res.status(404).json({ error: 'student not found' })
+
+    if (!(student.eligible && student.wantsDevice && student.digiSkillsCompleted && student.courseRegistrationCompleted)) {
+      return res.status(403).json({ error: 'student not egilible for device' })
+    }
+
+    const deviceData = {
+      device_distributed_by: user.hyEmail,
+      deviceSerial: deviceId,
+      deviceGivenAt: new Date(),
+    }
+
+    await student.update({
+      ...deviceData,
+    })
+
+    return res.json(deviceData)
+  } catch (e) {
+    console.error(e)
+    return res.status(500).json({ error: 'error' })
+  }
 }
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await db.user.findAll({
-      attributes: ['name', 'hyEmail', 'studentNumber', 'eligible', 'digiSkillsCompleted', 'deviceGivenAt', 'deviceSerial', 'device_distributed_by', 'id', 'staff', 'distributor'],
-    })
+    const users = await db.user.findAll()
     res.json(users)
   } catch (e) {
     console.error(e)
@@ -34,7 +64,6 @@ const toggleStaff = async (req, res) => {
       where: {
         id,
       },
-      attributes: ['name', 'hyEmail', 'studentNumber', 'eligible', 'digiSkillsCompleted', 'deviceGivenAt', 'deviceSerial', 'device_distributed_by', 'id', 'staff', 'distributor'],
     })
 
     if (!user) return res.status(404).json({ error: 'user not found' })
@@ -57,7 +86,6 @@ const toggleDistributor = async (req, res) => {
       where: {
         id,
       },
-      attributes: ['name', 'hyEmail', 'studentNumber', 'eligible', 'digiSkillsCompleted', 'deviceGivenAt', 'deviceSerial', 'device_distributed_by', 'id', 'staff', 'distributor'],
     })
 
     if (!user) return res.status(404).json({ error: 'user not found' })

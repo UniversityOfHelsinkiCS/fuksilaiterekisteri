@@ -3,13 +3,18 @@ const db = require('@models')
 const getStudent = async (req, res) => {
   const { studentNumber } = req.params
 
-  const student = await db.user.findOne({ where: { studentNumber } })
+  const student = await db.user.findOne({ where: { studentNumber }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
   if (!student) return res.sendStatus(404)
 
   const response = {
     studentNumber: student.studentNumber,
     name: student.name,
     dateOfBirth: student.dateOfBirth,
+    eligible: student.eligible,
+    digiSkillsCompleted: student.digiSkillsCompleted,
+    courseRegistrationCompleted: student.courseRegistrationCompleted,
+    wantsDevice: student.wantsDevice,
+    studyPrograms: student.studyPrograms,
   }
 
   return res.send(response)
@@ -20,7 +25,7 @@ const markStudentEligible = async (req, res) => {
     const { studentNumber } = req.params
     if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
 
-    const student = await db.user.findOne({ where: { studentNumber }, attributes: ['name', 'hyEmail', 'studentNumber', 'eligible', 'digiSkillsCompleted', 'deviceGivenAt', 'deviceSerial', 'device_distributed_by', 'id', 'staff', 'distributor'] })
+    const student = await db.user.findOne({ where: { studentNumber } })
     if (!student) return res.status(404).json({ error: 'student not found' })
 
     await student.update({ eligible: true })

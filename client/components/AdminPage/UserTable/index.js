@@ -63,6 +63,16 @@ const UserTable = ({ users }) => {
       getRowVal: ({ digiSkillsCompleted }) => boolToString(digiSkillsCompleted),
     },
     {
+      key: 'enrolled',
+      title: 'Has enrolled',
+      getRowVal: ({ courseRegistrationCompleted }) => boolToString(courseRegistrationCompleted),
+    },
+    {
+      key: 'wants_device',
+      title: 'Wants device',
+      getRowVal: ({ wantsDevice }) => boolToString(wantsDevice),
+    },
+    {
       key: 'device_given',
       title: 'Device given',
       getRowVal: ({ deviceGivenAt }) => boolToString(!!deviceGivenAt),

@@ -3,10 +3,10 @@ import callBuilder from '../apiConnection'
 /**
  * Actions and reducers are in the same file for readability
  */
-export const claimDeviceAction = ({ studentNumber }) => {
+export const claimDeviceAction = ({ studentNumber, deviceId }) => {
   const route = '/claim_device'
   const prefix = 'NEW_DEVICE_CLAIM'
-  return callBuilder(route, prefix, 'post', { studentNumber })
+  return callBuilder(route, prefix, 'post', { studentNumber, deviceId })
 }
 
 // Reducer
