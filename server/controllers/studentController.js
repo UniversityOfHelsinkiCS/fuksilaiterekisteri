@@ -18,7 +18,7 @@ const getStudent = async (req, res) => {
       name: s.name,
       code: s.code,
     })),
-    deviceGivenAt: student.deviceGivenAt
+    deviceGivenAt: student.deviceGivenAt,
   }
 
   return res.send(response)
