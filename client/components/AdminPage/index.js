@@ -11,10 +11,5 @@ export default () => {
     dispatch(getUsersAction())
   }, [])
 
-  return (
-    <div>
-      <h1>Hei, olet admin</h1>
-      <UserTable users={users} />
-    </div>
-  )
+  return <UserTable users={users} />
 }

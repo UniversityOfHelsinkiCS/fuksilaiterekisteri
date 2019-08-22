@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Button } from 'semantic-ui-react'
+import { Button, Input, Segment, Header } from 'semantic-ui-react'
 import {
   markStudentEligible as markStudentEligibleAction,
   toggleUserStaff as toggleUserStaffAction,
@@ -10,6 +10,7 @@ import SortedTable from '../../SortedTable'
 
 const UserTable = ({ users }) => {
   const dispatch = useDispatch()
+  const [searchQuery, setSearchQuery] = useState('')
   const valOrEmpty = val => (val !== null ? val : '-')
   const markStudentEligible = (studentNumber, name) => {
     const res = window.confirm(`Are you sure you want to mark ${name} eligible?`)
@@ -18,6 +19,20 @@ const UserTable = ({ users }) => {
   const toggleUserStaff = id => dispatch(toggleUserStaffAction(id))
   const toggleUserDistributor = id => dispatch(toggleUserDistributorAction(id))
   const boolToString = bool => (bool ? 'Kyllä' : 'Ei')
+  const handleChange = (e, { value }) => setSearchQuery(value)
+  const getFilteredData = (data) => {
+    const res = []
+    data.forEach((obj) => {
+      let flag = false
+      Object.values(obj).forEach(val => {
+        if (!searchQuery || (val && String(val).trim().toLowerCase().includes(searchQuery.trim().toLowerCase()))) {
+          flag = true
+        }
+      })
+      if (flag) res.push(obj)
+    })
+    return res
+  }
 
   const headers = [
     {
@@ -90,14 +105,18 @@ const UserTable = ({ users }) => {
     },
   ]
 
-  console.log('users', users)
-
   return (
-    <SortedTable
-      getRowKey={() => Math.random() * 1000000}
-      columns={headers}
-      data={users}
-    />
+    <div>
+      <Segment>
+        <Header as='h2'>Search</Header>
+        <Input type='text' onChange={handleChange} name='search' />
+      </Segment>
+      <SortedTable
+        getRowKey={({ id }) => id}
+        columns={headers}
+        data={getFilteredData(users)}
+      />
+    </div>
   )
 }
 
