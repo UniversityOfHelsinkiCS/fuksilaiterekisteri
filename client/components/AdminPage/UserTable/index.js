@@ -100,7 +100,7 @@ const UserTable = ({ users }) => {
     {
       key: 'mark_eligible',
       title: '',
-      getRowContent: ({ studentNumber, eligible, name }) => <Button disabled={eligible} onClick={() => markStudentEligible(studentNumber, name)} color="blue">Mark eligible</Button>,
+      getRowContent: ({ studentNumber, eligible, name }) => <Button disabled={eligible || !studentNumber} onClick={() => markStudentEligible(studentNumber, name)} color="blue">Mark eligible</Button>,
       disabled: true,
     },
     {

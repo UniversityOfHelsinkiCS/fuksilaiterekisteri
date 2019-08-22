@@ -79,7 +79,7 @@ const DistributorPage = () => {
 
   useEffect(() => {
     if (student && deviceIdInput.current) deviceIdInput.current.children[0].children[0].focus()
-  }, [deviceIdInput.current, student])
+  }, [student])
 
   const changeStudentNumber = ({ target }) => {
     const { value } = target
