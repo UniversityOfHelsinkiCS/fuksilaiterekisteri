@@ -6,6 +6,7 @@ const Terms = () => (
     <Segment.Group>
       <Segment>LAINAUSSÄÄNNÖT TÄHÄN!</Segment>
       <Segment>ALSO IN ENGLISH!</Segment>
+      <Segment>KANSKE OCKSÅ PÅ SVENSKA</Segment>
     </Segment.Group>
   </Segment>
 )
