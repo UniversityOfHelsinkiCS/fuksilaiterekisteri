@@ -9,7 +9,7 @@ export default () => {
     <div>
       <h1>
         Hei, sinulla ei ole oikeuksia fuksilaite-palveluun. Ota yhteyttä
-        grp-toska@cs.helsinki.fi jos sinulla kuuluisi olla oikeudet.
+        grp-toska@helsinki.fi jos sinulla kuuluisi olla oikeudet.
       </h1>
       {greetings.join(' ')}
       <br />
