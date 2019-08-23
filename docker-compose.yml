@@ -10,6 +10,7 @@ services:
       - STUDENT_API_URL=https://oodikone.cs.helsinki.fi/fukrek/mock
       - STUDENT_API_TOKEN=test
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+      - EMAIL_ENABLED=false
     volumes:
       - ./:/usr/src/app
     ports:
