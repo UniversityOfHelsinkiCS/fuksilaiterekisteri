@@ -20,9 +20,7 @@ module.exports = (env, argv) => {
     }
     : {}
 
-  const additionalEntries = mode === 'production'
-    ? []
-    : ['webpack-hot-middleware/client?http://localhost:8000']
+  const additionalEntries = mode === 'production' ? [] : ['webpack-hot-middleware/client?http://localhost:8000']
 
   const BASE_PATH = process.env.BASE_PATH || '/'
 
@@ -81,6 +79,8 @@ module.exports = (env, argv) => {
         inject: false,
         template: htmlTemplate,
         appMountId: 'root',
+        headHtmlSnippet:
+          '<script> document.addEventListener("keydown", function(event) { if( event.keyCode == 13 || event.keyCode == 17 || event.keyCode == 74 ) event.preventDefault(); }); </script>',
       }),
       // Extract css
       new MiniCssExtractPlugin({
