@@ -81,8 +81,8 @@ module.exports = (env, argv) => {
         appMountId: 'root',
         headHtmlSnippet: [
           '<script> document.addEventListener("keydown", function(event) { if( event.keyCode == 13 || event.keyCode == 17 || event.keyCode == 74 ) event.preventDefault(); }); </script>',
-          '<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />'
-        ].join('\n')
+          '<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />',
+        ].join('\n'),
       }),
       // Extract css
       new MiniCssExtractPlugin({
