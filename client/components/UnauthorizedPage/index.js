@@ -1,24 +1,10 @@
-import React, { useState } from 'react'
-import { Button } from 'semantic-ui-react'
+import React from 'react'
 
-export default () => {
-  const [greetings, setGreetings] = useState(['Hello'])
-
-  const nextGreeting = `${greetings[greetings.length - 1]}!`
-  return (
-    <div>
-      <h1>
+export default () => (
+  <div>
+    <h1>
         Hei, sinulla ei ole oikeuksia fuksilaite-palveluun. Ota yhteyttä
         grp-toska@helsinki.fi jos sinulla kuuluisi olla oikeudet.
-      </h1>
-      {greetings.join(' ')}
-      <br />
-      <Button
-        color="purple"
-        onClick={() => setGreetings([...greetings, nextGreeting])}
-      >
-        {nextGreeting}
-      </Button>
-    </div>
-  )
-}
+    </h1>
+  </div>
+)

@@ -40,20 +40,29 @@ const RequestDeviceForm = () => {
   const buttonDisabled = !emailValid // Always disable if not valid
   return (
     <div>
+      <h1 style={{ color: 'red' }}>PALVELU EI OLE VIELÄ KÄYTÖSSÄ, EIVÄTKÄ ILMOITTAUTUMISET OLE PYSYVIÄ. TULE SIVULLE UUDESTAAN MA 26.8 KLO 12.00 JÄLKEEN.</h1>
       <Segment>
-        <p>{`Hei ${user.name}`}</p>
+        <p>{`Hei ${user.name},`}</p>
         <p>Olet oikeutettu fuksilaitteeseen, anna ei-helsinki.fi sähköpostisi</p>
-        <Input error={inputRed} label="Kotiemail" placeholder="@gmail.com" onChange={changeEmail} />
+        <p>{`Hello ${user.name},`}</p>
+        <p>You’re entitled to a fresher device. Please type in your non-helsinki.fi email to ensure you’ll receive pickup and other device related information.</p>
+        <Input fluid error={inputRed} label="Email" placeholder="@gmail.com" onChange={changeEmail} />
         <br />
         <br />
-        <Button color="purple" onClick={handleRequestClick} disabled={buttonDisabled}>
-          Haluan laitteen
-        </Button>
-        <br />
-        <br />
-        <Button onClick={handleNoEmailRequestClick} color="red">
-          Haluan laitteen, mutta en halua antaa toista sähköpostiosoitettani
-        </Button>
+        <div style={{ display: 'flex' }}>
+          <Button color="purple" onClick={handleRequestClick} disabled={buttonDisabled}>
+            Haluan laitteen
+            <br />
+            <br />
+            I want a device
+          </Button>
+          <Button onClick={handleNoEmailRequestClick} color="red">
+            Haluan laitteen, mutta en halua antaa toista sähköpostiosoitettani
+            <br />
+            <br />
+            I want a device, but I don’t want to give out my email
+          </Button>
+        </div>
       </Segment>
     </div>
   )
