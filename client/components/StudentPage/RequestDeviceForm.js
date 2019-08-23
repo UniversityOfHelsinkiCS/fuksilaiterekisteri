@@ -40,7 +40,7 @@ const RequestDeviceForm = () => {
   const buttonDisabled = !emailValid // Always disable if not valid
   return (
     <div>
-      <h1 style={{ color: 'red' }}>PALVELU EI OLE VIELÄ KÄYTÖSSÄ, EIVÄTKÄ ILMOITTAUTUMISET OLE PYSYVIÄ. TULE SIVULLE UUDESTAAN MA 26.8 KLO 12.00 JÄLKEEN.</h1>
+      <h1 style={{ color: 'red' }}>PALVELU EI OLE VIELÄ KÄYTÖSSÄ, EIVÄTKÄ ILMOITTAUTUMISET OLE PYSYVIÄ. TULE SIVULLE UUDESTAAN MA 26.8 KLO 12.00 JÄLKEEN. <br /><br /> SERVICE IS NOT IN USE. PLEASE RETURN ON MON 26th AFTER NOON.</h1>
       <Segment>
         <p>{`Hei ${user.name},`}</p>
         <p>Olet oikeutettu fuksilaitteeseen, anna ei-helsinki.fi sähköpostisi</p>
