@@ -26,12 +26,10 @@ const getStudyRightsFor = async (studentNumber) => {
   return res.data
 }
 
-const getDigiSkillsFor = async (studentNumber) => {
-  return (await Promise.all([
-    userApi.get(`/students/${studentNumber}/courses/DIGI-100A`),
-    userApi.get(`/students/${studentNumber}/courses/DIGI-400A`)
-  ])).map(res => res.data).includes(true)
-}
+const getDigiSkillsFor = async studentNumber => (await Promise.all([
+  userApi.get(`/students/${studentNumber}/courses/DIGI-100A`),
+  userApi.get(`/students/${studentNumber}/courses/DIGI-400A`),
+])).map(res => res.data).includes(true)
 
 const getStudytrackEnrollmentStatusFor = async (studentNumber, studytrackId) => {
   const res = await userApi.get(`/students/${studentNumber}/enrolled/${studytrackId}`)
