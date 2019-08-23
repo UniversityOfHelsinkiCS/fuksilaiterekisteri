@@ -72,6 +72,7 @@ module.exports = (env, argv) => {
       new webpack.DefinePlugin({
         'process.env.BASE_PATH': JSON.stringify(BASE_PATH),
         'process.env.BUILT_AT': JSON.stringify(new Date().toISOString()),
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       }),
       new HtmlWebpackPlugin({
         title: 'Fuksilaite',

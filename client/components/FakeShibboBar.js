@@ -8,8 +8,10 @@ import {
   possibleUsers, getHeaders, setHeaders, clearHeaders,
 } from 'Utilities/fakeShibboleth'
 import { getUserAction } from 'Utilities/redux/userReducer'
+import { inProduction } from 'Utilities/common'
 
 const FakeShibboBar = ({ children, getUser }) => {
+  if (inProduction) return children
   const [sidebarVisible, setSidebarVisible] = useState(false)
   const [uid, setUid] = useState(getHeaders().uid)
 

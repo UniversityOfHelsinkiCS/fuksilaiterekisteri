@@ -38,7 +38,7 @@ const requestDevice = async (req, res) => {
       .end()
   }
 
-  if (!validateEmail(req.body.email)) {
+  if (req.body.email !== null && !validateEmail(req.body.email)) {
     return res
       .status(400)
       .json({ error: 'Invalid email.' })

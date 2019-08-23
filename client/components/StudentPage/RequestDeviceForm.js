@@ -29,6 +29,13 @@ const RequestDeviceForm = () => {
     dispatch(deviceRequestAction({ email }))
   }
 
+  const handleNoEmailRequestClick = () => {
+    const res = window.confirm('Oletko varma? Are you sure?')
+    if (res) {
+      dispatch(deviceRequestAction({ email: null }))
+    }
+  }
+
   const inputRed = !emailValid && email.includes('@') && /\.fi|\.com/.test(email) // Only color input in certain cases
   const buttonDisabled = !emailValid // Always disable if not valid
   return (
@@ -41,6 +48,11 @@ const RequestDeviceForm = () => {
         <br />
         <Button color="purple" onClick={handleRequestClick} disabled={buttonDisabled}>
           Haluan laitteen
+        </Button>
+        <br />
+        <br />
+        <Button onClick={handleNoEmailRequestClick} color="red">
+          Haluan laitteen, mutta en halua antaa toista sähköpostiosoitettani
         </Button>
       </Segment>
     </div>
