@@ -11,6 +11,25 @@ const getUser = (req, res) => {
   res.send(req.user)
 }
 
+const getLogoutUrl = async (req, res) => {
+  try {
+    const logoutUrl = req.headers.shib_logout_url
+    const { returnUrl } = req.body
+    if (logoutUrl) {
+      return res
+        .status(200)
+        .send({ logoutUrl: `${logoutUrl}?return=${returnUrl}` })
+        .end()
+    }
+    return res
+      .status(200)
+      .send({ logoutUrl: returnUrl })
+      .end()
+  } catch (err) {
+    return res.status(500).json({ message: 'Error with logout', err })
+  }
+}
+
 const requestDevice = async (req, res) => {
   if (!req.user.eligible) {
     return res
@@ -44,7 +63,10 @@ const requestDevice = async (req, res) => {
 
 const claimDevice = async (req, res) => {
   try {
-    const { user, body: { studentNumber, deviceId } } = req
+    const {
+      user,
+      body: { studentNumber, deviceId },
+    } = req
 
     if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
     if (!deviceId) return res.status(400).json({ error: 'device id missing' })
@@ -134,6 +156,7 @@ const toggleDistributor = async (req, res) => {
 
 module.exports = {
   getUser,
+  getLogoutUrl,
   requestDevice,
   claimDevice,
   getAllUsers,
