@@ -43,15 +43,17 @@ const isEligible = async (studentNumber) => {
   const maxTime = new Date(max).getTime()
   let hasNewStudyright = false
   let hasPreviousStudyright = false
-  mlu.elements.forEach(({ start_date }) => {
-    const startTime = new Date(start_date).getTime()
-    if (startTime > minTime && startTime < maxTime) {
-      hasPreviousStudyright = true
-    }
-    if (startTime >= maxTime) {
-      hasNewStudyright = true
-    }
-  })
+  if (mlu) {
+    mlu.elements.forEach(({ start_date }) => {
+      const startTime = new Date(start_date).getTime()
+      if (startTime > minTime && startTime < maxTime) {
+        hasPreviousStudyright = true
+      }
+      if (startTime >= maxTime) {
+        hasNewStudyright = true
+      }
+    })
+  }
   return {
     studyrights,
     eligible: (!hasPreviousStudyright && hasNewStudyright) || (!inProduction && studentNumber === 'fuksi'),
@@ -61,13 +63,13 @@ const isEligible = async (studentNumber) => {
 const getStudentStatus = async (studentNumber, studyrights) => {
   try {
     const digiSkills = await getDigiSkillsFor(studentNumber)
-
-    const enrollmentPromises = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50').elements.map(({ code }) => (
+    const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
+    const enrollmentPromises = mlu ? mlu.elements.map(({ code }) => (
       new Promise(async (resolve) => {
         const enrolled = await getStudytrackEnrollmentStatusFor(studentNumber, code)
         resolve(enrolled)
       })
-    ))
+    )) : []
 
     const hasEnrollments = (await Promise.all(enrollmentPromises)).filter(e => e).length > 0
 
