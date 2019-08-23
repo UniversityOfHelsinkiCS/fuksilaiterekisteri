@@ -1,8 +1,7 @@
 import React from 'react'
-import { images } from 'Utilities/common'
 
 export default () => (
   <div className="navbar">
-    <img src={images.toska_color} style={{ height: '100%' }} alt="tosca" />
+    <a href="https://github.com/UniversityOfHelsinkiCS/tietosuojaselosteet/blob/master/kurssikirjanpidon_tietosuojaseloste.pdf">Tietosuojaseloste</a>
   </div>
 )

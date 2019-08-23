@@ -1,5 +1,10 @@
 import React from 'react'
 import { Segment } from 'semantic-ui-react'
 
-const ClaimingInfo = () => <Segment>You can has a läppäri. Please message us multiple times for further info.</Segment>
+const ClaimingInfo = () => (
+  <Segment>
+    <div>Olet suorittanut fuksilaitteeseen vaadittavat tehtävät. Saat tiedot laitteiden jakelusta sähköpostitse.</div>
+    <div>You have completed the tasks required for fuksi device. Info about device distribution will be sent to you by email.</div>
+  </Segment>
+)
 export default ClaimingInfo

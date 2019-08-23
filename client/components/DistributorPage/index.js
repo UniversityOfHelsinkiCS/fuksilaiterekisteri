@@ -131,12 +131,12 @@ const DistributorPage = () => {
   return (
     <Segment>
       <Form>
-        <Header as="h1">Hei, jakelija. Olet jakamassa laitteita opiskelijoille</Header>
+        <Header as="h1">Matemaattis-luonnontieteellisen tiedekunnan fuksilaitteiden jakelu</Header>
         <Form.Group inline>
           <Ref innerRef={handleStudentRef}>
             <Form.Input
               error={inputRed}
-              label="Studentnumber"
+              label="Opiskelijanumero"
               placeholder="0173588391"
               onChange={changeStudentNumber}
               value={studentNumber}
