@@ -1,4 +1,5 @@
 const db = require('@models')
+const completionChecker = require('@util/completionChecker')
 
 const validateEmail = (checkEmail) => {
   const validationRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
@@ -48,6 +49,7 @@ const requestDevice = async (req, res) => {
   try {
     const updatedUser = await req.user.update({ wantsDevice: true, personalEmail: req.body.email })
 
+    completionChecker(updatedUser)
     return res
       .status(200)
       .json({ wantsDevice: updatedUser.wantsDevice, personalEmail: updatedUser.personalEmail })
