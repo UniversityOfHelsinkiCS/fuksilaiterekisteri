@@ -40,10 +40,7 @@ export default (state = { data: undefined }, action) => {
     case 'NEW_DEVICE_REQUEST_SUCCESS':
       return {
         ...state,
-        data: {
-          ...state.data,
-          ...action.response,
-        },
+        data: action.response,
         pending: false,
         error: false,
       }

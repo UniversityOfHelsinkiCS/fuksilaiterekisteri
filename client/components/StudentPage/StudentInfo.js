@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { Segment, Header } from 'semantic-ui-react'
 
 const getOs = (code) => {
-  const cubbli = ['KH50_002', 'KH50_005']
+  const cubbli = ['KH50_002', 'KH50_005', 'KH50_008']
 
   if (cubbli.includes(code)) {
     return <p style={{ marginLeft: '10px', fontWeight: 'bold', color: 'orange' }}>Cubbli</p>

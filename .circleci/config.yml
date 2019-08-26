@@ -1,17 +1,20 @@
-version: 2
-jobs:
-  build:
-    machine:
-      # specify the version you desire here
-      image: ubuntu-1604:201903-01
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
-      - run: docker build . -t toska/fuksilaiterekisteri:production --build-arg BASE_PATH=/fuksilaite/
-
-      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
-
-      - run: docker push toska/fuksilaiterekisteri:production
+version: 2.1
+orbs:
+  dockerhub: circleci/docker@0.5.1
+workflows:
+  deploy:
+    jobs:
+      - dockerhub/publish:
+          image: toska/$CIRCLE_PROJECT_REPONAME
+          tag: 'staging'
+          extra_build_args: '--build-arg BASE_PATH=/fuksilaite/'
+          filters:
+            branches:
+              only: trunk
+      - dockerhub/publish:
+          image: toska/$CIRCLE_PROJECT_REPONAME
+          tag: 'production'
+          extra_build_args: '--build-arg BASE_PATH=/fuksilaite/'
+          filters:
+            branches:
+              only: master

@@ -4,6 +4,7 @@ const studentController = require('@controllers/studentController')
 const authenticationMiddleware = require('@util/authenticationMiddleware')
 const { checkAdmin } = require('@util/adminMiddleware')
 const { checkDistributor } = require('@util/distributorMiddleware')
+const { checkStaff } = require('@util/staffMiddleware')
 
 const router = Router()
 
@@ -20,12 +21,16 @@ router.get('/ping', (req, res) => res.send('pong'))
 router.post('/login', userController.getUser)
 router.post('/request_device', userController.requestDevice)
 router.post('/claim_device', checkDistributor, userController.claimDevice)
+
 router.get('/user', checkAdmin, userController.getAllUsers)
 router.post('/user/:id/staff', checkAdmin, userController.toggleStaff)
 router.post('/user/:id/distributor', checkAdmin, userController.toggleDistributor)
 
 router.get('/student/:studentNumber', checkDistributor, studentController.getStudent)
 router.post('/student/:studentNumber/eligible', checkAdmin, studentController.markStudentEligible)
+router.post('/student/:studentNumber/status', checkStaff, studentController.updateStudentStatus)
+
+router.get('/staff/students', checkStaff, studentController.getStudentsForStaff)
 
 router.use('*', (req, res) => res.sendStatus(404))
 
