@@ -11,12 +11,13 @@ router.get('/', (req, res) => {
   res.send('root')
 })
 
+router.post('/logout', userController.getLogoutUrl)
+
 router.use('/', authenticationMiddleware)
 
 router.get('/ping', (req, res) => res.send('pong'))
 
 router.post('/login', userController.getUser)
-router.post('/logout', userController.getLogoutUrl)
 router.post('/request_device', userController.requestDevice)
 router.post('/claim_device', checkDistributor, userController.claimDevice)
 router.get('/user', checkAdmin, userController.getAllUsers)
