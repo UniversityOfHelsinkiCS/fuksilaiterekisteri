@@ -8,11 +8,14 @@ import 'Assets/custom.css'
 import store from 'Utilities/store'
 import { basePath } from 'Utilities/common'
 import App from 'Components/App'
+import ErrorBoundary from 'Components/ErrorBoundary'
 
 const refresh = () => render(
   <Provider store={store}>
     <BrowserRouter basename={basePath}>
-      <App />
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
     </BrowserRouter>
   </Provider>,
   document.getElementById('root'),
