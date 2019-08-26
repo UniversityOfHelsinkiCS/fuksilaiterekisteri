@@ -6,7 +6,12 @@ const Terms = () => (
     Kannettavan tietokoneen tekniset tiedot ovat seuraavat:
     <ul>
       <li>Lenovo ThinkPad T490</li>
-      <li>14{`"`} Full HD -näyttö (resoluutio 1920 x 1080), WLAN, Bluetooth, web-kamera</li>
+      <li>
+14
+        {'"'}
+        {' '}
+Full HD -näyttö (resoluutio 1920 x 1080), WLAN, Bluetooth, web-kamera
+      </li>
       <li>Intel Core i5-8265U -prosessori, 16 GB:n keskusmuisti, 512 GB:n SSD-levy</li>
       <li>4 vuoden on-site-takuu/guarantee</li>
       <li>Mitat/sizes (L x S x K): 329 mm x 227 mm x 18,9 mm</li>
