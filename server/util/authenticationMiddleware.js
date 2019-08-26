@@ -70,14 +70,12 @@ const authentication = async (req, res, next) => {
     return next()
   }
 
-  const studentNumber = schacPersonalUniqueCode
-    ? schacPersonalUniqueCode.split(':')[6]
-    : null
+  const studentNumber = schacPersonalUniqueCode ? schacPersonalUniqueCode.split(':')[6] : null
 
   const defaultParams = {
     userId: uid,
     hyEmail: mail,
-    name: `${givenName} ${sn}`,
+    name: Buffer.from(`${givenName} ${sn}`, 'binary').toString('utf8'),
     dateOfBirth: schacDateOfBirth,
     staff: false,
     distributor: false || (!!(uid === 'jakelija' && !inProduction)),
@@ -96,10 +94,7 @@ const authentication = async (req, res, next) => {
 
   try {
     const { studyrights, eligible } = await isEligible(studentNumber)
-    const { digiSkills, hasEnrollments } = await getStudentStatus(
-      studentNumber,
-      studyrights,
-    )
+    const { digiSkills, hasEnrollments } = await getStudentStatus(studentNumber, studyrights)
 
     const newUser = await db.user.create({
       ...defaultParams,
@@ -113,11 +108,7 @@ const authentication = async (req, res, next) => {
     req.user = newUser
     return next()
   } catch (e) {
-    console.log(
-      'Creating student failed',
-      e.response.status,
-      e.response.statusText,
-    )
+    console.log('Creating student failed', e.response.status, e.response.statusText)
     return res.status(500)
   }
 }
