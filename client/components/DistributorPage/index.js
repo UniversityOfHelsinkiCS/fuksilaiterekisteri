@@ -15,7 +15,7 @@ const formatDateOfBirth = (dateOfBirth) => {
 }
 
 const getOs = (code) => {
-  const cubbli = ['KH50_002', 'KH50_005']
+  const cubbli = ['KH50_002', 'KH50_005', 'KH50_008']
 
   if (cubbli.includes(code)) {
     return <p style={{ marginLeft: '10px', fontWeight: 'bold', color: 'orange' }}>Cubbli</p>
@@ -27,22 +27,16 @@ const StudentInfo = ({ student }) => {
   if (!student) return null
   return (
     <div>
-      <div>
-        {`Etunimi: ${student.name}`}
-      </div>
-      <div>
-        {`Syntymäaika: ${formatDateOfBirth(student.dateOfBirth)}`}
-      </div>
+      <div>{`Etunimi: ${student.name}`}</div>
+      <div>{`Syntymäaika: ${formatDateOfBirth(student.dateOfBirth)}`}</div>
       <div style={{ marginTop: '10px', marginBottom: '10px' }}>
         <h4>Opinto-ohjelma(t):</h4>
-        {
-          student.studyPrograms.map(({ code, name }) => (
-            <div key={code} style={{ display: 'flex' }}>
-              <p>{`- ${name}, ${code}`}</p>
-              { getOs(code) }
-            </div>
-          ))
-        }
+        {student.studyPrograms.map(({ code, name }) => (
+          <div key={code} style={{ display: 'flex' }}>
+            <p>{`- ${name}, ${code}`}</p>
+            {getOs(code)}
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -134,22 +128,13 @@ const DistributorPage = () => {
         <Header as="h1">Matemaattis-luonnontieteellisen tiedekunnan fuksilaitteiden jakelu</Header>
         <Form.Group inline>
           <Ref innerRef={handleStudentRef}>
-            <Form.Input
-              error={inputRed}
-              label="Opiskelijanumero"
-              placeholder="0173588391"
-              onChange={changeStudentNumber}
-              value={studentNumber}
-            />
+            <Form.Input error={inputRed} label="Opiskelijanumero" placeholder="0173588391" onChange={changeStudentNumber} value={studentNumber} />
           </Ref>
           <Form.Button onClick={handleStudentClick}>Hae</Form.Button>
         </Form.Group>
       </Form>
-      { renderStudentData() }
-      {
-        !!deviceClaim.error && student
-        && <p>Laitteen antaminen epäonnistui</p>
-      }
+      {renderStudentData()}
+      {!!deviceClaim.error && student && <p>Laitteen antaminen epäonnistui</p>}
     </Segment>
   )
 }
