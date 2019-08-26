@@ -114,8 +114,8 @@ const updateEligibleStudentStatuses = async () => {
         const { digiSkills, hasEnrollments } = await getStudentStatus(s.studentNumber, studyrights)
 
         const updatedStudent = await s.update({
-          digiSkillsCompleted: digiSkills,
-          courseRegistrationCompleted: hasEnrollments,
+          digiSkillsCompleted: digiSkills || s.digiSkillsCompleted,
+          courseRegistrationCompleted: hasEnrollments || s.courseRegistrationCompleted,
         })
 
         await completionChecker(updatedStudent)
