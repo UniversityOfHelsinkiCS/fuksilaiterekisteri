@@ -65,41 +65,36 @@ const isEligible = async (studentNumber) => {
 }
 
 const getStudentStatus = async (studentNumber, studyrights) => {
-  try {
-    const digiSkills = await getDigiSkillsFor(studentNumber)
-    const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
-    const studyProgramCodes = (await db.studyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
+  const digiSkills = await getDigiSkillsFor(studentNumber)
+  const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
+  const studyProgramCodes = (await db.studyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
 
-    const enrollmentPromises = mlu ? mlu.elements.map(({ code }) => (
-      new Promise(async (resolve) => {
-        let enrolled
-        if (code === 'KH50_008') {
-          // Students in Bachelor’s Programme in Science should be enrolled to any course in H50
-          enrolled = (await Promise.all(studyProgramCodes.map(c => (
-            new Promise(async codeRes => codeRes(await getStudytrackEnrollmentStatusFor(studentNumber, c)))
-          )))).includes(true)
-        } else if (code === 'KH50_004') {
-          // Teacher students should be enrolled to their own or math programmes' courses
-          enrolled = (await Promise.all(['KH50_004', 'KH50_001'].map(c => (
-            new Promise(async codeRes => codeRes(await getStudytrackEnrollmentStatusFor(studentNumber, c)))
-          )))).includes(true)
-        } else {
-          // Other students should be enrolled to their own programme's courses
-          enrolled = await getStudytrackEnrollmentStatusFor(studentNumber, code)
-        }
-        resolve(enrolled)
-      })
-    )) : []
+  const enrollmentPromises = mlu ? mlu.elements.map(({ code }) => (
+    new Promise(async (resolve) => {
+      let enrolled
+      if (code === 'KH50_008') {
+        // Students in Bachelor’s Programme in Science should be enrolled to any course in H50
+        enrolled = (await Promise.all(studyProgramCodes.map(c => (
+          new Promise(async codeRes => codeRes(await getStudytrackEnrollmentStatusFor(studentNumber, c)))
+        )))).includes(true)
+      } else if (code === 'KH50_004') {
+        // Teacher students should be enrolled to their own or math programmes' courses
+        enrolled = (await Promise.all(['KH50_004', 'KH50_001'].map(c => (
+          new Promise(async codeRes => codeRes(await getStudytrackEnrollmentStatusFor(studentNumber, c)))
+        )))).includes(true)
+      } else {
+        // Other students should be enrolled to their own programme's courses
+        enrolled = await getStudytrackEnrollmentStatusFor(studentNumber, code)
+      }
+      resolve(enrolled)
+    })
+  )) : []
 
-    const hasEnrollments = (await Promise.all(enrollmentPromises)).filter(e => e).length > 0
+  const hasEnrollments = (await Promise.all(enrollmentPromises)).filter(e => e).length > 0
 
-    return {
-      digiSkills,
-      hasEnrollments,
-    }
-  } catch (e) {
-    console.log(`Failed updating student ${studentNumber}`, e)
-    return e
+  return {
+    digiSkills,
+    hasEnrollments,
   }
 }
 
