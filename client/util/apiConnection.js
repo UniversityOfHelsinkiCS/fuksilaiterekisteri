@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { getHeaders } from 'Utilities/fakeShibboleth'
-import { basePath } from 'Utilities/common'
+import { basePath, inProduction } from 'Utilities/common'
 
 /**
  * ApiConnection simplifies redux usage
@@ -9,7 +9,7 @@ import { basePath } from 'Utilities/common'
 const getAxios = axios.create({ baseURL: `${basePath}api` })
 
 const callApi = async (url, method = 'get', data) => {
-  const headers = { ...getHeaders() }
+  const headers = { ...(!inProduction ? getHeaders() : {}) }
   return getAxios({
     method,
     url,
