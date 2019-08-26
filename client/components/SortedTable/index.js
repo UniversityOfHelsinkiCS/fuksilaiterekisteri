@@ -67,7 +67,7 @@ const SortableTable = (props) => {
             {columns.filter(c => !c.parent).map(c => (
               <Table.Cell
                 key={c.key}
-                content={c.getRowContent ? c.getRowContent(row) : c.getRowVal(row)}
+                content={c.getRowContent ? (c.getRowContent(row) || '-') : (c.getRowVal(row) || '-')}
                 {...c.cellProps}
                 {...c.getCellProps && c.getCellProps(row)}
               />

@@ -118,7 +118,7 @@ const UserTable = ({ users }) => {
   ]
 
   return (
-    <div>
+    <div style={{ maxWidth: '100%' }}>
       <Segment>
         <Header as="h2">Search</Header>
         <Input type="text" onChange={handleChange} name="search" />

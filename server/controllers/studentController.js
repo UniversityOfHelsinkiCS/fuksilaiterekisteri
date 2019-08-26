@@ -1,4 +1,5 @@
 const db = require('@models')
+const { Op } = require('sequelize')
 
 const getStudent = async (req, res) => {
   const { studentNumber } = req.params
@@ -41,7 +42,55 @@ const markStudentEligible = async (req, res) => {
   }
 }
 
+const updateStudentStatus = async (req, res) => {
+  try {
+    const { studentNumber } = req.params
+    const { digiSkills, enrolled } = req.body
+
+    if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
+
+    const student = await db.user.findOne({ where: { studentNumber }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
+    if (!student) return res.status(404).json({ error: 'student not found' })
+
+    await student.update({
+      digiSkillsCompleted: !!digiSkills || student.digiSkillsCompleted,
+      courseRegistrationCompleted: !!enrolled || student.courseRegistrationCompleted,
+    })
+
+    return res.json(student)
+  } catch (e) {
+    console.error(e)
+    return res.status(500).json({ error: 'error' })
+  }
+}
+
+const getStudentsForStaff = async (req, res) => {
+  try {
+    const { user } = req
+
+    const userStudyProgramCodes = user.studyPrograms.map(s => s.code)
+    const allStudents = await db.user.findAll({
+      where: {
+        studentNumber: {
+          [Op.ne]: null,
+        },
+        '$studyPrograms.code$': {
+          [Op.in]: userStudyProgramCodes,
+        },
+      },
+      include: [{ model: db.studyProgram, as: 'studyPrograms' }],
+    })
+
+    return res.status(200).json(allStudents)
+  } catch (e) {
+    console.error(e)
+    return res.status(500).json({ error: 'error' })
+  }
+}
+
 module.exports = {
   getStudent,
   markStudentEligible,
+  getStudentsForStaff,
+  updateStudentStatus,
 }
