@@ -52,7 +52,7 @@ const requestDevice = async (req, res) => {
     completionChecker(updatedUser)
     return res
       .status(200)
-      .json({ wantsDevice: updatedUser.wantsDevice, personalEmail: updatedUser.personalEmail })
+      .json(updatedUser)
       .end()
   } catch (error) {
     console.log('Error requesting device: ', error)
