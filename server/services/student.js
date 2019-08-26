@@ -1,6 +1,9 @@
 const axios = require('axios')
 const https = require('https')
+const { Op } = require('sequelize')
 const db = require('@models')
+const logger = require('@util/logger')
+const completionChecker = require('@util/completionChecker')
 const { STUDENT_API_URL, STUDENT_API_TOKEN, inProduction } = require('../util/common')
 
 const userApi = axios.create({
@@ -100,7 +103,39 @@ const getStudentStatus = async (studentNumber, studyrights) => {
   }
 }
 
+const updateEligibleStudentStatuses = async () => {
+  const targetStudents = await db.user.findAll({
+    where: {
+      eligible: true,
+      [Op.or]: [{ digiSkillsCompleted: false }, { courseRegistrationCompleted: false }],
+    },
+  })
+
+  let done = 0
+  await Promise.all(targetStudents.map(s => (
+    new Promise(async (res) => {
+      try {
+        const { studyrights } = await isEligible(s.studentNumber)
+        const { digiSkills, hasEnrollments } = await getStudentStatus(s.studentNumber, studyrights)
+
+        const updatedStudent = await s.update({
+          digiSkillsCompleted: digiSkills,
+          courseRegistrationCompleted: hasEnrollments,
+        })
+
+        await completionChecker(updatedStudent)
+        logger.info(`Updated student ${++done}/${targetStudents.length}`)
+        res(true)
+      } catch (e) {
+        logger.error(`Failed updating student ${s.studentNumber}`, e)
+        res(false)
+      }
+    })
+  )))
+}
+
 module.exports = {
   getStudentStatus,
   isEligible,
+  updateEligibleStudentStatuses,
 }
