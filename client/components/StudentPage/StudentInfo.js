@@ -2,6 +2,15 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { Segment, Header } from 'semantic-ui-react'
 
+const getOs = (code) => {
+  const cubbli = ['KH50_002', 'KH50_005']
+
+  if (cubbli.includes(code)) {
+    return <p style={{ marginLeft: '10px', fontWeight: 'bold', color: 'orange' }}>Cubbli</p>
+  }
+  return <p style={{ marginLeft: '10px', fontWeight: 'bold', color: 'blue' }}>Windows</p>
+}
+
 const StudentInfo = () => {
   const user = useSelector(state => state.user.data)
 
@@ -29,7 +38,12 @@ const StudentInfo = () => {
       <br />
       <div>
         <Header as="h5">Opinto-ohjelma(t) / Study Program(s):</Header>
-        {user.studyPrograms.map(sp => sp.name).join(', ')}
+        {user.studyPrograms.map(({ code, name }) => (
+          <div key={code} style={{ display: 'flex' }}>
+            <p>{`- ${name}, ${code}`}</p>
+            {getOs(code)}
+          </div>
+        ))}
       </div>
     </Segment>
   )
