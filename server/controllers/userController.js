@@ -19,12 +19,12 @@ const getLogoutUrl = async (req, res) => {
     if (logoutUrl) {
       return res
         .status(200)
-        .send({ logoutUrl: `${logoutUrl}?return=${returnUrl}` })
+        .send({ logoutUrl: `${logoutUrl}?return=${returnUrl || ''}` })
         .end()
     }
     return res
       .status(200)
-      .send({ logoutUrl: returnUrl })
+      .send({ logoutUrl: returnUrl || '' })
       .end()
   } catch (err) {
     return res.status(500).json({ message: 'Error with logout', err })
