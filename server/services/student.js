@@ -39,8 +39,15 @@ const getStudytrackEnrollmentStatusFor = async (studentNumber, studytrackId) => 
   return res.data
 }
 
+const getSemesterEnrollments = async (studentNumber) => {
+  const res = await userApi.get(`/students/${studentNumber}/semesterEnrollments`)
+  return res.data
+}
+
 const isEligible = async (studentNumber) => {
   const studyrights = await getStudyRightsFor(studentNumber)
+  const semesterEnrollments = await getSemesterEnrollments(studentNumber)
+
   const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
   const { min, max } = await getMinMaxSemesters()
   const minTime = new Date(min).getTime()
@@ -58,9 +65,29 @@ const isEligible = async (studentNumber) => {
       }
     })
   }
+
+  if (mlu && mlu.elements.length && !hasNewStudyright && hasPreviousStudyright) {
+    let hasBeenPresentBefore = false
+    semesterEnrollments.data.forEach(({ semester_code, semester_enrollment_type_code }) => {
+      if (semester_code < 139 && semester_enrollment_type_code !== 2) {
+        hasBeenPresentBefore = true
+      }
+    })
+    if (!hasBeenPresentBefore) {
+      hasPreviousStudyright = false
+      hasNewStudyright = true
+    }
+  }
+
+  const currentSemester = semesterEnrollments.data.find(({ semester_code }) => semester_code === 139)
+  let isPresent = false
+  if (currentSemester && currentSemester.semester_enrollment_type_code === 1) {
+    isPresent = true
+  }
+
   return {
     studyrights,
-    eligible: (!hasPreviousStudyright && hasNewStudyright) || (!inProduction && studentNumber === 'fuksi'),
+    eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent) || (!inProduction && studentNumber === 'fuksi'),
   }
 }
 
