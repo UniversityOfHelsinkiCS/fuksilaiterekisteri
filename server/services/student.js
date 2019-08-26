@@ -39,6 +39,11 @@ const getStudytrackEnrollmentStatusFor = async (studentNumber, studytrackId) => 
   return res.data
 }
 
+const hasEnrolledForCourse = async (studentNumber, studytrackId, courseId) => {
+  const res = await userApi.get(`/students/${studentNumber}/enrolled/${studytrackId}/${courseId}`)
+  return res.data
+}
+
 const getSemesterEnrollments = async (studentNumber) => {
   const res = await userApi.get(`/students/${studentNumber}/semesterEnrollments`)
   return res.data
@@ -109,6 +114,9 @@ const getStudentStatus = async (studentNumber, studyrights) => {
         enrolled = (await Promise.all(['KH50_004', 'KH50_001'].map(c => (
           new Promise(async codeRes => codeRes(await getStudytrackEnrollmentStatusFor(studentNumber, c)))
         )))).includes(true)
+      } else if (code === 'KH50_003') {
+        // Chemistry students need to be enrolled for KEK402A
+        enrolled = await hasEnrolledForCourse(studentNumber, 'KH50_003', 'KEK402A')
       } else {
         // Other students should be enrolled to their own programme's courses
         enrolled = await getStudytrackEnrollmentStatusFor(studentNumber, code)

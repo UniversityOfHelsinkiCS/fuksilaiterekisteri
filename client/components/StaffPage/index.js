@@ -16,7 +16,7 @@ export default () => {
   return (
     <div style={{ maxWidth: '100%' }}>
       <Segment>
-        <Header as='h3'>
+        <Header as="h3">
           Sinulla on oikeus seuraaviin opinto-ohjelmiin:
           <ul>
             {user.studyPrograms.map(s => <li key={s.code}>{`${s.name} (${s.code})`}</li>)}
