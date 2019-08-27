@@ -104,7 +104,7 @@ const claimDevice = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await db.user.findAll()
+    const users = await db.user.findAll({ include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
     res.json(users)
   } catch (e) {
     console.error(e)
@@ -122,6 +122,7 @@ const toggleStaff = async (req, res) => {
       where: {
         id,
       },
+      include: [{ model: db.studyProgram, as: 'studyPrograms' }],
     })
 
     if (!user) return res.status(404).json({ error: 'user not found' })
@@ -144,6 +145,7 @@ const toggleDistributor = async (req, res) => {
       where: {
         id,
       },
+      include: [{ model: db.studyProgram, as: 'studyPrograms' }],
     })
 
     if (!user) return res.status(404).json({ error: 'user not found' })
