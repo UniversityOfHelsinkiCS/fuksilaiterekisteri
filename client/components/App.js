@@ -32,7 +32,7 @@ const App = () => {
   return (
     <AuthCheck>
       <FakeShibboBar>
-        <NotificationContainer  />
+        <NotificationContainer />
         <NavBar />
         <Router />
         <Footer />

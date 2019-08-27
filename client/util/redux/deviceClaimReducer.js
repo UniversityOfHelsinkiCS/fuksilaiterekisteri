@@ -24,7 +24,7 @@ export default (state = { data: undefined, error: false }, action) => {
       return {
         ...state,
         pending: true,
-        error: false
+        error: false,
       }
     case 'NEW_DEVICE_CLAIM_FAILURE':
       return {
