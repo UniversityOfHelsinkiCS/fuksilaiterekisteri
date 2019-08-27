@@ -16,7 +16,7 @@ const StatsTable = ({ students }) => {
       totalWants: 0,
       totalNeeds: 0,
       totalReceived: 0,
-      total: 0
+      total: 0,
     }
     const cubbli = ['KH50_002', 'KH50_005', 'KH50_008']
 
