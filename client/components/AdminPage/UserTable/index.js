@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useDispatch } from 'react-redux'
 import {
-  Button, Input, Segment, Header,
+  Button,
 } from 'semantic-ui-react'
 import {
   markStudentEligible as markStudentEligibleAction,
@@ -12,7 +12,6 @@ import SortedTable from '../../SortedTable'
 
 const UserTable = ({ users }) => {
   const dispatch = useDispatch()
-  const [searchQuery, setSearchQuery] = useState('')
   const valOrEmpty = val => (val !== null ? val : '-')
   const markStudentEligible = (studentNumber, name) => {
     const res = window.confirm(`Are you sure you want to mark ${name} eligible?`)
@@ -21,20 +20,6 @@ const UserTable = ({ users }) => {
   const toggleUserStaff = id => dispatch(toggleUserStaffAction(id))
   const toggleUserDistributor = id => dispatch(toggleUserDistributorAction(id))
   const boolToString = bool => (bool ? 'Kyllä' : 'Ei')
-  const handleChange = (e, { value }) => setSearchQuery(value)
-  const getFilteredData = (data) => {
-    const res = []
-    data.forEach((obj) => {
-      let flag = false
-      Object.values(obj).forEach((val) => {
-        if (!searchQuery || (val && String(val).trim().toLowerCase().includes(searchQuery.trim().toLowerCase()))) {
-          flag = true
-        }
-      })
-      if (flag) res.push(obj)
-    })
-    return res
-  }
 
   const headers = [
     {
@@ -45,12 +30,23 @@ const UserTable = ({ users }) => {
     {
       key: 'email',
       title: 'Email',
-      getRowVal: ({ hyEmail }) => valOrEmpty(hyEmail),
+      getRowVal: ({ hyEmail, personalEmail }) => (
+        <span>
+          {hyEmail}
+          <br />
+          {personalEmail}
+        </span>
+      ),
     },
     {
       key: 'student_number',
       title: 'Student number',
       getRowVal: ({ studentNumber }) => valOrEmpty(studentNumber),
+    },
+    {
+      key: 'studyPrograms',
+      title: 'Study programs',
+      getRowVal: ({ studyPrograms }) => studyPrograms.map(s => s.code).join(', '),
     },
     {
       key: 'eligible',
@@ -88,14 +84,31 @@ const UserTable = ({ users }) => {
       getRowVal: ({ device_distributed_by }) => valOrEmpty(device_distributed_by),
     },
     {
+      key: 'admin',
+      title: 'admin',
+      getRowVal: ({ admin }) => boolToString(admin),
+    },
+    {
       key: 'staff',
       title: 'Staff',
-      getRowVal: ({ staff }) => boolToString(staff),
+      getRowVal: ({ staff, id }) => (
+        <>
+          {boolToString(staff)}
+          {' '}
+          <Button color="blue" icon="refresh" onClick={() => toggleUserStaff(id)} />
+        </>
+      ),
     },
     {
       key: 'distributor',
       title: 'Distributor',
-      getRowVal: ({ distributor }) => boolToString(distributor),
+      getRowVal: ({ distributor, id }) => (
+        <>
+          {boolToString(distributor)}
+          {' '}
+          <Button color="blue" icon="refresh" onClick={() => toggleUserDistributor(id)} />
+        </>
+      ),
     },
     {
       key: 'mark_eligible',
@@ -103,30 +116,14 @@ const UserTable = ({ users }) => {
       getRowContent: ({ studentNumber, eligible, name }) => <Button disabled={eligible || !studentNumber} onClick={() => markStudentEligible(studentNumber, name)} color="blue">Mark eligible</Button>,
       disabled: true,
     },
-    {
-      key: 'toggle_staff',
-      title: '',
-      getRowContent: ({ id }) => <Button color="blue" onClick={() => toggleUserStaff(id)}>Toggle staff</Button>,
-      disabled: true,
-    },
-    {
-      key: 'toggle_distributor',
-      title: '',
-      getRowContent: ({ id }) => <Button color="blue" onClick={() => toggleUserDistributor(id)}>Toggle distributor</Button>,
-      disabled: true,
-    },
   ]
 
   return (
     <div style={{ maxWidth: '100%' }}>
-      <Segment>
-        <Header as="h2">Search</Header>
-        <Input type="text" onChange={handleChange} name="search" />
-      </Segment>
       <SortedTable
         getRowKey={({ id }) => id}
         columns={headers}
-        data={getFilteredData(users)}
+        data={users}
       />
     </div>
   )
