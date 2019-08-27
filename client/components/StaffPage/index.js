@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Header, Segment } from 'semantic-ui-react'
 import { getStudentsAction } from '../../util/redux/studentReducer'
 import StudentTable from './StudentTable'
+import StatsTable from '../StatsTable'
 
 export default () => {
   const dispatch = useDispatch()
@@ -23,6 +24,7 @@ export default () => {
           </ul>
         </Header>
       </Segment>
+      <StatsTable students={students} />
       <StudentTable students={students} />
     </div>
   )
