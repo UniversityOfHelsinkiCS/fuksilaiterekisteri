@@ -169,9 +169,9 @@ const checkStudentEligibilities = async () => {
     where: {
       studentNumber: {
         [Op.ne]: null,
-      }
+      },
     },
-    attributes: ['studentNumber', 'eligible']
+    attributes: ['studentNumber', 'eligible'],
   })
 
   let amount = 0
@@ -185,7 +185,7 @@ const checkStudentEligibilities = async () => {
         }
         res()
       })
-    ))
+    )),
   )
 
   if (!amount) console.log('All good!')
@@ -196,5 +196,5 @@ module.exports = {
   getStudentStatus,
   isEligible,
   updateEligibleStudentStatuses,
-  checkStudentEligibilities
+  checkStudentEligibilities,
 }
