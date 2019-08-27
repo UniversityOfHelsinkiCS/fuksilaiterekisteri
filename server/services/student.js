@@ -164,8 +164,37 @@ const updateEligibleStudentStatuses = async () => {
   )))
 }
 
+const checkStudentEligibilities = async () => {
+  const students = await db.user.findAll({
+    where: {
+      studentNumber: {
+        [Op.ne]: null,
+      },
+    },
+    attributes: ['studentNumber', 'eligible'],
+  })
+
+  let amount = 0
+  await Promise.all(
+    students.map(({ studentNumber, eligible: prevEligible }) => (
+      new Promise(async (res) => {
+        const { eligible: newEligible } = await isEligible(studentNumber)
+        if (newEligible !== prevEligible) {
+          console.log(`Eligibility missmatch for ${studentNumber}!`)
+          amount++
+        }
+        res()
+      })
+    )),
+  )
+
+  if (!amount) console.log('All good!')
+  else console.log(`There were ${amount} mismatches!`)
+}
+
 module.exports = {
   getStudentStatus,
   isEligible,
   updateEligibleStudentStatuses,
+  checkStudentEligibilities,
 }

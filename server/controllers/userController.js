@@ -14,7 +14,7 @@ const getUser = (req, res) => {
 
 const getLogoutUrl = async (req, res) => {
   try {
-    const logoutUrl = req.headers.shib_logout_url
+    const logoutUrl = req.headers.shib_logout_url || req.headers.logout_url
     const { returnUrl } = req.body
     if (logoutUrl) {
       return res
