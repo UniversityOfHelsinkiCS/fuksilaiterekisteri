@@ -29,7 +29,7 @@ const App = () => {
     )
   }
 
-  if (user.pending) {
+  if (!user.data || user.pending) {
     return (
       <FakeShibboBar>
         <NavBar />
