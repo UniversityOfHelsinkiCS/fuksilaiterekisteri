@@ -91,7 +91,8 @@ const UserTable = ({ users }) => {
     {
       key: 'staff',
       title: 'Staff',
-      getRowVal: ({ staff, id }) => (
+      getRowVal: ({ staff }) => staff,
+      getRowContent: ({ staff, id }) => (
         <>
           {boolToString(staff)}
           {' '}
@@ -102,7 +103,8 @@ const UserTable = ({ users }) => {
     {
       key: 'distributor',
       title: 'Distributor',
-      getRowVal: ({ distributor, id }) => (
+      getRowVal: ({ distributor }) => distributor,
+      getRowContent: ({ distributor, id }) => (
         <>
           {boolToString(distributor)}
           {' '}

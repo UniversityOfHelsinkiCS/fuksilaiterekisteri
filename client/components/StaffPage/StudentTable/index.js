@@ -66,7 +66,8 @@ const StudentTable = ({ students }) => {
     {
       key: 'digitaidot',
       title: 'Digi skills',
-      getRowVal: ({ digiSkillsCompleted, studentNumber }) => (
+      getRowVal: ({ digiSkillsCompleted }) => digiSkillsCompleted,
+      getRowContent: ({ digiSkillsCompleted, studentNumber }) => (
         <>
           {boolToString(digiSkillsCompleted)}
           {' '}
@@ -77,7 +78,8 @@ const StudentTable = ({ students }) => {
     {
       key: 'enrolled',
       title: 'Has enrolled',
-      getRowVal: ({ courseRegistrationCompleted, studentNumber }) => (
+      getRowVal: ({ courseRegistrationCompleted }) => courseRegistrationCompleted,
+      getRowContent: ({ courseRegistrationCompleted, studentNumber }) => (
         <>
           {boolToString(courseRegistrationCompleted)}
           {' '}
