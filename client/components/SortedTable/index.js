@@ -66,40 +66,42 @@ const SortableTable = (props) => {
         <Header as="h2">Search</Header>
         <Input type="text" name="search" onChange={handleChange} />
       </Segment>
-      <Table sortable {...tableProps} className="fixed-header">
-        <Table.Header>
-          <Table.Row>
-            {columns.filter(c => !(c.title == null)).map(c => (
-              <Table.HeaderCell
-                key={c.key}
-                content={c.title}
-                onClick={c.disabled ? null : handleSort(c.key)}
-                sorted={sortDirection(c.key)}
-                {...c.headerProps}
-              />
-            ))
-            }
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {sortedRows().map(row => (
-            <Table.Row
-              key={getRowKey(row)}
-              {...getRowProps && getRowProps(row)}
-            >
-              {columns.filter(c => !c.parent).map(c => (
-                <Table.Cell
+      <div style={{ maxHeight: '100vh', overflow: 'auto' }}>
+        <Table sortable {...tableProps} className="fixed-header">
+          <Table.Header>
+            <Table.Row>
+              {columns.filter(c => !(c.title == null)).map(c => (
+                <Table.HeaderCell
                   key={c.key}
-                  content={c.getRowContent ? (c.getRowContent(row) || '-') : (c.getRowVal(row) || '-')}
-                  {...c.cellProps}
-                  {...c.getCellProps && c.getCellProps(row)}
+                  content={c.title}
+                  onClick={c.disabled ? null : handleSort(c.key)}
+                  sorted={sortDirection(c.key)}
+                  {...c.headerProps}
                 />
               ))
               }
             </Table.Row>
-          ))}
-        </Table.Body>
-      </Table>
+          </Table.Header>
+          <Table.Body>
+            {sortedRows().map(row => (
+              <Table.Row
+                key={getRowKey(row)}
+                {...getRowProps && getRowProps(row)}
+              >
+                {columns.filter(c => !c.parent).map(c => (
+                  <Table.Cell
+                    key={c.key}
+                    content={c.getRowContent ? (c.getRowContent(row) || '-') : (c.getRowVal(row) || '-')}
+                    {...c.cellProps}
+                    {...c.getCellProps && c.getCellProps(row)}
+                  />
+                ))
+                }
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      </div>
     </>
   )
 }
