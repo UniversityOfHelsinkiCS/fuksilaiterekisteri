@@ -1,6 +1,6 @@
 const { CronJob } = require('cron')
 const logger = require('@util/logger')
-const { updateEligibleStudentStatuses } = require('@services/student')
+const { updateEligibleStudentStatuses, checkStudentEligibilities } = require('@services/student')
 
 const startCron = () => new CronJob({
   cronTime: '0 * * * *',
@@ -10,6 +10,13 @@ const startCron = () => new CronJob({
       await updateEligibleStudentStatuses()
     } catch (e) {
       logger.error('Failed updating eligible student statuses!', e)
+    }
+
+    console.log('Checking student eligibilities...')
+    try {
+      await checkStudentEligibilities()
+    } catch (e) {
+      logger.error('Failed checking student eligibilities!', e)
     }
   },
   start: true,
