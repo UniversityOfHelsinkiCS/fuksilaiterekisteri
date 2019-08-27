@@ -13,6 +13,10 @@ const StatsTable = ({ students }) => {
       cubbli: {
         ...def,
       },
+      totalWants: 0,
+      totalNeeds: 0,
+      totalReceived: 0,
+      total: 0
     }
     const cubbli = ['KH50_002', 'KH50_005', 'KH50_008']
 
@@ -30,6 +34,10 @@ const StatsTable = ({ students }) => {
     })
     res.windows.total = Object.values(res.windows).reduce((acc, curr) => acc + curr, 0)
     res.cubbli.total = Object.values(res.cubbli).reduce((acc, curr) => acc + curr, 0)
+    res.totalWants = res.windows.wants + res.cubbli.wants
+    res.totalNeeds = res.windows.needs + res.cubbli.needs
+    res.totalReceived = res.windows.received + res.cubbli.received
+    res.total = res.windows.total + res.cubbli.total
 
     return res
   }
@@ -47,6 +55,9 @@ const StatsTable = ({ students }) => {
           <Table.HeaderCell>
             Cubbli
           </Table.HeaderCell>
+          <Table.HeaderCell>
+            Total
+          </Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>
@@ -60,6 +71,9 @@ const StatsTable = ({ students }) => {
           <Table.Cell>
             {stats.cubbli.wants}
           </Table.Cell>
+          <Table.Cell>
+            {stats.totalWants}
+          </Table.Cell>
         </Table.Row>
         <Table.Row>
           <Table.Cell collapsing>
@@ -70,6 +84,9 @@ const StatsTable = ({ students }) => {
           </Table.Cell>
           <Table.Cell>
             {stats.cubbli.needs}
+          </Table.Cell>
+          <Table.Cell>
+            {stats.totalNeeds}
           </Table.Cell>
         </Table.Row>
         <Table.Row>
@@ -82,6 +99,9 @@ const StatsTable = ({ students }) => {
           <Table.Cell>
             {stats.cubbli.received}
           </Table.Cell>
+          <Table.Cell>
+            {stats.totalReceived}
+          </Table.Cell>
         </Table.Row>
         <Table.Row>
           <Table.Cell collapsing>
@@ -92,6 +112,9 @@ const StatsTable = ({ students }) => {
           </Table.Cell>
           <Table.Cell>
             {stats.cubbli.total}
+          </Table.Cell>
+          <Table.Cell>
+            {stats.total}
           </Table.Cell>
         </Table.Row>
       </Table.Body>
