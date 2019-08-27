@@ -77,7 +77,7 @@ const StatsTable = ({ students }) => {
         </Table.Row>
         <Table.Row>
           <Table.Cell collapsing>
-            Needs a device
+            Ready for a device
           </Table.Cell>
           <Table.Cell>
             {stats.windows.needs}
