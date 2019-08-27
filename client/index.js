@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import 'semantic-ui-css/semantic.min.css'
 import 'Assets/custom.css'
+import 'react-notifications/lib/notifications.css'
 
 import store from 'Utilities/store'
 import { basePath } from 'Utilities/common'
