@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Loader } from 'semantic-ui-react'
+import { NotificationContainer } from 'react-notifications'
 import { getUserAction } from 'Utilities/redux/userReducer'
 import AuthCheck from 'Components/AuthCheck'
 import FakeShibboBar from 'Components/FakeShibboBar'
@@ -31,6 +32,7 @@ const App = () => {
   return (
     <AuthCheck>
       <FakeShibboBar>
+        <NotificationContainer  />
         <NavBar />
         <Router />
         <Footer />

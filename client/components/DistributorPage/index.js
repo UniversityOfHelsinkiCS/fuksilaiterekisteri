@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
   Button, Segment, Form, Header, Ref,
 } from 'semantic-ui-react'
+import { NotificationManager } from 'react-notifications'
 import { claimDeviceAction } from 'Utilities/redux/deviceClaimReducer'
 import { getStudentAction, clearStudentAction } from 'Utilities/redux/studentReducer'
 
@@ -68,12 +69,17 @@ const DistributorPage = () => {
     setDeviceId('')
     clearStudent()
 
+    NotificationManager.success('Laite annettu onnistuneesti!')
     if (studentInput.current) studentInput.current.children[1].children[0].focus()
   }, [deviceClaim])
 
   useEffect(() => {
     if (student && deviceIdInput.current) deviceIdInput.current.children[0].children[0].focus()
   }, [student])
+
+  useEffect(() => {
+    if (deviceClaim.error) NotificationManager.error('Laitteen antaminen epäonnistui')
+  }, [deviceClaim.error])
 
   const changeStudentNumber = ({ target }) => {
     const { value } = target

@@ -11,7 +11,7 @@ export const claimDeviceAction = ({ studentNumber, deviceId }) => {
 
 // Reducer
 // You can include more app wide actions such as "selected: []" into the state
-export default (state = { data: undefined }, action) => {
+export default (state = { data: undefined, error: false }, action) => {
   switch (action.type) {
     case 'NEW_DEVICE_CLAIM_SUCCESS':
       return {
@@ -24,6 +24,7 @@ export default (state = { data: undefined }, action) => {
       return {
         ...state,
         pending: true,
+        error: false
       }
     case 'NEW_DEVICE_CLAIM_FAILURE':
       return {
