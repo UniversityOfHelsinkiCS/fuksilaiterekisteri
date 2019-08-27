@@ -4,6 +4,7 @@ import { Segment, Icon, Header } from 'semantic-ui-react'
 import StudentInfo from './StudentInfo'
 import Terms from './Terms'
 import ClaimingInfo from './ClaimingInfo'
+import TaskInfo from './TaskInfo'
 
 const Task = ({ task, completed }) => {
   if (completed) {
@@ -31,11 +32,25 @@ const StudentStatusPage = () => {
         <Header as="h3">Task status:</Header>
         <Segment.Group horizontal>
           <Task task="True Fuksi" completed={user.eligible} />
-          <Task task="DIGI-100A completed" completed={user.digiSkillsCompleted} />
-          <Task task="Registered to relevant course" completed={user.courseRegistrationCompleted} />
+          <Task
+            task="Registered to relevant course"
+            completed={user.courseRegistrationCompleted}
+          />
+          <Task
+            task="DIGI-100A completed"
+            completed={user.digiSkillsCompleted}
+          />
         </Segment.Group>
-        {user.eligible && user.digiSkillsCompleted && user.courseRegistrationCompleted ? <ClaimingInfo /> : null}
+        {user.eligible
+        && user.digiSkillsCompleted
+        && user.courseRegistrationCompleted ? (
+          <ClaimingInfo />
+          ) : null}
       </Segment>
+      <TaskInfo
+        courseRegistrationCompleted={user.courseRegistrationCompleted}
+        digiSkillsCompleted={user.digiSkillsCompleted}
+      />
       <Terms />
     </Segment.Group>
   )
