@@ -1,0 +1,102 @@
+import React, { useMemo } from 'react'
+import { Table } from 'semantic-ui-react'
+
+const StatsTable = ({ students }) => {
+  const getStats = () => {
+    const def = {
+      wants: 0, needs: 0, received: 0, total: 0,
+    }
+    const res = {
+      windows: {
+        ...def,
+      },
+      cubbli: {
+        ...def,
+      },
+    }
+    const cubbli = ['KH50_002', 'KH50_005', 'KH50_008']
+
+    const hasRequiredComplete = ({ eligible, digiSkillsCompleted, courseRegistrationCompleted }) => eligible && digiSkillsCompleted && courseRegistrationCompleted
+
+    students.forEach((student) => {
+      const target = student.studyPrograms.some(({ code }) => cubbli.includes(code)) ? 'cubbli' : 'windows'
+      if (student.wantsDevice && !student.deviceSerial && !hasRequiredComplete(student)) {
+        res[target].wants++
+      } else if (student.wantsDevice && !student.deviceSerial && hasRequiredComplete(student)) {
+        res[target].needs++
+      } else if (student.deviceSerial) {
+        res[target].received++
+      }
+    })
+    res.windows.total = Object.values(res.windows).reduce((acc, curr) => acc + curr, 0)
+    res.cubbli.total = Object.values(res.cubbli).reduce((acc, curr) => acc + curr, 0)
+
+    return res
+  }
+
+  const stats = useMemo(() => getStats(), [students])
+
+  return (
+    <Table definition collapsing>
+      <Table.Header>
+        <Table.Row>
+          <Table.HeaderCell />
+          <Table.HeaderCell>
+            Windows
+          </Table.HeaderCell>
+          <Table.HeaderCell>
+            Cubbli
+          </Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        <Table.Row>
+          <Table.Cell collapsing>
+            Wants a device
+          </Table.Cell>
+          <Table.Cell>
+            {stats.windows.wants}
+          </Table.Cell>
+          <Table.Cell>
+            {stats.cubbli.wants}
+          </Table.Cell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell collapsing>
+            Needs a device
+          </Table.Cell>
+          <Table.Cell>
+            {stats.windows.needs}
+          </Table.Cell>
+          <Table.Cell>
+            {stats.cubbli.needs}
+          </Table.Cell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell collapsing>
+            Has received a device
+          </Table.Cell>
+          <Table.Cell>
+            {stats.windows.received}
+          </Table.Cell>
+          <Table.Cell>
+            {stats.cubbli.received}
+          </Table.Cell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell collapsing>
+            Total
+          </Table.Cell>
+          <Table.Cell>
+            {stats.windows.total}
+          </Table.Cell>
+          <Table.Cell>
+            {stats.cubbli.total}
+          </Table.Cell>
+        </Table.Row>
+      </Table.Body>
+    </Table>
+  )
+}
+
+export default StatsTable
