@@ -9,19 +9,33 @@ import Footer from 'Components/Footer'
 import Router from 'Components/Router'
 
 const App = () => {
-  const user = useSelector(state => state.user.data)
+  const user = useSelector(state => state.user)
   const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(getUserAction())
   }, [])
 
-  if (!user) {
+  if (user.error) {
     return (
       <FakeShibboBar>
         <NavBar />
         <div className="content">
-          <Loader active inline="centered">Loading</Loader>
+          <h3>Registration is closed for maintenance, check again in few hours.</h3>
+        </div>
+        <Footer />
+      </FakeShibboBar>
+    )
+  }
+
+  if (user.pending) {
+    return (
+      <FakeShibboBar>
+        <NavBar />
+        <div className="content">
+          <Loader active inline="centered">
+            Loading
+          </Loader>
         </div>
         <Footer />
       </FakeShibboBar>
