@@ -30,7 +30,7 @@ const markStudentEligible = async (req, res) => {
     const { studentNumber } = req.params
     if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
 
-    const student = await db.user.findOne({ where: { studentNumber } })
+    const student = await db.user.findOne({ where: { studentNumber }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
     if (!student) return res.status(404).json({ error: 'student not found' })
 
     await student.update({ eligible: true })

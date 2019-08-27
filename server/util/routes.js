@@ -2,7 +2,7 @@ const Router = require('express')
 const userController = require('@controllers/userController')
 const studentController = require('@controllers/studentController')
 const authenticationMiddleware = require('@util/authenticationMiddleware')
-const { checkAdmin } = require('@util/adminMiddleware')
+const { checkAdmin, checkStaffOrAdmin } = require('@util/adminMiddleware')
 const { checkDistributor } = require('@util/distributorMiddleware')
 const { checkStaff } = require('@util/staffMiddleware')
 
@@ -27,7 +27,7 @@ router.post('/user/:id/staff', checkAdmin, userController.toggleStaff)
 router.post('/user/:id/distributor', checkAdmin, userController.toggleDistributor)
 
 router.get('/student/:studentNumber', checkDistributor, studentController.getStudent)
-router.post('/student/:studentNumber/eligible', checkAdmin, studentController.markStudentEligible)
+router.post('/student/:studentNumber/eligible', checkStaffOrAdmin, studentController.markStudentEligible)
 router.post('/student/:studentNumber/status', checkStaff, studentController.updateStudentStatus)
 
 router.get('/staff/students', checkStaff, studentController.getStudentsForStaff)

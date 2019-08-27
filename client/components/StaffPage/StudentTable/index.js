@@ -4,7 +4,7 @@ import {
   Button,
 } from 'semantic-ui-react'
 import SortedTable from '../../SortedTable'
-import { updateStudentStatus } from '../../../util/redux/studentReducer'
+import { updateStudentStatus, markStudentEligible } from '../../../util/redux/studentReducer'
 
 const StudentTable = ({ students }) => {
   const dispatch = useDispatch()
@@ -29,6 +29,13 @@ const StudentTable = ({ students }) => {
     )
   }
 
+  const handleEligibleUpdate = (studentNumber) => {
+    confirm(
+      () => dispatch(markStudentEligible({ studentNumber })),
+      `Are you sure you want to make ${studentNumber} eligible?`,
+    )
+  }
+
   const headers = [
     {
       key: 'name',
@@ -41,14 +48,52 @@ const StudentTable = ({ students }) => {
       getRowVal: ({ studentNumber }) => studentNumber,
     },
     {
+      key: 'email',
+      title: 'Email',
+      getRowVal: ({ hyEmail, personalEmail }) => (
+        <span>
+          {hyEmail}
+          <br />
+          {personalEmail}
+        </span>
+      ),
+    },
+    {
+      key: 'eligible',
+      title: 'Eligible',
+      getRowVal: ({ eligible }) => boolToString(eligible),
+    },
+    {
       key: 'digitaidot',
       title: 'Digi skills',
-      getRowVal: ({ digiSkillsCompleted }) => boolToString(digiSkillsCompleted),
+      getRowVal: ({ digiSkillsCompleted, studentNumber }) => (
+        <>
+          {boolToString(digiSkillsCompleted)}
+          {' '}
+          {!digiSkillsCompleted && <Button onClick={() => handleDigiSkillsUpdate(studentNumber)} size="tiny" color="blue" icon="plus" />}
+        </>
+      ),
     },
     {
       key: 'enrolled',
       title: 'Has enrolled',
-      getRowVal: ({ courseRegistrationCompleted }) => boolToString(courseRegistrationCompleted),
+      getRowVal: ({ courseRegistrationCompleted, studentNumber }) => (
+        <>
+          {boolToString(courseRegistrationCompleted)}
+          {' '}
+          {!courseRegistrationCompleted && <Button onClick={() => handleEnrolledUpdate(studentNumber)} size="tiny" color="blue" icon="plus" />}
+        </>
+      ),
+    },
+    {
+      key: 'device_given',
+      title: 'Device given',
+      getRowVal: ({ deviceGivenAt }) => boolToString(!!deviceGivenAt),
+    },
+    {
+      key: 'wants_device',
+      title: 'Wants device',
+      getRowVal: ({ wantsDevice }) => boolToString(wantsDevice),
     },
     {
       key: 'studyPrograms',
@@ -56,15 +101,9 @@ const StudentTable = ({ students }) => {
       getRowVal: ({ studyPrograms }) => studyPrograms.map(s => s.code).join(', '),
     },
     {
-      key: 'mark_digi_skills',
+      key: 'mark_eligible',
       title: '',
-      getRowContent: ({ studentNumber, digiSkillsCompleted }) => <Button disabled={digiSkillsCompleted} onClick={() => handleDigiSkillsUpdate(studentNumber)} color="blue">Mark digi skills</Button>,
-      disabled: true,
-    },
-    {
-      key: 'mark_enrolled',
-      title: '',
-      getRowContent: ({ studentNumber, courseRegistrationCompleted }) => <Button disabled={courseRegistrationCompleted} onClick={() => handleEnrolledUpdate(studentNumber)} color="blue">Mark enrolled</Button>,
+      getRowContent: ({ studentNumber, eligible }) => <Button disabled={eligible} onClick={() => handleEligibleUpdate(studentNumber)} color="blue">Mark eligible</Button>,
       disabled: true,
     },
   ]

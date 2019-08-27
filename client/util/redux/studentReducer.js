@@ -27,14 +27,15 @@ export const clearStudentAction = () => ({
   type: 'CLEAR_STUDENT',
 })
 
-const handleStudentUpdate = (updatedStudent, data) => {
-  console.log('STUDENT!!', updatedStudent)
-  console.log('dADADADAa', data)
-  return data.map(student => (student.id === updatedStudent.id ? updatedStudent : student))
+export const markStudentEligible = ({ studentNumber }) => {
+  const route = `/student/${studentNumber}/eligible`
+  const prefix = 'MARK_STUDENT_ELIGIBLE'
+  const method = 'post'
+  return callBuilder(route, prefix, method)
 }
 
-// Reducer
-// You can include more app wide actions such as "selected: []" into the state
+const handleStudentUpdate = (updatedStudent, data) => data.map(student => (student.id === updatedStudent.id ? updatedStudent : student))
+
 const INITIAL_STATE = { data: undefined, students: [] }
 
 export default (state = INITIAL_STATE, action) => {
@@ -95,6 +96,11 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         pending: false,
         error: false,
+        students: handleStudentUpdate(action.response, state.students),
+      }
+    case 'MARK_STUDENT_ELIGIBLE_SUCCESS':
+      return {
+        ...state,
         students: handleStudentUpdate(action.response, state.students),
       }
 
