@@ -138,6 +138,9 @@ const updateEligibleStudentStatuses = async () => {
   const targetStudents = await db.user.findAll({
     where: {
       eligible: true,
+      studentNumber: {
+        [Op.ne]: null,
+      },
       [Op.or]: [{ digiSkillsCompleted: false }, { courseRegistrationCompleted: false }],
     },
   })
@@ -206,6 +209,7 @@ const updateStudentEligibility = async (studentNumber) => {
     return
   }
 
+  const eligibilityBefore = foundStudent.eligible
   const { eligible, studyrights } = await isEligible(studentNumber)
   if (foundStudent.eligible === eligible) {
     logger.info(`${studentNumber} eligibility hasn't changed.`)
@@ -217,7 +221,7 @@ const updateStudentEligibility = async (studentNumber) => {
     eligible,
   })
 
-  logger.info(`${studentNumber} eligibility updated successfully!`)
+  logger.info(`${studentNumber} eligibility updated successfully from ${eligibilityBefore} to ${eligible}!`)
 }
 
 module.exports = {

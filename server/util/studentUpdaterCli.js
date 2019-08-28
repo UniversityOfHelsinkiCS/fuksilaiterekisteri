@@ -3,7 +3,7 @@ const rl = require('readline').createInterface({
   input: process.stdin,
   output: process.stdout,
 })
-const { checkStudentEligibilities, updateStudentEligibility } = require('../services/student')
+const { checkStudentEligibilities, updateStudentEligibility, updateEligibleStudentStatuses } = require('../services/student')
 
 const commands = {
   0: {
@@ -25,6 +25,13 @@ const commands = {
         res()
       })
     }),
+  },
+  3: {
+    info: 'Update eligible student statuses',
+    exec: async () => {
+      console.log('Updating eligible student statuses...')
+      await updateEligibleStudentStatuses()
+    },
   },
 }
 
