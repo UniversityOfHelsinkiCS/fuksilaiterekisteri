@@ -202,13 +202,13 @@ const updateStudentEligibility = async (studentNumber) => {
   })
 
   if (!foundStudent) {
-    console.log('User not found!')
+    logger.info('User not found!')
     return
   }
 
   const { eligible, studyrights } = await isEligible(studentNumber)
   if (foundStudent.eligible === eligible) {
-    console.log(`${studentNumber} eligibility hasn't changed.`)
+    logger.info(`${studentNumber} eligibility hasn't changed.`)
     return
   }
 
@@ -217,7 +217,7 @@ const updateStudentEligibility = async (studentNumber) => {
     eligible,
   })
 
-  console.log(`${studentNumber} eligibility updated successfully!`)
+  logger.info(`${studentNumber} eligibility updated successfully!`)
 }
 
 module.exports = {
