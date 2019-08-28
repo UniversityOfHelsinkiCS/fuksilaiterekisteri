@@ -5,6 +5,7 @@ const db = require('@models')
 const logger = require('@util/logger')
 const completionChecker = require('@util/completionChecker')
 const { STUDENT_API_URL, STUDENT_API_TOKEN, inProduction } = require('../util/common')
+const { createUserStudyprogrammes } = require('../util/authenticationMiddleware')
 
 const userApi = axios.create({
   httpsAgent: new https.Agent({
@@ -192,9 +193,37 @@ const checkStudentEligibilities = async () => {
   else console.log(`There were ${amount} mismatches!`)
 }
 
+const updateStudentEligibility = async (studentNumber) => {
+  const foundStudent = await db.user.findOne({
+    where: {
+      studentNumber
+    },
+    include: [{ model: db.studyProgram, as: 'studyPrograms' }]
+  })
+
+  if (!foundStudent) {
+    console.log('User not found!')
+    return
+  }
+
+  const { eligible, studyrights } = await isEligible(studentNumber)
+  if (foundStudent.eligible === eligible) {
+    console.log(`${studentNumber} eligibility hasn't changed.`)
+    return
+  }
+
+  await createUserStudyprogrammes(studyrights, foundStudent)
+  await foundStudent.update({
+    eligible
+  })
+
+  console.log(`${studentNumber} eligibility updated successfully!`)
+}
+
 module.exports = {
   getStudentStatus,
   isEligible,
   updateEligibleStudentStatuses,
   checkStudentEligibilities,
+  updateStudentEligibility
 }

@@ -19,7 +19,7 @@ const createUserStudyprogrammes = async (studyrights, user) => {
         await Promise.all([
           elements.map(
             ({ code }) => new Promise(async (resolveElement) => {
-              if (allStudyprogramCodes.has(code)) {
+              if (allStudyprogramCodes.has(code) && !(user.studyPrograms && user.studyPrograms.map(c => c.code).includes(code))) {
                 await db.userStudyProgram.create({
                   userId: user.id,
                   studyProgramId: studyprogramCodeToId[code],
@@ -113,4 +113,7 @@ const authentication = async (req, res, next) => {
   }
 }
 
-module.exports = authentication
+module.exports = {
+  authentication,
+  createUserStudyprogrammes
+}

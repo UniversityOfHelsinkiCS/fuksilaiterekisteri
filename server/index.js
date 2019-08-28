@@ -49,9 +49,9 @@ initializeDatabaseConnection()
 
       app.use(express.static(DIST_PATH))
       app.get('*', (req, res) => res.sendFile(INDEX_PATH))
+      startCron()
     }
 
-    startCron()
     app.listen(PORT, () => {
       logger.info(`Started on port ${PORT}`)
     })

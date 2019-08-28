@@ -11,7 +11,8 @@
     "lint": "eslint . --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
     "stats": "webpack --mode production --json --optimize-minimize > stats.json",
-    "db:seed": "docker-compose run --rm --entrypoint 'npx sequelize-cli db:seed:all --url \"postgres://postgres:postgres@db:5432/postgres\"' app"
+    "db:seed": "docker-compose run --rm --entrypoint 'npx sequelize-cli db:seed:all --url \"postgres://postgres:postgres@db:5432/postgres\"' app",
+    "cli": "docker exec -it fuksilaiterekisteri_dev node server/util/studentUpdaterCli.js"
   },
   "engines": {
     "node": ">=10.15"
@@ -53,6 +54,7 @@
     "react-notifications": "^1.4.3",
     "react-redux": "^7.1.0",
     "react-router-dom": "^5.0.1",
+    "readline": "^1.3.0",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
     "semantic-ui-css": "^2.3.1",
