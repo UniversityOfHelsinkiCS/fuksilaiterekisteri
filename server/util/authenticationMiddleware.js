@@ -1,6 +1,7 @@
 const db = require('@models')
 const { getStudentStatus, isEligible } = require('@services/student')
 const { inProduction } = require('./common')
+const logger = require('@util/logger')
 
 const createUserStudyprogrammes = async (studyrights, user) => {
   const allStudyprograms = await db.studyProgram.findAll({
@@ -19,7 +20,7 @@ const createUserStudyprogrammes = async (studyrights, user) => {
         await Promise.all([
           elements.map(
             ({ code }) => new Promise(async (resolveElement) => {
-              if (allStudyprogramCodes.has(code)) {
+              if (allStudyprogramCodes.has(code) && !(user.studyPrograms && user.studyPrograms.map(c => c.code).includes(code))) {
                 await db.userStudyProgram.create({
                   userId: user.id,
                   studyProgramId: studyprogramCodeToId[code],
@@ -43,12 +44,7 @@ const authentication = async (req, res, next) => {
   }) */
 
   const {
-    givenname: givenName = null,
-    mail = null,
-    schacdateofbirth: schacDateOfBirth = null,
-    schacpersonaluniquecode: schacPersonalUniqueCode = null,
-    sn = null,
-    uid = null,
+    givenname: givenName = null, mail = null, schacdateofbirth: schacDateOfBirth = null, schacpersonaluniquecode: schacPersonalUniqueCode = null, sn = null, uid = null,
   } = req.headers
 
   if (!uid) return res.status(403).json({ error: 'forbidden' })
@@ -78,7 +74,7 @@ const authentication = async (req, res, next) => {
     name: Buffer.from(`${givenName} ${sn}`, 'binary').toString('utf8'),
     dateOfBirth: schacDateOfBirth,
     staff: false,
-    distributor: false || (!!(uid === 'jakelija' && !inProduction)),
+    distributor: false || !!(uid === 'jakelija' && !inProduction),
     studentNumber,
     admin: false || !!(uid === 'admin' && !inProduction),
   }
@@ -108,9 +104,12 @@ const authentication = async (req, res, next) => {
     req.user = newUser
     return next()
   } catch (e) {
-    console.log('Creating student failed', e.response || ', status missing')
+    logger.error('Creating student failed', e.response || ', status missing')
     return res.status(503).end()
   }
 }
 
-module.exports = authentication
+module.exports = {
+  authentication,
+  createUserStudyprogrammes,
+}

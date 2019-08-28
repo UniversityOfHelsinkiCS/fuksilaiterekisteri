@@ -1,7 +1,7 @@
 const Router = require('express')
 const userController = require('@controllers/userController')
 const studentController = require('@controllers/studentController')
-const authenticationMiddleware = require('@util/authenticationMiddleware')
+const { authentication } = require('@util/authenticationMiddleware')
 const { checkAdmin, checkStaffOrAdmin } = require('@util/adminMiddleware')
 const { checkDistributor } = require('@util/distributorMiddleware')
 const { checkStaff } = require('@util/staffMiddleware')
@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
 
 router.post('/logout', userController.getLogoutUrl)
 
-router.use('/', authenticationMiddleware)
+router.use('/', authentication)
 
 router.get('/ping', (req, res) => res.send('pong'))
 
