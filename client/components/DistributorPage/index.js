@@ -24,11 +24,9 @@ const getOs = (code) => {
   return <p style={{ marginLeft: '10px', fontWeight: 'bold', color: 'blue' }}>Windows</p>
 }
 
-const Warning = () => {
-  return (
-    <p style={{ fontSize: '20px', color: 'red', fontWeight: 'bold' }}>Muista tarkistaa henkilöllisyys!</p>
-  )
-}
+const Warning = () => (
+  <p style={{ fontSize: '20px', color: 'red', fontWeight: 'bold' }}>Muista tarkistaa henkilöllisyys!</p>
+)
 
 const StudentInfo = ({ student }) => {
   if (!student) return null

@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Button, Input, Segment, Form } from 'semantic-ui-react'
+import {
+  Button, Input, Segment, Form,
+} from 'semantic-ui-react'
 import { deviceRequestAction } from 'Utilities/redux/deviceRequestReducer'
 
 const RequestDeviceForm = () => {
