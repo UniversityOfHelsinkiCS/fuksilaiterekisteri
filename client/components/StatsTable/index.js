@@ -103,7 +103,7 @@ const StatsTable = ({ students }) => {
             {stats.totalReceived}
           </Table.Cell>
         </Table.Row>
-        <Table.Row>
+        <Table.Row active>
           <Table.Cell collapsing>
             Total
           </Table.Cell>
@@ -115,6 +115,20 @@ const StatsTable = ({ students }) => {
           </Table.Cell>
           <Table.Cell>
             {stats.total}
+          </Table.Cell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell collapsing>
+            Devices still needed
+          </Table.Cell>
+          <Table.Cell>
+            {stats.windows.wants + stats.windows.needs}
+          </Table.Cell>
+          <Table.Cell>
+            {stats.cubbli.wants + stats.cubbli.needs}
+          </Table.Cell>
+          <Table.Cell>
+            {stats.totalWants + stats.totalNeeds}
           </Table.Cell>
         </Table.Row>
       </Table.Body>

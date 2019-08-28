@@ -24,6 +24,12 @@ const getOs = (code) => {
   return <p style={{ marginLeft: '10px', fontWeight: 'bold', color: 'blue' }}>Windows</p>
 }
 
+const Warning = () => {
+  return (
+    <p style={{ fontSize: '20px', color: 'red', fontWeight: 'bold' }}>Muista tarkistaa henkilöllisyys!</p>
+  )
+}
+
 const StudentInfo = ({ student }) => {
   if (!student) return null
   return (
@@ -31,6 +37,7 @@ const StudentInfo = ({ student }) => {
       <div>{`Etunimi: ${student.name}`}</div>
       <div>{`Syntymäaika: ${formatDateOfBirth(student.dateOfBirth)}`}</div>
       <div style={{ marginTop: '10px', marginBottom: '10px' }}>
+        <Warning />
         <h4>Opinto-ohjelma(t):</h4>
         {student.studyPrograms.map(({ code, name }) => (
           <div key={code} style={{ display: 'flex' }}>
@@ -92,7 +99,7 @@ const DistributorPage = () => {
 
   const handleClaimClick = () => {
     if (!student || !deviceId) return
-    const res = window.confirm(`Haluatko varmasti antaa laitteen ${deviceId}?`)
+    const res = window.confirm(`Haluatko varmasti antaa laitteen ${deviceId} henkilölle ${student.name}?`)
     if (res) claimDevice({ studentNumber: student.studentNumber, deviceId })
   }
 

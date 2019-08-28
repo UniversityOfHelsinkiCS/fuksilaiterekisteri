@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Button, Input, Segment } from 'semantic-ui-react'
+import { Button, Input, Segment, Form } from 'semantic-ui-react'
 import { deviceRequestAction } from 'Utilities/redux/deviceRequestReducer'
 
 const RequestDeviceForm = () => {
@@ -45,23 +45,25 @@ const RequestDeviceForm = () => {
         <p>Olet oikeutettu fuksilaitteeseen, anna ei-helsinki.fi sähköpostisi</p>
         <p>{`Hello ${user.name},`}</p>
         <p>You’re entitled to a fresher device. Please type in your non-helsinki.fi email to ensure you’ll receive pickup and other device related information.</p>
-        <Input fluid error={inputRed} label="Email" placeholder="@gmail.com" onChange={changeEmail} />
-        <br />
-        <br />
-        <div style={{ display: 'flex' }}>
-          <Button color="purple" onClick={handleRequestClick} disabled={buttonDisabled}>
-            Haluan laitteen
-            <br />
-            <br />
-            I want a device
-          </Button>
-          <Button onClick={handleNoEmailRequestClick} color="red">
-            Haluan laitteen, mutta en halua antaa toista sähköpostiosoitettani
-            <br />
-            <br />
-            I want a device, but I don’t want to give out my email
-          </Button>
-        </div>
+        <Form>
+          <Input fluid error={inputRed} label="Email" placeholder="@gmail.com" onChange={changeEmail} />
+          <br />
+          <br />
+          <div style={{ display: 'flex' }}>
+            <Button style={{ flex: 0.5 }} color="purple" onClick={handleRequestClick} disabled={buttonDisabled}>
+              Haluan laitteen
+              <br />
+              <br />
+              I want a device
+            </Button>
+            <Button style={{ flex: 0.5 }} onClick={handleNoEmailRequestClick} negative>
+              Haluan laitteen, mutta en halua antaa toista sähköpostiosoitettani
+              <br />
+              <br />
+              I want a device, but I don’t want to give out my email
+            </Button>
+          </div>
+        </Form>
       </Segment>
     </div>
   )
