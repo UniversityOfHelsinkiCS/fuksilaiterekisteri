@@ -1,5 +1,6 @@
 const db = require('@models')
 const completionChecker = require('@util/completionChecker')
+const logger = require('@util/logger')
 
 const validateEmail = (checkEmail) => {
   const validationRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
@@ -55,7 +56,7 @@ const requestDevice = async (req, res) => {
       .json(updatedUser)
       .end()
   } catch (error) {
-    console.log('Error requesting device: ', error)
+    logger.error('Error requesting device: ', error)
     return res
       .status(500)
       .json({ error: 'Database error.' })
@@ -97,7 +98,7 @@ const claimDevice = async (req, res) => {
 
     return res.json(deviceData)
   } catch (e) {
-    console.error(e)
+    logger.error(e)
     return res.status(500).json({ error: 'error' })
   }
 }
@@ -107,7 +108,7 @@ const getAllUsers = async (req, res) => {
     const users = await db.user.findAll({ include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
     res.json(users)
   } catch (e) {
-    console.error(e)
+    logger.error(e)
     res.status(500).json({ error: 'error' })
   }
 }
@@ -130,7 +131,7 @@ const toggleStaff = async (req, res) => {
     await user.update({ staff: !user.staff })
     return res.json(user)
   } catch (e) {
-    console.error(e)
+    logger.error(e)
     return res.status(500).json({ error: 'error' })
   }
 }
@@ -153,7 +154,7 @@ const toggleDistributor = async (req, res) => {
     await user.update({ distributor: !user.distributor })
     return res.json(user)
   } catch (e) {
-    console.error(e)
+    logger.error(e)
     return res.status(500).json({ error: 'error' })
   }
 }

@@ -5,14 +5,14 @@ const { updateEligibleStudentStatuses, checkStudentEligibilities } = require('@s
 const startCron = () => new CronJob({
   cronTime: '0 * * * *',
   onTick: async () => {
-    console.log('Updating eligible student statuses...')
+    logger.info('Updating eligible student statuses...')
     try {
       await updateEligibleStudentStatuses()
     } catch (e) {
       logger.error('Failed updating eligible student statuses!', e)
     }
 
-    console.log('Checking student eligibilities...')
+    logger.info('Checking student eligibilities...')
     try {
       await checkStudentEligibilities()
     } catch (e) {

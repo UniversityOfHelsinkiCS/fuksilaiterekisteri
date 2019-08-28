@@ -1,5 +1,6 @@
 const db = require('@models')
 const { Op } = require('sequelize')
+const logger = require('@util/logger')
 
 const getStudent = async (req, res) => {
   const { studentNumber } = req.params
@@ -37,7 +38,7 @@ const markStudentEligible = async (req, res) => {
 
     return res.json(student)
   } catch (e) {
-    console.error(e)
+    logger.error(e)
     return res.status(500).json({ error: 'error' })
   }
 }
@@ -59,7 +60,7 @@ const updateStudentStatus = async (req, res) => {
 
     return res.json(student)
   } catch (e) {
-    console.error(e)
+    logger.error(e)
     return res.status(500).json({ error: 'error' })
   }
 }
@@ -83,7 +84,7 @@ const getStudentsForStaff = async (req, res) => {
 
     return res.status(200).json(allStudents)
   } catch (e) {
-    console.error(e)
+    logger.error(e)
     return res.status(500).json({ error: 'error' })
   }
 }

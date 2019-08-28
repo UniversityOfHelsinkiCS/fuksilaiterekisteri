@@ -58,5 +58,5 @@ initializeDatabaseConnection()
   })
   .catch((e) => {
     process.exitCode = 1
-    console.log(e)
+    logger.error(e)
   })
