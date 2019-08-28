@@ -1,5 +1,6 @@
 const { sequelize, Sequelize } = require('@models')
 const Umzug = require('umzug')
+const logger = require('@util/logger')
 
 const DB_CONNECTION_RETRY_LIMIT = 60
 
@@ -9,7 +10,7 @@ const runMigrations = async () => {
     storageOptions: {
       sequelize,
     },
-    logging: console.log,
+    logging: msg => logger.info(msg),
     migrations: {
       params: [sequelize.getQueryInterface(), Sequelize],
       path: `${process.cwd()}/migrations`,
@@ -28,10 +29,10 @@ const initializeDatabaseConnection = async (attempt = 1) => {
     return true
   } catch (e) {
     if (attempt === DB_CONNECTION_RETRY_LIMIT) {
-      console.log(`Connection to database failed after ${attempt} attempts`)
+      logger.error(`Connection to database failed after ${attempt} attempts`)
       process.exit(1)
     }
-    console.log(`Connection to database failed! Attempt ${attempt} of ${DB_CONNECTION_RETRY_LIMIT}`)
+    logger.error(`Connection to database failed! Attempt ${attempt} of ${DB_CONNECTION_RETRY_LIMIT}`)
     await sleep(1000)
     return initializeDatabaseConnection(attempt + 1)
   }

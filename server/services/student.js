@@ -181,7 +181,7 @@ const checkStudentEligibilities = async () => {
       new Promise(async (res) => {
         const { eligible: newEligible } = await isEligible(studentNumber)
         if (newEligible !== prevEligible) {
-          console.log(`Eligibility missmatch for ${studentNumber}!`)
+          logger.info(`Eligibility missmatch for ${studentNumber}!`)
           amount++
         }
         res()
@@ -189,8 +189,8 @@ const checkStudentEligibilities = async () => {
     )),
   )
 
-  if (!amount) console.log('All good!')
-  else console.log(`There were ${amount} mismatches!`)
+  if (!amount) logger.info('All good!')
+  else logger.info(`There were ${amount} mismatches!`)
 }
 
 const updateStudentEligibility = async (studentNumber) => {
