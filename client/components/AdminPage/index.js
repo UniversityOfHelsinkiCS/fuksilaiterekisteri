@@ -13,7 +13,7 @@ export default () => {
   }, [])
 
   return (
-    <div>
+    <div style={{ width: '100%' }}>
       <StatsTable students={users.filter(u => u.studentNumber)} />
       <UserTable users={users} />
     </div>
