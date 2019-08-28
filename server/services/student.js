@@ -146,26 +146,37 @@ const updateEligibleStudentStatuses = async () => {
   })
 
   let done = 0
-  await Promise.all(targetStudents.map(s => (
-    new Promise(async (res) => {
-      try {
-        const { studyrights } = await isEligible(s.studentNumber)
-        const { digiSkills, hasEnrollments } = await getStudentStatus(s.studentNumber, studyrights)
 
-        const updatedStudent = await s.update({
-          digiSkillsCompleted: digiSkills || s.digiSkillsCompleted,
-          courseRegistrationCompleted: hasEnrollments || s.courseRegistrationCompleted,
-        })
+  const dbPromises = []
+  // Lets not bombard oodi...
+  for (let i = 0; i < targetStudents.length; i++) {
+    try {
+      const { studyrights } = await isEligible(targetStudents[i].studentNumber) // eslint-disable-line
+      const { digiSkills, hasEnrollments } = await getStudentStatus(targetStudents[i].studentNumber, studyrights) // eslint-disable-line
 
-        await completionChecker(updatedStudent)
-        logger.info(`Updated student ${++done}/${targetStudents.length}`)
-        res(true)
-      } catch (e) {
-        logger.error(`Failed updating student ${s.studentNumber}`, e)
-        res(false)
-      }
-    })
-  )))
+      dbPromises.push(
+        new Promise(async (res) => { // eslint-disable-line
+          try {
+            const updatedStudent = await targetStudents[i].update({
+              digiSkillsCompleted: digiSkills || targetStudents[i].digiSkillsCompleted,
+              courseRegistrationCompleted: hasEnrollments || targetStudents[i].courseRegistrationCompleted,
+            })
+
+            await completionChecker(updatedStudent)
+            logger.info(`Updated student ${++done}/${targetStudents.length}`)
+            res(true)
+          } catch (e) {
+            logger.error(`Failed updating student ${targetStudents[i].studentNumber}`, e)
+            res(false)
+          }
+        }),
+      )
+    } catch (e) {
+      logger.error(`Failed fetching oodi data for student ${targetStudents[i].studentNumber}`)
+    }
+  }
+
+  await Promise.all(dbPromises)
 }
 
 const checkStudentEligibilities = async () => {
