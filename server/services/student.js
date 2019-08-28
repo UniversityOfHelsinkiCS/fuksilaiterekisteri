@@ -196,9 +196,9 @@ const checkStudentEligibilities = async () => {
 const updateStudentEligibility = async (studentNumber) => {
   const foundStudent = await db.user.findOne({
     where: {
-      studentNumber
+      studentNumber,
     },
-    include: [{ model: db.studyProgram, as: 'studyPrograms' }]
+    include: [{ model: db.studyProgram, as: 'studyPrograms' }],
   })
 
   if (!foundStudent) {
@@ -214,7 +214,7 @@ const updateStudentEligibility = async (studentNumber) => {
 
   await createUserStudyprogrammes(studyrights, foundStudent)
   await foundStudent.update({
-    eligible
+    eligible,
   })
 
   console.log(`${studentNumber} eligibility updated successfully!`)
@@ -225,5 +225,5 @@ module.exports = {
   isEligible,
   updateEligibleStudentStatuses,
   checkStudentEligibilities,
-  updateStudentEligibility
+  updateStudentEligibility,
 }
