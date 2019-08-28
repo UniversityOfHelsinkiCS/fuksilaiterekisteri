@@ -31,8 +31,8 @@ const commands = {
     exec: async () => {
       console.log('Updating eligible student statuses...')
       await updateEligibleStudentStatuses()
-    }
-  }
+    },
+  },
 }
 
 const printInsturctions = () => {

@@ -209,7 +209,7 @@ const updateStudentEligibility = async (studentNumber) => {
     return
   }
 
-  let eligibilityBefore = foundStudent.eligible
+  const eligibilityBefore = foundStudent.eligible
   const { eligible, studyrights } = await isEligible(studentNumber)
   if (foundStudent.eligible === eligible) {
     logger.info(`${studentNumber} eligibility hasn't changed.`)
