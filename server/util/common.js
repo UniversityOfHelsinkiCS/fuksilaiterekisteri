@@ -12,5 +12,6 @@ module.exports = {
     'DIGI-200A',
     'DIGI-300A',
     'DIGI-400A',
+    'AYDIGI-500A',
   ],
 }
