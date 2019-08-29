@@ -37,7 +37,7 @@ const StudentStatusPage = () => {
             completed={user.courseRegistrationCompleted}
           />
           <Task
-            task="DIGI-100A completed"
+            task="DIGI-XXXA completed"
             completed={user.digiSkillsCompleted}
           />
         </Segment.Group>

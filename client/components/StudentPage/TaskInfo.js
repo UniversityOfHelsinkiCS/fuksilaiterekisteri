@@ -16,13 +16,12 @@ const RegistrationInfo = () => (
 
 const DigiskillsInfo = () => (
   <Segment style={{ maxWidth: '500px' }}>
-    Et ole vielä suorittanut Opiskelijan digitaidot: orientaatio (Kumpula)
-    -kurssia (DIGI-100A). (Kurssin suoritukset merkitään koejaksoa seuraavalla
+    Et ole vielä suorittanut Opiskelijan digitaidot: orientaatio-kurssia (DIGI-XXXA). (Kurssin suoritukset merkitään koejaksoa seuraavalla
     viikolla, jonka jälkeen suoritus näkyy myös täällä.)
     <br />
     <br />
     You are yet to complete the course Student&apos;s digital skills:
-    Orientation (Kumpula) (DIGI-100A). (Please note that this course is graded
+    Orientation (DIGI-XXXA). (Please note that this course is graded
     only after its test period ends, so there may be a long delay before the
     credit is registered.)
   </Segment>
