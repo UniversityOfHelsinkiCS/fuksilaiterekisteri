@@ -68,28 +68,27 @@ const claimDevice = async (req, res) => {
   try {
     const {
       user,
-      body: { studentNumber, deviceId }
+      body: { studentNumber, deviceId },
     } = req
 
-    if (!studentNumber)
-      return res.status(400).json({ error: 'student number missing' })
+    if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
     if (!deviceId) return res.status(400).json({ error: 'device id missing' })
 
     const student = await db.user.findOne({
       where: {
-        studentNumber
-      }
+        studentNumber,
+      },
     })
 
     if (!student) return res.status(404).json({ error: 'student not found' })
 
     if (
       !(
-        student.eligible &&
-        student.wantsDevice &&
-        student.digiSkillsCompleted &&
-        student.courseRegistrationCompleted &&
-        !student.deviceGivenAt
+        student.eligible
+        && student.wantsDevice
+        && student.digiSkillsCompleted
+        && student.courseRegistrationCompleted
+        && !student.deviceGivenAt
       )
     ) {
       return res.status(403).json({ error: 'student not egilible for device' })
@@ -98,11 +97,11 @@ const claimDevice = async (req, res) => {
     const deviceData = {
       device_distributed_by: user.userId,
       deviceSerial: deviceId,
-      deviceGivenAt: new Date()
+      deviceGivenAt: new Date(),
     }
 
     await student.update({
-      ...deviceData
+      ...deviceData,
     })
 
     return res.json(deviceData)
