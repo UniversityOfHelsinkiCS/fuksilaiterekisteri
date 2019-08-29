@@ -64,104 +64,106 @@ const StatsTable = ({ students }) => {
   const { Cubbli, Windows, ...programmeStats } = stats
 
   return (
-    <Table definition collapsing>
-      <Table.Header>
-        <Table.Row>
-          <Table.HeaderCell />
-          <Table.HeaderCell>
-            Windows
-          </Table.HeaderCell>
-          <Table.HeaderCell>
-            Cubbli
-          </Table.HeaderCell>
-          <Table.HeaderCell>
-            Total
-          </Table.HeaderCell>
-          { Object.keys(programmeStats).map(key => (
-            <Table.HeaderCell key={key}>
-              {key}
+    <div style={{ overflow: 'auto', maxWidth: '100%', marginBottom: '10px' }}>
+      <Table definition collapsing>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell />
+            <Table.HeaderCell>
+              Windows
             </Table.HeaderCell>
-          )) }
-        </Table.Row>
-      </Table.Header>
-      <Table.Body>
-        <Table.Row>
-          <Table.Cell collapsing>
-            Wants a device
-          </Table.Cell>
-          <Table.Cell>
-            {Windows.wants}
-          </Table.Cell>
-          <Table.Cell>
-            {Cubbli.wants}
-          </Table.Cell>
-          <Table.Cell active>
-            {totals.totalWants}
-          </Table.Cell>
-          { getCellsFor(programmeStats, 'wants') }
-        </Table.Row>
-        <Table.Row>
-          <Table.Cell collapsing>
-            Ready for a device
-          </Table.Cell>
-          <Table.Cell>
-            {Windows.needs}
-          </Table.Cell>
-          <Table.Cell>
-            {Cubbli.needs}
-          </Table.Cell>
-          <Table.Cell active>
-            {totals.totalNeeds}
-          </Table.Cell>
-          { getCellsFor(programmeStats, 'needs') }
-        </Table.Row>
-        <Table.Row>
-          <Table.Cell collapsing>
-            Has received a device
-          </Table.Cell>
-          <Table.Cell>
-            {Windows.received}
-          </Table.Cell>
-          <Table.Cell>
-            {Cubbli.received}
-          </Table.Cell>
-          <Table.Cell active>
-            {totals.totalReceived}
-          </Table.Cell>
-          { getCellsFor(programmeStats, 'received') }
-        </Table.Row>
-        <Table.Row active>
-          <Table.Cell collapsing>
-            Total
-          </Table.Cell>
-          <Table.Cell>
-            {Windows.total}
-          </Table.Cell>
-          <Table.Cell>
-            {Cubbli.total}
-          </Table.Cell>
-          <Table.Cell active>
-            {totals.total}
-          </Table.Cell>
-          { getCellsFor(programmeStats, 'total') }
-        </Table.Row>
-        <Table.Row>
-          <Table.Cell collapsing>
-            Devices still needed
-          </Table.Cell>
-          <Table.Cell>
-            {Windows.devicesNeeded}
-          </Table.Cell>
-          <Table.Cell>
-            {Cubbli.devicesNeeded}
-          </Table.Cell>
-          <Table.Cell active>
-            {totals.devicesNeeded}
-          </Table.Cell>
-          { getCellsFor(programmeStats, 'devicesNeeded') }
-        </Table.Row>
-      </Table.Body>
-    </Table>
+            <Table.HeaderCell>
+              Cubbli
+            </Table.HeaderCell>
+            <Table.HeaderCell>
+              Total
+            </Table.HeaderCell>
+            { Object.keys(programmeStats).map(key => (
+              <Table.HeaderCell key={key}>
+                {key}
+              </Table.HeaderCell>
+            )) }
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell collapsing>
+              Wants a device
+            </Table.Cell>
+            <Table.Cell>
+              {Windows.wants}
+            </Table.Cell>
+            <Table.Cell>
+              {Cubbli.wants}
+            </Table.Cell>
+            <Table.Cell active>
+              {totals.totalWants}
+            </Table.Cell>
+            { getCellsFor(programmeStats, 'wants') }
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell collapsing>
+              Ready for a device
+            </Table.Cell>
+            <Table.Cell>
+              {Windows.needs}
+            </Table.Cell>
+            <Table.Cell>
+              {Cubbli.needs}
+            </Table.Cell>
+            <Table.Cell active>
+              {totals.totalNeeds}
+            </Table.Cell>
+            { getCellsFor(programmeStats, 'needs') }
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell collapsing>
+              Has received a device
+            </Table.Cell>
+            <Table.Cell>
+              {Windows.received}
+            </Table.Cell>
+            <Table.Cell>
+              {Cubbli.received}
+            </Table.Cell>
+            <Table.Cell active>
+              {totals.totalReceived}
+            </Table.Cell>
+            { getCellsFor(programmeStats, 'received') }
+          </Table.Row>
+          <Table.Row active>
+            <Table.Cell collapsing>
+              Total
+            </Table.Cell>
+            <Table.Cell>
+              {Windows.total}
+            </Table.Cell>
+            <Table.Cell>
+              {Cubbli.total}
+            </Table.Cell>
+            <Table.Cell active>
+              {totals.total}
+            </Table.Cell>
+            { getCellsFor(programmeStats, 'total') }
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell collapsing>
+              Devices still needed
+            </Table.Cell>
+            <Table.Cell>
+              {Windows.devicesNeeded}
+            </Table.Cell>
+            <Table.Cell>
+              {Cubbli.devicesNeeded}
+            </Table.Cell>
+            <Table.Cell active>
+              {totals.devicesNeeded}
+            </Table.Cell>
+            { getCellsFor(programmeStats, 'devicesNeeded') }
+          </Table.Row>
+        </Table.Body>
+      </Table>
+    </div>
   )
 }
 
