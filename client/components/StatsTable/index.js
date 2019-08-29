@@ -25,6 +25,7 @@ const StatsTable = ({ students }) => {
     const hasRequiredComplete = ({ eligible, digiSkillsCompleted, courseRegistrationCompleted }) => eligible && digiSkillsCompleted && courseRegistrationCompleted
 
     students.forEach((student) => {
+      if (!student.studyPrograms || !student.studyPrograms.length) return
       const cubbliProgram = student.studyPrograms.find(({ code }) => cubbli.includes(code))
       const targetOs = cubbliProgram ? 'Cubbli' : 'Windows'
       const targetProgram = (cubbliProgram && cubbliProgram.name) || student.studyPrograms[0].name
