@@ -100,7 +100,7 @@ const StudentTable = ({ students }) => {
     {
       key: 'studyPrograms',
       title: 'Study programs',
-      getRowVal: ({ studyPrograms }) => studyPrograms.map(s => s.code).join(', '),
+      getRowVal: ({ studyPrograms }) => studyPrograms.map(s => s.name).join(', '),
     },
     {
       key: 'mark_eligible',
