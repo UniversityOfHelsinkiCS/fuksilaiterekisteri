@@ -4,7 +4,9 @@ const { Op } = require('sequelize')
 const db = require('@models')
 const logger = require('@util/logger')
 const completionChecker = require('@util/completionChecker')
-const { STUDENT_API_URL, STUDENT_API_TOKEN, DIGI_COURSES, inProduction } = require('../util/common')
+const {
+  STUDENT_API_URL, STUDENT_API_TOKEN, DIGI_COURSES, inProduction,
+} = require('../util/common')
 const { createUserStudyprogrammes } = require('../util/authenticationMiddleware')
 
 const userApi = axios.create({

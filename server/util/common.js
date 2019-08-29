@@ -11,6 +11,6 @@ module.exports = {
     'DIGI-100A',
     'DIGI-200A',
     'DIGI-300A',
-    'DIGI-400A'
-  ]
+    'DIGI-400A',
+  ],
 }
