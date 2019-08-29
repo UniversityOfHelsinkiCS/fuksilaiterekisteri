@@ -229,11 +229,12 @@ const updateStudentEligibility = async (studentNumber) => {
   }
 
   await createUserStudyprogrammes(studyrights, foundStudent)
-  await foundStudent.update({
+  const updatedStudent = await foundStudent.update({
     eligible,
   })
 
   logger.info(`${studentNumber} eligibility updated successfully from ${eligibilityBefore} to ${eligible}!`)
+  await completionChecker(updatedStudent)
 }
 
 module.exports = {

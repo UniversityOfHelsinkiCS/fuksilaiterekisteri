@@ -6,13 +6,15 @@ const StatsTable = ({ students }) => {
     const def = {
       wants: 0, needs: 0, received: 0, total: 0,
     }
-    const res = {
-      windows: {
+    const stats = {
+      Windows: {
         ...def,
       },
-      cubbli: {
+      Cubbli: {
         ...def,
       },
+    }
+    const totals = {
       totalWants: 0,
       totalNeeds: 0,
       totalReceived: 0,
@@ -23,26 +25,42 @@ const StatsTable = ({ students }) => {
     const hasRequiredComplete = ({ eligible, digiSkillsCompleted, courseRegistrationCompleted }) => eligible && digiSkillsCompleted && courseRegistrationCompleted
 
     students.forEach((student) => {
-      const target = student.studyPrograms.some(({ code }) => cubbli.includes(code)) ? 'cubbli' : 'windows'
+      const cubbliProgram = student.studyPrograms.find(({ code }) => cubbli.includes(code))
+      const targetOs = cubbliProgram ? 'Cubbli' : 'Windows'
+      const targetProgram = (cubbliProgram && cubbliProgram.name) || student.studyPrograms[0].name
+      if (!stats[targetProgram]) stats[targetProgram] = { ...def }
       if (student.wantsDevice && !student.deviceSerial && !hasRequiredComplete(student)) {
-        res[target].wants++
+        stats[targetOs].wants++
+        stats[targetProgram].wants++
       } else if (student.wantsDevice && !student.deviceSerial && hasRequiredComplete(student)) {
-        res[target].needs++
+        stats[targetOs].needs++
+        stats[targetProgram].needs++
       } else if (student.deviceSerial) {
-        res[target].received++
+        stats[targetOs].received++
+        stats[targetProgram].received++
       }
     })
-    res.windows.total = Object.values(res.windows).reduce((acc, curr) => acc + curr, 0)
-    res.cubbli.total = Object.values(res.cubbli).reduce((acc, curr) => acc + curr, 0)
-    res.totalWants = res.windows.wants + res.cubbli.wants
-    res.totalNeeds = res.windows.needs + res.cubbli.needs
-    res.totalReceived = res.windows.received + res.cubbli.received
-    res.total = res.windows.total + res.cubbli.total
+    Object.entries(stats).forEach(([key, stat]) => {
+      stats[key].total = Object.values(stat).reduce((acc, curr) => acc + curr, 0)
+      stats[key].devicesNeeded = stats[key].wants + stats[key].needs
+    })
+    totals.totalWants = stats.Windows.wants + stats.Cubbli.wants
+    totals.totalNeeds = stats.Windows.needs + stats.Cubbli.needs
+    totals.totalReceived = stats.Windows.received + stats.Cubbli.received
+    totals.total = stats.Windows.total + stats.Cubbli.total
+    totals.devicesNeeded = totals.totalWants + totals.totalNeeds
 
-    return res
+    return { stats, totals }
   }
 
-  const stats = useMemo(() => getStats(), [students])
+  const getCellsFor = (stats, prop) => Object.keys(stats).map(key => (
+    <Table.Cell key={key}>
+      {stats[key][prop]}
+    </Table.Cell>
+  ))
+
+  const { stats, totals } = useMemo(() => getStats(), [students])
+  const { Cubbli, Windows, ...programmeStats } = stats
 
   return (
     <Table definition collapsing>
@@ -58,6 +76,11 @@ const StatsTable = ({ students }) => {
           <Table.HeaderCell>
             Total
           </Table.HeaderCell>
+          { Object.keys(programmeStats).map(key => (
+            <Table.HeaderCell key={key}>
+              {key}
+            </Table.HeaderCell>
+          )) }
         </Table.Row>
       </Table.Header>
       <Table.Body>
@@ -66,70 +89,75 @@ const StatsTable = ({ students }) => {
             Wants a device
           </Table.Cell>
           <Table.Cell>
-            {stats.windows.wants}
+            {Windows.wants}
           </Table.Cell>
           <Table.Cell>
-            {stats.cubbli.wants}
+            {Cubbli.wants}
           </Table.Cell>
-          <Table.Cell>
-            {stats.totalWants}
+          <Table.Cell active>
+            {totals.totalWants}
           </Table.Cell>
+          { getCellsFor(programmeStats, 'wants') }
         </Table.Row>
         <Table.Row>
           <Table.Cell collapsing>
             Ready for a device
           </Table.Cell>
           <Table.Cell>
-            {stats.windows.needs}
+            {Windows.needs}
           </Table.Cell>
           <Table.Cell>
-            {stats.cubbli.needs}
+            {Cubbli.needs}
           </Table.Cell>
-          <Table.Cell>
-            {stats.totalNeeds}
+          <Table.Cell active>
+            {totals.totalNeeds}
           </Table.Cell>
+          { getCellsFor(programmeStats, 'needs') }
         </Table.Row>
         <Table.Row>
           <Table.Cell collapsing>
             Has received a device
           </Table.Cell>
           <Table.Cell>
-            {stats.windows.received}
+            {Windows.received}
           </Table.Cell>
           <Table.Cell>
-            {stats.cubbli.received}
+            {Cubbli.received}
           </Table.Cell>
-          <Table.Cell>
-            {stats.totalReceived}
+          <Table.Cell active>
+            {totals.totalReceived}
           </Table.Cell>
+          { getCellsFor(programmeStats, 'received') }
         </Table.Row>
         <Table.Row active>
           <Table.Cell collapsing>
             Total
           </Table.Cell>
           <Table.Cell>
-            {stats.windows.total}
+            {Windows.total}
           </Table.Cell>
           <Table.Cell>
-            {stats.cubbli.total}
+            {Cubbli.total}
           </Table.Cell>
-          <Table.Cell>
-            {stats.total}
+          <Table.Cell active>
+            {totals.total}
           </Table.Cell>
+          { getCellsFor(programmeStats, 'total') }
         </Table.Row>
         <Table.Row>
           <Table.Cell collapsing>
             Devices still needed
           </Table.Cell>
           <Table.Cell>
-            {stats.windows.wants + stats.windows.needs}
+            {Windows.devicesNeeded}
           </Table.Cell>
           <Table.Cell>
-            {stats.cubbli.wants + stats.cubbli.needs}
+            {Cubbli.devicesNeeded}
           </Table.Cell>
-          <Table.Cell>
-            {stats.totalWants + stats.totalNeeds}
+          <Table.Cell active>
+            {totals.devicesNeeded}
           </Table.Cell>
+          { getCellsFor(programmeStats, 'devicesNeeded') }
         </Table.Row>
       </Table.Body>
     </Table>
