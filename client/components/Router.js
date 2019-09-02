@@ -14,7 +14,7 @@ const Router = () => {
   const user = useSelector(state => state.user.data)
   if (!user) return <div> Loading </div>
   return (
-    <div className="content" style={{ padding: '10px' }}>
+    <div className="page-content" style={{ padding: '10px' }}>
       <Switch>
         <Route exact path="/" component={MainPage} />
         <Route exact path="/admin" component={AdminPage} />

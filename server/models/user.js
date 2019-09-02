@@ -51,6 +51,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         field: 'course_registration_completed',
       },
+      adminNote: {
+        type: DataTypes.STRING,
+        field: 'admin_note',
+      },
     },
     {
       underscored: true,

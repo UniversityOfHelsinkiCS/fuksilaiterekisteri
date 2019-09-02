@@ -27,7 +27,15 @@ export const toggleUserDistributor = (id) => {
   return callBuilder(route, prefix, method)
 }
 
-const INITIAL_STATE = { data: [] }
+export const setUserAdminNote = ({ id, note }) => {
+  const route = `/user/${id}/admin_note`
+  const prefix = 'SET_USER_ADMIN_NOTE'
+  const method = 'post'
+  const data = { note }
+  return callBuilder(route, prefix, method, data)
+}
+
+const INITIAL_STATE = { data: [], settingAdminNote: false }
 
 const handleUsersUpdate = (updatedUser, data) => data.map(user => (user.id === updatedUser.id ? updatedUser : user))
 
@@ -68,6 +76,26 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         data: handleUsersUpdate(action.response, state.data),
+      }
+    case 'SET_USER_ADMIN_NOTE_ATTEMPT':
+      return {
+        ...state,
+        settingAdminNote: true,
+        error: false,
+      }
+
+    case 'SET_USER_ADMIN_NOTE_FAILURE':
+      return {
+        ...state,
+        settingAdminNote: false,
+        error: true,
+      }
+    case 'SET_USER_ADMIN_NOTE_SUCCESS':
+      return {
+        ...state,
+        data: handleUsersUpdate(action.response, state.data),
+        settingAdminNote: false,
+        error: false,
       }
     default:
       return state
