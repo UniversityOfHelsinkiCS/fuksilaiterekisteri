@@ -13,11 +13,11 @@ Matemaattis-luonnontieteellinen tiedekunta / Faculty of Science`
 const subject = 'Tule noutamaan fuksilaitteesi perjantaina 6.9! - Come get your fresher device on Friday the 6th of September!'
 
 const completionChecker = async (user) => {
-  if (process.env.EMAIL_ENABLED !== 'true') {
-    logger.error('Email disabled, set EMAIL_ENABLED=true to enable.')
-    return
-  }
   if (user.eligible && user.digiSkillsCompleted && user.courseRegistrationCompleted) {
+    if (process.env.EMAIL_ENABLED !== 'true') {
+      logger.error('Email disabled, set EMAIL_ENABLED=true to enable.')
+      return
+    }
     const info = await sendEmail([user.hyEmail, user.personalEmail], subject, text)
     if (info) {
       info.accepted.forEach(accepted => logger.info(`Email sent to ${accepted}.`))
