@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import useAuth from 'Utilities/useAuth'
@@ -13,7 +13,7 @@ const AuthCheck = ({ location, children, history }) => {
     }
   }, [authorized])
 
-  return <>{children}</>
+  return children
 }
 
 export default withRouter(AuthCheck)
