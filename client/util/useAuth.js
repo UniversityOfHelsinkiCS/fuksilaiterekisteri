@@ -7,7 +7,7 @@ const pathAccessRights = {
   student: ['student'],
 }
 
-const parseUserRights = (user) => {
+export const parseUserRights = (user) => {
   const res = []
   if (user.admin) res.push('admin')
   if (user.distributor) res.push('distributor')
