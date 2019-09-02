@@ -2,6 +2,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import {
   Button,
+  Icon,
 } from 'semantic-ui-react'
 import {
   markStudentEligible as markStudentEligibleAction,
@@ -10,7 +11,7 @@ import {
 } from '../../../util/redux/usersReducer'
 import SortedTable from '../../SortedTable'
 
-const UserTable = ({ users }) => {
+const UserTable = ({ users, handleAdminNoteClick }) => {
   const dispatch = useDispatch()
   const valOrEmpty = val => (val !== null ? val : '-')
   const markStudentEligible = (studentNumber, name) => {
@@ -25,6 +26,12 @@ const UserTable = ({ users }) => {
     {
       key: 'name',
       title: 'Name',
+      getRowContent: ({ id, name, adminNote }) => (
+        <span>
+          <Icon onClick={() => handleAdminNoteClick(id)} style={{ cursor: 'pointer' }} color={`${adminNote ? 'green' : 'black'}`} name="sticky note outline" />
+          { valOrEmpty(name) }
+        </span>
+      ),
       getRowVal: ({ name }) => valOrEmpty(name),
     },
     {
@@ -85,7 +92,7 @@ const UserTable = ({ users }) => {
     },
     {
       key: 'admin',
-      title: 'admin',
+      title: 'Admin',
       getRowVal: ({ admin }) => boolToString(admin),
     },
     {

@@ -21,7 +21,7 @@ const App = () => {
     return (
       <FakeShibboBar>
         <NavBar />
-        <div className="content">
+        <div className="page-content">
           <h3>Registration is closed for maintenance, check again in few hours.</h3>
         </div>
         <Footer />
@@ -33,7 +33,7 @@ const App = () => {
     return (
       <FakeShibboBar>
         <NavBar />
-        <div className="content">
+        <div className="page-content">
           <Loader active inline="centered">
             Loading
           </Loader>

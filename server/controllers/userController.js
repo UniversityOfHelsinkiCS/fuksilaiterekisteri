@@ -167,6 +167,28 @@ const toggleDistributor = async (req, res) => {
   }
 }
 
+const setAdminNote = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { note } = req.body
+
+    const user = await db.user.findOne({
+      where: {
+        id,
+      },
+      include: [{ model: db.studyProgram, as: 'studyPrograms' }],
+    })
+
+    if (!user) return res.status(404).json({ error: 'user not found' })
+
+    await user.update({ adminNote: note })
+    return res.json(user)
+  } catch (e) {
+    logger.error(e)
+    return res.status(500).json({ error: 'error' })
+  }
+}
+
 module.exports = {
   getUser,
   getLogoutUrl,
@@ -175,4 +197,5 @@ module.exports = {
   getAllUsers,
   toggleStaff,
   toggleDistributor,
+  setAdminNote,
 }

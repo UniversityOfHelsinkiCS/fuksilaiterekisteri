@@ -24,9 +24,7 @@ const getOs = (code) => {
   return <p style={{ marginLeft: '10px', fontWeight: 'bold', color: 'blue' }}>Windows</p>
 }
 
-const Warning = () => (
-  <p style={{ fontSize: '20px', color: 'red', fontWeight: 'bold' }}>Muista tarkistaa henkilöllisyys!</p>
-)
+const Warning = () => <p style={{ fontSize: '20px', color: 'red', fontWeight: 'bold' }}>Muista tarkistaa henkilöllisyys!</p>
 
 const StudentInfo = ({ student }) => {
   if (!student) return null
@@ -46,6 +44,13 @@ const StudentInfo = ({ student }) => {
       </div>
     </div>
   )
+}
+
+const parseId = (rawId) => {
+  if (rawId.length !== 4 && rawId.length !== 20) return null
+  if (rawId.length === 4) return `PF1S${rawId}`
+  if (rawId.substring(0, 16) === '1s20N3S2NJ00PF1S') return rawId.substring(12, 20)
+  return null
 }
 
 const DistributorPage = () => {
@@ -93,12 +98,38 @@ const DistributorPage = () => {
     return setStudentNumberValid(true)
   }
 
+  /**
+   *
+   * Barcode reader likes to do stuff we don't want so we have to pick which keypresses to add into the id manually, thanks
+   *
+   * @param {*} event The stuff, regular synthetic event
+   */
+  /*
+  const filterKeypress = (event) => {
+    // These have to be here at the beginning, don't try conditionals here. We tried
+    event.stopPropagation()
+    event.preventDefault()
+
+    if (event.keyCode === 8) {
+      setDeviceId('')
+    }
+
+    // Prevent 16 = Shift and 13 = Enter and 17 = Control from being added to deviceId
+    if (event.keyCode === 16 || event.keyCode === 13 || event.keyCode === 17) return
+    // Prevent J as the reader device tries to push CONTROL + J at the end of an input. CONTROL + J opens Downloads in Chrome.
+    // Only prevent J if control is pressed since it may be in device code
+    if (event.keyCode === 74 && event.ctrlKey) return
+
+    setDeviceId(`${deviceId}${event.key.toUpperCase()}`)
+  }
+  */
+
   const changeDeviceId = (e, { value }) => setDeviceId(value)
 
   const handleClaimClick = () => {
-    if (!student || !deviceId) return
-    const res = window.confirm(`Haluatko varmasti antaa laitteen ${deviceId} henkilölle ${student.name}?`)
-    if (res) claimDevice({ studentNumber: student.studentNumber, deviceId })
+    if (!student || !parseId(deviceId)) return
+    const res = window.confirm(`Haluatko varmasti antaa laitteen ${parseId(deviceId)} henkilölle ${student.name}?`)
+    if (res) claimDevice({ studentNumber: student.studentNumber, deviceId: parseId(deviceId) })
   }
 
   const handleStudentClick = () => {

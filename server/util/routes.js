@@ -5,6 +5,7 @@ const { authentication } = require('@util/authenticationMiddleware')
 const { checkAdmin, checkStaffOrAdmin } = require('@util/adminMiddleware')
 const { checkDistributor } = require('@util/distributorMiddleware')
 const { checkStaff } = require('@util/staffMiddleware')
+const { validationMiddleware } = require('@util/validationMiddleware')
 
 const router = Router()
 
@@ -25,6 +26,7 @@ router.post('/claim_device', checkDistributor, userController.claimDevice)
 router.get('/user', checkAdmin, userController.getAllUsers)
 router.post('/user/:id/staff', checkAdmin, userController.toggleStaff)
 router.post('/user/:id/distributor', checkAdmin, userController.toggleDistributor)
+router.post('/user/:id/admin_note', checkAdmin, validationMiddleware(['id'], ['note']), userController.setAdminNote)
 
 router.get('/student/:studentNumber', checkDistributor, studentController.getStudent)
 router.post('/student/:studentNumber/eligible', checkStaffOrAdmin, studentController.markStudentEligible)
