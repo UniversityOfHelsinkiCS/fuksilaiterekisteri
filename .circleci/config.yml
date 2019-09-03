@@ -5,6 +5,7 @@ executors:
   fukrek-executor:
     machine:
       image: ubuntu-1604:201903-01
+    working_directory: /app
 jobs:
   install:
     executor: fukrek-executor
@@ -12,8 +13,8 @@ jobs:
       - checkout
       - run: npm ci
       - persist_to_workspace:
-          root: node_modules
-          paths:
+          root: /app
+          paths: node_modules
   cypress:
     executor: fukrek-executor
     steps:
@@ -37,4 +38,4 @@ workflows:
             - install
       - lint:
           requires:
-              - install
+            - install
