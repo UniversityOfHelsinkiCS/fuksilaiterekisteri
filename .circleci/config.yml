@@ -18,6 +18,7 @@ jobs:
       - checkout
       - run: npm ci
       - run: npm install -g wait-on
+      - setup_remote_docker
       - run: wait-on http://localhost:8000
       - run: npm run cypress:run
   lint:
