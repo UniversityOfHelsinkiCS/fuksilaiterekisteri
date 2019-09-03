@@ -10,7 +10,7 @@ jobs:
     executor: fukrek-executor
     steps: 
       - checkout
-      - run: ls -la
+      - run: pwd
       - run: npm ci
       - persist_to_workspace:
           root: /
