@@ -7,7 +7,7 @@ executors:
       image: ubuntu-1604:201903-01
 jobs:
   cypress:
-    executor: my-executor
+    executor: test
     steps:
       - checkout
       - run: docker-compose up -d
