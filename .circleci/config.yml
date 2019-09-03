@@ -1,18 +1,15 @@
 version: 2.1
 orbs:
   docker: circleci/docker@0.5.1
+executors:
+  test:
+    machine:
+      image: ubuntu-1604:201903-01
 jobs:
   cypress:
-    image: cypress/base:8
-    executor:
-      name: docker/docker
-      tag: '3.6'
+    executor: my-executor
     steps:
       - checkout
-      - docker/install-docker-tools
-      - setup_remote_docker
-      - run: sudo apt-get update
-      - run: sudo apt-get install libgconf-2-4
       - run: docker-compose up -d
       - run: npm ci
       - run: npm install -g wait-on
