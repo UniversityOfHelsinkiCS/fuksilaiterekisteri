@@ -1,14 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import {
-  Button,
-  Icon,
-} from 'semantic-ui-react'
-import {
-  markStudentEligible as markStudentEligibleAction,
-  toggleUserStaff as toggleUserStaffAction,
-  toggleUserDistributor as toggleUserDistributorAction,
-} from '../../../util/redux/usersReducer'
+import { Button, Icon } from 'semantic-ui-react'
+import { markStudentEligible as markStudentEligibleAction, toggleUserStaff as toggleUserStaffAction, toggleUserDistributor as toggleUserDistributorAction } from '../../../util/redux/usersReducer'
 import SortedTable from '../../SortedTable'
 
 const UserTable = ({ users, handleAdminNoteClick }) => {
@@ -28,8 +21,8 @@ const UserTable = ({ users, handleAdminNoteClick }) => {
       title: 'Name',
       getRowContent: ({ id, name, adminNote }) => (
         <span>
-          <Icon onClick={() => handleAdminNoteClick(id)} style={{ cursor: 'pointer' }} color={`${adminNote ? 'green' : 'black'}`} name="sticky note outline" />
-          { valOrEmpty(name) }
+          <Icon onClick={() => handleAdminNoteClick(id)} style={{ cursor: 'pointer' }} color={`${adminNote ? 'green' : 'black'}`} name={`${adminNote ? 'sticky note' : 'sticky note outline'}`} />
+          {valOrEmpty(name)}
         </span>
       ),
       getRowVal: ({ name }) => valOrEmpty(name),
@@ -122,18 +115,18 @@ const UserTable = ({ users, handleAdminNoteClick }) => {
     {
       key: 'mark_eligible',
       title: '',
-      getRowContent: ({ studentNumber, eligible, name }) => <Button disabled={eligible || !studentNumber} onClick={() => markStudentEligible(studentNumber, name)} color="blue">Mark eligible</Button>,
+      getRowContent: ({ studentNumber, eligible, name }) => (
+        <Button disabled={eligible || !studentNumber} onClick={() => markStudentEligible(studentNumber, name)} color="blue">
+          Mark eligible
+        </Button>
+      ),
       disabled: true,
     },
   ]
 
   return (
     <div style={{ maxWidth: '100%' }}>
-      <SortedTable
-        getRowKey={({ id }) => id}
-        columns={headers}
-        data={users}
-      />
+      <SortedTable getRowKey={({ id }) => id} columns={headers} data={users} />
     </div>
   )
 }
