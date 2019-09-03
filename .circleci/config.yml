@@ -2,15 +2,6 @@ version: 2.1
 orbs:
   docker: circleci/docker@0.5.1
 jobs:
-  build:
-    executor:
-      name: docker/docker
-      tag: '3.6'
-    steps:
-      - checkout
-      - docker/install-docker-tools
-      - setup_remote_docker
-      - run: docker-compose up -d
   cypress:
     docker:
       - image: cypress/base:8
@@ -18,7 +9,9 @@ jobs:
       - checkout
       - run: npm ci
       - run: npm install -g wait-on
+      - docker/install-docker-tools
       - setup_remote_docker
+      - run: docker-compose up -d
       - run: wait-on http://localhost:8000
       - run: npm run cypress:run
   lint:
@@ -32,10 +25,5 @@ jobs:
 workflows:
   build-test-and-deploy:
     jobs:
-      - build
-      - cypress:
-          requires:
-            - build
-      - lint:
-          requires:
-            - build
+      - cypress
+      - lint
