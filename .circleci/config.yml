@@ -6,23 +6,34 @@ executors:
     machine:
       image: ubuntu-1604:201903-01
 jobs:
+  install:
+    executor: fukrek-executor
+    steps: 
+      - checkout
+      - run: npm ci
+      - persist_to_workspace:
+          root: node_modules
   cypress:
     executor: fukrek-executor
     steps:
       - checkout
       - run: docker-compose up -d
-      - run: npm ci
+      - run: npm install -g wait-on
+      - run: wait-on http://localhost:8000
       - run: npm run cypress:run
   lint:
-    docker:
-      - image: circleci/node:stretch
+    executor: fukrek-executor
     steps:
       - checkout
-      - run: npm ci
       - run: npm run lint
 
 workflows:
   test-and-deploy:
     jobs:
-      - cypress
-      - lint
+      - install
+      - cypress:
+          requires:
+            - install
+      - lint:
+        requires:
+            - install
