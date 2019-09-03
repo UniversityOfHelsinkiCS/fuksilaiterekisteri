@@ -3,6 +3,7 @@ orbs:
   docker: circleci/docker@0.5.1
 jobs:
   cypress:
+    image: cypress/base:8
     executor:
       name: docker/docker
       tag: '3.6'
