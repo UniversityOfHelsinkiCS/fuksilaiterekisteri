@@ -153,7 +153,7 @@ const DistributorPage = () => {
         <Form>
           <Form.Group>
             <Ref innerRef={handleDeviceRef}>
-              <Form.Input onChange={changeDeviceId} value={deviceId} />
+              <Form.Input id="device-serial-input" onChange={changeDeviceId} value={deviceId} />
             </Ref>
             <Button color="purple" onClick={handleClaimClick} disabled={buttonDisabled}>
               Anna laite

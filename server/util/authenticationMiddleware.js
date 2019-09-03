@@ -38,11 +38,6 @@ const createUserStudyprogrammes = async (studyrights, user) => {
 
 const authentication = async (req, res, next) => {
   // Headers are in by default lower case, we don't like that.
-  /* db.user.destroy({
-    where: {},
-    truncate: { cascade: true },
-  }) */
-
   const {
     givenname: givenName = null, mail = null, schacdateofbirth: schacDateOfBirth = null, schacpersonaluniquecode: schacPersonalUniqueCode = null, sn = null, uid = null,
   } = req.headers

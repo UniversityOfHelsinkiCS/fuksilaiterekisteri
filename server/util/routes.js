@@ -1,11 +1,13 @@
 const Router = require('express')
 const userController = require('@controllers/userController')
 const studentController = require('@controllers/studentController')
+const testController = require('@controllers/testController')
 const { authentication } = require('@util/authenticationMiddleware')
 const { checkAdmin, checkStaffOrAdmin } = require('@util/adminMiddleware')
 const { checkDistributor } = require('@util/distributorMiddleware')
 const { checkStaff } = require('@util/staffMiddleware')
 const { validationMiddleware } = require('@util/validationMiddleware')
+const { inProduction } = require('@util/common')
 
 const router = Router()
 
@@ -14,6 +16,10 @@ router.get('/', (req, res) => {
 })
 
 router.post('/logout', userController.getLogoutUrl)
+
+if (!inProduction) {
+  router.get('/test/reset/user', testController.resetTestUsers)
+}
 
 router.use('/', authentication)
 

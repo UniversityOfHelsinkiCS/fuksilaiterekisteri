@@ -12,7 +12,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "stats": "webpack --mode production --json --optimize-minimize > stats.json",
     "db:seed": "docker-compose run --rm --entrypoint 'npx sequelize-cli db:seed:all --url \"postgres://postgres:postgres@db:5432/postgres\"' app",
-    "cli": "node server/util/studentUpdaterCli.js"
+    "cli": "node server/util/studentUpdaterCli.js",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "engines": {
     "node": ">=10.15"
@@ -32,6 +34,7 @@
     "cron": "^1.7.1",
     "cross-env": "^5.2.0",
     "css-loader": "^2.1.0",
+    "cypress": "^3.4.1",
     "dotenv": "^6.0.0",
     "eslint": "^5.13.0",
     "eslint-config-airbnb": "^17.1.0",
@@ -82,7 +85,8 @@
   "nodemonConfig": {
     "ignore": [
       "dist/*",
-      "client/*"
+      "client/*",
+      "cypress/*"
     ]
   },
   "_moduleAliases": {
