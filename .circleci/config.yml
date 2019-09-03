@@ -33,8 +33,6 @@ workflows:
       - cypress:
           requires:
             - build
-            - install
       - lint:
           requires:
             - build
-            - install
