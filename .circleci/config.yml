@@ -13,17 +13,16 @@ jobs:
       - run: docker-compose up -d
   cypress:
     docker:
-      - image: circleci/node:stretch
+      - image: cypress/base:8
     steps:
       - checkout
-      - run: npm i cypress
       - run: npm run cypress:run
   lint:
     docker:
       - image: circleci/node:stretch
     steps:
       - checkout
-      - run: npm i eslint
+      - run: npm ci
       - run: npm run lint
 
 workflows:
