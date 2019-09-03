@@ -19,7 +19,7 @@ jobs:
     executor: fukrek-executor
     steps:
       - attach_workspace:
-        at: /
+          at: /
       - checkout
       - run: docker-compose up -d
       - run: npm install -g wait-on
@@ -29,7 +29,7 @@ jobs:
     executor: fukrek-executor
     steps:
       - attach_workspace:
-        at: /
+          at: /
       - checkout
       - run: npm run lint
 
