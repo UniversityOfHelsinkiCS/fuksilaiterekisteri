@@ -5,6 +5,7 @@ jobs:
   cypress:
     docker:
       - image: cypress/base:8
+      - image: docker
     steps:
       - checkout
       - run: npm ci
