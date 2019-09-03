@@ -14,7 +14,7 @@ workflows:
           - run: npm run lint
           - run: npm run cypress:run
         requires: build
-      dockerhub/publish:
+      dockerhub/publish/staging:
         image: toska/$CIRCLE_PROJECT_REPONAME
         tag: 'staging'
         extra_build_args: '--build-arg BASE_PATH=/fuksilaite/'
@@ -22,7 +22,7 @@ workflows:
           branches:
             only: trunk
         requires: test
-      dockerhub/publish:
+      dockerhub/publish/production:
         image: toska/$CIRCLE_PROJECT_REPONAME
         tag: 'production'
         extra_build_args: '--build-arg BASE_PATH=/fuksilaite/'
