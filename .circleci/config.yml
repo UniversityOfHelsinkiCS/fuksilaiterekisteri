@@ -11,7 +11,7 @@ jobs:
       - docker/install-docker-tools
       - setup_remote_docker
       - run: sudo apt-get update
-      - run: sudo apt-get libgconf-2-4
+      - run: sudo apt-get install libgconf-2-4
       - run: docker-compose up -d
       - run: npm ci
       - run: npm install -g wait-on
