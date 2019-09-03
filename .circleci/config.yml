@@ -1,13 +1,15 @@
 version: 2.1
 orbs:
-  dockerhub: circleci/docker@0.5.1
+  docker: circleci/docker@0.5.1
 jobs:
   build:
-    docker:
-      - image: circleci/node:stretch
+    executor:
+      name: docker/docker
+      tag: '3.6'
     steps:
       - checkout
-      - run: npm run dev
+      - docker/install-docker-tools
+      - run: docker-compose up -d
   cypress:
     docker:
       - image: circleci/node:stretch
@@ -22,7 +24,6 @@ jobs:
       - run: npm run lint
 
 workflows:
-  version: 2.1
   build-test-and-deploy:
     jobs:
       - build
