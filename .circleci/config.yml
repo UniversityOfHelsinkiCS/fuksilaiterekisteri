@@ -12,8 +12,7 @@ jobs:
       - checkout
       - run: npm ci
       - run: docker-compose up -d
-      - run: npm install -g wait-on
-      - run: wait-on http://localhost:8000
+      - run: timeout 5m bash -c 'until $(curl --output /dev/null --silent --fail http://localhost:8000); do printf .; sleep 5; done'
       - run: npm run cypress:run
       - run: npm run lint
 
