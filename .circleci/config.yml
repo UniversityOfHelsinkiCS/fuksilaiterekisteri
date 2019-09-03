@@ -4,27 +4,28 @@ orbs:
 jobs:
   build:
     docker:
-      image: circleci/node:stretch
+      - image: circleci/node:stretch
     steps:
       - checkout
       - run: npm run dev
   cypress:
     docker:
-      image: circleci/node:stretch
+      - image: circleci/node:stretch
     steps:
       - checkout
       - run: npm run cypress:run
   lint:
     docker:
-      image: circleci/node:stretch
+      - image: circleci/node:stretch
     steps:
       - checkout
       - run: npm run lint
 
 workflows:
+  version: 2.1
   build-test-and-deploy:
     jobs:
-      - build
+      - build:
       - cypress:
           requires:
             - build
