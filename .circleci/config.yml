@@ -16,6 +16,7 @@ jobs:
       - image: cypress/base:8
     steps:
       - checkout
+      - run: npm ci
       - run: npm run cypress:run
   lint:
     docker:
