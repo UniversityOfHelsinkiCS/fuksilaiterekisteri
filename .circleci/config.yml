@@ -2,18 +2,16 @@ version: 2.1
 orbs:
   docker: circleci/docker@0.5.1
 executors:
-  test:
+  fukrek-executor:
     machine:
       image: ubuntu-1604:201903-01
 jobs:
   cypress:
-    executor: test
+    executor: fukrek-executor
     steps:
       - checkout
       - run: docker-compose up -d
       - run: npm ci
-      - run: npm install -g wait-on
-      - run: wait-on http://localhost:8000
       - run: npm run cypress:run
   lint:
     docker:
