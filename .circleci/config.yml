@@ -4,6 +4,16 @@ orbs:
 workflows:
   deploy:
     jobs:
+      - build:
+        steps:
+          - run: npm ci
+          - run: npm run dev
+      - test:
+        steps:
+          - checkout
+          - run: npm run lint
+          - run: npm run cypress:run
+        requires: build
       - dockerhub/publish:
           image: toska/$CIRCLE_PROJECT_REPONAME
           tag: 'staging'
@@ -11,6 +21,7 @@ workflows:
           filters:
             branches:
               only: trunk
+          requires: test
       - dockerhub/publish:
           image: toska/$CIRCLE_PROJECT_REPONAME
           tag: 'production'
@@ -18,3 +29,4 @@ workflows:
           filters:
             branches:
               only: master
+          requires: test
