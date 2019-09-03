@@ -3,37 +3,31 @@ orbs:
   dockerhub: circleci/docker@0.5.1
 jobs:
   build:
-    machine:
-      image: ubuntu-1604:201903-01
+    docker:
+      image: circleci/node:stretch
     steps:
       - checkout
       - run: npm run dev
-  test:
-    machine:
-      image: ubuntu-1604:201903-01
+  cypress:
+    docker:
+      image: circleci/node:stretch
+    steps:
+      - checkout
+      - run: npm run cypress:run
+  lint:
+    docker:
+      image: circleci/node:stretch
     steps:
       - checkout
       - run: npm run lint
-      - run: npm run cypress:run
-  dockerhub/publish_staging:
-    image: toska/$CIRCLE_PROJECT_REPONAME
-    tag: 'staging'
-    extra_build_args: '--build-arg BASE_PATH=/fuksilaite/'
-    filters:
-      branches:
-        only: trunk
-  dockerhub/publish_production:
-    image: toska/$CIRCLE_PROJECT_REPONAME
-    tag: 'production'
-    extra_build_args: '--build-arg BASE_PATH=/fuksilaite/'
-    filters:
-      branches:
-        only: master
 
 workflows:
-  build&test&deploy:
+  build-test-and-deploy:
     jobs:
       - build
-      - test:
+      - cypress:
+          requires:
+            - build
+      - lint:
           requires:
             - build
