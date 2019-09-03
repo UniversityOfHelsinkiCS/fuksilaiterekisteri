@@ -11,6 +11,11 @@ jobs:
       - docker/install-docker-tools
       - setup_remote_docker
       - run: docker-compose up -d
+  install:
+    docker:
+      - image: circleci/node:stretch
+    steps:
+      - checkout
       - run: npm ci
   cypress:
     docker:
@@ -29,9 +34,12 @@ workflows:
   build-test-and-deploy:
     jobs:
       - build
+      - install
       - cypress:
           requires:
             - build
+            - install
       - lint:
           requires:
             - build
+            - install
