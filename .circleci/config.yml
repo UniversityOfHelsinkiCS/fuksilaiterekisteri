@@ -13,7 +13,7 @@ jobs:
       - run: npm ci
       - persist_to_workspace:
           root: node_modules
-          paths: *
+          paths:
   cypress:
     executor: fukrek-executor
     steps:
