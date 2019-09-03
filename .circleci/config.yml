@@ -4,29 +4,29 @@ orbs:
 workflows:
   deploy:
     jobs:
-      - build:
-          steps:
-            - run: npm ci
-            - run: npm run dev
-      - test:
-          steps:
-            - checkout
-            - run: npm run lint
-            - run: npm run cypress:run
-          requires: build
-      - dockerhub/publish:
-          image: toska/$CIRCLE_PROJECT_REPONAME
-          tag: 'staging'
-          extra_build_args: '--build-arg BASE_PATH=/fuksilaite/'
-          filters:
-            branches:
-              only: trunk
-          requires: test
-      - dockerhub/publish:
-          image: toska/$CIRCLE_PROJECT_REPONAME
-          tag: 'production'
-          extra_build_args: '--build-arg BASE_PATH=/fuksilaite/'
-          filters:
-            branches:
-              only: master
-          requires: test
+      build:
+        steps:
+          - run: npm ci
+          - run: npm run dev
+      test:
+        steps:
+          - checkout
+          - run: npm run lint
+          - run: npm run cypress:run
+        requires: build
+      dockerhub/publish:
+        image: toska/$CIRCLE_PROJECT_REPONAME
+        tag: 'staging'
+        extra_build_args: '--build-arg BASE_PATH=/fuksilaite/'
+        filters:
+          branches:
+            only: trunk
+        requires: test
+      dockerhub/publish:
+        image: toska/$CIRCLE_PROJECT_REPONAME
+        tag: 'production'
+        extra_build_args: '--build-arg BASE_PATH=/fuksilaite/'
+        filters:
+          branches:
+            only: master
+        requires: test
