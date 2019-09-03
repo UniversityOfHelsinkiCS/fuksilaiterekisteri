@@ -17,6 +17,8 @@ jobs:
     steps:
       - checkout
       - run: npm ci
+      - run: npm install -g wait-on
+      - run: wait-on http://localhost:8000
       - run: npm run cypress:run
   lint:
     docker:
