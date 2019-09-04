@@ -194,21 +194,20 @@ const checkStudentEligibilities = async () => {
   })
 
   let amount = 0
-  await Promise.all(
-    students.map(({ studentNumber, eligible: prevEligible }) => (
-      new Promise(async (res) => {
-        const { eligible: newEligible } = await isEligible(studentNumber)
-        if (newEligible !== prevEligible) {
-          logger.info(`Eligibility missmatch for ${studentNumber}!`)
-          amount++
-        }
-        res()
-      })
-    )),
-  )
+  let mismatches = 0
+  // Lets not bombard oodi...
+  for (let i = 0; i < students.length; i++) {
+    const { eligible } = await isEligible(students[i].studentNumber) // eslint-disable-line
+    if (eligible !== students[i].eligible) {
+      logger.info(`Eligibility missmatch for ${students[i].studentNumber}!`)
+      mismatches++
+    }
+    amount++
+    logger.info(`${amount}/${students.length}`)
+  }
 
-  if (!amount) logger.info('All good!')
-  else logger.info(`There were ${amount} mismatches!`)
+  if (!mismatches) logger.info('All good!')
+  else logger.info(`There were ${mismatches} mismatches!`)
 }
 
 const updateStudentEligibility = async (studentNumber) => {
