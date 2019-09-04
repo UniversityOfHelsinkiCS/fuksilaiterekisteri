@@ -14,6 +14,7 @@ context('Sign in', () => {
       },
     })
     cy.visit('localhost:8000')
+    cy.contains('FUKSILAITTEET')
   })
 
   it('allows eligible users to sign up with email', () => {
