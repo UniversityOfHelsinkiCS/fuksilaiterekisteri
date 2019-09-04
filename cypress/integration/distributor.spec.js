@@ -29,7 +29,6 @@ context('Distributor', () => {
       },
     })
     cy.visit('localhost:8000')
-    cy.contains('FUKSILAITTEET')
     cy.contains('I want a device, but').click()
     cy.server({
       onAnyRequest(route, proxy) {

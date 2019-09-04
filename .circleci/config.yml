@@ -28,3 +28,21 @@ workflows:
   test-and-deploy:
     jobs:
       - install-and-test
+      - docker/publish:
+          image: toska/$CIRCLE_PROJECT_REPONAME
+          tag: 'staging'
+          extra_build_args: '--build-arg BASE_PATH=/fuksilaite/'
+          filters:
+            branches:
+              only: trunk
+          requires:
+            - install-and-test
+      - docker/publish:
+          image: toska/$CIRCLE_PROJECT_REPONAME
+          tag: 'production'
+          extra_build_args: '--build-arg BASE_PATH=/fuksilaite/'
+          filters:
+            branches:
+              only: master
+          requires:
+            - install-and-test
