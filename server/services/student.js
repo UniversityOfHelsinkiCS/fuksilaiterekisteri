@@ -8,6 +8,7 @@ const {
   STUDENT_API_URL, STUDENT_API_TOKEN, DIGI_COURSES, inProduction,
 } = require('../util/common')
 const { createUserStudyprogrammes } = require('../util/authenticationMiddleware')
+const mockData = require('./mockData.json')
 
 const userApi = axios.create({
   httpsAgent: new https.Agent({
@@ -52,6 +53,7 @@ const getSemesterEnrollments = async (studentNumber) => {
 }
 
 const isEligible = async (studentNumber) => {
+  if (!inProduction) return { eligible: studentNumber === 'fuksi', studyrights: mockData.mockStudyrights }
   const studyrights = await getStudyRightsFor(studentNumber)
   const semesterEnrollments = await getSemesterEnrollments(studentNumber)
 
@@ -94,11 +96,12 @@ const isEligible = async (studentNumber) => {
 
   return {
     studyrights,
-    eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent) || (!inProduction && studentNumber === 'fuksi'),
+    eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent),
   }
 }
 
 const getStudentStatus = async (studentNumber, studyrights) => {
+  if (!inProduction) return { digiSkills: true, hasEnrollments: true }
   const digiSkills = await getDigiSkillsFor(studentNumber)
   const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
   const studyProgramCodes = (await db.studyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
