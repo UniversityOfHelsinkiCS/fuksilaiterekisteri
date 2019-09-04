@@ -1,6 +1,6 @@
 // / <reference types="Cypress" />
 
-context('Admin', () => {
+context('Staff', () => {
   beforeEach(() => {
     cy.request('localhost:8000/api/test/reset/user')
     cy.server({
@@ -40,7 +40,7 @@ context('Admin', () => {
     cy.contains('FUKSILAITTEET')
   })
 
-  it('Redirects admin to the correct page', () => {
+  it('Redirects staff to the correct page', () => {
     cy.contains('Sinulla on oikeus seuraaviin opinto-ohjelmiin:')
     cy.contains('Tietojenkäsittelytieteen kandiohjelma (KH50_005)')
     cy.contains('non-fuksiEtunimi non-fuksi')
