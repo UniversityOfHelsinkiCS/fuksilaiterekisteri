@@ -1,0 +1,86 @@
+{
+  "mockStudyrights": {
+    "status": 200,
+    "elapsed": 0.025540515,
+    "data": [
+      {
+        "degree_date": null,
+        "duration_months": 83,
+        "extent_code": 1,
+        "study_start_date": "2017-07-31T21:00:00.000Z",
+        "state": [
+          {
+            "langcode": "fi",
+            "text": "Ensisijainen"
+          },
+          {
+            "langcode": "sv",
+            "text": "Primär studierätt"
+          },
+          {
+            "langcode": "en",
+            "text": "Primary"
+          }
+        ],
+        "faculty_code": "H50",
+        "elements": [
+          {
+            "element_id": 20,
+            "code": "KH50_005",
+            "start_date": "2017-07-31T21:00:00.000Z",
+            "end_date": "2024-07-30T21:00:00.000Z",
+            "name": [
+              {
+                "langcode": "fi",
+                "text": "Tietojenkäsittelytieteen kandiohjelma"
+              },
+              {
+                "langcode": "sv",
+                "text": "Kandidatprogrammet i datavetenskap"
+              },
+              {
+                "langcode": "en",
+                "text": "Bachelor's Programme in Computer Science"
+              }
+            ]
+          }
+        ],
+        "admission_date": "2017-06-30T21:00:00.000Z",
+        "end_date": "2024-07-30T21:00:00.000Z",
+        "duration_remaining_months": 59,
+        "priority": 1,
+        "start_date": "2017-07-31T21:00:00.000Z",
+        "extent": [
+          {
+            "langcode": "fi",
+            "text": "Alempi korkeakoulututkinto"
+          },
+          {
+            "langcode": "sv",
+            "text": "Lägre högskoleexamen"
+          },
+          {
+            "langcode": "en",
+            "text": "Bachelor's Degree"
+          }
+        ],
+        "organisation_name": [
+          {
+            "langcode": "fi",
+            "text": "Matemaattis-luonnontieteellinen tiedekunta"
+          },
+          {
+            "langcode": "sv",
+            "text": "Matematisk-naturvetenskapliga fakulteten"
+          },
+          {
+            "langcode": "en",
+            "text": "Faculty of Science"
+          }
+        ],
+        "cancel_date": null,
+        "organisation_code": "H50"
+      }
+    ]
+  }
+}
