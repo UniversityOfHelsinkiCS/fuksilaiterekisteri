@@ -9,6 +9,11 @@ const validateEmail = (checkEmail) => {
   return validationRegex.test(checkEmail) && !checkEmail.includes('helsinki.') && !checkEmail.includes('@cs.')
 }
 
+const validateSerial = (serial) => {
+  const regex = /^PF1S[A-Z0-9]{4}$/
+  return regex.test(serial)
+}
+
 const getUser = (req, res) => {
   res.send(req.user)
 }
@@ -72,7 +77,7 @@ const claimDevice = async (req, res) => {
     } = req
 
     if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
-    if (!deviceId) return res.status(400).json({ error: 'device id missing' })
+    if (!validateSerial(deviceId)) return res.status(400).json({ error: 'device id missing or invalid' })
 
     const student = await db.user.findOne({
       where: {

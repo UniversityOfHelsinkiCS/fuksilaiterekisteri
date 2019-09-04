@@ -17,10 +17,7 @@ const UserModal = ({
   const onSubmit = () => handleSubmit({ note, id: user.id })
   return (
     <Modal open={open} onClose={handleClose} size="small">
-      <Modal.Header>
-Edit admin note for user
-        {user.name}
-      </Modal.Header>
+      <Modal.Header>{`Edit admin note for user ${user.name}`}</Modal.Header>
       <Modal.Content>
         <Modal.Description>
           <Form>

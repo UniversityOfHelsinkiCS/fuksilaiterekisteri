@@ -48,8 +48,8 @@ const StudentInfo = ({ student }) => {
 
 const parseId = (rawId) => {
   if (rawId.length !== 4 && rawId.length !== 20) return null
-  if (rawId.length === 4) return `PF1S${rawId}`
-  if (rawId.substring(0, 16) === '1s20N3S2NJ00PF1S') return rawId.substring(12, 20)
+  if (rawId.length === 4) return `PF1S${rawId.toUpperCase()}`
+  if (rawId.substring(0, 16) === '1s20N3S2NJ00PF1S') return rawId.substring(12, 20).toUpperCase()
   return null
 }
 
