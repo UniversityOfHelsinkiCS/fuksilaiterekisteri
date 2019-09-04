@@ -44,7 +44,7 @@ context('Distributor', () => {
     cy.contains('FUKSILAITTEET')
   })
 
-  it('Redirects provider to the correct page', () => {
+  it('Redirects distributor to the correct page', () => {
     cy.contains('fuksilaitteiden jakelu')
   })
 
