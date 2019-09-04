@@ -73,6 +73,7 @@ context('Distributor', () => {
     cy.contains('fuksiEtunimi fuksi').should('not.exist')
     findStudent('fuksi')
     cy.contains('Opiskelija on jo saanut laitteen!')
+    cy.contains('fuksiEtunimi fuksi').should('not.exist')
   })
 
   it('Can\'t give a device to a non-existent student', () => {
