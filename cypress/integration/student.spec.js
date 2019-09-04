@@ -50,6 +50,24 @@ context('Student', () => {
     cy.contains('Unfortunately you are not eligible for the fresher device.')
   })
 
+  it('doesn\'t allow non-students to sign up', () => {
+    cy.server({
+      onAnyRequest(route, proxy) {
+        proxy.xhr.setRequestHeader('uid', 'no-one')
+        proxy.xhr.setRequestHeader('employeeNumber', 'nope')
+        proxy.xhr.setRequestHeader('givenName', 'noone')
+        proxy.xhr.setRequestHeader('mail', 'nono')
+        proxy.xhr.setRequestHeader('sn', 'nobody')
+      },
+    })
+    cy.visit('localhost:8000')
+
+    cy.contains('Hei, sinulla ei ole oikeuksia fuksilaite-palveluun. Ota yhteyttä grp-toska@helsinki.fi jos sinulla kuuluisi olla oikeudet.')
+    cy.visit('localhost:8000/student')
+    cy.location('pathname').should('eq', '/unauthorized')
+    cy.contains('Hei, sinulla ei ole oikeuksia fuksilaite-palveluun. Ota yhteyttä grp-toska@helsinki.fi jos sinulla kuuluisi olla oikeudet.')
+  })
+
   it('doesn\'t allow students to see admin or distributor page', () => {
     cy.visit('localhost:8000/admin')
     cy.location('pathname').should('eq', '/student')
