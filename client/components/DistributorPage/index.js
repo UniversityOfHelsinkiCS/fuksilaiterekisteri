@@ -74,7 +74,7 @@ const DistributorPage = () => {
     studentInput.current = node
   }
   useEffect(() => {
-    if (!deviceClaim || deviceClaim.pending || deviceClaim.error || !deviceClaim.data) return
+    if (!deviceClaim || deviceClaim.pending || deviceClaim.error || !deviceClaim.data || !student) return
     setStudentNumber('')
     setDeviceId('')
     clearStudent()

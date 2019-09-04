@@ -1,6 +1,6 @@
 // / <reference types="Cypress" />
 
-context('Sign in', () => {
+context('Sign up', () => {
   beforeEach(() => {
     cy.request('localhost:8000/api/test/reset/user')
     cy.server({
