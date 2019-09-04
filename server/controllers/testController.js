@@ -5,7 +5,7 @@ const resetTestUsers = async (req, res) => {
   try {
     await db.user.destroy({
       where: {
-        userId: ['fuksi', 'non_fuksi_student', 'jakelija'],
+        userId: ['fuksi', 'non_fuksi_student', 'jakelija', 'admin'],
       },
     })
     return res.status(200).end()
