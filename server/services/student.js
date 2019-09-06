@@ -78,6 +78,7 @@ const isEligible = async (studentNumber) => {
   if (mlu && mlu.elements.length && !hasNewStudyright && hasPreviousStudyright) {
     let hasBeenPresentBefore = false
     semesterEnrollments.data.forEach(({ semester_code, semester_enrollment_type_code }) => {
+      // TODO: Fix hardcoding of 139
       if (semester_code < 139 && semester_enrollment_type_code !== 2) {
         hasBeenPresentBefore = true
       }
