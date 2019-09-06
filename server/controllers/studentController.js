@@ -35,7 +35,7 @@ const markStudentEligible = async (req, res) => {
     if (!student) return res.status(404).json({ error: 'student not found' })
 
     await student.update({ eligible: true })
-
+    logger.info(`Student ${studentNumber} marked eligible by ${req.user.userId}`)
     return res.json(student)
   } catch (e) {
     logger.error(e)
@@ -57,7 +57,7 @@ const updateStudentStatus = async (req, res) => {
       digiSkillsCompleted: !!digiSkills || student.digiSkillsCompleted,
       courseRegistrationCompleted: !!enrolled || student.courseRegistrationCompleted,
     })
-
+    logger.info(`Student ${studentNumber} status updated by ${req.user.userId}`)
     return res.json(student)
   } catch (e) {
     logger.error(e)
