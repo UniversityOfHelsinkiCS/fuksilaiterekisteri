@@ -33,8 +33,11 @@ context('Admin', () => {
   })
 
   it('Can mark student eligible', () => {
-    cy.contains('non-fuksiEtunimi').parent().parent().find('td:contains(Mark eligible)').click()
-    cy.contains('non-fuksiEtunimi').parent().parent().find('td:contains(Kyllä)').should('have.length', 3)
+    cy.window().then((win) => {
+      cy.stub(win, 'prompt').returns('Some text')
+      cy.contains('non-fuksiEtunimi').parent().parent().find('td:contains(Mark eligible)').click()
+      cy.contains('non-fuksiEtunimi').parent().parent().find('td:contains(Kyllä)').should('have.length', 3)
+    })
   })
 
   it('Can toggle user roles', () => {
