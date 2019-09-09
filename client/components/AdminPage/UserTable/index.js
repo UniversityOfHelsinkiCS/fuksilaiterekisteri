@@ -8,8 +8,8 @@ const UserTable = ({ users, handleAdminNoteClick }) => {
   const dispatch = useDispatch()
   const valOrEmpty = val => (val !== null ? val : '-')
   const markStudentEligible = (studentNumber, name) => {
-    const res = window.confirm(`Are you sure you want to mark ${name} eligible?`)
-    if (res) dispatch(markStudentEligibleAction(studentNumber))
+    const reason = window.prompt(`Please write down the reason ${name} is marked eligible:`)
+    if (reason) dispatch(markStudentEligibleAction({ studentNumber, reason }))
   }
   const toggleUserStaff = id => dispatch(toggleUserStaffAction(id))
   const toggleUserDistributor = id => dispatch(toggleUserDistributorAction(id))

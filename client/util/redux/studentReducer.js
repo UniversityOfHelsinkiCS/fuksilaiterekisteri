@@ -27,11 +27,12 @@ export const clearStudentAction = () => ({
   type: 'CLEAR_STUDENT',
 })
 
-export const markStudentEligible = ({ studentNumber }) => {
+export const markStudentEligible = ({ studentNumber, reason }) => {
   const route = `/student/${studentNumber}/eligible`
   const prefix = 'MARK_STUDENT_ELIGIBLE'
   const method = 'post'
-  return callBuilder(route, prefix, method)
+  const data = { reason }
+  return callBuilder(route, prefix, method, data)
 }
 
 const handleStudentUpdate = (updatedStudent, data) => data.map(student => (student.id === updatedStudent.id ? updatedStudent : student))

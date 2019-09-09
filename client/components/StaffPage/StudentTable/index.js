@@ -30,10 +30,8 @@ const StudentTable = ({ students }) => {
   }
 
   const handleEligibleUpdate = (studentNumber) => {
-    confirm(
-      () => dispatch(markStudentEligible({ studentNumber })),
-      `Are you sure you want to make ${studentNumber} eligible?`,
-    )
+    const reason = window.prompt(`Please write down the reason ${studentNumber} is marked eligible:`)
+    if (reason) dispatch(markStudentEligible({ studentNumber, reason }))
   }
 
   const headers = [

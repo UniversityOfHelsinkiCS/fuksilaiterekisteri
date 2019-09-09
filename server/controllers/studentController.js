@@ -29,13 +29,16 @@ const getStudent = async (req, res) => {
 const markStudentEligible = async (req, res) => {
   try {
     const { studentNumber } = req.params
+    const { reason } = req.body
     if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
 
     const student = await db.user.findOne({ where: { studentNumber }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
     if (!student) return res.status(404).json({ error: 'student not found' })
 
-    await student.update({ eligible: true })
-
+    const prevNote = student.adminNote || ''
+    const prefix = prevNote.length ? '\n\n' : ''
+    await student.update({ eligible: true, ...(reason ? { adminNote: prevNote.concat(`${prefix}Marked eligible by ${req.user.userId}. Reason: ${reason}`) } : {}) })
+    logger.info(`Student ${studentNumber} marked eligible by ${req.user.userId}`)
     return res.json(student)
   } catch (e) {
     logger.error(e)
@@ -57,7 +60,7 @@ const updateStudentStatus = async (req, res) => {
       digiSkillsCompleted: !!digiSkills || student.digiSkillsCompleted,
       courseRegistrationCompleted: !!enrolled || student.courseRegistrationCompleted,
     })
-
+    logger.info(`Student ${studentNumber} status updated by ${req.user.userId}`)
     return res.json(student)
   } catch (e) {
     logger.error(e)

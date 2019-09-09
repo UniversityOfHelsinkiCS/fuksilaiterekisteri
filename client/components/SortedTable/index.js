@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import {
   Table, Segment, Header, Input,
 } from 'semantic-ui-react'
-import { sortBy } from 'lodash'
+import { sortBy, debounce } from 'lodash'
 import './sortedTable.css'
 
 const DIRECTIONS = {
@@ -58,7 +58,10 @@ const SortableTable = (props) => {
   }
 
   const sortDirection = name => (selected === name ? direction : null)
-  const handleChange = (e, { value }) => setSearchQuery(value)
+
+  const handleChange = debounce((e, { value }) => {
+    setSearchQuery(value)
+  }, 300)
 
   return (
     <>

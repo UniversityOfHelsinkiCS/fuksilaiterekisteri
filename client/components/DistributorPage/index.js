@@ -19,9 +19,23 @@ const getOs = (code) => {
   const cubbli = ['KH50_002', 'KH50_005', 'KH50_008']
 
   if (cubbli.includes(code)) {
-    return <p style={{ marginLeft: '10px', fontWeight: 'bold', color: 'orange' }}>Cubbli</p>
+    return (
+      <span style={{
+        fontSize: '22px', marginLeft: '10px', fontWeight: 'bold', color: 'orange',
+      }}
+      >
+Cubbli
+      </span>
+    )
   }
-  return <p style={{ marginLeft: '10px', fontWeight: 'bold', color: 'blue' }}>Windows</p>
+  return (
+    <span style={{
+      fontSize: '22px', marginLeft: '10px', fontWeight: 'bold', color: 'blue',
+    }}
+    >
+Windows
+    </span>
+  )
 }
 
 const Warning = () => <p style={{ fontSize: '20px', color: 'red', fontWeight: 'bold' }}>Muista tarkistaa henkilöllisyys!</p>
@@ -61,6 +75,7 @@ const DistributorPage = () => {
   const [studentNumber, setStudentNumber] = useState('')
   const [deviceId, setDeviceId] = useState('')
   const [studentNumberValid, setStudentNumberValid] = useState(false)
+  const [showParsedDeviceId, setShowParsedDeviceId] = useState(false)
   const deviceIdInput = useRef(null)
   const studentInput = useRef(null)
   const claimDevice = payload => dispatch(claimDeviceAction(payload))
@@ -90,6 +105,14 @@ const DistributorPage = () => {
   useEffect(() => {
     if (deviceClaim.error) NotificationManager.error('Laitteen antaminen epäonnistui')
   }, [deviceClaim.error])
+
+  useEffect(() => {
+    if (showParsedDeviceId) {
+      const res = window.confirm(`Haluatko varmasti antaa laitteen ${parseId(deviceId)} henkilölle ${student.name}?`)
+      if (res) claimDevice({ studentNumber: student.studentNumber, deviceId: parseId(deviceId) })
+      setShowParsedDeviceId(false)
+    }
+  }, [showParsedDeviceId])
 
   const changeStudentNumber = ({ target }) => {
     const { value } = target
@@ -128,8 +151,7 @@ const DistributorPage = () => {
 
   const handleClaimClick = () => {
     if (!student || !parseId(deviceId)) return
-    const res = window.confirm(`Haluatko varmasti antaa laitteen ${parseId(deviceId)} henkilölle ${student.name}?`)
-    if (res) claimDevice({ studentNumber: student.studentNumber, deviceId: parseId(deviceId) })
+    setShowParsedDeviceId(true)
   }
 
   const handleStudentClick = () => {
@@ -177,6 +199,17 @@ const DistributorPage = () => {
       </Form>
       {renderStudentData()}
       {!!deviceClaim.error && student && <p>Laitteen antaminen epäonnistui</p>}
+      <span style={{ fontSize: '36px', fontWeight: 'bold' }}>
+        {
+          showParsedDeviceId
+          && (
+          <>
+            <span>{`${parseId(deviceId).substring(0, 4)}`}</span>
+            <span style={{ color: '#a333c8' }}>{`${parseId(deviceId).substring(4, 8)}`}</span>
+          </>
+          )
+        }
+      </span>
     </Segment>
   )
 }

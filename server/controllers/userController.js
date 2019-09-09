@@ -142,6 +142,7 @@ const toggleStaff = async (req, res) => {
     if (!user) return res.status(404).json({ error: 'user not found' })
 
     await user.update({ staff: !user.staff })
+    logger.info(`User ${user.userId} toggled staff to ${!user.staff} by ${req.user.userId}`)
     return res.json(user)
   } catch (e) {
     logger.error(e)
@@ -165,6 +166,7 @@ const toggleDistributor = async (req, res) => {
     if (!user) return res.status(404).json({ error: 'user not found' })
 
     await user.update({ distributor: !user.distributor })
+    logger.info(`User ${user.userId} toggled distributor to ${!user.distributor} by ${req.user.userId}`)
     return res.json(user)
   } catch (e) {
     logger.error(e)
@@ -187,6 +189,7 @@ const setAdminNote = async (req, res) => {
     if (!user) return res.status(404).json({ error: 'user not found' })
 
     await user.update({ adminNote: note })
+    logger.info(`User ${user.userId} added admin note by ${req.user.userId}`)
     return res.json(user)
   } catch (e) {
     logger.error(e)
