@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import {
   Button,
 } from 'semantic-ui-react'
-import SortedTable from '../../SortedTable'
+import VirtualizedTable from '../../VirtualizedTable'
 import { updateStudentStatus, markStudentEligible } from '../../../util/redux/studentReducer'
 
 const StudentTable = ({ students }) => {
@@ -34,38 +34,40 @@ const StudentTable = ({ students }) => {
     if (reason) dispatch(markStudentEligible({ studentNumber, reason }))
   }
 
-  const headers = [
+  const columns = [
     {
       key: 'name',
-      title: 'Name',
-      getRowVal: ({ name }) => name,
+      label: 'Name',
+      renderCell: ({ name }) => name,
     },
     {
       key: 'student_number',
-      title: 'Student number',
-      getRowVal: ({ studentNumber }) => studentNumber,
+      label: 'Student number',
+      renderCell: ({ studentNumber }) => studentNumber,
+      width: 180,
     },
     {
       key: 'email',
-      title: 'Email',
-      getRowVal: ({ hyEmail, personalEmail }) => (
+      label: 'Email',
+      renderCell: ({ hyEmail, personalEmail }) => (
         <span>
           {hyEmail}
           <br />
           {personalEmail}
         </span>
       ),
+      getCellVal: ({ hyEmail }) => hyEmail,
     },
     {
       key: 'eligible',
-      title: 'Eligible',
-      getRowVal: ({ eligible }) => boolToString(eligible),
+      label: 'Eligible',
+      renderCell: ({ eligible }) => boolToString(eligible),
     },
     {
       key: 'digitaidot',
-      title: 'Digi skills',
-      getRowVal: ({ digiSkillsCompleted }) => digiSkillsCompleted,
-      getRowContent: ({ digiSkillsCompleted, studentNumber }) => (
+      label: 'Digi skills',
+      getCellVal: ({ digiSkillsCompleted }) => digiSkillsCompleted,
+      renderCell: ({ digiSkillsCompleted, studentNumber }) => (
         <>
           {boolToString(digiSkillsCompleted)}
           {' '}
@@ -75,9 +77,9 @@ const StudentTable = ({ students }) => {
     },
     {
       key: 'enrolled',
-      title: 'Has enrolled',
-      getRowVal: ({ courseRegistrationCompleted }) => courseRegistrationCompleted,
-      getRowContent: ({ courseRegistrationCompleted, studentNumber }) => (
+      label: 'Has enrolled',
+      getCellVal: ({ courseRegistrationCompleted }) => courseRegistrationCompleted,
+      renderCell: ({ courseRegistrationCompleted, studentNumber }) => (
         <>
           {boolToString(courseRegistrationCompleted)}
           {' '}
@@ -87,31 +89,34 @@ const StudentTable = ({ students }) => {
     },
     {
       key: 'device_given',
-      title: 'Device given',
-      getRowVal: ({ deviceGivenAt }) => boolToString(!!deviceGivenAt),
+      label: 'Device given',
+      renderCell: ({ deviceGivenAt }) => boolToString(!!deviceGivenAt),
     },
     {
       key: 'wants_device',
-      title: 'Wants device',
-      getRowVal: ({ wantsDevice }) => boolToString(wantsDevice),
+      label: 'Wants device',
+      renderCell: ({ wantsDevice }) => boolToString(wantsDevice),
     },
     {
       key: 'studyPrograms',
-      title: 'Study programs',
-      getRowVal: ({ studyPrograms }) => studyPrograms.map(s => s.name).join(', '),
+      label: 'Study programs',
+      renderCell: ({ studyPrograms }) => studyPrograms.map(s => s.name).join(', '),
+      width: 200,
     },
     {
       key: 'mark_eligible',
-      title: '',
-      getRowContent: ({ studentNumber, eligible }) => <Button disabled={eligible} onClick={() => handleEligibleUpdate(studentNumber)} color="blue">Mark eligible</Button>,
+      label: '',
+      renderCell: ({ studentNumber, eligible }) => <Button disabled={eligible} onClick={() => handleEligibleUpdate(studentNumber)} color="blue">Mark eligible</Button>,
       disabled: true,
     },
   ]
+
   return (
-    <SortedTable
-      getRowKey={({ id }) => id}
-      columns={headers}
+    <VirtualizedTable
+      searchable
+      columns={columns}
       data={students}
+      defaultCellWidth={150}
     />
   )
 }

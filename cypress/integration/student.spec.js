@@ -53,7 +53,7 @@ context('Student', () => {
   it('doesn\'t allow non-students to sign up', () => {
     cy.server({
       onAnyRequest(route, proxy) {
-        proxy.xhr.setRequestHeader('uid', 'no-one')
+        proxy.xhr.setRequestHeader('uid', 'noone')
         proxy.xhr.setRequestHeader('employeeNumber', 'nope')
         proxy.xhr.setRequestHeader('givenName', 'noone')
         proxy.xhr.setRequestHeader('mail', 'nono')
@@ -61,7 +61,7 @@ context('Student', () => {
       },
     })
     cy.visit('localhost:8000')
-
+    cy.contains('FUKSILAITTEET')
     cy.contains('Hei, sinulla ei ole oikeuksia fuksilaite-palveluun. Ota yhteyttä grp-toska@helsinki.fi jos sinulla kuuluisi olla oikeudet.')
     cy.visit('localhost:8000/student')
     cy.location('pathname').should('eq', '/unauthorized')

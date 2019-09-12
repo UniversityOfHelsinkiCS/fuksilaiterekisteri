@@ -7,11 +7,19 @@ import DeviceInfo from './DeviceInfo'
 
 const StudentPage = () => {
   const user = useSelector(state => state.user.data)
-  if (!user) return null
-  if (user.deviceSerial) return <DeviceInfo />
-  if (!user.eligible) return <NotEligible />
-  if (!user.wantsDevice) return <RequestDeviceForm />
-  return <TaskStatus />
+  const getContent = () => {
+    if (!user) return null
+    if (user.deviceSerial) return <DeviceInfo />
+    if (!user.eligible) return <NotEligible />
+    if (!user.wantsDevice) return <RequestDeviceForm />
+    return <TaskStatus />
+  }
+
+  return (
+    <div style={{ alignSelf: 'center' }}>
+      { getContent() }
+    </div>
+  )
 }
 
 export default StudentPage

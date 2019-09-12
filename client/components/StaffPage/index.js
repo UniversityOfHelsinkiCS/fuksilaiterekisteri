@@ -15,7 +15,7 @@ export default () => {
   }, [])
 
   return (
-    <div style={{ maxWidth: '100%' }}>
+    <div style={{ maxWidth: '100%', display: 'flex', flexDirection: 'column' }}>
       <Segment>
         <Header as="h3">
           Sinulla on oikeus seuraaviin opinto-ohjelmiin:
