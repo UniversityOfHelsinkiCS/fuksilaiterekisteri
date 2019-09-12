@@ -39,7 +39,10 @@ const VirtualizedTable = ({
   const manualWidths = useMemo(() => columns.reduce((acc, { width }) => (width ? acc + (width - defaultCellWidth) : acc), 0), [columns])
 
   return (
-    <div style={{ maxWidth: '100%', flex: 1, display: 'flex' }}>
+    <div style={{
+      minHeight: '300px', maxWidth: '100%', flex: 1, display: 'flex',
+    }}
+    >
       <div style={{ flex: 1 }}>
         { searchable && <Input onChange={handleFilterChange} placeholder="Search..." icon="search" /> }
         <AutoSizer disableWidth>
