@@ -22,20 +22,12 @@ Matemaattis-luonnontieteellinen tiedekunta / Faculty of Science`
 const subject = 'Fuksilaitejakelu viikolla 37 - Fresher device distribution on week 37'
 
 const completionChecker = async (user) => {
-  if (
-    user.eligible
-    && user.digiSkillsCompleted
-    && user.courseRegistrationCompleted
-  ) {
+  if (user.wantsDevice && user.eligible && user.digiSkillsCompleted && user.courseRegistrationCompleted) {
     if (process.env.EMAIL_ENABLED !== 'true') {
       logger.error('Email disabled, set EMAIL_ENABLED=true to enable.')
       return
     }
-    const info = await sendEmail(
-      [user.hyEmail, user.personalEmail],
-      subject,
-      text,
-    )
+    const info = await sendEmail([user.hyEmail, user.personalEmail], subject, text)
     if (info) {
       info.accepted.forEach(accepted => logger.info(`Email sent to ${accepted}.`))
     }
