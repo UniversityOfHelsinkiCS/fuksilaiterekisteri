@@ -36,7 +36,7 @@ const VirtualizedTable = ({
     setFilter(value)
   }, 300)
 
-  const manualWidths = useMemo(() => columns.reduce((acc, { width }) => (width ? acc + width : acc), 0), [columns])
+  const manualWidths = useMemo(() => columns.reduce((acc, { width }) => (width ? acc + (width - defaultCellWidth) : acc), 0), [columns])
 
   return (
     <div style={{ maxWidth: '100%', flex: 1, display: 'flex' }}>
