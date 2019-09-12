@@ -36,7 +36,7 @@ export default () => {
   const selectedUser = useMemo(() => users.find(({ id }) => id === modalUser), [modalUser])
 
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
       <UserModal user={selectedUser} handleClose={handleModalClose} handleSubmit={handleModalSubmit} open={modalUser !== null} />
       <StatsTable students={users.filter(u => u.studentNumber)} />
       <UserTable handleAdminNoteClick={handleAdminNoteClick} users={users} />

@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { Button, Icon } from 'semantic-ui-react'
 import { markStudentEligible as markStudentEligibleAction, toggleUserStaff as toggleUserStaffAction, toggleUserDistributor as toggleUserDistributorAction } from '../../../util/redux/usersReducer'
-import SortedTable from '../../SortedTable'
+import VirtualizedTable from '../../VirtualizedTable'
 
 const UserTable = ({ users, handleAdminNoteClick }) => {
   const dispatch = useDispatch()
@@ -15,119 +15,127 @@ const UserTable = ({ users, handleAdminNoteClick }) => {
   const toggleUserDistributor = id => dispatch(toggleUserDistributorAction(id))
   const boolToString = bool => (bool ? 'Kyllä' : 'Ei')
 
-  const headers = [
+  const columns = [
     {
       key: 'name',
-      title: 'Name',
-      getRowContent: ({ id, name, adminNote }) => (
+      label: 'Name',
+      renderCell: ({ id, name, adminNote }) => (
         <span>
           <Icon onClick={() => handleAdminNoteClick(id)} style={{ cursor: 'pointer' }} color={`${adminNote ? 'green' : 'black'}`} name={`${adminNote ? 'sticky note' : 'sticky note outline'}`} />
           {valOrEmpty(name)}
         </span>
       ),
-      getRowVal: ({ name }) => valOrEmpty(name),
+      getCellVal: ({ name }) => valOrEmpty(name),
     },
     {
       key: 'email',
-      title: 'Email',
-      getRowVal: ({ hyEmail, personalEmail }) => (
+      label: 'Email',
+      renderCell: ({ hyEmail, personalEmail }) => (
         <span>
           {hyEmail}
           <br />
           {personalEmail}
         </span>
       ),
+      getCellVal: ({ hyEmail }) => hyEmail,
     },
     {
       key: 'student_number',
-      title: 'Student number',
-      getRowVal: ({ studentNumber }) => valOrEmpty(studentNumber),
+      label: 'Student number',
+      renderCell: ({ studentNumber }) => valOrEmpty(studentNumber),
+      width: 180,
     },
     {
       key: 'studyPrograms',
-      title: 'Study programs',
-      getRowVal: ({ studyPrograms }) => studyPrograms.map(s => s.name).join(', '),
+      label: 'Study programs',
+      renderCell: ({ studyPrograms }) => valOrEmpty(studyPrograms.map(s => s.name).join(', ') || null),
+      width: 180,
     },
     {
       key: 'eligible',
-      title: 'Eligible',
-      getRowVal: ({ eligible }) => boolToString(eligible),
+      label: 'Eligible',
+      renderCell: ({ eligible }) => boolToString(eligible),
     },
     {
       key: 'digitaidot',
-      title: 'Digi skills',
-      getRowVal: ({ digiSkillsCompleted }) => boolToString(digiSkillsCompleted),
+      label: 'Digi skills',
+      renderCell: ({ digiSkillsCompleted }) => boolToString(digiSkillsCompleted),
     },
     {
       key: 'enrolled',
-      title: 'Has enrolled',
-      getRowVal: ({ courseRegistrationCompleted }) => boolToString(courseRegistrationCompleted),
+      label: 'Has enrolled',
+      renderCell: ({ courseRegistrationCompleted }) => boolToString(courseRegistrationCompleted),
     },
     {
       key: 'wants_device',
-      title: 'Wants device',
-      getRowVal: ({ wantsDevice }) => boolToString(wantsDevice),
+      label: 'Wants device',
+      renderCell: ({ wantsDevice }) => boolToString(wantsDevice),
     },
     {
       key: 'device_given',
-      title: 'Device given',
-      getRowVal: ({ deviceGivenAt }) => boolToString(!!deviceGivenAt),
+      label: 'Device given',
+      renderCell: ({ deviceGivenAt }) => boolToString(!!deviceGivenAt),
     },
     {
       key: 'device_id',
-      title: 'Device id',
-      getRowVal: ({ deviceSerial }) => valOrEmpty(deviceSerial),
+      label: 'Device id',
+      renderCell: ({ deviceSerial }) => valOrEmpty(deviceSerial),
     },
     {
       key: 'device_distributed_by',
-      title: 'Device distributed by',
-      getRowVal: ({ device_distributed_by }) => valOrEmpty(device_distributed_by),
+      label: 'Device distributed by',
+      renderCell: ({ device_distributed_by }) => valOrEmpty(device_distributed_by),
+      width: 220,
     },
     {
       key: 'admin',
-      title: 'Admin',
-      getRowVal: ({ admin }) => boolToString(admin),
+      label: 'Admin',
+      renderCell: ({ admin }) => boolToString(admin),
     },
     {
       key: 'staff',
-      title: 'Staff',
-      getRowVal: ({ staff }) => staff,
-      getRowContent: ({ staff, id }) => (
+      label: 'Staff',
+      renderCell: ({ staff, id }) => (
         <>
           {boolToString(staff)}
           {' '}
           <Button color="blue" icon="refresh" onClick={() => toggleUserStaff(id)} />
         </>
       ),
+      getCellVal: ({ staff }) => boolToString(staff),
     },
     {
       key: 'distributor',
-      title: 'Distributor',
-      getRowVal: ({ distributor }) => distributor,
-      getRowContent: ({ distributor, id }) => (
+      label: 'Distributor',
+      renderCell: ({ distributor, id }) => (
         <>
           {boolToString(distributor)}
           {' '}
           <Button color="blue" icon="refresh" onClick={() => toggleUserDistributor(id)} />
         </>
       ),
+      getCellVal: ({ distributor }) => boolToString(distributor),
     },
     {
       key: 'mark_eligible',
-      title: '',
-      getRowContent: ({ studentNumber, eligible, name }) => (
+      label: '',
+      renderCell: ({ studentNumber, eligible, name }) => (
         <Button disabled={eligible || !studentNumber} onClick={() => markStudentEligible(studentNumber, name)} color="blue">
           Mark eligible
         </Button>
       ),
-      disabled: true,
+      disableSort: true,
+      width: 180,
     },
   ]
 
   return (
-    <div style={{ maxWidth: '100%' }}>
-      <SortedTable getRowKey={({ id }) => id} columns={headers} data={users} />
-    </div>
+    <VirtualizedTable
+      searchable
+      columns={columns}
+      data={users}
+      defaultCellWidth={125}
+    />
   )
 }
 

@@ -187,7 +187,7 @@ const DistributorPage = () => {
   }
 
   return (
-    <Segment>
+    <Segment style={{ alignSelf: 'center' }}>
       <Form>
         <Header as="h1">Matemaattis-luonnontieteellisen tiedekunnan fuksilaitteiden jakelu</Header>
         <Form.Group inline>
