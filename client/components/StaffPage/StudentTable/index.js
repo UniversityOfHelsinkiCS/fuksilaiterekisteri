@@ -94,7 +94,7 @@ const StudentTable = ({ students }) => {
       label: 'Device given at',
       renderCell: ({ deviceGivenAt }) => valOrEmpty(dateFormatter(deviceGivenAt)),
       getCellVal: ({ deviceGivenAt }) => new Date(deviceGivenAt).getTime(),
-      width: 150,
+      width: 160,
     },
     {
       key: 'wants_device',
