@@ -44,8 +44,14 @@ const StudentInfo = ({ student }) => {
   if (!student) return null
   return (
     <div>
-      <div>{`Etunimi: ${student.name}`}</div>
-      <div>{`Syntymäaika: ${formatDateOfBirth(student.dateOfBirth)}`}</div>
+      <div>
+        <b>Nimi: </b>
+        {student.name}
+      </div>
+      <div>
+        <b>Syntymäaika: </b>
+        {formatDateOfBirth(student.dateOfBirth)}
+      </div>
       <div style={{ marginTop: '10px', marginBottom: '10px' }}>
         <Warning />
         <h4>Opinto-ohjelma(t):</h4>
