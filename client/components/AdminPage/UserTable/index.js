@@ -77,7 +77,7 @@ const UserTable = ({ users, handleAdminNoteClick }) => {
       label: 'Device given at',
       renderCell: ({ deviceGivenAt }) => valOrEmpty(dateFormatter(deviceGivenAt)),
       getCellVal: ({ deviceGivenAt }) => new Date(deviceGivenAt).getTime(),
-      width: 150,
+      width: 160,
     },
     {
       key: 'device_id',
