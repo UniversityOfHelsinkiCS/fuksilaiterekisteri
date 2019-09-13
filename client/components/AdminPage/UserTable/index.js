@@ -2,6 +2,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { Button, Icon } from 'semantic-ui-react'
 import { markStudentEligible as markStudentEligibleAction, toggleUserStaff as toggleUserStaffAction, toggleUserDistributor as toggleUserDistributorAction } from '../../../util/redux/usersReducer'
+import dateFormatter from '../../../util/dateFormatter'
 import VirtualizedTable from '../../VirtualizedTable'
 
 const UserTable = ({ users, handleAdminNoteClick }) => {
@@ -72,9 +73,11 @@ const UserTable = ({ users, handleAdminNoteClick }) => {
       renderCell: ({ wantsDevice }) => boolToString(wantsDevice),
     },
     {
-      key: 'device_given',
-      label: 'Device given',
-      renderCell: ({ deviceGivenAt }) => boolToString(!!deviceGivenAt),
+      key: 'device_given_at',
+      label: 'Device given at',
+      renderCell: ({ deviceGivenAt }) => valOrEmpty(dateFormatter(deviceGivenAt)),
+      getCellVal: ({ deviceGivenAt }) => new Date(deviceGivenAt).getTime(),
+      width: 150,
     },
     {
       key: 'device_id',

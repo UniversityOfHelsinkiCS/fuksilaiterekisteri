@@ -3,12 +3,14 @@ import { useDispatch } from 'react-redux'
 import {
   Button,
 } from 'semantic-ui-react'
+import dateFormatter from '../../../util/dateFormatter'
 import VirtualizedTable from '../../VirtualizedTable'
 import { updateStudentStatus, markStudentEligible } from '../../../util/redux/studentReducer'
 
 const StudentTable = ({ students }) => {
   const dispatch = useDispatch()
   const boolToString = bool => (bool ? 'Kyllä' : 'Ei')
+  const valOrEmpty = val => (val !== null ? val : '-')
 
   const confirm = (func, msg) => {
     const res = window.confirm(msg)
@@ -88,9 +90,11 @@ const StudentTable = ({ students }) => {
       ),
     },
     {
-      key: 'device_given',
-      label: 'Device given',
-      renderCell: ({ deviceGivenAt }) => boolToString(!!deviceGivenAt),
+      key: 'device_given_at',
+      label: 'Device given at',
+      renderCell: ({ deviceGivenAt }) => valOrEmpty(dateFormatter(deviceGivenAt)),
+      getCellVal: ({ deviceGivenAt }) => new Date(deviceGivenAt).getTime(),
+      width: 150,
     },
     {
       key: 'wants_device',
