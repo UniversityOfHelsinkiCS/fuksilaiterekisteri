@@ -52,7 +52,7 @@ const getSemesterEnrollments = async (studentNumber) => {
   return res.data
 }
 
-const isEligible = async (studentNumber) => {
+const isEligible = async (studentNumber, at) => {
   if (!inProduction) return { eligible: studentNumber === 'fuksi', studyrights: mockData.mockStudyrights }
   const studyrights = await getStudyRightsFor(studentNumber)
   const semesterEnrollments = await getSemesterEnrollments(studentNumber)
@@ -95,9 +95,12 @@ const isEligible = async (studentNumber) => {
     isPresent = true
   }
 
+  const registrationEndingTime = new Date('2019-10-01')
+  const didRegisterBeforeEndingTime = new Date(at || new Date().getTime()).getTime() < registrationEndingTime.getTime()
+
   return {
     studyrights,
-    eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent),
+    eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime),
   }
 }
 
@@ -156,7 +159,7 @@ const updateEligibleStudentStatuses = async () => {
   // Lets not bombard oodi...
   for (let i = 0; i < targetStudents.length; i++) {
     try {
-      const { studyrights } = await isEligible(targetStudents[i].studentNumber) // eslint-disable-line
+      const { studyrights } = await isEligible(targetStudents[i].studentNumber, targetStudents[i].created_at) // eslint-disable-line
       const { digiSkills, hasEnrollments } = await getStudentStatus(targetStudents[i].studentNumber, studyrights) // eslint-disable-line
 
       dbPromises.push(
@@ -198,7 +201,7 @@ const checkStudentEligibilities = async () => {
   let mismatches = 0
   // Lets not bombard oodi...
   for (let i = 0; i < students.length; i++) {
-    const { eligible } = await isEligible(students[i].studentNumber) // eslint-disable-line
+    const { eligible } = await isEligible(students[i].studentNumber, students[i].created_at) // eslint-disable-line
     if (eligible !== students[i].eligible) {
       logger.info(`Eligibility missmatch for ${students[i].studentNumber}!`)
       mismatches++
@@ -225,7 +228,7 @@ const updateStudentEligibility = async (studentNumber) => {
   }
 
   const eligibilityBefore = foundStudent.eligible
-  const { eligible, studyrights } = await isEligible(studentNumber)
+  const { eligible, studyrights } = await isEligible(studentNumber, foundStudent.created_at)
   if (foundStudent.eligible === eligible) {
     logger.info(`${studentNumber} eligibility hasn't changed.`)
     return

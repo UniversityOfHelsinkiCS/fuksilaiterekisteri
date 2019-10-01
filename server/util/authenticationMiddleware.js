@@ -57,6 +57,10 @@ const authentication = async (req, res, next) => {
   })
 
   if (foundUser) {
+    const formattedName = Buffer.from(`${givenName} ${sn}`, 'binary').toString('utf8')
+    if (mail !== foundUser.hyEmail) await foundUser.update({ hyEmail: mail })
+    if (formattedName !== foundUser.name) await foundUser.update({ name: formattedName })
+
     req.user = foundUser
     return next()
   }
