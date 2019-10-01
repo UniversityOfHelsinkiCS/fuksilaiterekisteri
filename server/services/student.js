@@ -159,7 +159,7 @@ const updateEligibleStudentStatuses = async () => {
   // Lets not bombard oodi...
   for (let i = 0; i < targetStudents.length; i++) {
     try {
-      const { studyrights } = await isEligible(targetStudents[i].studentNumber, targetStudents[i].created_at) // eslint-disable-line
+      const { studyrights } = await isEligible(targetStudents[i].studentNumber, targetStudents[i].createdAt) // eslint-disable-line
       const { digiSkills, hasEnrollments } = await getStudentStatus(targetStudents[i].studentNumber, studyrights) // eslint-disable-line
 
       dbPromises.push(
@@ -194,14 +194,14 @@ const checkStudentEligibilities = async () => {
         [Op.ne]: null,
       },
     },
-    attributes: ['studentNumber', 'eligible'],
+    attributes: ['studentNumber', 'eligible', 'createdAt'],
   })
 
   let amount = 0
   let mismatches = 0
   // Lets not bombard oodi...
   for (let i = 0; i < students.length; i++) {
-    const { eligible } = await isEligible(students[i].studentNumber, students[i].created_at) // eslint-disable-line
+    const { eligible } = await isEligible(students[i].studentNumber, students[i].createdAt) // eslint-disable-line
     if (eligible !== students[i].eligible) {
       logger.info(`Eligibility missmatch for ${students[i].studentNumber}!`)
       mismatches++
@@ -228,7 +228,7 @@ const updateStudentEligibility = async (studentNumber) => {
   }
 
   const eligibilityBefore = foundStudent.eligible
-  const { eligible, studyrights } = await isEligible(studentNumber, foundStudent.created_at)
+  const { eligible, studyrights } = await isEligible(studentNumber, foundStudent.createdAt)
   if (foundStudent.eligible === eligible) {
     logger.info(`${studentNumber} eligibility hasn't changed.`)
     return
