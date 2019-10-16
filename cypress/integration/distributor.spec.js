@@ -6,7 +6,7 @@ const findStudent = (id) => {
 }
 
 const giveDevice = () => {
-  cy.get('#device-serial-input').type('AB12')
+  cy.get('#device-serial-input').type('RAB12')
   cy.contains('Anna laite').click()
 }
 
