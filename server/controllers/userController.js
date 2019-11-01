@@ -10,7 +10,7 @@ const validateEmail = (checkEmail) => {
 }
 
 const validateSerial = (serial) => {
-  const regex = /^PF1S[A-Z0-9]{4}$/
+  const regex = /^PF1[A-Z0-9]{5}$/
   return regex.test(serial)
 }
 
