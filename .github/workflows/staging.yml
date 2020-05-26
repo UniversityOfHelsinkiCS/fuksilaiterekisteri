@@ -36,7 +36,7 @@ jobs:
         if: always()
         with:
           name: cypress-videos
-          path: /home/runner/work/fuksilaiterekisteri/fuksilaiterekisteri/cypress/screenshots/
+          path: /home/runner/work/fuksilaiterekisteri/fuksilaiterekisteri/cypress/videos/
 
       # - uses: actions/checkout@master
       # - name: Publish to DockerHub
