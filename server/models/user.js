@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       admin: DataTypes.BOOLEAN,
       distributor: DataTypes.BOOLEAN,
       staff: DataTypes.BOOLEAN,
+      reclaimer: DataTypes.BOOLEAN,
       dateOfBirth: {
         type: DataTypes.STRING,
         field: 'date_of_birth',
