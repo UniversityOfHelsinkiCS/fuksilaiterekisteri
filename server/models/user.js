@@ -56,6 +56,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         field: 'admin_note',
       },
+      fresherYear: {
+        type: DataTypes.INTEGER,
+        field: 'fresher_year',
+      },
     },
     {
       underscored: true,
