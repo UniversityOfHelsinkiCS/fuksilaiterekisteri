@@ -25,7 +25,8 @@ export const possibleUsers = [
     givenName: 'fuksiEtunimi',
     mail: 'grp-toska+fukrekfuksi@helsinki.fi',
     schacDateOfBirth: 19770501,
-    schacPersonalUniqueCode: 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:fuksi',
+    schacPersonalUniqueCode:
+      'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:fuksi',
     sn: 'fuksi',
   },
   {
@@ -34,7 +35,8 @@ export const possibleUsers = [
     givenName: 'non-fuksiEtunimi',
     mail: 'grp-toska+fail@helsinki.fi',
     schacDateOfBirth: 19850806,
-    schacPersonalUniqueCode: 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:non-fuksi',
+    schacPersonalUniqueCode:
+      'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:non-fuksi',
     sn: 'non-fuksi',
   },
   {
@@ -45,6 +47,24 @@ export const possibleUsers = [
     schacDateOfBirth: undefined,
     schacPersonalUniqueCode: undefined,
     sn: 'non-admin-staff',
+  },
+  {
+    uid: 'irrelevant_staff',
+    employeeNumber: 12345,
+    givenName: 'irrelevant-staffEtunimi',
+    mail: 'grp-toska+fail@helsinki.fi',
+    schacDateOfBirth: undefined,
+    schacPersonalUniqueCode: undefined,
+    sn: 'irrelevant-staff',
+  },
+  {
+    uid: 'reclaimer',
+    employeeNumber: 123456,
+    givenName: 'reclaimerEtunimi',
+    mail: 'grp-toska+fail@helsinki.fi',
+    schacDateOfBirth: undefined,
+    schacPersonalUniqueCode: undefined,
+    sn: 'reclaimer',
   },
 ]
 

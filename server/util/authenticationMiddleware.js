@@ -20,7 +20,13 @@ const createUserStudyprogrammes = async (studyrights, user) => {
         await Promise.all([
           elements.map(
             ({ code }) => new Promise(async (resolveElement) => {
-              if (allStudyprogramCodes.has(code) && !(user.studyPrograms && user.studyPrograms.map(c => c.code).includes(code))) {
+              if (
+                allStudyprogramCodes.has(code)
+                    && !(
+                      user.studyPrograms
+                      && user.studyPrograms.map(c => c.code).includes(code)
+                    )
+              ) {
                 await db.userStudyProgram.create({
                   userId: user.id,
                   studyProgramId: studyprogramCodeToId[code],
@@ -36,10 +42,29 @@ const createUserStudyprogrammes = async (studyrights, user) => {
   ])
 }
 
+const createStaffStudyprogrammes = async (codes, user) => {
+  const studyprograms = await db.studyProgram.findAll({
+    where: { code: codes },
+    attributes: ['id'],
+  })
+
+  studyprograms.forEach((p) => {
+    db.userStudyProgram.create({
+      userId: user.id,
+      studyProgramId: p.id,
+    })
+  })
+}
+
 const authentication = async (req, res, next) => {
   // Headers are in by default lower case, we don't like that.
   const {
-    givenname: givenName = null, mail = null, schacdateofbirth: schacDateOfBirth = null, schacpersonaluniquecode: schacPersonalUniqueCode = null, sn = null, uid = null,
+    givenname: givenName = null,
+    mail = null,
+    schacdateofbirth: schacDateOfBirth = null,
+    schacpersonaluniquecode: schacPersonalUniqueCode = null,
+    sn = null,
+    uid = null,
   } = req.headers
 
   if (!uid) return res.status(403).json({ error: 'forbidden' })
@@ -57,7 +82,9 @@ const authentication = async (req, res, next) => {
   })
 
   if (foundUser) {
-    const formattedName = Buffer.from(`${givenName} ${sn}`, 'binary').toString('utf8')
+    const formattedName = Buffer.from(`${givenName} ${sn}`, 'binary').toString(
+      'utf8',
+    )
     if (mail !== foundUser.hyEmail) await foundUser.update({ hyEmail: mail })
     if (formattedName !== foundUser.name) await foundUser.update({ name: formattedName })
 
@@ -65,15 +92,18 @@ const authentication = async (req, res, next) => {
     return next()
   }
 
-  const studentNumber = schacPersonalUniqueCode ? schacPersonalUniqueCode.split(':')[6] : null
+  const studentNumber = schacPersonalUniqueCode
+    ? schacPersonalUniqueCode.split(':')[6]
+    : null
 
   const defaultParams = {
     userId: uid,
     hyEmail: mail,
     name: Buffer.from(`${givenName} ${sn}`, 'binary').toString('utf8'),
     dateOfBirth: schacDateOfBirth,
-    staff: false,
+    staff: false || !!(uid === 'non_admin_staff' && !inProduction),
     distributor: false || !!(uid === 'jakelija' && !inProduction),
+    reclaimer: false || !!(uid === 'reclaimer' && !inProduction),
     studentNumber,
     admin: false || !!(uid === 'admin' && !inProduction),
   }
@@ -83,13 +113,19 @@ const authentication = async (req, res, next) => {
       ...defaultParams,
     })
 
+    if (!inProduction && uid === 'non_admin_staff') await createStaffStudyprogrammes(['KH50_005'], newUser)
+
     req.user = newUser
+
     return next()
   }
 
   try {
     const { studyrights, eligible } = await isEligible(studentNumber)
-    const { digiSkills, hasEnrollments } = await getStudentStatus(studentNumber, studyrights)
+    const { digiSkills, hasEnrollments } = await getStudentStatus(
+      studentNumber,
+      studyrights,
+    )
 
     const newUser = await db.user.create({
       ...defaultParams,
