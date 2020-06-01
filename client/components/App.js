@@ -4,6 +4,7 @@ import { Loader } from 'semantic-ui-react'
 import { NotificationContainer } from 'react-notifications'
 import { getUserAction } from 'Utilities/redux/userReducer'
 import { parseUserRights } from 'Utilities/useAuth'
+import { initShibbolethPinger } from 'unfuck-spa-shibboleth-session'
 import AuthCheck from 'Components/AuthCheck'
 import Sidebar from 'Components/Sidebar'
 import NavBar from 'Components/NavBar'
@@ -17,6 +18,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getUserAction())
+    initShibbolethPinger(5000)
   }, [])
 
   const handleSidebarOpen = () => setSidebarVisible(true)
