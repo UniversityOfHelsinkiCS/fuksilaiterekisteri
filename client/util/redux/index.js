@@ -6,6 +6,8 @@ import student from './studentReducer'
 import users from './usersReducer'
 import deviceClaim from './deviceClaimReducer'
 import deviceRequest from './deviceRequestReducer'
+import notification from './notificationReducer'
+import email from './emailReducer'
 
 export default combineReducers({
   messages,
@@ -14,4 +16,6 @@ export default combineReducers({
   users,
   deviceClaim,
   deviceRequest,
+  notification,
+  email,
 })

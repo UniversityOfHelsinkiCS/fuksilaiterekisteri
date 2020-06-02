@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch, shallowEqual } from 'react-redux'
 import {
-  Form, TextArea, Label, Button, Input, Accordion, Icon,
+  Form, TextArea, Label, Button, Input, Accordion, Icon, Loader,
 } from 'semantic-ui-react'
 import { getUsersAction } from '../../../util/redux/usersReducer'
-import { callApi } from '../../../util/apiConnection'
+import { sendEmail } from '../../../util/redux/emailReducer'
 
 const Filter = ({
   attribute,
@@ -44,6 +44,7 @@ const EmailView = () => {
   })
 
   const students = useSelector(state => state.users.data.filter(user => user.studentNumber), shallowEqual)
+  const emailPending = useSelector(state => state.email.pending)
 
   const dispatch = useDispatch()
 
@@ -95,11 +96,13 @@ const EmailView = () => {
       text,
       replyTo,
     }
-    callApi('/send_email', 'post', data)
+
+    dispatch(sendEmail(data))
   }
 
   return (
     <div style={{ width: '100%', maxWidth: '1024px' }}>
+      <Loader active={emailPending} />
       <div
         style={{
           display: 'flex',
@@ -146,7 +149,9 @@ const EmailView = () => {
         <Input type="email" fluid placeholder="Reply to (Optional)" value={replyTo} onChange={handleReplyToChange} />
         <Input required fluid placeholder="Subject" value={subject} onChange={handleTitleChange} />
         <TextArea rows={10} required placeholder="Text" value={text} onChange={handleMessageChange} />
-        <Button type="submit" primary disabled={recipientEmails.length === 0} style={{ marginTop: '0.5em' }}>Send</Button>
+        <Button type="submit" primary disabled={recipientEmails.length === 0 || emailPending} style={{ marginTop: '0.5em' }}>
+          Send
+        </Button>
       </Form>
     </div>
   )

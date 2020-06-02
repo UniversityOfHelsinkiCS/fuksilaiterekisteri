@@ -16,14 +16,14 @@ const sendEmail = async (req, res) => {
       secure: false,
     })
 
-    transporter.sendMail({
+    await transporter.sendMail({
       from: 'Fuksilaite Robot <noreply@helsinki.fi>',
       bcc: recipientEmails,
       subject,
       text,
       replyTo,
     })
-    res.status(200)
+    res.status(200).json({ message: 'OK' })
   } catch (e) {
     logger.error('Error sending emails', e)
     res.status(500).json({ error: 'Error trying to send emails' })
