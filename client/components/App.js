@@ -18,7 +18,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getUserAction())
-    initShibbolethPinger(5000)
+    initShibbolethPinger(60000) // 1 minute
   }, [])
 
   const handleSidebarOpen = () => setSidebarVisible(true)
