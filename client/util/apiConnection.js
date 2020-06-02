@@ -8,7 +8,7 @@ import { basePath, inProduction } from 'Utilities/common'
 
 const getAxios = axios.create({ baseURL: `${basePath}api` })
 
-const callApi = async (url, method = 'get', data) => {
+export const callApi = async (url, method = 'get', data) => {
   const headers = { ...(!inProduction ? getHeaders() : {}) }
   return getAxios({
     method,

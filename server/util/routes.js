@@ -2,6 +2,7 @@ const Router = require('express')
 const userController = require('@controllers/userController')
 const studentController = require('@controllers/studentController')
 const testController = require('@controllers/testController')
+const emailController = require('@controllers/emailController')
 const { authentication } = require('@util/authenticationMiddleware')
 const { checkAdmin, checkStaffOrAdmin } = require('@util/adminMiddleware')
 const { checkDistributor } = require('@util/distributorMiddleware')
@@ -39,6 +40,8 @@ router.post('/student/:studentNumber/eligible', checkStaffOrAdmin, studentContro
 router.post('/student/:studentNumber/status', checkStaff, studentController.updateStudentStatus)
 
 router.get('/staff/students', checkStaff, studentController.getStudentsForStaff)
+
+router.post('/send_email', emailController.sendEmail)
 
 router.use('*', (req, res) => res.sendStatus(404))
 
