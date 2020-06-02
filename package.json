@@ -68,6 +68,7 @@
     "sequelize-cli": "^5.5.0",
     "uglifyjs-webpack-plugin": "^2.1.1",
     "umzug": "^2.2.0",
+    "unfuck-spa-shibboleth-session": "^1.0.0",
     "webpack": "^4.29.3",
     "webpack-cli": "^3.2.3",
     "winston": "^3.2.1"
