@@ -1,45 +1,38 @@
-import React, {
-  useEffect, useState, useMemo, useRef,
-} from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { NotificationManager } from 'react-notifications'
-import { getUsersAction, setUserAdminNote } from '../../util/redux/usersReducer'
-import UserTable from './UserTable'
-import UserModal from './UserModal'
-import StatsTable from '../StatsTable'
+import React from 'react'
+import { Tab, Menu, Icon } from 'semantic-ui-react'
+import AllUsersTab from './AllUsersTab'
+import EmailTab from './EmailTab'
+
 
 export default () => {
-  const [modalUser, setModalUser] = useState(null)
-  const dispatch = useDispatch()
-  const users = useSelector(state => state.users.data)
+  const serviceOnline = true // TODO: use actualy service state
 
-  const { error, settingAdminNote } = useSelector(state => state.users)
-  const prevSettingAdminNote = useRef(settingAdminNote)
+  const panes = [
+    {
+      menuItem: { key: 'users', icon: 'users', content: 'Users' },
+      render: () => <Tab.Pane><AllUsersTab /></Tab.Pane>,
+    },
+    {
+      menuItem: { key: 'email', icon: 'mail', content: 'Email' },
+      render: () => <Tab.Pane><EmailTab /></Tab.Pane>,
+    },
+    {
+      menuItem: (
+        <Menu.Item key="serviceStatus">
+          <Icon style={{ marginRight: '5px' }} color={serviceOnline ? 'green' : 'red'} name="power off" />
+          Service status
+        </Menu.Item>
+      ),
 
-  useEffect(() => {
-    if (!settingAdminNote && prevSettingAdminNote.current) {
-      if (!error) {
-        NotificationManager.success('Saved admin note successfully!')
-        setModalUser(null)
-      } else NotificationManager.error('Saving admin note failed!')
-    }
-    prevSettingAdminNote.current = settingAdminNote
-  }, [settingAdminNote])
+      render: () => <Tab.Pane>TODO</Tab.Pane>,
+    },
+  ]
 
-  useEffect(() => {
-    dispatch(getUsersAction())
-  }, [])
-
-  const handleAdminNoteClick = userId => setModalUser(userId)
-  const handleModalClose = () => setModalUser(null)
-  const handleModalSubmit = param => dispatch(setUserAdminNote(param))
-  const selectedUser = useMemo(() => users.find(({ id }) => id === modalUser), [modalUser])
 
   return (
-    <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-      <UserModal user={selectedUser} handleClose={handleModalClose} handleSubmit={handleModalSubmit} open={modalUser !== null} />
-      <StatsTable students={users.filter(u => u.studentNumber)} />
-      <UserTable handleAdminNoteClick={handleAdminNoteClick} users={users} />
-    </div>
+    <Tab
+      style={{ width: '100%' }}
+      panes={panes}
+    />
   )
 }

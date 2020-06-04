@@ -9,7 +9,6 @@ import StaffPage from 'Components/StaffPage'
 import StudentPage from 'Components/StudentPage'
 import UnauthorizedPage from 'Components/UnauthorizedPage'
 import NotFoundPage from 'Components/NotFoundPage'
-import EmailView from 'Components/AdminPage/EmailView'
 
 const Router = () => {
   const user = useSelector(state => state.user.data)
@@ -19,7 +18,6 @@ const Router = () => {
       <Switch>
         <Route exact path="/" component={MainPage} />
         <Route exact path="/admin" component={AdminPage} />
-        <Route exact path="/admin/email" component={EmailView} />
         <Route exact path="/distributor" component={DistributorPage} />
         <Route exact path="/staff" component={StaffPage} />
         <Route exact path="/student" component={StudentPage} />
