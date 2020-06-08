@@ -12,7 +12,7 @@ const {
 const { createUserStudyprogrammes } = require('../util/authenticationMiddleware')
 const mockData = require('./mockData.json')
 
-const getCurrentSemesterCode = () => serviceStatusController.getServiceStatusObject().then(serviceStatusObject => (serviceStatusObject.currentSemester))
+const getServiceStatusObject = () => serviceStatusController.getServiceStatusObject().then(serviceStatusObject => serviceStatusObject)
 
 const userApi = axios.create({
   httpsAgent: new https.Agent({
@@ -58,9 +58,14 @@ const getSemesterEnrollments = async (studentNumber) => {
 
 const isEligible = async (studentNumber, at) => {
   if (!inProduction) return { eligible: studentNumber === 'fuksi', studyrights: mockData.mockStudyrights }
-  const currentSemesterCode = await getCurrentSemesterCode()
+  const settings = await getServiceStatusObject()
   const studyrights = await getStudyRightsFor(studentNumber)
   const semesterEnrollments = await getSemesterEnrollments(studentNumber)
+  const foundStudent = await db.user.findOne({
+    where: {
+      studentNumber,
+    },
+  })
 
   const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
   const { min, max } = await getMinMaxSemesters()
@@ -83,7 +88,7 @@ const isEligible = async (studentNumber, at) => {
   if (mlu && mlu.elements.length && !hasNewStudyright && hasPreviousStudyright) {
     let hasBeenPresentBefore = false
     semesterEnrollments.data.forEach(({ semester_code, semester_enrollment_type_code }) => {
-      if (semester_code < currentSemesterCode && semester_enrollment_type_code !== 2) {
+      if (semester_code < settings.currentSemesterCode && semester_enrollment_type_code !== 2) {
         hasBeenPresentBefore = true
       }
     })
@@ -93,7 +98,7 @@ const isEligible = async (studentNumber, at) => {
     }
   }
 
-  const currentSemester = semesterEnrollments.data.find(({ semester_code }) => semester_code === currentSemesterCode)
+  const currentSemester = semesterEnrollments.data.find(({ semester_code }) => semester_code === settings.currentSemesterCode)
   let isPresent = false
   if (currentSemester && currentSemester.semester_enrollment_type_code === 1) {
     isPresent = true
@@ -101,10 +106,11 @@ const isEligible = async (studentNumber, at) => {
 
   const registrationEndingTime = new Date('2019-10-01')
   const didRegisterBeforeEndingTime = new Date(at || new Date().getTime()).getTime() < registrationEndingTime.getTime()
+  const signedUpForFreshmanDeviceThisYear = foundStudent.signupYear === settings.currentYear
 
   return {
     studyrights,
-    eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime),
+    eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime && signedUpForFreshmanDeviceThisYear),
   }
 }
 
