@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const serviceStatus = sequelize.define(
-    'servicestatus',
+    'serviceStatus',
     {
       studentRegistrationOnline: {
         type: DataTypes.BOOLEAN,
