@@ -1,13 +1,24 @@
-import React from 'react'
+import React, { useEffect, useMemo } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Tab, Menu, Icon } from 'semantic-ui-react'
+import { getServiceStatus } from 'Utilities/redux/serviceStatusReducer'
 import AllUsersTab from './AllUsersTab'
 import EmailTab from './EmailTab'
+import ServiceStatus from './ServiceStatus'
 
 
 export default () => {
-  const serviceOnline = true // TODO: use actualy service state
+  const serviceStatus = useSelector(state => state.serviceStatus.data)
+  const dispatch = useDispatch()
 
-  const panes = [
+  useEffect(() => {
+    dispatch(getServiceStatus())
+  }, [])
+
+
+  const studentRegistrationOnline = (serviceStatus && serviceStatus.studentRegistrationOnline) && !!serviceStatus.studentRegistrationOnline
+
+  const panes = useMemo(() => [
     {
       menuItem: { key: 'users', icon: 'users', content: 'Users' },
       render: () => <Tab.Pane><AllUsersTab /></Tab.Pane>,
@@ -19,14 +30,14 @@ export default () => {
     {
       menuItem: (
         <Menu.Item key="serviceStatus">
-          <Icon style={{ marginRight: '5px' }} color={serviceOnline ? 'green' : 'red'} name="power off" />
+          <Icon style={{ marginRight: '5px' }} color={studentRegistrationOnline ? 'green' : 'red'} name="power off" />
           Service status
         </Menu.Item>
       ),
 
-      render: () => <Tab.Pane>TODO</Tab.Pane>,
+      render: () => <Tab.Pane><ServiceStatus /></Tab.Pane>,
     },
-  ]
+  ], [studentRegistrationOnline])
 
 
   return (
