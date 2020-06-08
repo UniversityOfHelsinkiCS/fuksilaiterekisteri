@@ -24,7 +24,28 @@ const getServiceStatus = async (req, res) => {
   }
 }
 
+const setServiceStatus = async (req, res) => {
+  try {
+    const newSettings = req.body
+
+    const old = await getServiceStatusObject()
+
+    // Update any key value pait present in req.body. Excluding sequelize stuff:
+    Object.keys(newSettings).filter(key => !['id', 'createdAt', 'updatedAt'].includes(key)).forEach((key) => {
+      old[key] = newSettings[key]
+    })
+
+    await old.save()
+
+    return res.json(old)
+  } catch (e) {
+    logger.error(e)
+    return res.status(500).json({ error: 'error' })
+  }
+}
+
 module.exports = {
   getServiceStatus,
   getServiceStatusObject,
+  setServiceStatus,
 }

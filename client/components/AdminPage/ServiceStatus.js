@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getServiceStatus } from 'Utilities/redux/serviceStatusReducer'
+import { getServiceStatus, setServiceStatus } from 'Utilities/redux/serviceStatusReducer'
+import { Button, Header } from 'semantic-ui-react'
 
 export default function ServiceStatus() {
   const dispatch = useDispatch()
@@ -15,14 +16,80 @@ export default function ServiceStatus() {
 
   if (!serviceStatus) return 'Loading serviceStatus'
 
+  const incorrectConfirmation = () => {
+    alert('Incorrect confirmation.')
+  }
+
+  const handleServiceStop = () => {
+    // eslint-disable-next-line no-alert
+    const response = window.prompt('This will prevent users who have not yet registered from using the service, are you sure? This action cannot be undone. Type "stop" to stop this years distribution.')
+    if (response === 'stop') {
+      dispatch(setServiceStatus({
+        ...serviceStatus,
+        studentRegistrationOnline: false,
+      }))
+    } else {
+      incorrectConfirmation()
+    }
+  }
+
+  const handleServiceStart = () => {
+    // eslint-disable-next-line no-alert
+    const response = window.prompt('Are you sure that you want to start the service? Type "start" to start the service.')
+    if (response === 'start') {
+      dispatch(setServiceStatus({
+        ...serviceStatus,
+        studentRegistrationOnline: true,
+      }))
+    } else {
+      incorrectConfirmation()
+    }
+  }
+
+  const handleFinishDistributionYear = () => {
+    // eslint-disable-next-line no-alert
+    const response = window.prompt(`Doint this advances the year to ${serviceStatus.currentYear + 1}, are you sure you want to do this? Type "advance" to confirm.`)
+    if (response === 'advance') {
+      dispatch(setServiceStatus({
+        ...serviceStatus,
+        studentRegistrationOnline: false,
+        currentYear: serviceStatus.currentYear + 1,
+        currentSemester: serviceStatus.currentSemester + 2, // Fall term of next year.
+      }))
+    } else {
+      incorrectConfirmation()
+    }
+  }
+
+  const StartServiceButton = () => (
+    <Button
+      positive
+      onClick={handleServiceStart}
+    >
+    Enable registrations
+    </Button>
+  )
+
+  const StopServiceButton = () => (
+    <Button
+      negative
+      onClick={handleServiceStop}
+    >
+    Disable registrations
+    </Button>
+  )
+
+
+  const { studentRegistrationOnline, currentYear } = serviceStatus
+
 
   return (
     <div>
-      {Object.entries(serviceStatus).map(entry => (
-        <p key={entry[0]}>
-          {`${entry[0]} = ${entry[1]}`}
-        </p>
-      ))}
+      <Header as="h2">
+        {`Registrations for year ${currentYear} are currently ${studentRegistrationOnline ? ' open' : ' closed'}`}
+      </Header>
+      {studentRegistrationOnline ? <StopServiceButton /> : <StartServiceButton /> }
+      {!studentRegistrationOnline && <Button onClick={handleFinishDistributionYear} positive>{`Finish distribution year ${currentYear}`}</Button>}
     </div>
   )
 }

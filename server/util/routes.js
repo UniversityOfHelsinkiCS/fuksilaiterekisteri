@@ -45,6 +45,7 @@ router.get('/staff/students', checkStaff, studentController.getStudentsForStaff)
 router.post('/send_email', emailController.sendEmail)
 
 router.get('/serviceStatus', checkAdmin, serviceStatusController.getServiceStatus)
+router.post('/serviceStatus', checkAdmin, serviceStatusController.setServiceStatus)
 
 router.use('*', (req, res) => res.sendStatus(404))
 
