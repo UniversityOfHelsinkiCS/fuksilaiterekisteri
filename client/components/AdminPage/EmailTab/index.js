@@ -1,16 +1,17 @@
 import React from 'react'
 import { Tab } from 'semantic-ui-react'
-import EmailView from './EmailView'
+import MassEmail from './MassEmail'
+import AutoEmail from './AutoEmail'
 
 export default function EmailTab() {
   const panes = [
     {
       menuItem: { key: 'automatedEmailSettings', icon: 'server', content: 'Automated email settings' },
-      render: () => <Tab.Pane>TODO</Tab.Pane>,
+      render: () => <AutoEmail />,
     },
     {
       menuItem: { key: 'sendMassEmail', icon: 'address book', content: 'Send mass email' },
-      render: () => <EmailView />,
+      render: () => <MassEmail />,
     },
 
   ]
