@@ -46,4 +46,3 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           build_args: BASE_PATH=/fuksilaite/
           tags: staging
-          always_pull: true
