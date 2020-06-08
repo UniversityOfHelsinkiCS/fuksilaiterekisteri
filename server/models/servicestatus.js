@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       underscored: true,
       tableName: 'service_status',
-    }
+    },
   )
   return serviceStatus
 }

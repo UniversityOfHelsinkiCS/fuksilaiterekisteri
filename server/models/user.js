@@ -64,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       underscored: true,
       tableName: 'users',
-    }
+    },
   )
   user.associate = (models) => {
     user.belongsToMany(models.studyProgram, {
