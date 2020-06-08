@@ -3,8 +3,8 @@ import { useSelector, useDispatch, shallowEqual } from 'react-redux'
 import {
   Form, TextArea, Label, Button, Input, Accordion, Icon, Loader,
 } from 'semantic-ui-react'
-import { getUsersAction } from '../../../util/redux/usersReducer'
-import { sendEmail } from '../../../util/redux/emailReducer'
+import { getUsersAction } from 'Utilities/redux/usersReducer'
+import { sendEmail } from 'Utilities/redux/emailReducer'
 import EmailConfirmation from './EmailConfirmation'
 
 const Filter = ({
