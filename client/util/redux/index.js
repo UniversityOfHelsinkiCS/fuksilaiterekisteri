@@ -8,6 +8,7 @@ import deviceClaim from './deviceClaimReducer'
 import deviceRequest from './deviceRequestReducer'
 import notification from './notificationReducer'
 import email from './emailReducer'
+import serviceStatus from './serviceStatusReducer'
 
 export default combineReducers({
   messages,
@@ -18,4 +19,5 @@ export default combineReducers({
   deviceRequest,
   notification,
   email,
+  serviceStatus,
 })

@@ -3,6 +3,7 @@ const userController = require('@controllers/userController')
 const studentController = require('@controllers/studentController')
 const testController = require('@controllers/testController')
 const emailController = require('@controllers/emailController')
+const serviceStatusController = require('@controllers/serviceStatusController')
 const { authentication } = require('@util/authenticationMiddleware')
 const { checkAdmin, checkStaffOrAdmin } = require('@util/adminMiddleware')
 const { checkDistributor } = require('@util/distributorMiddleware')
@@ -42,6 +43,8 @@ router.post('/student/:studentNumber/status', checkStaff, studentController.upda
 router.get('/staff/students', checkStaff, studentController.getStudentsForStaff)
 
 router.post('/send_email', emailController.sendEmail)
+
+router.get('/serviceStatus', checkAdmin, serviceStatusController.getServiceStatus)
 
 router.use('*', (req, res) => res.sendStatus(404))
 

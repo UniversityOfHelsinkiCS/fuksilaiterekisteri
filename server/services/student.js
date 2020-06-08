@@ -4,11 +4,15 @@ const { Op } = require('sequelize')
 const db = require('@models')
 const logger = require('@util/logger')
 const completionChecker = require('@util/completionChecker')
+const serviceStatusController = require('@controllers/serviceStatusController')
+
 const {
   STUDENT_API_URL, STUDENT_API_TOKEN, DIGI_COURSES, inProduction,
 } = require('../util/common')
 const { createUserStudyprogrammes } = require('../util/authenticationMiddleware')
 const mockData = require('./mockData.json')
+
+const getCurrentSemesterCode = () => serviceStatusController.getServiceStatusObject().then(serviceStatusObject => (serviceStatusObject.currentSemester))
 
 const userApi = axios.create({
   httpsAgent: new https.Agent({
@@ -54,6 +58,7 @@ const getSemesterEnrollments = async (studentNumber) => {
 
 const isEligible = async (studentNumber, at) => {
   if (!inProduction) return { eligible: studentNumber === 'fuksi', studyrights: mockData.mockStudyrights }
+  const currentSemesterCode = await getCurrentSemesterCode()
   const studyrights = await getStudyRightsFor(studentNumber)
   const semesterEnrollments = await getSemesterEnrollments(studentNumber)
 
@@ -78,8 +83,7 @@ const isEligible = async (studentNumber, at) => {
   if (mlu && mlu.elements.length && !hasNewStudyright && hasPreviousStudyright) {
     let hasBeenPresentBefore = false
     semesterEnrollments.data.forEach(({ semester_code, semester_enrollment_type_code }) => {
-      // TODO: Fix hardcoding of 139
-      if (semester_code < 139 && semester_enrollment_type_code !== 2) {
+      if (semester_code < currentSemesterCode && semester_enrollment_type_code !== 2) {
         hasBeenPresentBefore = true
       }
     })
@@ -89,7 +93,7 @@ const isEligible = async (studentNumber, at) => {
     }
   }
 
-  const currentSemester = semesterEnrollments.data.find(({ semester_code }) => semester_code === 139)
+  const currentSemester = semesterEnrollments.data.find(({ semester_code }) => semester_code === currentSemesterCode)
   let isPresent = false
   if (currentSemester && currentSemester.semester_enrollment_type_code === 1) {
     isPresent = true
