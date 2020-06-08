@@ -10,6 +10,7 @@ import NavBar from 'Components/NavBar'
 import Footer from 'Components/Footer'
 import Router from 'Components/Router'
 import Notifications from 'Components/Notifications'
+import { inProduction } from 'Utilities/common'
 
 const App = () => {
   const [sidebarVisible, setSidebarVisible] = useState(false)
@@ -18,7 +19,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getUserAction())
-    initShibbolethPinger(60000) // 1 minute
+    if (inProduction) initShibbolethPinger(60000) // 1 minute
   }, [])
 
   const handleSidebarOpen = () => setSidebarVisible(true)
