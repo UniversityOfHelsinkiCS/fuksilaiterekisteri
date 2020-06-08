@@ -1,5 +1,7 @@
 # Fuksilaiterekisteri
 
+![Test and build staging-image](https://github.com/UniversityOfHelsinkiCS/fuksilaiterekisteri/workflows/Test%20and%20build%20staging-image/badge.svg) ![Build production-image](https://github.com/UniversityOfHelsinkiCS/fuksilaiterekisteri/workflows/Build%20production-image/badge.svg)
+
 ## Sanasto
 - Opiskelija = kuka vaan jolla on HY:n (tai Avoimen) opiskelijatunnus.
 - Oikeutettu opiskelija = opiskelija, jolla on oikeus fuksiläppäriin.
