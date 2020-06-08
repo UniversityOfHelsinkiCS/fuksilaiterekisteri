@@ -5,6 +5,7 @@ import {
 } from 'semantic-ui-react'
 import { getUsersAction } from '../../../util/redux/usersReducer'
 import { sendEmail } from '../../../util/redux/emailReducer'
+import EmailConfirmation from './EmailConfirmation'
 
 const Filter = ({
   attribute,
@@ -31,6 +32,7 @@ const Filter = ({
 )
 
 const EmailView = () => {
+  const [confirmationOpen, setConfirmationOpen] = useState(false)
   const [recipientEmails, setRecipientEmails] = useState([])
   const [subject, setSubject] = useState('')
   const [text, setText] = useState('')
@@ -87,8 +89,8 @@ const EmailView = () => {
     setShowingEmails(!showingEmails)
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const handleSendClick = () => {
+    setConfirmationOpen(false)
 
     const data = {
       recipientEmails,
@@ -98,6 +100,12 @@ const EmailView = () => {
     }
 
     dispatch(sendEmail(data))
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    setConfirmationOpen(true)
   }
 
   return (
@@ -149,10 +157,21 @@ const EmailView = () => {
         <Input type="email" fluid placeholder="Reply to (Optional)" value={replyTo} onChange={handleReplyToChange} />
         <Input required fluid placeholder="Subject" value={subject} onChange={handleTitleChange} />
         <TextArea rows={10} required placeholder="Text" value={text} onChange={handleMessageChange} />
-        <Button type="submit" primary disabled={recipientEmails.length === 0 || emailPending} style={{ marginTop: '0.5em' }}>
+        <Button
+          primary
+          type="submit"
+          disabled={recipientEmails.length === 0 || emailPending}
+          style={{ marginTop: '0.5em' }}
+        >
           Send
         </Button>
       </Form>
+      <EmailConfirmation
+        open={confirmationOpen}
+        handleClose={() => setConfirmationOpen(false)}
+        handleSend={handleSendClick}
+        emailAmount={recipientEmails.length}
+      />
     </div>
   )
 }
