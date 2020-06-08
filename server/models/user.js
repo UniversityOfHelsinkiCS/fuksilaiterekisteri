@@ -56,15 +56,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         field: 'admin_note',
       },
-      fresherYear: {
+      signupYear: {
         type: DataTypes.INTEGER,
-        field: 'fresher_year',
+        field: 'signup_year',
       },
     },
     {
       underscored: true,
       tableName: 'users',
-    },
+    }
   )
   user.associate = (models) => {
     user.belongsToMany(models.studyProgram, {
