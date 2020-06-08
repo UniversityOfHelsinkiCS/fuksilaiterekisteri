@@ -31,7 +31,7 @@ const Filter = ({
   </div>
 )
 
-const EmailView = () => {
+const MassEmail = () => {
   const [confirmationOpen, setConfirmationOpen] = useState(false)
   const [recipientEmails, setRecipientEmails] = useState([])
   const [subject, setSubject] = useState('')
@@ -176,4 +176,4 @@ const EmailView = () => {
   )
 }
 
-export default EmailView
+export default MassEmail
