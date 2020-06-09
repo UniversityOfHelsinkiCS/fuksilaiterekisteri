@@ -30,6 +30,16 @@ export default (state = initialState, action) => {
         ...state,
         error: 'There was an error trying to send the emails',
       }
+    case 'UPDATE_READY_TEMPLATE_SUCCESS':
+      return {
+        ...state,
+        success: 'Email template updated',
+      }
+    case 'UPDATE_READY_TEMPLATE_FAILURE':
+      return {
+        ...state,
+        error: 'Failed to update email template',
+      }
     default:
       return state
   }

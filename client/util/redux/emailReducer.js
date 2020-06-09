@@ -7,19 +7,20 @@ export const sendEmail = (data) => {
   return callBuilder(route, prefix, method, data)
 }
 
-export const getTemplates = () => {
-  const route = '/email/template'
-  const prefix = 'GET_TEMPLATES'
+export const getReadyTemplate = () => {
+  const route = '/email/template/autosend/AUTOSEND_WHEN_READY'
+  const prefix = 'GET_READY_TEMPLATE'
   return callBuilder(route, prefix)
 }
 
-export const updateReadyTemplate = (data) => {
-  const route = '/email/autosend_template'
+export const updateReadyTemplate = (subject, body) => {
+  const route = '/email/template/autosend'
   const prefix = 'UPDATE_READY_TEMPLATE'
-  return callBuilder(route, prefix, 'post', { ...data, type: 'AUTOSEND_WHEN_READY' })
+  const data = { subject, body, type: 'AUTOSEND_WHEN_READY' }
+  return callBuilder(route, prefix, 'post', data)
 }
 
-const initialState = { pending: false, error: false, templates: [] }
+const initialState = { pending: false, error: false, readyTemplate: { subject: '', body: '' } }
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -41,20 +42,20 @@ export default (state = initialState, action) => {
         pending: false,
         error: true,
       }
-    case 'GET_TEMPLATES_ATTEMPT':
+    case 'GET_READY_TEMPLATE_ATTEMPT':
       return {
         ...state,
         pending: true,
         error: false,
       }
-    case 'GET_TEMPLATES_SUCCESS':
+    case 'GET_READY_TEMPLATE_SUCCESS':
       return {
         ...state,
         pending: false,
         error: false,
-        templates: action.response,
+        readyTemplate: action.response || {},
       }
-    case 'GET_TEMPLATES_FAILURE':
+    case 'GET_READY_TEMPLATE_FAILURE':
       return {
         ...state,
         pending: false,
@@ -71,8 +72,7 @@ export default (state = initialState, action) => {
         ...state,
         pending: false,
         error: false,
-        templates: state.templates.map(template => (
-          template.type === 'AUTOSEND_WHEN_READY' ? action.response : template)),
+        readyTemplate: action.response,
       }
     case 'UPDATE_READY_TEMPLATE_FAILURE':
       return {

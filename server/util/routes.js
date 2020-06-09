@@ -43,8 +43,8 @@ router.post('/student/:studentNumber/status', checkStaff, studentController.upda
 router.get('/staff/students', checkStaff, studentController.getStudentsForStaff)
 
 router.post('/email/send', emailController.sendEmail)
-router.get('/email/template', emailController.getTemplates)
-router.post('/email/autosend_template', emailController.updateAutoSendTemplate)
+router.get('/email/template/autosend/:type', emailController.getAutosendTemplate)
+router.post('/email/template/autosend', emailController.updateAutosendTemplate)
 
 router.get('/serviceStatus', checkAdmin, serviceStatusController.getServiceStatus)
 router.post('/serviceStatus', checkAdmin, serviceStatusController.setServiceStatus)

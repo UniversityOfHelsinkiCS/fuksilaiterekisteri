@@ -31,34 +31,39 @@ const sendEmail = async (req, res) => {
   }
 }
 
-const getTemplates = async (req, res) => {
+const getAutosendTemplate = async (req, res) => {
   try {
-    const templates = await db.email.findAll({})
+    const { type } = req.params
 
-    return res.status(200).json(templates)
+    if (!type || !type.includes('AUTOSEND')) return res.status(400).json({ error: 'invalid parameter' })
+
+    const template = await db.email.findOne(({ where: { type } }))
+
+    return res.status(200).json(template)
   } catch (e) {
     logger.error(e)
     return res.status(500).json({ error: 'error' })
   }
 }
 
-const updateAutoSendTemplate = async (req, res) => {
+const updateAutosendTemplate = async (req, res) => {
   try {
     const { subject, body, type } = req.body
 
     if (!subject || !body || !type || !type.includes('AUTOSEND')) {
-      return res.status(400)({ error: 'invalid parameters' })
+      return res.status(400).json({ error: 'invalid parameters' })
     }
 
-    const updatedTemplate = await db.email.update({ subject, body, type }, {
-      where: { type },
-    })
+    let template = await db.email.findOne({ where: { type } })
 
-    return res.status(200).json(updatedTemplate)
+    if (template) await template.update({ subject, body })
+    else template = await db.email.create({ subject, body, type })
+
+    return res.status(200).json(template)
   } catch (e) {
     logger.error(e)
     return res.status(500).json({ error: 'error' })
   }
 }
 
-module.exports = { sendEmail, updateAutoSendTemplate, getTemplates }
+module.exports = { sendEmail, updateAutosendTemplate, getAutosendTemplate }

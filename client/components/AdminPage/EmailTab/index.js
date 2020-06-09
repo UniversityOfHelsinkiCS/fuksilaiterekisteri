@@ -3,7 +3,7 @@ import { Tab } from 'semantic-ui-react'
 import MassEmail from './MassEmail'
 import AutoEmail from './AutoEmail'
 
-export default function EmailTab() {
+export default () => {
   const panes = [
     {
       menuItem: { key: 'automatedEmailSettings', icon: 'server', content: 'Automated email settings' },
