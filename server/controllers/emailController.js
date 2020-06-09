@@ -31,15 +31,11 @@ const sendEmail = async (req, res) => {
   }
 }
 
-const getAutosendTemplate = async (req, res) => {
+const getTemplates = async (req, res) => {
   try {
-    const { type } = req.body
+    const templates = await db.email.findAll({})
 
-    if (!type) return res.status(400)({ error: 'type attribute missing' })
-
-    const template = await db.email.findOne(({ where: { type } }))
-
-    return res.status(200).json(template)
+    return res.status(200).json(templates)
   } catch (e) {
     logger.error(e)
     return res.status(500).json({ error: 'error' })
@@ -65,4 +61,4 @@ const updateAutoSendTemplate = async (req, res) => {
   }
 }
 
-module.exports = { sendEmail, updateAutoSendTemplate, getAutosendTemplate }
+module.exports = { sendEmail, updateAutoSendTemplate, getTemplates }
