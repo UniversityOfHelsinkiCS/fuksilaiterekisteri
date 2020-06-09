@@ -1,4 +1,5 @@
 import React from 'react'
+import { inProduction } from 'Utilities/common'
 
 export default class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -19,7 +20,7 @@ export default class ErrorBoundary extends React.Component {
   render() {
     const { hasError } = this.state
     const { children } = this.props
-    if (!hasError) {
+    if (!hasError || !inProduction) {
       return children
     }
     window.location.reload()
