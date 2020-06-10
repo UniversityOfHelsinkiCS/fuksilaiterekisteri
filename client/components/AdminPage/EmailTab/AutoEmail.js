@@ -33,10 +33,10 @@ const AutoEmail = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <Loader active={pending} />
-      <Header as="h4">Automated email sent to students who have completed all needed tasks. (IN PROGRESS, NOT WORKING YET)</Header>
+      <Header as="h4">Automated email sent to students who have completed all needed tasks.</Header>
       <Form onSubmit={handleSubmit}>
-        <Input fluid placeholder="Subject" value={subject} onChange={handleSubjectChange} required />
-        <TextArea rows={10} placeholder="Text" value={text} onChange={handleTextChange} required />
+        <Input fluid placeholder="Subject" value={subject} onChange={handleSubjectChange} required label="Subject" />
+        <TextArea rows={10} placeholder="Text" value={text} onChange={handleTextChange} required label="Text" />
         <Button
           type="submit"
           primary
