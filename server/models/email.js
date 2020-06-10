@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       field: 'body',
     },
+    replyTo: {
+      type: DataTypes.STRING,
+      field: 'reply_to',
+    },
     type: {
       type: DataTypes.ENUM('AUTOSEND_WHEN_READY', 'AUTOSEND_WHEN_OVERDUE', 'ADMIN', 'RECLAIM'),
       field: 'type',
