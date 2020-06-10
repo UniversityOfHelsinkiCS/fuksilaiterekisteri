@@ -53,9 +53,10 @@ const requestDevice = async (req, res) => {
   }
 
   try {
+    const readyEmail = await db.email.findOne({ where: { type: 'AUTOSEND_WHEN_READY' } })
     const updatedUser = await req.user.update({ wantsDevice: true, personalEmail: req.body.email })
 
-    completionChecker(updatedUser)
+    completionChecker(updatedUser, readyEmail)
     return res
       .status(200)
       .json(updatedUser)

@@ -166,6 +166,8 @@ const updateEligibleStudentStatuses = async () => {
     },
   })
 
+  const readyEmail = await db.email.findOne({ where: { type: 'AUTOSEND_WHEN_READY' } })
+
   let done = 0
 
   const dbPromises = []
@@ -183,7 +185,7 @@ const updateEligibleStudentStatuses = async () => {
               courseRegistrationCompleted: hasEnrollments || targetStudents[i].courseRegistrationCompleted,
             })
 
-            await completionChecker(updatedStudent)
+            await completionChecker(updatedStudent, readyEmail)
             logger.info(`Updated student ${++done}/${targetStudents.length}`)
             res(true)
           } catch (e) {
@@ -253,7 +255,8 @@ const updateStudentEligibility = async (studentNumber) => {
   })
 
   logger.info(`${studentNumber} eligibility updated successfully from ${eligibilityBefore} to ${eligible}!`)
-  await completionChecker(updatedStudent)
+  const readyEmail = await db.email.findOne({ where: { type: 'AUTOSEND_WHEN_READY' } })
+  await completionChecker(updatedStudent, readyEmail)
 }
 
 module.exports = {
