@@ -1,3 +1,6 @@
+// / <reference types="Cypress" />
+
+
 // ***********************************************************
 // This example support/index.js is processed and
 // loaded automatically before your test files.
@@ -15,6 +18,15 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+
+
+function seed() {
+  cy.request('localhost:8000/api/test/reset/serviceStatus')
+}
+
+beforeEach(seed)
+
+
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
