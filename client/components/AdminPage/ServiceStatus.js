@@ -22,7 +22,7 @@ export default function ServiceStatus() {
 
   const handleServiceStop = () => {
     // eslint-disable-next-line no-alert
-    const response = window.prompt('This will prevent users who have not yet registered from using the service, are you sure? This action cannot be undone. Type "stop" to stop this years distribution.')
+    const response = window.prompt('This prevents new registrations from students. Are you sure you want to do this? Type "stop" to confirm.')
     if (response === 'stop') {
       dispatch(setServiceStatus({
         ...serviceStatus,
@@ -35,7 +35,7 @@ export default function ServiceStatus() {
 
   const handleServiceStart = () => {
     // eslint-disable-next-line no-alert
-    const response = window.prompt('Are you sure that you want to start the service? Type "start" to start the service.')
+    const response = window.prompt('This will allow new students to register (to use the service). Type "start" to confirm.')
     if (response === 'start') {
       dispatch(setServiceStatus({
         ...serviceStatus,
@@ -48,7 +48,7 @@ export default function ServiceStatus() {
 
   const handleFinishDistributionYear = () => {
     // eslint-disable-next-line no-alert
-    const response = window.prompt(`Doint this advances the year to ${serviceStatus.currentYear + 1}, are you sure you want to do this? Type "advance" to confirm.`)
+    const response = window.prompt(`This action ends distribution year ${serviceStatus.currentYear}. Doing this advances the year to ${serviceStatus.currentYear + 1}, are you sure you want to do this? Type "advance" to confirm.`)
     if (response === 'advance') {
       dispatch(setServiceStatus({
         ...serviceStatus,
