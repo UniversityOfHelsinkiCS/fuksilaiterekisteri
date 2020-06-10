@@ -48,7 +48,9 @@ const getAutosendTemplate = async (req, res) => {
 
 const updateAutosendTemplate = async (req, res) => {
   try {
-    const { subject, body, type } = req.body
+    const {
+      subject, body, replyTo, type,
+    } = req.body
 
     if (!subject || !body || !type || !type.includes('AUTOSEND')) {
       return res.status(400).json({ error: 'invalid parameters' })
@@ -56,8 +58,12 @@ const updateAutosendTemplate = async (req, res) => {
 
     let template = await db.email.findOne({ where: { type } })
 
-    if (template) await template.update({ subject, body })
-    else template = await db.email.create({ subject, body, type })
+    if (template) await template.update({ subject, body, replyTo })
+    else {
+      template = await db.email.create({
+        subject, body, type, replyTo,
+      })
+    }
 
     return res.status(200).json(template)
   } catch (e) {

@@ -13,10 +13,12 @@ export const getReadyTemplate = () => {
   return callBuilder(route, prefix)
 }
 
-export const updateReadyTemplate = (subject, body) => {
+export const updateReadyTemplate = (subject, body, replyTo) => {
   const route = '/email/template/autosend'
   const prefix = 'UPDATE_READY_TEMPLATE'
-  const data = { subject, body, type: 'AUTOSEND_WHEN_READY' }
+  const data = {
+    subject, body, replyTo, type: 'AUTOSEND_WHEN_READY',
+  }
   return callBuilder(route, prefix, 'post', data)
 }
 
