@@ -38,8 +38,8 @@ const AutoEmail = () => {
       <Loader active={pending} />
       <Header as="h4">Automated email sent to students who have completed all needed tasks.</Header>
       <Form onSubmit={handleSubmit}>
-        <Input fluid placeholder="Subject" value={subject} onChange={handleSubjectChange} required label="Subject" labelPosition="left corner" />
         <Input fluid placeholder="Optional" value={replyTo} onChange={handleReplyToChange} label="Reply-To" type="email" labelPosition="left corner" />
+        <Input fluid placeholder="Subject" value={subject} onChange={handleSubjectChange} required label="Subject" labelPosition="left corner" />
         <TextArea rows={10} placeholder="Text" value={text} onChange={handleTextChange} required />
         <Button
           type="submit"

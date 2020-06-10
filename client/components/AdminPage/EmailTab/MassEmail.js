@@ -154,9 +154,9 @@ const MassEmail = () => {
         </Accordion.Content>
       </Accordion>
       <Form onSubmit={handleSubmit} style={{ paddingTop: '1em' }}>
-        <Input type="email" fluid placeholder="Reply to (Optional)" value={replyTo} onChange={handleReplyToChange} />
-        <Input required fluid placeholder="Subject" value={subject} onChange={handleTitleChange} />
-        <TextArea rows={10} required placeholder="Text" value={text} onChange={handleMessageChange} />
+        <Input type="email" fluid placeholder="Optional" value={replyTo} onChange={handleReplyToChange} label="ReplyTo" labelPosition="left corner" />
+        <Input required fluid placeholder="Enter subject.." value={subject} onChange={handleTitleChange} label="Subject" labelPosition="left corner" />
+        <TextArea rows={10} required placeholder="Enter text.." value={text} onChange={handleMessageChange} />
         <Button
           primary
           type="submit"
