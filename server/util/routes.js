@@ -21,6 +21,7 @@ router.post('/logout', userController.getLogoutUrl)
 
 if (!inProduction) {
   router.get('/test/reset/user', testController.resetTestUsers)
+  router.get('/test/reset/serviceStatus', testController.resetServiceStatus)
 }
 
 router.use('/', authentication)

@@ -2,6 +2,7 @@ const db = require('@models')
 const { getStudentStatus, isEligible } = require('@services/student')
 const { inProduction } = require('./common')
 const logger = require('@util/logger')
+const { getServiceStatusObject } = require('@controllers/serviceStatusController')
 
 const createUserStudyprogrammes = async (studyrights, user) => {
   const allStudyprograms = await db.studyProgram.findAll({
@@ -121,6 +122,12 @@ const authentication = async (req, res, next) => {
   }
 
   try {
+    const settings = await getServiceStatusObject()
+    if (!settings.studentRegistrationOnline) {
+      logger.warn(`User with studentNumber ${studentNumber} tried to create a new account (registrations are closed)`)
+      return res.status(503).send({ error: 'Registrations are closed.' })
+    }
+
     const { studyrights, eligible } = await isEligible(studentNumber)
     const { digiSkills, hasEnrollments } = await getStudentStatus(
       studentNumber,
@@ -132,6 +139,7 @@ const authentication = async (req, res, next) => {
       eligible,
       digiSkillsCompleted: digiSkills,
       courseRegistrationCompleted: hasEnrollments,
+      signupYear: settings.currentYear,
     })
 
     await createUserStudyprogrammes(studyrights, newUser)
