@@ -23,3 +23,18 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+import { setHeaders } from "../../client/util/fakeShibboleth"
+
+Cypress.Commands.add("login", (uid) => {
+  cy.log("Logging in as", uid)
+  setHeaders(uid)
+ })
+
+// Simulate how a user account would normally be generated:
+Cypress.Commands.add("createUser", (uid) => {
+  setHeaders(uid)
+  cy.route("POST",'/api/login').as('createUser')
+  cy.visit("/")
+  cy.wait("@createUser")
+})

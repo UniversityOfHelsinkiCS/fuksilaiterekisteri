@@ -1,5 +1,6 @@
 {
   "projectId": "fukrek",
+  "baseUrl": "http://localhost:8000",
   "defaultCommandTimeout": 20000,
   "execTimeout": 20000,
   "taskTimeout": 20000,

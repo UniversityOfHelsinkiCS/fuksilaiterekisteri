@@ -1,6 +1,6 @@
 const ITEM_NAME = 'fakeUser'
 
-export const possibleUsers = [
+const possibleUsers = [
   {
     uid: 'admin',
     employeeNumber: undefined,
@@ -68,18 +68,25 @@ export const possibleUsers = [
   },
 ]
 
-export const setHeaders = (uid) => {
+const setHeaders = (uid) => {
   const user = possibleUsers.find(u => u.uid === uid)
   if (!user) return
 
   localStorage.setItem(ITEM_NAME, JSON.stringify(user))
 }
 
-export const getHeaders = () => {
+const getHeaders = () => {
   const user = JSON.parse(localStorage.getItem(ITEM_NAME) || '{}')
   return user
 }
 
-export const clearHeaders = () => {
+const clearHeaders = () => {
   localStorage.removeItem(ITEM_NAME)
+}
+
+module.exports = {
+  possibleUsers,
+  setHeaders,
+  getHeaders,
+  clearHeaders,
 }

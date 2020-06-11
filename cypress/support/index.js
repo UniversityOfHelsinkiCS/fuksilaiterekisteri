@@ -19,12 +19,13 @@
 // Import commands.js using ES2015 syntax:
 import './commands'
 
-
-function seed() {
+function seedAndInit() {
   cy.request('localhost:8000/api/test/reset/serviceStatus')
+  cy.request('localhost:8000/api/test/reset/user')
+  cy.server()
 }
 
-beforeEach(seed)
+beforeEach(seedAndInit)
 
 
 

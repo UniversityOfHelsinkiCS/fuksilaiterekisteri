@@ -1,4 +1,4 @@
-// / <reference types="Cypress" />
+/// <reference types="Cypress" />
 
 const findStudent = (id) => {
   cy.get('input').eq(0).type(id)
@@ -17,31 +17,14 @@ const giveBadDevice = () => {
 
 context('Distributor', () => {
   beforeEach(() => {
-    cy.request('localhost:8000/api/test/reset/user')
-    cy.server({
-      onAnyRequest(route, proxy) {
-        proxy.xhr.setRequestHeader('uid', 'fuksi')
-        proxy.xhr.setRequestHeader('givenName', 'fuksiEtunimi')
-        proxy.xhr.setRequestHeader('mail', 'grp-toska+fukrekfuksi@helsinki.fi')
-        proxy.xhr.setRequestHeader('schacDateOfBirth', 19770501)
-        proxy.xhr.setRequestHeader('schacPersonalUniqueCode', 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:fuksi')
-        proxy.xhr.setRequestHeader('sn', 'fuksi')
-      },
-    })
-    cy.visit('localhost:8000')
+
+    cy.createUser("fuksi")
     cy.contains('FUKSILAITTEET')
     cy.contains('I want a device, but').click()
     cy.contains('Task status:')
-    cy.server({
-      onAnyRequest(route, proxy) {
-        proxy.xhr.setRequestHeader('uid', 'jakelija')
-        proxy.xhr.setRequestHeader('employeeNumber', '1234')
-        proxy.xhr.setRequestHeader('givenName', 'jakelijaEtunimi')
-        proxy.xhr.setRequestHeader('mail', 'grp-toska+fail@helsinki.fi')
-        proxy.xhr.setRequestHeader('sn', 'jakelija')
-      },
-    })
-    cy.visit('localhost:8000')
+
+    cy.login("jakelija")
+    cy.visit('/')
     cy.contains('FUKSILAITTEET')
   })
 
@@ -82,29 +65,12 @@ context('Distributor', () => {
     cy.contains('Opiskelijaa ei löytynyt!')
   })
 
-  it('Can\'t give a device to a non-eligible student', () => {
-    cy.server({
-      onAnyRequest(route, proxy) {
-        proxy.xhr.setRequestHeader('uid', 'non_fuksi_student')
-        proxy.xhr.setRequestHeader('givenName', 'non-fuksiEtunimi')
-        proxy.xhr.setRequestHeader('mail', 'grp-toska+fail@helsinki.fi')
-        proxy.xhr.setRequestHeader('schacDateOfBirth', 19850806)
-        proxy.xhr.setRequestHeader('schacPersonalUniqueCode', 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:non-fuksi')
-        proxy.xhr.setRequestHeader('sn', 'non-fuksi')
-      },
-    })
-    cy.visit('localhost:8000')
+  it("Can't give a device to a non-eligible student", () => {
+    cy.createUser("non_fuksi_student")
     cy.contains('Unfortunately you are not eligible for the fresher device.')
-    cy.server({
-      onAnyRequest(route, proxy) {
-        proxy.xhr.setRequestHeader('uid', 'jakelija')
-        proxy.xhr.setRequestHeader('employeeNumber', '1234')
-        proxy.xhr.setRequestHeader('givenName', 'jakelijaEtunimi')
-        proxy.xhr.setRequestHeader('mail', 'grp-toska+fail@helsinki.fi')
-        proxy.xhr.setRequestHeader('sn', 'jakelija')
-      },
-    })
-    cy.visit('localhost:8000')
+
+    cy.login("jakelija")
+    cy.visit("/")
     findStudent('non-fuksi')
     cy.contains('Ei oikeutettu laitteeseen!')
   })
