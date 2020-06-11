@@ -69,29 +69,34 @@ const isEligible = async (studentNumber, at) => {
 
   const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
   const { min, max } = await getMinMaxSemesters()
-  const minTime = new Date(min).getTime()
-  const maxTime = new Date(max).getTime()
+  const minTime = new Date(min).getTime() // Those who started before spring 2018 dont count
+  const maxTime = new Date(max).getTime() // When current semester started. Semester swaps on 31.7.
+
   let hasNewStudyright = false
   let hasPreviousStudyright = false
   if (mlu) {
     mlu.elements.forEach(({ start_date }) => {
       const startTime = new Date(start_date).getTime()
+
       if (startTime > minTime && startTime < maxTime) {
-        hasPreviousStudyright = true
+        hasPreviousStudyright = true // Has studyright which started in between 2018S and before current semester.
       }
+
       if (startTime >= maxTime) {
-        hasNewStudyright = true
+        hasNewStudyright = true // Has studyright which might have not even started yet. (Maybe true fuksi)
       }
     })
   }
 
   if (mlu && mlu.elements.length && !hasNewStudyright && hasPreviousStudyright) {
     let hasBeenPresentBefore = false
+
     semesterEnrollments.data.forEach(({ semester_code, semester_enrollment_type_code }) => {
       if (semester_code < settings.currentSemesterCode && semester_enrollment_type_code !== 2) {
         hasBeenPresentBefore = true
       }
     })
+
     if (!hasBeenPresentBefore) {
       hasPreviousStudyright = false
       hasNewStudyright = true
