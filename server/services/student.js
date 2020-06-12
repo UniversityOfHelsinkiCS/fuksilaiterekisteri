@@ -167,6 +167,7 @@ const getStudentStatus = async (studentNumber, studyrights) => {
 }
 
 const updateEligibleStudentStatuses = async () => {
+  const settings = await getServiceStatusObject()
   const isRegistrationOver = new Date().getTime() > new Date('2019-10-01').getTime()
   if (isRegistrationOver) return
 
@@ -177,6 +178,7 @@ const updateEligibleStudentStatuses = async () => {
         [Op.ne]: null,
       },
       [Op.or]: [{ digiSkillsCompleted: false }, { courseRegistrationCompleted: false }],
+      signupYear: settings.currentYear,
     },
   })
 
