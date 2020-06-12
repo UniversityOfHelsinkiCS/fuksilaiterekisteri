@@ -69,7 +69,7 @@ const isEligible = async (studentNumber, at) => {
 
   const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
   const { min, max } = await getMinMaxSemesters()
-  const minTime = new Date(min).getTime() // Those who started before spring 2018 dont count
+  const minTime = new Date(min).getTime() // Those who started before spring 2008 dont count -  "min": "2008-07-30T21:00:00.000Z",
   const maxTime = new Date(max).getTime() // When current semester started. Semester swaps on 31.7.
 
   let hasNewStudyright = false
@@ -79,7 +79,7 @@ const isEligible = async (studentNumber, at) => {
       const startTime = new Date(start_date).getTime()
 
       if (startTime > minTime && startTime < maxTime) {
-        hasPreviousStudyright = true // Has studyright which started in between 2018S and before current semester.
+        hasPreviousStudyright = true // Has studyright which started in between 2008F and before current semester.
       }
 
       if (startTime >= maxTime) {
@@ -92,7 +92,7 @@ const isEligible = async (studentNumber, at) => {
     let hasBeenPresentBefore = false
 
     semesterEnrollments.data.forEach(({ semester_code, semester_enrollment_type_code }) => {
-      if (semester_code < settings.currentSemesterCode && semester_enrollment_type_code !== 2) {
+      if (semester_code < settings.currentSemester && semester_enrollment_type_code !== 2) {
         hasBeenPresentBefore = true
       }
     })
@@ -103,7 +103,8 @@ const isEligible = async (studentNumber, at) => {
     }
   }
 
-  const currentSemester = semesterEnrollments.data.find(({ semester_code }) => semester_code === settings.currentSemesterCode)
+  const currentSemester = semesterEnrollments.data.find(({ semester_code }) => semester_code === settings.currentSemester)
+
   let isPresent = false
   if (currentSemester && currentSemester.semester_enrollment_type_code === 1) {
     isPresent = true
@@ -112,6 +113,14 @@ const isEligible = async (studentNumber, at) => {
   const registrationEndingTime = new Date('2019-10-01')
   const didRegisterBeforeEndingTime = new Date(at || new Date().getTime()).getTime() < registrationEndingTime.getTime()
   const signedUpForFreshmanDeviceThisYear = foundStudent.signupYear === settings.currentYear
+
+  if (!inProduction) {
+    console.log('hasPreviousStudyright            \t', hasPreviousStudyright)
+    console.log('hasNewStudyright                 \t', hasNewStudyright)
+    console.log('isPresent                        \t', isPresent)
+    console.log('didRegisterBeforeEndingTime      \t', didRegisterBeforeEndingTime)
+    console.log('signedUpForFreshmanDeviceThisYear\t', signedUpForFreshmanDeviceThisYear)
+  }
 
   return {
     studyrights,
