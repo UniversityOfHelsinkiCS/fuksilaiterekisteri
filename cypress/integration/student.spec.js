@@ -45,4 +45,10 @@ context('Student', () => {
     cy.visit('/distributor')
     cy.location('pathname').should('eq', '/student')
   })
+
+  it("sees message if does not have studentnumber ready yet", () => {
+    cy.login("fuksi_without_studentnumber")
+    cy.visit("/")
+    cy.get("[data-cy=no-student-number-error]")
+  })
 })

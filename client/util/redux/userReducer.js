@@ -36,6 +36,7 @@ export default (state = { data: undefined }, action) => {
         ...state,
         pending: false,
         error: true,
+        errorName: action.errorName,
       }
     case 'NEW_DEVICE_REQUEST_SUCCESS':
       return {

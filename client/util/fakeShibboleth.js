@@ -3,7 +3,7 @@ const ITEM_NAME = 'fakeUser'
 const possibleUsers = [
   {
     uid: 'admin',
-    employeeNumber: undefined,
+    employeeNumber: 12,
     givenName: 'adminEtunimi',
     mail: 'grp-toska+fail@helsinki.fi',
     schacDateOfBirth: undefined,
@@ -27,6 +27,16 @@ const possibleUsers = [
     schacDateOfBirth: 19770501,
     schacPersonalUniqueCode:
       'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:fuksi',
+    sn: 'fuksi',
+  },
+  {
+    uid: 'fuksi_without_studentnumber',
+    employeeNumber: undefined,
+    givenName: 'fuksiEtunimi',
+    mail: 'grp-toska+fukrekfuksi@helsinki.fi',
+    schacDateOfBirth: 19770501,
+    schacPersonalUniqueCode:
+      'urn:schac:personalUniqueCode:int:studentID:helsinki.fi',
     sn: 'fuksi',
   },
   {

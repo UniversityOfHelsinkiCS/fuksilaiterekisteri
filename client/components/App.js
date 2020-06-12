@@ -25,12 +25,18 @@ const App = () => {
   const handleSidebarOpen = () => setSidebarVisible(true)
   const handleSidebarHide = () => setSidebarVisible(false)
 
+
   if (user.error) {
+    const studentNumberMissing = user.errorName === 'studentnumber-missing'
+
+    const message = studentNumberMissing ? 'Your have no studentnumber yet. Please check back in a day or two.'
+      : 'Registration is closed for maintenance, check again in few hours.'
+
     return (
       <Sidebar hide={handleSidebarHide} visible={sidebarVisible}>
         <NavBar handleMenuClick={handleSidebarOpen} />
         <div className="page-content">
-          <h3>Registration is closed for maintenance, check again in few hours.</h3>
+          <h3 data-cy={studentNumberMissing ? 'no-student-number-error' : 'user-error'}>{message}</h3>
         </div>
         <Footer />
       </Sidebar>

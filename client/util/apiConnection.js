@@ -45,8 +45,16 @@ export const handleRequest = store => next => async (action) => {
     try {
       const res = await callApi(route, method, data)
       store.dispatch({ type: `${prefix}_SUCCESS`, response: res.data, query })
-    } catch (err) {
-      store.dispatch({ type: `${prefix}_FAILURE`, response: err, query })
+    } catch (error) {
+      // Define errorName in server to help frontend determine what caused the error
+      const errorName = error.response && error.response.data && error.response.data.errorName
+      if (errorName) {
+        store.dispatch({
+          type: `${prefix}_FAILURE`, response: error, query, errorName,
+        })
+      } else {
+        store.dispatch({ type: `${prefix}_FAILURE`, response: error, query })
+      }
     }
   }
 }

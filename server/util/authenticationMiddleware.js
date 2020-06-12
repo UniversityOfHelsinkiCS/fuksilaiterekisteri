@@ -110,6 +110,10 @@ const authentication = async (req, res, next) => {
   }
 
   if (!studentNumber) {
+    if (!req.headers.employeenumber) {
+      return res.status(503).send({ errorName: 'studentnumber-missing' })
+    }
+
     const newUser = await db.user.create({
       ...defaultParams,
     })
