@@ -11,6 +11,7 @@ import Footer from 'Components/Footer'
 import Router from 'Components/Router'
 import Notifications from 'Components/Notifications'
 import { inProduction } from 'Utilities/common'
+import 'react-datepicker/dist/react-datepicker.css'
 
 const App = () => {
   const [sidebarVisible, setSidebarVisible] = useState(false)

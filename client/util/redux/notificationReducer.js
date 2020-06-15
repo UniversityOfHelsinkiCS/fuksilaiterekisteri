@@ -40,6 +40,16 @@ export default (state = initialState, action) => {
         ...state,
         error: 'Failed to update email template',
       }
+    case 'SET_SERVICE_STATUS_SUCCESS':
+      return {
+        ...state,
+        success: 'Settings saved',
+      }
+    case 'SET_SERVICE_STATUS_FAILURE':
+      return {
+        ...state,
+        error: 'Error while saving settings',
+      }
     default:
       return state
   }

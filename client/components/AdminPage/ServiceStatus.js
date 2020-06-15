@@ -1,7 +1,11 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getServiceStatus, setServiceStatus } from 'Utilities/redux/serviceStatusReducer'
-import { Button, Header } from 'semantic-ui-react'
+import {
+  Button, Header, Segment,
+} from 'semantic-ui-react'
+import DeadlineSelector from './DeadlineSelector'
+import CustomTexts from './CustomTexts'
 
 export default function ServiceStatus() {
   const dispatch = useDispatch()
@@ -10,9 +14,6 @@ export default function ServiceStatus() {
   useEffect(() => {
     dispatch(getServiceStatus())
   }, [])
-
-  useEffect(() => {
-  }, [serviceStatus])
 
   if (!serviceStatus) return 'Loading serviceStatus'
 
@@ -35,7 +36,7 @@ export default function ServiceStatus() {
 
   const handleServiceStart = () => {
     // eslint-disable-next-line no-alert
-    const response = window.prompt('This will allow new students to register (to use the service). Type "start" to confirm.')
+    const response = window.prompt('This will allow new students to register and request a device. Make sure to also update this year\'s registration deadline. Type "start" to confirm.')
     if (response === 'start') {
       dispatch(setServiceStatus({
         ...serviceStatus,
@@ -85,11 +86,17 @@ export default function ServiceStatus() {
 
   return (
     <div>
-      <Header as="h2">
-        {`Registrations for year ${currentYear} are currently ${studentRegistrationOnline ? ' open' : ' closed'}`}
-      </Header>
-      {studentRegistrationOnline ? <StopServiceButton /> : <StartServiceButton /> }
-      {!studentRegistrationOnline && <Button onClick={handleFinishDistributionYear} positive>{`Finish distribution year ${currentYear}`}</Button>}
+      <Segment>
+        <Header as="h2">
+          {`Registrations for year ${currentYear} are currently ${studentRegistrationOnline ? ' open' : ' closed'}`}
+        </Header>
+        {studentRegistrationOnline ? <StopServiceButton /> : <StartServiceButton /> }
+        <Button disabled={studentRegistrationOnline} onClick={handleFinishDistributionYear}>{`End distribution year ${currentYear}`}</Button>
+      </Segment>
+      <DeadlineSelector />
+
+      <CustomTexts />
+
     </div>
   )
 }

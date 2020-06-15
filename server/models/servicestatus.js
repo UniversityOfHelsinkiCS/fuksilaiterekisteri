@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         field: 'current_semester',
       },
+      registrationDeadline: {
+        type: DataTypes.DATE,
+        field: 'registration_deadline',
+      },
     },
     {
       underscored: true,
