@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         field: 'registration_deadline',
       },
+      customTexts: {
+        type: DataTypes.JSONB,
+        field: 'custom_texts',
+      },
     },
     {
       underscored: true,

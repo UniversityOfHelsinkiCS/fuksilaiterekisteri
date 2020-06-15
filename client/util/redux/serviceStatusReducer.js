@@ -23,9 +23,23 @@ export default (state = initialState, action) => {
         pending: false,
         error: false,
       }
+    case 'SET_SERVICE_STATUS_ATTEMPT':
+      return {
+        ...state,
+        pending: true,
+        error: false,
+      }
+    case 'SET_SERVICE_STATUS_FAILURE':
+      return {
+        ...state,
+        pending: false,
+        error: true,
+      }
     case 'SET_SERVICE_STATUS_SUCCESS':
       return {
         ...state,
+        pending: false,
+        error: false,
         data: action.response,
       }
 

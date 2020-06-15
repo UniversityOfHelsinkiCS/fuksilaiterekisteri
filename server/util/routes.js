@@ -47,7 +47,7 @@ router.post('/email/send', emailController.sendEmail)
 router.get('/email/template/autosend/:type', emailController.getAutosendTemplate)
 router.post('/email/template/autosend', emailController.updateAutosendTemplate)
 
-router.get('/serviceStatus', checkAdmin, serviceStatusController.getServiceStatus)
+router.get('/serviceStatus', serviceStatusController.getServiceStatus)
 router.post('/serviceStatus', checkAdmin, serviceStatusController.setServiceStatus)
 
 router.use('*', (req, res) => res.sendStatus(404))
