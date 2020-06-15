@@ -110,7 +110,7 @@ const isEligible = async (studentNumber, at) => {
     isPresent = true
   }
 
-  const registrationEndingTime = new Date('2019-10-01')
+  const registrationEndingTime = new Date(settings.registrationDeadline)
   const didRegisterBeforeEndingTime = new Date(at || new Date().getTime()).getTime() < registrationEndingTime.getTime()
   const signedUpForFreshmanDeviceThisYear = foundStudent.signupYear === settings.currentYear
 
@@ -168,7 +168,7 @@ const getStudentStatus = async (studentNumber, studyrights) => {
 
 const updateEligibleStudentStatuses = async () => {
   const settings = await getServiceStatusObject()
-  const isRegistrationOver = new Date().getTime() > new Date('2019-10-01').getTime()
+  const isRegistrationOver = new Date().getTime() > new Date(settings.registrationDeadline).getTime()
   if (isRegistrationOver) return
 
   const targetStudents = await db.user.findAll({
