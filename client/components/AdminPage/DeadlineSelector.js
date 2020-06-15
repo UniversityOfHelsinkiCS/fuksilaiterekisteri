@@ -47,8 +47,8 @@ export default function DeadlineSelector() {
           </List.Item>
         </List>
       </Message>
-      <DatePicker minDate={new Date()} dateFormat="d.M.yyyy" locale="fi" placeholderText="Click to pick a date" selected={newDeadlineDate} onChange={date => setNewDeadlineDate(date)} />
-      <Button style={{ marginLeft: '1em' }} onClick={handleDeadlineUpdate}>Update deadline</Button>
+      <DatePicker data-cy="picker" minDate={new Date()} dateFormat="d.M.yyyy" locale="fi" placeholderText="Click to pick a date" selected={newDeadlineDate} onChange={date => setNewDeadlineDate(date)} />
+      <Button data-cy="updateDeadline" style={{ marginLeft: '1em' }} onClick={handleDeadlineUpdate}>Update deadline</Button>
     </Segment>
   )
 }

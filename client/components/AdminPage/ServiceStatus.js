@@ -64,6 +64,7 @@ export default function ServiceStatus() {
 
   const StartServiceButton = () => (
     <Button
+      data-cy="enableRegistrations"
       positive
       onClick={handleServiceStart}
     >
@@ -73,6 +74,7 @@ export default function ServiceStatus() {
 
   const StopServiceButton = () => (
     <Button
+      data-cy="disableRegistrations"
       negative
       onClick={handleServiceStop}
     >
@@ -91,7 +93,7 @@ export default function ServiceStatus() {
           {`Registrations for year ${currentYear} are currently ${studentRegistrationOnline ? ' open' : ' closed'}`}
         </Header>
         {studentRegistrationOnline ? <StopServiceButton /> : <StartServiceButton /> }
-        <Button disabled={studentRegistrationOnline} onClick={handleFinishDistributionYear}>{`End distribution year ${currentYear}`}</Button>
+        <Button data-cy="endDistYear" disabled={studentRegistrationOnline} onClick={handleFinishDistributionYear}>{`End distribution year ${currentYear}`}</Button>
       </Segment>
       <DeadlineSelector />
 

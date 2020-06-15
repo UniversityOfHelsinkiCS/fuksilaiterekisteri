@@ -29,7 +29,7 @@ export default () => {
     },
     {
       menuItem: (
-        <Menu.Item key="serviceStatus">
+        <Menu.Item data-cy="servicestatus-tab" key="serviceStatus">
           <Icon style={{ marginRight: '5px' }} color={studentRegistrationOnline ? 'green' : 'red'} name="power off" />
           Service status
         </Menu.Item>

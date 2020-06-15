@@ -48,4 +48,62 @@ context('Admin', () => {
     cy.contains('Edit admin note for user non-fuksiEtunimi non-fuksi')
     cy.contains('test123')
   })
+
+  it("Can set deadline", () => {
+    cy.visit("/")
+    cy.get('[data-cy=servicestatus-tab]').click()
+    
+    cy.get(".react-datepicker__input-container").find("input").click()
+    cy.get(".react-datepicker__navigation").click()
+    cy.get(".react-datepicker__day--024").click()
+    cy.get("[data-cy=updateDeadline]").click()
+    cy.contains("Settings saved")
+  })
+
+  it("Can disable and enable registrations", () => {
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        cy.stub(win, 'prompt').returns('stop')
+      }
+    })
+    cy.get('[data-cy=servicestatus-tab]').click()
+    cy.get("[data-cy=disableRegistrations]").click()
+    cy.contains("Settings saved")
+    cy.get("[data-cy=enableRegistrations]")
+
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        cy.stub(win, 'prompt').returns('start')
+      }
+    })
+    cy.get('[data-cy=servicestatus-tab]').click()
+
+    cy.get("[data-cy=enableRegistrations]").click()
+    cy.get("[data-cy=disableRegistrations]")
+    cy.contains("Settings saved")
+
+  })
+
+  it("Can end distribution year", () => {
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        cy.stub(win, 'prompt').returns('stop')
+      }
+    })
+    cy.get('[data-cy=servicestatus-tab]').click()
+    cy.contains("Registrations for year 2019 are currently open")
+    cy.get("[data-cy=endDistYear]").should("be.disabled")
+    cy.get("[data-cy=disableRegistrations]").click()
+
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        cy.stub(win, 'prompt').returns('advance')
+      }
+    })
+    cy.get('[data-cy=servicestatus-tab]').click()
+    cy.get("[data-cy=endDistYear").click()
+    cy.contains("Registrations for year 2020 are currently closed")
+  })
+
+
 })
