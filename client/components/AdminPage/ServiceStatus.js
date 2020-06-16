@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getServiceStatus, setServiceStatus } from 'Utilities/redux/serviceStatusReducer'
+import { setServiceStatus } from 'Utilities/redux/serviceStatusReducer'
 import {
   Button, Header, Segment,
 } from 'semantic-ui-react'
@@ -10,10 +10,6 @@ import CustomTexts from './CustomTexts'
 export default function ServiceStatus() {
   const dispatch = useDispatch()
   const serviceStatus = useSelector(state => state.serviceStatus.data)
-
-  useEffect(() => {
-    dispatch(getServiceStatus())
-  }, [])
 
   if (!serviceStatus) return 'Loading serviceStatus'
 

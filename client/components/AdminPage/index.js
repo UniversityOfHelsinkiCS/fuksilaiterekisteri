@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import { Tab, Menu, Icon } from 'semantic-ui-react'
-import { getServiceStatus } from 'Utilities/redux/serviceStatusReducer'
 import AllUsersTab from './AllUsersTab'
 import EmailTab from './EmailTab'
 import ServiceStatus from './ServiceStatus'
@@ -9,12 +8,6 @@ import ServiceStatus from './ServiceStatus'
 
 export default () => {
   const serviceStatus = useSelector(state => state.serviceStatus.data)
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(getServiceStatus())
-  }, [])
-
 
   const studentRegistrationOnline = (serviceStatus && serviceStatus.studentRegistrationOnline) && !!serviceStatus.studentRegistrationOnline
 
