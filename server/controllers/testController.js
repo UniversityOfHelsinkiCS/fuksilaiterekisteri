@@ -1,6 +1,8 @@
 const db = require('@models')
 const logger = require('@util/logger')
 
+const defaultTranslations = require('../../util/defaultTranslations.json')
+
 const resetTestUsers = async (req, res) => {
   try {
     await db.user.destroy({
@@ -25,6 +27,8 @@ const resetServiceStatus = async (req, res) => {
       studentRegistrationOnline: true,
       currentYear: 2019,
       currentSemester: 139,
+      registrationDeadline: new Date(),
+      customTexts: defaultTranslations,
     })
 
     return res.status(200).end()

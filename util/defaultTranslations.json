@@ -1,0 +1,22 @@
+{
+  "deviceSpecs": {
+    "en": "The laptop for Bachelor’s Programme in Science has Microsoft Windows 10 preinstalled.\nAll students enrolled at the University of Helsinki may install the Microsoft Office 365\nsoftware package on their own machine, including a home license for five devices. The\nUniversity of Helsinki also offers its students storage space on the OneDrive cloud storage\nservice.\n\n\nIf you encounter problems with the fresher device, please contact helpdesk@helsinki.fi or ask around in Telegram.",
+    "fi": "## Kannettavan tietokoneen tekniset tiedot ovat seuraavat:    \n- Lenovo ThinkPad T490 14\"\n- Full HD -näyttö (resoluutio 1920 x 1080), WLAN, Bluetooth, web-kamera\n- Intel Core i5-8265U -prosessori, 16 GB:n keskusmuisti, 512 GB:n SSD-levy\n- 4 vuoden on-site-takuu/guarantee\n- Mitat/sizes (L x S x K): 329 mm x 227 mm x 18,9 mm\n- Paino/weight: 1,55 kg\n\n\nTietokoneeseen on asennettu kandiohjelmasi valinnan mukaisesti joko Cubbli*\n(fysiikka ja tietojenkäsittelytiede) tai Microsoft Windows 10 (muut kandiohjelmat).\nKaikki Helsingin yliopiston opiskelijat voivat asentaa omille laitteilleen Microsoftin Office\n365 -ohjelmistopaketin, johon kuuluu kotikäyttölisenssi viidelle laitteelle. Helsingin yliopisto\ntarjoaa opiskelijoille myös OneDrive-pilvitallennusmahdollisuuden.\n\n*Common Ubuntu based Linux, yliopistolla kehitetty Ubuntuun perustuva Linux\n\nFuksilaitteeseen liittyvissa ongelmissa saat parhaiten apua Telegram-kanavilta ja sähköpostilla helpdesk@helsinki.fi."
+  },
+  "notEligible": {
+    "en": "## Unfortunately you are not eligible for the fresher device.\n\n\nSigning up period for the autumn 2019 fresher device ended in September.\nIf you fulfill the terms described below, and you have an exceptional\nreason for not having signed up, please contact the person responsible\nfor fresher devices in your study programme.\n\nThe devices are only available for non-exchange students who are\ncurrently officially present for the first time for Bachelor level\nstudies in the Faculty of Science. There are rare exceptions to this\nrule, such as people who have previously been present for studies, but\nbefore the lending of devices began (e.g. present before 2008 for\nComputer Science). If you consider yourself eligible, but are seeing\nthis page, please contact the person responsible for fresher devices in\nyour study programme to request an exception.",
+    "fi": "\n## Valitettavasti et ole oikeutettu fuksilaitteeseen.\n\nIlmoittautuminen syksyn 2019 fuksilaitesaajaksi päättyi 30.9.2019. Ota\nyhteyttä opinto-ohjelmasi fuksilaitevastaavaan mikäli täytät allaolevat\nehdot ja sinulla on erityisen hyvä syy ilmoittautumisen myöhästymiseen.\n\n\nLaitteet lainataan vain tänä lukukautena virallisesti ensimmäistä kertaa\nläsnäoleville matemaattis-luonnontieteellisen tiedekunnan\nkandiopiskelijoille, poislukien vaihto-oppilaat. Tähän sääntöön on\nharvinaisia poikkeuksia, sillä esimerkiksi ennen fuksilaitteiden\nlainausmahdollisuutta läsnäolleet (esim. ennen 2008\ntietojenkäsittelytiedettä opiskelleet) ovat nyt oikeutettuja\nlaitteeseen. Jos kuulut tällaiseen ryhmään, mutta näet tämän sivun, ota\nyhteyttä opinto-ohjelmasi fuksilaitevastaavaan.\n"
+  },
+  "acceptableTerms": {
+    "en": "TODO",
+    "fi": "TODO"
+  },
+  "registrationClosed": {
+    "en": "The registration for students is currently closed. Next registration starts at xx.yy.zzzz, please check back later.",
+    "fi": "Rekisteröityminen ei ole juuri nyt avoinna opiskelijoille. Rekisteröityminen aukeaa xx.yy.zzzz, ole hyvä ja tarkista myöhemmin uudelleen."
+  },
+  "deviceSerialStartDigits": {
+    "en": "TODO",
+    "fi": "TODO"
+  }
+}
