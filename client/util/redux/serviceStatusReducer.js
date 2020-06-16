@@ -1,5 +1,7 @@
 import callBuilder from '../apiConnection'
 
+export const customTextSelector = state => state.serviceStatus.data.customTexts
+
 export const getServiceStatus = () => {
   const route = '/serviceStatus'
   const prefix = 'GET_SERVICE_STATUS'

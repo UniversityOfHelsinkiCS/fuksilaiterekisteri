@@ -3,17 +3,17 @@ import {
   Header, Select, Form, TextArea, Message, Segment, Button,
 } from 'semantic-ui-react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setServiceStatus } from 'Utilities/redux/serviceStatusReducer'
+import { setServiceStatus, customTextSelector } from 'Utilities/redux/serviceStatusReducer'
 
 export default function CustomTexts() {
   const dispatch = useDispatch()
   const [selected, setSelected] = useState('deviceSpecs')
   const [texts, setTexts] = useState({})
-  const customTexts = useSelector(state => state.serviceStatus.data.customTexts)
+  const customTexts = useSelector(customTextSelector)
   const pending = useSelector(state => state.serviceStatus.pending)
 
   useEffect(() => {
-    setTexts(customTexts)
+    if (customTexts) setTexts(customTexts)
   }, [customTexts])
 
   const options = [
@@ -49,9 +49,9 @@ export default function CustomTexts() {
       <Select value={selected} onChange={handleSelect} style={{ width: '100%', marginBottom: '1em' }} placeholder="Select text to modify" options={options} />
       <Form>
         <span>Finnish:</span>
-        <TextArea value={texts[selected] ? texts[selected].fi : ''} onChange={e => handleTextChange(e, 'fi')} rows={5} placeholder="" />
+        <TextArea value={texts && texts[selected] ? texts[selected].fi : ''} onChange={e => handleTextChange(e, 'fi')} rows={5} placeholder="" />
         <span>English:</span>
-        <TextArea value={texts[selected] ? texts[selected].en : ''} onChange={e => handleTextChange(e, 'en')} rows={5} placeholder="" />
+        <TextArea value={texts && texts[selected] ? texts[selected].en : ''} onChange={e => handleTextChange(e, 'en')} rows={5} placeholder="" />
         <Button loading={pending} onClick={handleSubmit} style={{ marginTop: '1em' }}>Save ALL text-changes</Button>
       </Form>
     </Segment>

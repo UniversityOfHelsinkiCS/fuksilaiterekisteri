@@ -9,6 +9,7 @@ import deviceRequest from './deviceRequestReducer'
 import notification from './notificationReducer'
 import email from './emailReducer'
 import serviceStatus from './serviceStatusReducer'
+import common from './localeReducer'
 
 export default combineReducers({
   messages,
@@ -20,4 +21,5 @@ export default combineReducers({
   notification,
   email,
   serviceStatus,
+  common,
 })

@@ -1,8 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Segment, Header } from 'semantic-ui-react'
+import TranslatedText from 'Components/TranslatedText'
 import StudentInfo from './StudentInfo'
-import Terms from './Terms'
 
 const DeviceInfo = () => {
   const user = useSelector(state => state.user.data)
@@ -20,7 +20,7 @@ const DeviceInfo = () => {
           {user.deviceGivenAt}
         </div>
       </Segment>
-      <Terms />
+      <TranslatedText textKey="deviceSpecs" />
     </Segment.Group>
   )
 }

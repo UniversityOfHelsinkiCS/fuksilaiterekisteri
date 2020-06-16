@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import NotEligible from './NotEligible'
+import TranslatedText from 'Components/TranslatedText'
 import RequestDeviceForm from './RequestDeviceForm'
 import TaskStatus from './TaskStatus'
 import DeviceInfo from './DeviceInfo'
@@ -10,7 +10,7 @@ const StudentPage = () => {
   const getContent = () => {
     if (!user) return null
     if (user.deviceSerial) return <DeviceInfo />
-    if (!user.eligible) return <NotEligible />
+    if (!user.eligible) return <TranslatedText textKey="notEligible" />
     if (!user.wantsDevice) return <RequestDeviceForm />
     return <TaskStatus />
   }
