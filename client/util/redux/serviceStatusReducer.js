@@ -1,6 +1,9 @@
 import callBuilder from '../apiConnection'
 
-export const customTextSelector = state => state.serviceStatus.data.customTexts
+export const customTextSelector = (state) => {
+  if (!state.serviceStatus.data || !state.serviceStatus.data.customTexts) return undefined
+  return state.serviceStatus.data.customTexts
+}
 
 export const getServiceStatus = () => {
   const route = '/serviceStatus'

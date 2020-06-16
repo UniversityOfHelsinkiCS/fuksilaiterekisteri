@@ -5,7 +5,7 @@ import { customTextSelector } from 'Utilities/redux/serviceStatusReducer'
 export default function useTranslation(translationKey) {
   const customTexts = useSelector(customTextSelector)
   const locale = useSelector(localeSelector)
-  const translatedText = customTexts[translationKey][locale]
+  const translatedText = customTexts && customTexts[translationKey][locale]
 
   return translatedText
 }
