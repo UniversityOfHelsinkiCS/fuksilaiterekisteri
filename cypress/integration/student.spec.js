@@ -26,7 +26,7 @@ context('Student', () => {
   it("doesn't allow non-eligible students to sign up", () => {
     cy.login("non_fuksi_student")
     cy.visit("/")
-    cy.contains('Unfortunately you are not eligible for the fresher device.')
+    cy.get('[data-cy=notEligible]')
   })
 
   it("doesn't allow non-students to sign up", () => {

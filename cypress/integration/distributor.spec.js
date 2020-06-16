@@ -67,7 +67,7 @@ context('Distributor', () => {
 
   it("Can't give a device to a non-eligible student", () => {
     cy.createUser("non_fuksi_student")
-    cy.contains('Unfortunately you are not eligible for the fresher device.')
+    cy.get('[data-cy=notEligible]')
 
     cy.login("jakelija")
     cy.visit("/")
