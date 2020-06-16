@@ -14,9 +14,5 @@
   "registrationClosed": {
     "en": "The registration for students is currently closed. Next registration starts at xx.yy.zzzz, please check back later.",
     "fi": "Rekisteröityminen ei ole juuri nyt avoinna opiskelijoille. Rekisteröityminen aukeaa xx.yy.zzzz, ole hyvä ja tarkista myöhemmin uudelleen."
-  },
-  "deviceSerialStartDigits": {
-    "en": "TODO",
-    "fi": "TODO"
   }
 }
