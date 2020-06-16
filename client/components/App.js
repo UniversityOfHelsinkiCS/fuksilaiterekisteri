@@ -12,14 +12,17 @@ import Router from 'Components/Router'
 import Notifications from 'Components/Notifications'
 import { inProduction } from 'Utilities/common'
 import 'react-datepicker/dist/react-datepicker.css'
+import { getServiceStatus } from 'Utilities/redux/serviceStatusReducer'
 
 const App = () => {
   const [sidebarVisible, setSidebarVisible] = useState(false)
   const user = useSelector(state => state.user)
+  const serviceStatus = useSelector(state => state.serviceStatus)
   const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(getUserAction())
+    dispatch(getServiceStatus())
     if (inProduction) initShibbolethPinger(60000) // 1 minute
   }, [])
 
@@ -44,7 +47,7 @@ const App = () => {
     )
   }
 
-  if (!user.data || user.pending) {
+  if (!user.data || user.pending || !serviceStatus.data) {
     return (
       <Sidebar hide={handleSidebarHide} visible={sidebarVisible}>
         <NavBar handleMenuClick={handleSidebarOpen} />

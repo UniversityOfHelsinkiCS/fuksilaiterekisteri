@@ -24,6 +24,8 @@ if (!inProduction) {
   router.get('/test/reset/serviceStatus', testController.resetServiceStatus)
 }
 
+router.get('/serviceStatus', serviceStatusController.getServiceStatus) // Before authentication, because contains translations and does not contain any sensitive data.
+
 router.use('/', authentication)
 
 router.get('/ping', (req, res) => res.send('pong'))
@@ -47,7 +49,6 @@ router.post('/email/send', emailController.sendEmail)
 router.get('/email/template/autosend/:type', emailController.getAutosendTemplate)
 router.post('/email/template/autosend', emailController.updateAutosendTemplate)
 
-router.get('/serviceStatus', serviceStatusController.getServiceStatus)
 router.post('/serviceStatus', checkAdmin, serviceStatusController.setServiceStatus)
 
 router.use('*', (req, res) => res.sendStatus(404))
