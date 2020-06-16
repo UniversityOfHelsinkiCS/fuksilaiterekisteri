@@ -105,5 +105,21 @@ context('Admin', () => {
     cy.contains("Registrations for year 2020 are currently closed")
   })
 
+  it("Can update custom texts", () => {
+    cy.visit("/")
+    cy.get('[data-cy=servicestatus-tab]').click()
+    cy.get("[data-cy=customTextSelect]").click()
+    cy.get("[data-cy=customTextSelect]").find("div.item").eq(1).click() // Selects "Not eligible text"
+
+    cy.get("[data-cy=text-fi]").clear().type("Sori, et saa laitetta.")
+    cy.get("[data-cy=saveButton]").click()
+    cy.contains("Settings saved")
+
+    cy.login("non_fuksi_student")
+    cy.visit("/")
+    cy.get('[data-cy=notEligible] > p').should("have.text","Sori, et saa laitetta.")
+
+  })
+
 
 })

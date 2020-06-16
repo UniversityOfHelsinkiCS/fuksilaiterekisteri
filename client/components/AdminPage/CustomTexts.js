@@ -46,13 +46,13 @@ export default function CustomTexts() {
     <Segment>
       <Header as="h2">Custom texts</Header>
       <Message>These messages are visible to the user (fuksi).</Message>
-      <Select value={selected} onChange={handleSelect} style={{ width: '100%', marginBottom: '1em' }} placeholder="Select text to modify" options={options} />
+      <Select data-cy="customTextSelect" value={selected} onChange={handleSelect} style={{ width: '100%', marginBottom: '1em' }} placeholder="Select text to modify" options={options} />
       <Form>
         <span>Finnish:</span>
-        <TextArea value={texts && texts[selected] ? texts[selected].fi : ''} onChange={e => handleTextChange(e, 'fi')} rows={5} placeholder="" />
+        <TextArea data-cy="text-fi" value={texts && texts[selected] ? texts[selected].fi : ''} onChange={e => handleTextChange(e, 'fi')} rows={5} placeholder="" />
         <span>English:</span>
-        <TextArea value={texts && texts[selected] ? texts[selected].en : ''} onChange={e => handleTextChange(e, 'en')} rows={5} placeholder="" />
-        <Button loading={pending} onClick={handleSubmit} style={{ marginTop: '1em' }}>Save ALL text-changes</Button>
+        <TextArea data-cy="text-en" value={texts && texts[selected] ? texts[selected].en : ''} onChange={e => handleTextChange(e, 'en')} rows={5} placeholder="" />
+        <Button data-cy="saveButton" loading={pending} onClick={handleSubmit} style={{ marginTop: '1em' }}>Save ALL text-changes</Button>
       </Form>
     </Segment>
   )
