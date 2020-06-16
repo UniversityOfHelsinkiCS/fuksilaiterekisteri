@@ -7,7 +7,7 @@ const checkDeadline = async () => {
   const ssObj = await getServiceStatusObject()
   const { registrationDeadline, studentRegistrationOnline } = ssObj
 
-  if (studentRegistrationOnline) return
+  if (!studentRegistrationOnline) return
 
   if (new Date().getTime() > new Date(registrationDeadline).getTime()) {
     ssObj.studentRegistrationOnline = false
