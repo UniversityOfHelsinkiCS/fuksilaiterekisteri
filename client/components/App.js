@@ -13,12 +13,14 @@ import Notifications from 'Components/Notifications'
 import { inProduction } from 'Utilities/common'
 import 'react-datepicker/dist/react-datepicker.css'
 import { getServiceStatus } from 'Utilities/redux/serviceStatusReducer'
+import useTranslation from 'Utilities/useTranslation'
 
 const App = () => {
   const [sidebarVisible, setSidebarVisible] = useState(false)
   const user = useSelector(state => state.user)
   const serviceStatus = useSelector(state => state.serviceStatus)
   const dispatch = useDispatch()
+  const translatedRegClosedMsg = useTranslation('registrationClosed')
 
   useEffect(() => {
     dispatch(getUserAction())
@@ -34,7 +36,7 @@ const App = () => {
     const studentNumberMissing = user.errorName === 'studentnumber-missing'
 
     const message = studentNumberMissing ? 'Your have no studentnumber yet. Please check back in a day or two.'
-      : 'Registration is closed for maintenance, check again in few hours.'
+      : translatedRegClosedMsg
 
     return (
       <Sidebar hide={handleSidebarHide} visible={sidebarVisible}>
