@@ -6,7 +6,7 @@ context('Student', () => {
     cy.visit('/')
   })
 
-  it('allows eligible students to sign up with email', () => {
+  it('allows eligible students to sign up with email AND localization works', () => {
     cy.get('button').should('have.class', 'disabled')
     cy.get('input').type('fuksi@helsinki.fi')
     cy.get('button').should('have.class', 'disabled')
@@ -16,6 +16,12 @@ context('Student', () => {
     cy.get('button').should('not.have.class', 'disabled')
     cy.contains('I want a device').click()
     cy.contains('Task status:')
+
+    cy.contains("tietokoneen tekniset tiedot")
+    cy.get("[data-cy=setlocale-en]").click()
+    cy.contains("The laptop")
+    cy.contains("tietokoneen tekniset tiedot").should("not.exist")   
+
   })
 
   it('allows eligible students to sign up without email', () => {

@@ -9,8 +9,8 @@ export default ({ handleMenuClick }) => {
   return (
     <div className="navbar" style={{ display: 'flex', alignItems: 'center' }}>
       <div style={{ padding: '1em' }}>
-        <Flag onClick={() => dispatch(setLocale('fi'))} name="fi" />
-        <Flag onClick={() => dispatch(setLocale('en'))} name="gb" />
+        <Flag data-cy="setlocale-fi" onClick={() => dispatch(setLocale('fi'))} name="fi" />
+        <Flag data-cy="setlocale-en" onClick={() => dispatch(setLocale('en'))} name="gb" />
       </div>
       <h1 style={{ margin: '0 auto' }}>
         FUKSILAITTEET
