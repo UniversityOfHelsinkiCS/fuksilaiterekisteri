@@ -22,6 +22,7 @@ router.post('/logout', userController.getLogoutUrl)
 if (!inProduction) {
   router.get('/test/reset/user', testController.resetTestUsers)
   router.get('/test/reset/serviceStatus', testController.resetServiceStatus)
+  router.get('/test/disableStudentRegs', testController.disableStudentRegs)
 }
 
 router.get('/serviceStatus', serviceStatusController.getServiceStatus) // Before authentication, because contains translations and does not contain any sensitive data.

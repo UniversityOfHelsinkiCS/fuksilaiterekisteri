@@ -74,4 +74,10 @@ context('Distributor', () => {
     findStudent('non-fuksi')
     cy.contains('Ei oikeutettu laitteeseen!')
   })
+
+  it("Can 'register' when studentRegistration is closed", () => {
+    cy.request("/api/test/disableStudentRegs")
+    cy.request("/api/test/reset/user")
+    cy.visit("/")
+  })
 })

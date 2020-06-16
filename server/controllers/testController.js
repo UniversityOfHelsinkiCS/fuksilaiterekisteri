@@ -2,6 +2,7 @@ const db = require('@models')
 const logger = require('@util/logger')
 
 const defaultTranslations = require('../../util/defaultTranslations.json')
+const { getServiceStatusObject } = require('./serviceStatusController')
 
 const resetTestUsers = async (req, res) => {
   try {
@@ -10,6 +11,18 @@ const resetTestUsers = async (req, res) => {
         userId: ['fuksi', 'non_fuksi_student', 'jakelija', 'admin'],
       },
     })
+    return res.status(200).end()
+  } catch (e) {
+    logger.error('error', e)
+    return res.status(500).json({ error: 'error' })
+  }
+}
+
+const disableStudentRegs = async (req, res) => {
+  try {
+    const obj = await getServiceStatusObject()
+    obj.studentRegistrationOnline = false
+    await obj.save()
     return res.status(200).end()
   } catch (e) {
     logger.error('error', e)
@@ -41,4 +54,5 @@ const resetServiceStatus = async (req, res) => {
 module.exports = {
   resetTestUsers,
   resetServiceStatus,
+  disableStudentRegs,
 }
