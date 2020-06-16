@@ -112,7 +112,9 @@ const isEligible = async (studentNumber, at) => {
 
   const registrationEndingTime = new Date(settings.registrationDeadline)
   const didRegisterBeforeEndingTime = new Date(at || new Date().getTime()).getTime() < registrationEndingTime.getTime()
-  const signedUpForFreshmanDeviceThisYear = foundStudent.signupYear === settings.currentYear
+
+  // Student's account may have not yet been created.
+  const signedUpForFreshmanDeviceThisYear = foundStudent ? foundStudent.signupYear === settings.currentYear : true
 
   if (!inProduction) {
     console.log('hasPreviousStudyright            \t', hasPreviousStudyright)
