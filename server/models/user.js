@@ -60,6 +60,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         field: 'signup_year',
       },
+      eligibilityReasons: {
+        type: DataTypes.JSONB,
+        field: 'eligibility_reasons',
+      },
     },
     {
       underscored: true,

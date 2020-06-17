@@ -132,7 +132,7 @@ const authentication = async (req, res, next) => {
       return res.status(503).send({ error: 'Registrations are closed.' })
     }
 
-    const { studyrights, eligible } = await isEligible(studentNumber)
+    const { studyrights, eligible, eligibilityReasons } = await isEligible(studentNumber)
     const { digiSkills, hasEnrollments } = await getStudentStatus(
       studentNumber,
       studyrights,
@@ -144,6 +144,7 @@ const authentication = async (req, res, next) => {
       digiSkillsCompleted: digiSkills,
       courseRegistrationCompleted: hasEnrollments,
       signupYear: settings.currentYear,
+      eligibilityReasons,
     })
 
     await createUserStudyprogrammes(studyrights, newUser)

@@ -57,7 +57,15 @@ const getSemesterEnrollments = async (studentNumber) => {
 }
 
 const isEligible = async (studentNumber, at) => {
-  if (!inProduction) return { eligible: studentNumber === 'fuksi', studyrights: mockData.mockStudyrights }
+  if (!inProduction) {
+    return {
+      eligible: studentNumber === 'fuksi',
+      studyrights: mockData.mockStudyrights,
+      eligibilityReasons: {
+        hasValidStudyright: true, isPresent: true, didRegisterBeforeEndingTime: true, signedUpForFreshmanDeviceThisYear: true,
+      },
+    }
+  }
   const settings = await getServiceStatusObject()
   const studyrights = await getStudyRightsFor(studentNumber)
   const semesterEnrollments = await getSemesterEnrollments(studentNumber)
@@ -127,6 +135,9 @@ const isEligible = async (studentNumber, at) => {
   return {
     studyrights,
     eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime && signedUpForFreshmanDeviceThisYear),
+    eligibilityReasons: {
+      hasValidStudyright: !hasPreviousStudyright && hasNewStudyright, isPresent, didRegisterBeforeEndingTime, signedUpForFreshmanDeviceThisYear,
+    },
   }
 }
 
