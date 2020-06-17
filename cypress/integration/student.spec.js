@@ -29,10 +29,14 @@ context('Student', () => {
     cy.contains('Task status:')
   })
 
-  it("doesn't allow non-eligible students to sign up", () => {
+  it("non eligible students see why they are not eligible", () => {
     cy.login("non_fuksi_student")
     cy.visit("/")
     cy.get('[data-cy=notEligible]')
+
+    cy.get(".green").eq(2)
+    cy.get(".red").eq(0)
+
   })
 
   it("doesn't allow non-students to sign up", () => {
