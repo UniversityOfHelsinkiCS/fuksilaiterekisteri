@@ -1,5 +1,5 @@
 import React from 'react'
-import TranslatedText from 'Components/TranslatedText'
+import TranslatedMarkdown from 'Components/TranslatedMarkdown'
 import {
   Segment, List, Icon, Header,
 } from 'semantic-ui-react'
@@ -63,7 +63,7 @@ export default function NotEligible({ user }) {
 
   return (
     <Segment style={{ maxWidth: '1024px' }}>
-      <TranslatedText textKey="notEligible" justMarkdown />
+      <TranslatedMarkdown textKey="notEligible" />
       <EligibilityBreakdown />
     </Segment>
   )
