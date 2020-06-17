@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { Button, Icon } from 'semantic-ui-react'
+import { Button, Icon, Checkbox } from 'semantic-ui-react'
 import { markStudentEligible as markStudentEligibleAction, toggleUserStaff as toggleUserStaffAction, toggleUserDistributor as toggleUserDistributorAction } from '../../../util/redux/usersReducer'
 import dateFormatter from '../../../util/dateFormatter'
 import VirtualizedTable from '../../VirtualizedTable'
@@ -56,6 +56,7 @@ const UserTable = ({ users, handleAdminNoteClick }) => {
       key: 'eligible',
       label: 'Eligible',
       renderCell: ({ eligible }) => boolToString(eligible),
+      getCellVal: ({ eligible }) => eligible,
     },
     {
       key: 'digitaidot',
@@ -93,31 +94,23 @@ const UserTable = ({ users, handleAdminNoteClick }) => {
     {
       key: 'admin',
       label: 'Admin',
-      renderCell: ({ admin }) => boolToString(admin),
+      renderCell: ({ admin }) => <Checkbox checked={!!admin} disabled />,
+      getCellVal: ({ admin }) => admin,
+      width: 75,
     },
     {
       key: 'staff',
       label: 'Staff',
-      renderCell: ({ staff, id }) => (
-        <>
-          {boolToString(staff)}
-          {' '}
-          <Button color="blue" icon="refresh" onClick={() => toggleUserStaff(id)} />
-        </>
-      ),
+      renderCell: ({ staff, id }) => <Checkbox checked={!!staff} onChange={() => toggleUserStaff(id)} />,
       getCellVal: ({ staff }) => boolToString(staff),
+      width: 75,
     },
     {
       key: 'distributor',
       label: 'Distributor',
-      renderCell: ({ distributor, id }) => (
-        <>
-          {boolToString(distributor)}
-          {' '}
-          <Button color="blue" icon="refresh" onClick={() => toggleUserDistributor(id)} />
-        </>
-      ),
-      getCellVal: ({ distributor }) => boolToString(distributor),
+      renderCell: ({ distributor, id }) => <Checkbox checked={!!distributor} onChange={() => toggleUserDistributor(id)} />,
+      getCellVal: ({ distributor }) => distributor,
+      width: 125,
     },
     {
       key: 'mark_eligible',
