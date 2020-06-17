@@ -65,7 +65,7 @@ const RequestDeviceForm = () => {
         <p>{`Hello ${user.name},`}</p>
         <p>You’re entitled to a fresher device. Please type in your non-helsinki.fi email to ensure you’ll receive pickup and other device related information.</p>
         <Form>
-          <Input fluid error={inputRed} label="Email" placeholder="@gmail.com" onChange={changeEmail} />
+          <Input fluid error={inputRed} label="Email" placeholder="@gmail.com" onChange={changeEmail} data-cy="otherEmailInput" />
           <br />
           <br />
           <div style={{ display: 'flex', alignItems: 'center', paddingBottom: '1em' }}>
@@ -81,18 +81,19 @@ const RequestDeviceForm = () => {
                 paddingLeft: '0.5em',
                 cursor: 'pointer',
               }}
+              data-cy="terms"
             >
                 Laitteen ehdot hyväksytty / Device terms accepted
             </span>
           </div>
           <div style={{ display: 'flex' }}>
-            <Button style={{ flex: 0.5 }} color="purple" onClick={handleRequestClick} disabled={primaryButtonDisabled} checked={false}>
+            <Button style={{ flex: 0.5 }} color="purple" onClick={handleRequestClick} disabled={primaryButtonDisabled} data-cy="getDevicePrimary">
               Haluan laitteen
               <br />
               <br />
               I want a device
             </Button>
-            <Button style={{ flex: 0.5 }} onClick={handleNoEmailRequestClick} negative disabled={secondaryButtonDisabled}>
+            <Button style={{ flex: 0.5 }} onClick={handleNoEmailRequestClick} negative disabled={secondaryButtonDisabled} data-cy="getDeviceSecondary">
               Haluan laitteen, mutta en halua antaa toista sähköpostiosoitettani
               <br />
               <br />

@@ -10,7 +10,7 @@ const EmailConfirmation = ({
       <TranslatedMarkdown textKey="acceptableTerms" />
     </Modal.Content>
     <Modal.Actions>
-      <Button onClick={handleAcceptTermsClick}>
+      <Button onClick={handleAcceptTermsClick} data-cy="acceptTerms">
         Hyväksyn nämä ehdot
         <br />
         <br />
