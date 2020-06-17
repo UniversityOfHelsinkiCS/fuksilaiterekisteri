@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  Button, Input, Segment, Form,
+  Button, Input, Segment, Form, Checkbox,
 } from 'semantic-ui-react'
 import { deviceRequestAction } from 'Utilities/redux/deviceRequestReducer'
+import TermsModal from './TermsModal'
 
 const RequestDeviceForm = () => {
   const [email, setEmail] = useState('')
   const [emailValid, setEmailValid] = useState(false)
+  const [termsOpen, setTermsOpen] = useState(false)
+  const [termsAccepted, setTermsAccepted] = useState(false)
   const dispatch = useDispatch()
   const user = useSelector(state => state.user.data)
   const validateEmail = (checkEmail) => {
@@ -38,10 +41,24 @@ const RequestDeviceForm = () => {
     }
   }
 
+  const handleTermsClick = () => {
+    setTermsOpen(true)
+  }
+
+  const handleAcceptTermsClick = () => {
+    setTermsOpen(false)
+    setTermsAccepted(true)
+  }
+
+  const handleTermsClose = () => setTermsOpen(false)
+
   const inputRed = !emailValid && email.includes('@') && /\.fi|\.com/.test(email) // Only color input in certain cases
-  const buttonDisabled = !emailValid // Always disable if not valid
+  const primaryButtonDisabled = !emailValid || !termsAccepted // Always disable if not valid
+  const secondaryButtonDisabled = !termsAccepted
+
   return (
     <div>
+      <TermsModal open={termsOpen} handleAcceptTermsClick={handleAcceptTermsClick} handleClose={handleTermsClose} />
       <Segment>
         <p>{`Hei ${user.name},`}</p>
         <p>Olet oikeutettu fuksilaitteeseen, anna ei-helsinki.fi sähköpostisi</p>
@@ -51,14 +68,31 @@ const RequestDeviceForm = () => {
           <Input fluid error={inputRed} label="Email" placeholder="@gmail.com" onChange={changeEmail} />
           <br />
           <br />
+          <div style={{ display: 'flex', alignItems: 'center', paddingBottom: '1em' }}>
+            <Checkbox disabled checked={termsAccepted} />
+            <span
+              onClick={handleTermsClick}
+              onKeyDown={handleTermsClick}
+              role="button"
+              tabIndex={-1}
+              style={{
+                color: '#4c91cd',
+                fontWeight: '550',
+                paddingLeft: '0.5em',
+                cursor: 'pointer',
+              }}
+            >
+                Laitteen ehdot hyväksytty
+            </span>
+          </div>
           <div style={{ display: 'flex' }}>
-            <Button style={{ flex: 0.5 }} color="purple" onClick={handleRequestClick} disabled={buttonDisabled}>
+            <Button style={{ flex: 0.5 }} color="purple" onClick={handleRequestClick} disabled={primaryButtonDisabled} checked={false}>
               Haluan laitteen
               <br />
               <br />
               I want a device
             </Button>
-            <Button style={{ flex: 0.5 }} onClick={handleNoEmailRequestClick} negative>
+            <Button style={{ flex: 0.5 }} onClick={handleNoEmailRequestClick} negative disabled={secondaryButtonDisabled}>
               Haluan laitteen, mutta en halua antaa toista sähköpostiosoitettani
               <br />
               <br />
