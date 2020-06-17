@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Segment, Icon, Header } from 'semantic-ui-react'
-import TranslatedText from 'Components/TranslatedText'
+import TranslatedMarkdown from 'Components/TranslatedMarkdown'
 import StudentInfo from './StudentInfo'
 import ClaimingInfo from './ClaimingInfo'
 import TaskInfo from './TaskInfo'
@@ -51,7 +51,9 @@ const StudentStatusPage = () => {
         courseRegistrationCompleted={user.courseRegistrationCompleted}
         digiSkillsCompleted={user.digiSkillsCompleted}
       />
-      <TranslatedText textKey="deviceSpecs" />
+      <Segment>
+        <TranslatedMarkdown textKey="deviceSpecs" />
+      </Segment>
     </Segment.Group>
   )
 }
