@@ -20,6 +20,8 @@ context('Distributor', () => {
 
     cy.createUser("fuksi")
     cy.contains('FUKSILAITTEET')
+    cy.get('[data-cy=terms]').click()
+    cy.get('[data-cy=acceptTerms]').click()
     cy.contains('I want a device, but').click()
     cy.contains('Task status:')
 
