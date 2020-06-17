@@ -58,6 +58,7 @@ const VirtualizedTable = ({
                       headerHeight={headerHeight}
                       rowHeight={rowHeight}
                       rowCount={filteredData.length}
+                      noRowsRenderer={() => 'No results.'}
                       rowGetter={({ index }) => filteredData[index]}
                       sortDirection={sortDirection}
                       sortBy={sortBy}
