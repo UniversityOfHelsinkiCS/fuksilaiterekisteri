@@ -6,13 +6,23 @@ context('Student', () => {
     cy.visit('/')
   })
 
-  it('allows eligible students to sign up with email AND localization works', () => {
-    cy.get('button').should('have.class', 'disabled')
-    cy.get('input').type('fuksi@helsinki.fi')
-    cy.get('button').should('have.class', 'disabled')
-    cy.get('input').clear()
+  it('doesnt allow eligible students to proceed without accepting terms', () => {
+    cy.get('[data-cy=otherEmailInput]').type('fuksi@fuksi.fuksi')
+    
+    cy.get('[data-cy=getDevicePrimary]').should('have.class', 'disabled')
+    cy.get('[data-cy=getDeviceSecondary]').should('have.class', 'disabled')
+  })
 
-    cy.get('input').type('fuksi@fuksi.fuksi')
+  it('allows eligible students to sign up with email AND localization works', () => {
+    cy.get('[data-cy=terms]').click()
+    cy.get('[data-cy=acceptTerms]').click()
+
+    cy.get('button').should('have.class', 'disabled')
+    cy.get('[data-cy=otherEmailInput]').type('fuksi@helsinki.fi')
+    cy.get('button').should('have.class', 'disabled')
+    cy.get('input').eq(0).clear()
+
+    cy.get('[data-cy=otherEmailInput]').type('fuksi@fuksi.fuksi')
     cy.get('button').should('not.have.class', 'disabled')
     cy.contains('I want a device').click()
     cy.contains('Task status:')
@@ -25,6 +35,9 @@ context('Student', () => {
   })
 
   it('allows eligible students to sign up without email', () => {
+    cy.get('[data-cy=terms]').click()
+    cy.get('[data-cy=acceptTerms]').click()
+
     cy.contains('I want a device, but').click()
     cy.contains('Task status:')
   })
