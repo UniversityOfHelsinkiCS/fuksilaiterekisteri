@@ -23,6 +23,7 @@ if (!inProduction) {
   router.get('/test/reset/user', testController.resetTestUsers)
   router.get('/test/reset/serviceStatus', testController.resetServiceStatus)
   router.get('/test/disableStudentRegs', testController.disableStudentRegs)
+  router.get('/test/createSomeUsers', testController.createSomeUsers)
 }
 
 router.get('/serviceStatus', serviceStatusController.getServiceStatus) // Before authentication, because contains translations and does not contain any sensitive data.
