@@ -6,7 +6,7 @@ context('Staff', () => {
   
     cy.login("admin")
     cy.visit("/")
-    cy.contains('non-fuksiEtunimi').parent().parent().find('.refresh').eq(0).click()
+    cy.contains('non-fuksiEtunimi').parent().parent().find('[data-cy=toggleStaff]').click()
 
     cy.login("non_fuksi_student")
     cy.visit("/")

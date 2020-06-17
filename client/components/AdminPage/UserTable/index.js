@@ -101,14 +101,14 @@ const UserTable = ({ users, handleAdminNoteClick }) => {
     {
       key: 'staff',
       label: 'Staff',
-      renderCell: ({ staff, id }) => <Checkbox checked={!!staff} onChange={() => toggleUserStaff(id)} />,
+      renderCell: ({ staff, id }) => <Checkbox data-cy="toggleStaff" checked={!!staff} onChange={() => toggleUserStaff(id)} />,
       getCellVal: ({ staff }) => boolToString(staff),
       width: 75,
     },
     {
       key: 'distributor',
       label: 'Distributor',
-      renderCell: ({ distributor, id }) => <Checkbox checked={!!distributor} onChange={() => toggleUserDistributor(id)} />,
+      renderCell: ({ distributor, id }) => <Checkbox data-cy="toggleDistributor" checked={!!distributor} onChange={() => toggleUserDistributor(id)} />,
       getCellVal: ({ distributor }) => distributor,
       width: 125,
     },
