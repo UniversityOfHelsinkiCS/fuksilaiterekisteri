@@ -1,15 +1,20 @@
 import React from 'react'
 import { Modal, Button } from 'semantic-ui-react'
-import TranslatedText from 'Components/TranslatedText'
+import TranslatedMarkdown from 'Components/TranslatedMarkdown'
 
 const EmailConfirmation = ({
   open, handleAcceptTermsClick, handleClose,
 }) => (
   <Modal open={open} onClose={handleClose}>
-    <TranslatedText textKey="acceptableTerms" />
+    <Modal.Content>
+      <TranslatedMarkdown textKey="acceptableTerms" />
+    </Modal.Content>
     <Modal.Actions>
       <Button onClick={handleAcceptTermsClick}>
-        Hyväksyn nämä ehdot.
+        Hyväksyn nämä ehdot
+        <br />
+        <br />
+        I accept these terms
       </Button>
     </Modal.Actions>
   </Modal>

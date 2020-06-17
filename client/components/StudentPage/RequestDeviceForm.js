@@ -82,7 +82,7 @@ const RequestDeviceForm = () => {
                 cursor: 'pointer',
               }}
             >
-                Laitteen ehdot hyväksytty
+                Laitteen ehdot hyväksytty / Device terms accepted
             </span>
           </div>
           <div style={{ display: 'flex' }}>
