@@ -40,7 +40,7 @@ const VirtualizedTable = ({
 
   return (
     <div style={{
-      minHeight: '300px', maxWidth: '100%', flex: 1, display: 'flex',
+      minHeight: '300px', maxWidth: '100%', flex: 1, display: 'flex', overflowX: 'auto',
     }}
     >
       <div style={{ flex: 1 }}>

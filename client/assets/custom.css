@@ -14,3 +14,9 @@
   height: 5em;
   background-color: whitesmoke;
 }
+
+.tab-content {
+  min-height: calc(100vh - 17em);
+  display: flex;
+  flex-direction: column;
+}
