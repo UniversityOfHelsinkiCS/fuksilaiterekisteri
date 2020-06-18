@@ -4,6 +4,8 @@ const logger = require('@util/logger')
 const defaultTranslations = require('../../util/defaultTranslations.json')
 const { getServiceStatusObject } = require('./serviceStatusController')
 
+const _ = require('lodash')
+
 const resetTestUsers = async (req, res) => {
   try {
     await db.user.destroy({
@@ -55,6 +57,15 @@ const createNewUser = async (i, spid) => {
   const b = Math.random() < 0.5
   const c = Math.random() < 0.5
 
+  const hasDevice = Math.random() < 0.5
+
+  const deviceStuff = {
+    device_distributed_by: hasDevice ? 'admin' : null,
+    deviceSerial: hasDevice ? `RAs${i}` : null,
+    deviceGivenAt: hasDevice ? new Date().getTime() : null,
+    wantsDevice: hasDevice,
+  }
+
   const defaults = {
     userId: i,
     studentNumber: b ? Math.floor(Math.random() * 10000000) : null,
@@ -65,16 +76,13 @@ const createNewUser = async (i, spid) => {
     staff: !b,
     reclaimer: !b,
     dateOfBirth: new Date('1.1.2050').getTime(),
-    device_distributed_by: b ? 'admin' : null,
-    deviceSerial: b ? `RAs${i}` : null,
-    deviceGivenAt: b ? new Date().getTime() : null,
-    eligible: b && c,
-    wantsDevice: b && c,
-    digiSkillsCompleted: b && c,
-    courseRegistrationCompleted: b && c,
+    eligible: (b && c) || hasDevice,
+    digiSkillsCompleted: hasDevice ? true : Math.random() < 0.5,
+    courseRegistrationCompleted: hasDevice ? true : Math.random() < 0.5,
     adminNote: b ? 'hello' : null,
-    signupYear: b ? 2019 : 2020,
+    signupYear: b ? _.sample([2010, 2011, 2019, 2020]) : null,
     eligibilityReasons: {},
+    ...deviceStuff,
   }
 
   db.user.findOrCreate({
