@@ -51,7 +51,7 @@ const resetServiceStatus = async (req, res) => {
   }
 }
 
-const createNewUser = async (i) => {
+const createNewUser = async (i, spid) => {
   const b = Math.random() < 0.5
   const c = Math.random() < 0.5
 
@@ -80,18 +80,31 @@ const createNewUser = async (i) => {
   db.user.findOrCreate({
     where: { userId: `${i}` },
     defaults,
-  }).then(([, created]) => {
+  }).then(([user, created]) => {
     if (created) {
       logger.info(`Created user ${i}`)
+      if (b && c) {
+        db.userStudyProgram.create({
+          userId: user.id,
+          studyProgramId: spid,
+        })
+      }
     }
   })
 }
 
 const createSomeUsers = async (req, res) => {
   try {
+    const { id } = await db.studyProgram.findOne({
+      where: {
+        code: 'KH50_005',
+      },
+      attributes: ['id', 'code'],
+    })
+
     let i = 0
     while (i++ < 1000) {
-      createNewUser(i)
+      createNewUser(i, id)
     }
 
 
