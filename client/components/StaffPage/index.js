@@ -1,18 +1,43 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Header, Segment } from 'semantic-ui-react'
 import { getStudentsAction } from '../../util/redux/studentReducer'
 import StudentTable from './StudentTable'
 import StatsTable from '../StatsTable'
+import StaffFilter from './StaffFilter'
 
 export default () => {
   const dispatch = useDispatch()
   const students = useSelector(state => state.student.students)
   const user = useSelector(state => state.user.data)
+  const settings = useSelector(state => state.serviceStatus.data)
 
   useEffect(() => {
     dispatch(getStudentsAction())
   }, [])
+
+  const [filter, setFilter] = useState('all')
+
+  const doFiltering = () => {
+    let filtered
+    switch (filter) {
+      case 'all':
+        filtered = students
+        break
+      case 'deviceHolders':
+        filtered = students.filter(u => !!u.deviceGivenAt) // TODO: Check if device is returned.
+        break
+      case 'currentYearEligible':
+        filtered = students.filter(u => u.signupYear === settings.currentYear && u.eligible)
+        break
+      default:
+        filtered = students
+        break
+    }
+    return filtered
+  }
+
+  const filteredStudents = useMemo(doFiltering, [filter, students])
 
   return (
     <div style={{ maxWidth: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -24,8 +49,9 @@ export default () => {
           </ul>
         </Header>
       </Segment>
-      <StatsTable students={students} />
-      <StudentTable students={students} />
+      <StatsTable students={filteredStudents} />
+      <StaffFilter filter={filter} setFilter={setFilter} totalCount={students.length} filteredCount={filteredStudents.length} />
+      <StudentTable students={filteredStudents} />
     </div>
   )
 }
