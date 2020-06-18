@@ -28,6 +28,17 @@ context('Admin', () => {
     cy.contains("Sinulla on oikeus")
   })
 
+  it('Can give admin role', () => {
+    cy.contains('non-fuksiEtunimi').parent().parent().find('[data-cy="toggleAdmin"]').click()
+    cy.login("non_fuksi_student")
+    cy.visit("/")
+    cy.get('[data-cy=servicestatus-tab]')
+  })
+
+  it("Can't remove admin from self", () => {
+    cy.get(".ReactVirtualized__Table").contains("adminEtunimi").parent().parent().find("[data-cy=toggleAdmin] > input").should("be.disabled")
+  })
+
   it('Can give distributor role', () => {
     cy.contains('non-fuksiEtunimi').parent().parent().find('[data-cy="toggleDistributor"]').click()
     cy.login("non_fuksi_student")

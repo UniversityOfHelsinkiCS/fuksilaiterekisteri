@@ -68,6 +68,7 @@ const createNewUser = async (i, spid) => {
 
   const defaults = {
     userId: i,
+    admin: false,
     studentNumber: b ? Math.floor(Math.random() * 10000000) : null,
     name: `${i}Firstname Lastname`,
     hyEmail: `${i}normal.emailaddress@helsinki.fi`,

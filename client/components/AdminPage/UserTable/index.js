@@ -1,7 +1,9 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Button, Icon, Checkbox } from 'semantic-ui-react'
-import { markStudentEligible as markStudentEligibleAction, toggleUserStaff as toggleUserStaffAction, toggleUserDistributor as toggleUserDistributorAction } from '../../../util/redux/usersReducer'
+import {
+  markStudentEligible as markStudentEligibleAction, toggleUserStaff as toggleUserStaffAction, toggleUserDistributor as toggleUserDistributorAction, toggleUserAdminAction,
+} from '../../../util/redux/usersReducer'
 import dateFormatter from '../../../util/dateFormatter'
 import VirtualizedTable from '../../VirtualizedTable'
 
@@ -12,8 +14,12 @@ const UserTable = ({ users, handleAdminNoteClick }) => {
     const reason = window.prompt(`Please write down the reason ${name} is marked eligible:`)
     if (reason) dispatch(markStudentEligibleAction({ studentNumber, reason }))
   }
+
+  const currentUser = useSelector(state => state.user.data)
+
   const toggleUserStaff = id => dispatch(toggleUserStaffAction(id))
   const toggleUserDistributor = id => dispatch(toggleUserDistributorAction(id))
+  const toggleUserAdmin = id => dispatch(toggleUserAdminAction(id))
   const boolToString = bool => (bool ? 'Kyllä' : 'Ei')
 
   const columns = [
@@ -94,7 +100,7 @@ const UserTable = ({ users, handleAdminNoteClick }) => {
     {
       key: 'admin',
       label: 'Admin',
-      renderCell: ({ admin }) => <Checkbox checked={!!admin} disabled />,
+      renderCell: ({ admin, id }) => <Checkbox data-cy="toggleAdmin" disabled={currentUser.id === id} checked={!!admin} onChange={() => toggleUserAdmin(id)} />,
       getCellVal: ({ admin }) => admin,
       width: 75,
     },

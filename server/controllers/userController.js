@@ -143,7 +143,7 @@ const toggleStaff = async (req, res) => {
     if (!user) return res.status(404).json({ error: 'user not found' })
 
     await user.update({ staff: !user.staff })
-    logger.info(`User ${user.userId} toggled staff to ${!user.staff} by ${req.user.userId}`)
+    logger.info(`User ${user.userId} toggled staff to ${user.staff} by ${req.user.userId}`)
     return res.json(user)
   } catch (e) {
     logger.error(e)
@@ -167,7 +167,34 @@ const toggleDistributor = async (req, res) => {
     if (!user) return res.status(404).json({ error: 'user not found' })
 
     await user.update({ distributor: !user.distributor })
-    logger.info(`User ${user.userId} toggled distributor to ${!user.distributor} by ${req.user.userId}`)
+    logger.info(`User ${user.userId} toggled distributor to ${user.distributor} by ${req.user.userId}`)
+    return res.json(user)
+  } catch (e) {
+    logger.error(e)
+    return res.status(500).json({ error: 'error' })
+  }
+}
+
+const toggleAdmin = async (req, res) => {
+  try {
+    const { id } = req.params
+    const ownId = req.user.id
+
+    if ((parseInt(id, 10) === parseInt(ownId, 10))) return res.status(403).json({ error: 'Cant remove admin from yourself.' })
+
+    if (!id) return res.status(400).json({ error: 'user id missing' })
+
+    const user = await db.user.findOne({
+      where: {
+        id,
+      },
+      include: [{ model: db.studyProgram, as: 'studyPrograms' }],
+    })
+
+    if (!user) return res.status(404).json({ error: 'user not found' })
+
+    await user.update({ admin: !user.admin })
+    logger.info(`User ${user.userId} toggled admin to ${user.admin} by ${req.user.userId}`)
     return res.json(user)
   } catch (e) {
     logger.error(e)
@@ -207,4 +234,5 @@ module.exports = {
   toggleStaff,
   toggleDistributor,
   setAdminNote,
+  toggleAdmin,
 }

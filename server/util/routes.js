@@ -38,6 +38,7 @@ router.post('/claim_device', checkDistributor, userController.claimDevice)
 
 router.get('/user', checkAdmin, userController.getAllUsers)
 router.post('/user/:id/staff', checkAdmin, userController.toggleStaff)
+router.post('/user/:id/admin', checkAdmin, userController.toggleAdmin)
 router.post('/user/:id/distributor', checkAdmin, userController.toggleDistributor)
 router.post('/user/:id/admin_note', checkAdmin, validationMiddleware(['id'], ['note']), userController.setAdminNote)
 

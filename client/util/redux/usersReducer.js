@@ -28,6 +28,13 @@ export const toggleUserDistributor = (id) => {
   return callBuilder(route, prefix, method)
 }
 
+export const toggleUserAdminAction = (id) => {
+  const route = `/user/${id}/admin`
+  const prefix = 'TOGGLE_USER_ADMIN'
+  const method = 'post'
+  return callBuilder(route, prefix, method)
+}
+
 export const setUserAdminNote = ({ id, note }) => {
   const route = `/user/${id}/admin_note`
   const prefix = 'SET_USER_ADMIN_NOTE'
@@ -74,6 +81,11 @@ export default (state = INITIAL_STATE, action) => {
       }
 
     case 'TOGGLE_USER_DISTRIBUTOR_SUCCESS':
+      return {
+        ...state,
+        data: handleUsersUpdate(action.response, state.data),
+      }
+    case 'TOGGLE_USER_ADMIN_SUCCESS':
       return {
         ...state,
         data: handleUsersUpdate(action.response, state.data),
