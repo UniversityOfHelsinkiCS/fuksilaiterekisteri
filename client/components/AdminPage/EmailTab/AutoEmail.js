@@ -19,8 +19,8 @@ const AutoEmail = () => {
   }, [])
 
   useEffect(() => {
-    setSubject(readyTemplate.subject)
-    setText(readyTemplate.body)
+    setSubject(readyTemplate.subject || '')
+    setText(readyTemplate.body || '')
     setReplyTo(readyTemplate.replyTo || '')
   }, [readyTemplate])
 
