@@ -123,5 +123,14 @@ context('Admin', () => {
 
   })
 
+  it("Can use filters and filters work", () => {
+    cy.visit("/")
+    cy.get('[data-cy=all-filter]').find("input").should("be.checked")
+    cy.contains("non-fuksiEtunimi")
+    cy.get('[data-cy=currentYearEligible-filter]').click()
+    cy.contains("non-fuksiEtunimi").should("not.exist")
+    cy.get('[data-cy=allStaff-filter]').click()
+  })
+
 
 })

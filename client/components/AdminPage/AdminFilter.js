@@ -34,6 +34,7 @@ export default function AdminFilter({
       {options.map(({ key, name }) => (
         <Radio
           key={key}
+          data-cy={`${key}-filter`}
           style={style}
           label={name}
           name="radioGroup"
