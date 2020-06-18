@@ -19,7 +19,7 @@ context('Staff', () => {
     cy.contains('non-fuksiEtunimi non-fuksi')
   })
 
-  it.only("Can use filters and nothing breaks", () => {
+  it("Can use filters and nothing breaks", () => {
     cy.visit("/")
     cy.get('[data-cy=deviceHolders-filter]').click()
     cy.get('[data-cy=currentYearEligible-filter]').click()
