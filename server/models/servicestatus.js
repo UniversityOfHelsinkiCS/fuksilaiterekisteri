@@ -22,6 +22,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.JSONB,
         field: 'custom_texts',
       },
+      taskDeadline: {
+        type: DataTypes.DATE,
+        field: 'task_deadline',
+      },
+      deviceSerial: {
+        type: DataTypes.STRING,
+        field: 'device_serial',
+      },
     },
     {
       underscored: true,
