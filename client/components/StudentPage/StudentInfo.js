@@ -1,6 +1,34 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Segment, Header } from 'semantic-ui-react'
+import { localeSelector } from 'Utilities/redux/localeReducer'
+
+const translations = {
+  name: {
+    en: 'Name:',
+    fi: 'Nimi:',
+  },
+  studentNumber: {
+    en: 'Student number:',
+    fi: 'Opiskelijanumero:',
+  },
+  universityEmail: {
+    en: 'University email:',
+    fi: 'Yliopiston sähköposti:',
+  },
+  personalEmail: {
+    en: 'Personal email:',
+    fi: 'Henkilökohtainen sähköposti:',
+  },
+  studyPrograms: {
+    en: 'Study programs(s):',
+    fi: 'Optino-ohjelma(t):',
+  },
+  notGiven: {
+    en: 'Not given',
+    fi: 'Ei annettu',
+  },
+}
 
 const getOs = (code) => {
   const cubbli = ['KH50_002', 'KH50_005', 'KH50_008']
@@ -13,31 +41,32 @@ const getOs = (code) => {
 
 const StudentInfo = () => {
   const user = useSelector(state => state.user.data)
+  const locale = useSelector(localeSelector)
 
   return (
     <Segment>
       <div>
-        <Header as="h5">Nimi / Name:</Header>
+        <Header as="h5">{translations.name[locale]}</Header>
         {user.name}
       </div>
       <br />
       <div>
-        <Header as="h5">Opiskelijanumero / Student number:</Header>
+        <Header as="h5">{translations.studentNumber[locale]}</Header>
         {user.studentNumber}
       </div>
       <br />
       <div>
-        <Header as="h5">Yliopiston sähköposti / University email:</Header>
+        <Header as="h5">{translations.universityEmail[locale]}</Header>
         {user.hyEmail}
       </div>
       <br />
       <div>
-        <Header as="h5">Henkilökohtainen sähköposti / Personal email:</Header>
-        {user.personalEmail || 'Ei annettu / Not given'}
+        <Header as="h5">{translations.personalEmail[locale]}</Header>
+        {user.personalEmail || translations.notGiven[locale]}
       </div>
       <br />
       <div>
-        <Header as="h5">Opinto-ohjelma(t) / Study Program(s):</Header>
+        <Header as="h5">{translations.studyPrograms[locale]}</Header>
         {user.studyPrograms.map(({ code, name }) => (
           <div key={code} style={{ display: 'flex' }}>
             <p>{`- ${name}, ${code}`}</p>

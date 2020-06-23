@@ -1,10 +1,29 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Segment, Icon, Header } from 'semantic-ui-react'
+import { localeSelector } from 'Utilities/redux/localeReducer'
 import TranslatedMarkdown from 'Components/TranslatedMarkdown'
 import StudentInfo from './StudentInfo'
-import ClaimingInfo from './ClaimingInfo'
 import TaskInfo from './TaskInfo'
+
+const translations = {
+  taskStatus: {
+    en: 'Task status:',
+    fi: 'Tehtävien tila:',
+  },
+  registeredToRelevant: {
+    en: 'Registered to relevant course',
+    fi: 'Rekisteröitynyt relevantille kurssille',
+  },
+  digiSkillsCompleted: {
+    en: 'DIGI-XXXA completed',
+    fi: 'DIGI-XXXA suoritettu',
+  },
+  tasksFinished: {
+    en: 'You have completed the tasks required for fresher device. Info about device distribution will be sent to you by email.',
+    fi: 'Olet suorittanut fuksilaitteeseen vaadittavat tehtävät. Saat tiedot laitteiden jakelusta sähköpostitse.',
+  },
+}
 
 const Task = ({ task, completed }) => {
   if (completed) {
@@ -25,27 +44,33 @@ const Task = ({ task, completed }) => {
 
 const StudentStatusPage = () => {
   const user = useSelector(state => state.user.data)
+  const locale = useSelector(localeSelector)
+
+  const showClaimingInfo = user.eligible && user.digiSkillsCompleted && user.courseRegistrationCompleted
+
   return (
     <Segment.Group>
       <StudentInfo />
       <Segment>
-        <Header as="h3">Task status:</Header>
+        <Header as="h3">{translations.taskStatus[locale]}</Header>
         <Segment.Group horizontal>
           <Task task="True Fuksi" completed={user.eligible} />
           <Task
-            task="Registered to relevant course"
+            task={translations.registeredToRelevant[locale]}
             completed={user.courseRegistrationCompleted}
           />
           <Task
-            task="DIGI-XXXA completed"
+            task={translations.digiSkillsCompleted[locale]}
             completed={user.digiSkillsCompleted}
           />
         </Segment.Group>
-        {user.eligible
-        && user.digiSkillsCompleted
-        && user.courseRegistrationCompleted ? (
-          <ClaimingInfo />
-          ) : null}
+        {showClaimingInfo
+          && (
+            <Segment>
+              <div>{translations.tasksFinished[locale]}</div>
+            </Segment>
+          )
+        }
       </Segment>
       <TaskInfo
         courseRegistrationCompleted={user.courseRegistrationCompleted}

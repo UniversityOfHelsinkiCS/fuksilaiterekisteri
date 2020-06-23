@@ -1,38 +1,33 @@
 import React from 'react'
 import { Segment } from 'semantic-ui-react'
+import { useSelector } from 'react-redux'
+import { localeSelector } from 'Utilities/redux/localeReducer'
 
-const RegistrationInfo = () => (
-  <Segment style={{ maxWidth: '500px' }}>
-    Et ole vielä ilmoittautunut oman opintolinjasi kurssille. Suunnittele
-    opintosi ja käy ilmoittautumassa kursseille Weboodissa. (Tämä tieto
-    päivittyy tunneittain.)
-    <br />
-    <br />
-    You have not yet registered to a course on your study programme. Please plan
-    your studies and register for courses in Weboodi. (The registration status
-    is updated hourly.)
-  </Segment>
-)
-
-const DigiskillsInfo = () => (
-  <Segment style={{ maxWidth: '500px' }}>
-    Et ole vielä suorittanut Opiskelijan digitaidot: orientaatio-kurssia (DIGI-XXXA). (Kurssin suoritukset merkitään koejaksoa seuraavalla
-    viikolla, jonka jälkeen suoritus näkyy myös täällä.)
-    <br />
-    <br />
-    You are yet to complete the course Student&apos;s digital skills:
-    Orientation (DIGI-XXXA). (Please note that this course is graded
-    only after its test period ends, so there may be a long delay before the
-    credit is registered.)
-  </Segment>
-)
+const translations = {
+  notRegisteredToCourse: {
+    en: 'You have not yet registered to a course on your study programme. '
+      + 'Please planyour studies and register for courses in Weboodi. (The registration status is updated hourly.)',
+    fi: 'Et ole vielä ilmoittautunut oman opintolinjasi kurssille. Suunnittele '
+      + 'opintosi ja käy ilmoittautumassa kursseille Weboodissa. (Tämä tieto päivittyy tunneittain.)',
+  },
+  digiSkillsNotCompleted: {
+    en: 'You are yet to complete the course Student\'s digital skills: '
+      + 'Orientation (DIGI-XXXA). (Please note that this course is graded '
+      + 'only after its test period ends, so there may be a long delay before the '
+      + 'credit is registered.)',
+    fi: 'Et ole vielä suorittanut Opiskelijan digitaidot: orientaatio-kurssia (DIGI-XXXA). '
+      + '(Kurssin suoritukset merkitään koejaksoa seuraavalla viikolla, jonka jälkeen suoritus näkyy myös täällä.)',
+  },
+}
 
 const TaskInfo = ({ courseRegistrationCompleted, digiSkillsCompleted }) => {
+  const locale = useSelector(localeSelector)
+
   if (courseRegistrationCompleted && digiSkillsCompleted) return null
   return (
     <Segment.Group>
-      {courseRegistrationCompleted ? null : <RegistrationInfo />}
-      {digiSkillsCompleted ? null : <DigiskillsInfo />}
+      {!courseRegistrationCompleted && <Segment style={{ maxWidth: '500px' }}>{translations.notRegisteredToCourse[locale]}</Segment>}
+      {!digiSkillsCompleted && <Segment style={{ maxWidth: '500px' }}>{translations.digiSkillsNotCompleted[locale]}</Segment>}
     </Segment.Group>
   )
 }
