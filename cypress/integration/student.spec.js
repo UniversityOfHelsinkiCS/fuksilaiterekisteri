@@ -24,8 +24,8 @@ context('Student', () => {
 
     cy.get('[data-cy=otherEmailInput]').type('fuksi@fuksi.fuksi')
     cy.get('button').should('not.have.class', 'disabled')
-    cy.contains('I want a device').click()
-    cy.contains('Task status:')
+    cy.get('[data-cy=getDevicePrimary]').click()
+    cy.contains('Tehtävien tila:')
 
     cy.contains("tietokoneen tekniset tiedot")
     cy.get("[data-cy=setlocale-en]").click()
@@ -38,8 +38,8 @@ context('Student', () => {
     cy.get('[data-cy=terms]').click()
     cy.get('[data-cy=acceptTerms]').click()
 
-    cy.contains('I want a device, but').click()
-    cy.contains('Task status:')
+    cy.get('[data-cy=getDeviceSecondary]').click()
+    cy.contains('Tehtävien tila:')
   })
 
   it("non eligible students see why they are not eligible", () => {

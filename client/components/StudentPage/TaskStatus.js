@@ -52,7 +52,7 @@ const StudentStatusPage = () => {
     <Segment.Group>
       <StudentInfo />
       <Segment>
-        <Header as="h3">{translations.taskStatus[locale]}</Header>
+        <Header as="h3" data-cy="taskStatus">{translations.taskStatus[locale]}</Header>
         <Segment.Group horizontal>
           <Task task="True Fuksi" completed={user.eligible} />
           <Task
