@@ -4,7 +4,8 @@ import { setServiceStatus } from 'Utilities/redux/serviceStatusReducer'
 import {
   Button, Header, Segment,
 } from 'semantic-ui-react'
-import DeadlineSelector from './DeadlineSelector'
+import RegistrationDeadlineSelector from './RegistrationDeadlineSelector'
+import TaskDeadlineSelector from './TaskDeadlineSelector'
 import CustomTexts from './CustomTexts'
 
 export default function ServiceStatus() {
@@ -91,10 +92,9 @@ export default function ServiceStatus() {
         {studentRegistrationOnline ? <StopServiceButton /> : <StartServiceButton /> }
         <Button data-cy="endDistYear" disabled={studentRegistrationOnline} onClick={handleFinishDistributionYear}>{`End distribution year ${currentYear}`}</Button>
       </Segment>
-      <DeadlineSelector />
-
+      <RegistrationDeadlineSelector />
+      <TaskDeadlineSelector />
       <CustomTexts />
-
     </div>
   )
 }

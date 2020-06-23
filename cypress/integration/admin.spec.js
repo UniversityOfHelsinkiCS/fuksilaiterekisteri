@@ -62,14 +62,25 @@ context('Admin', () => {
     cy.contains('test123')
   })
 
-  it("Can set deadline", () => {
+  it("Can set registration deadline", () => {
     cy.visit("/")
     cy.get('[data-cy=servicestatus-tab]').click()
     
-    cy.get(".react-datepicker__input-container").find("input").click()
+    cy.get(".react-datepicker__input-container").eq(0).find("input").click()
     cy.get(".react-datepicker__navigation").click()
     cy.get(".react-datepicker__day--024").click()
-    cy.get("[data-cy=updateDeadline]").click()
+    cy.get("[data-cy=updateRegistrationDeadline]").click()
+    cy.contains("Settings saved")
+  })
+
+  it("Can set task deadline", () => {
+    cy.visit("/")
+    cy.get('[data-cy=servicestatus-tab]').click()
+    
+    cy.get(".react-datepicker__input-container").eq(1).find("input").click()
+    cy.get(".react-datepicker__navigation").click()
+    cy.get(".react-datepicker__day--024").click()
+    cy.get("[data-cy=updateTaskDeadline]").click()
     cy.contains("Settings saved")
   })
 
