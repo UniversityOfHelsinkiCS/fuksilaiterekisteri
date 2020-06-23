@@ -197,8 +197,8 @@ const getStudentStatus = async (studentNumber, studyrights) => {
 
 const updateEligibleStudentStatuses = async () => {
   const settings = await getServiceStatusObject()
-  const isRegistrationOver = new Date().getTime() > new Date(settings.registrationDeadline).getTime()
-  if (isRegistrationOver) return
+  const isDistributionOver = new Date().getTime() > new Date(settings.taskDeadline).getTime()
+  if (isDistributionOver) return
 
   const targetStudents = await db.user.findAll({
     where: {
