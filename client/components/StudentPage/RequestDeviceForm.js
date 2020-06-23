@@ -68,7 +68,7 @@ const RequestDeviceForm = () => {
   }
 
   const handleNoEmailRequestClick = () => {
-    const res = window.confirm('Oletko varma? Are you sure?')
+    const res = window.confirm(translations.areYouSure[locale])
     if (res) {
       dispatch(deviceRequestAction({ email: null }))
     }
