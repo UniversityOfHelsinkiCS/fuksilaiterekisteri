@@ -5,7 +5,7 @@ import {
 } from 'semantic-ui-react'
 import { deviceRequestAction } from 'Utilities/redux/deviceRequestReducer'
 import { localeSelector } from 'Utilities/redux/localeReducer'
-import TermsModal from './TermsModal'
+import InstructionModal from './InstructionModal'
 
 const translations = {
   iWantDevice: {
@@ -91,7 +91,7 @@ const RequestDeviceForm = () => {
 
   return (
     <div>
-      <TermsModal open={termsOpen} handleAcceptTermsClick={handleAcceptTermsClick} handleClose={handleTermsClose} />
+      <InstructionModal open={termsOpen} handleAcceptTermsClick={handleAcceptTermsClick} handleClose={handleTermsClose} />
       <Segment>
         <p>{`${translations.hello[locale]} ${user.name},`}</p>
         <p>{translations.youAreEntitledToADevice[locale]}</p>

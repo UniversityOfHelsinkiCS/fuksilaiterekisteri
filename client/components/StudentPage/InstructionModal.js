@@ -2,7 +2,7 @@ import React from 'react'
 import { Modal, Button } from 'semantic-ui-react'
 import TranslatedMarkdown from 'Components/TranslatedMarkdown'
 
-const EmailConfirmation = ({
+const InstructionModal = ({
   open, handleAcceptTermsClick, handleClose,
 }) => (
   <Modal open={open} onClose={handleClose}>
@@ -20,4 +20,4 @@ const EmailConfirmation = ({
   </Modal>
 )
 
-export default EmailConfirmation
+export default InstructionModal
