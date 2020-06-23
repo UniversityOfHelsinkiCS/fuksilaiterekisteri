@@ -4,7 +4,39 @@ import {
   Button, Input, Segment, Form, Checkbox,
 } from 'semantic-ui-react'
 import { deviceRequestAction } from 'Utilities/redux/deviceRequestReducer'
+import { localeSelector } from 'Utilities/redux/localeReducer'
 import TermsModal from './TermsModal'
+
+const translations = {
+  iWantDevice: {
+    en: 'I want a device',
+    fi: 'Haluan laitteen',
+  },
+  iWantDeviceWithoutEmail: {
+    en: 'I want a device, but I don\'t want to give out my email',
+    fi: 'Haluan laitteen, mutta en halua antaa toista sähköpostiosoitettani',
+  },
+  hello: {
+    en: 'Hello',
+    fi: 'Hei',
+  },
+  youAreEntitledToADevice: {
+    en: 'You’re entitled to a fresher device. Please type in your non-helsinki.fi email to ensure you’ll receive pickup and other device related information.',
+    fi: 'Olet oikeutettu fuksilaitteeseen, anna ei-helsinki.fi sähköpostisi.',
+  },
+  email: {
+    en: 'Email',
+    fi: 'Sähköposti',
+  },
+  instructionsRead: {
+    en: 'Instructions read',
+    fi: 'Ohjeet luettu',
+  },
+  areYouSure: {
+    en: 'Are you sure?',
+    fi: 'Oletko varma?',
+  },
+}
 
 const RequestDeviceForm = () => {
   const [email, setEmail] = useState('')
@@ -13,6 +45,7 @@ const RequestDeviceForm = () => {
   const [termsAccepted, setTermsAccepted] = useState(false)
   const dispatch = useDispatch()
   const user = useSelector(state => state.user.data)
+  const locale = useSelector(localeSelector)
   const validateEmail = (checkEmail) => {
     const validationRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
 
@@ -60,12 +93,10 @@ const RequestDeviceForm = () => {
     <div>
       <TermsModal open={termsOpen} handleAcceptTermsClick={handleAcceptTermsClick} handleClose={handleTermsClose} />
       <Segment>
-        <p>{`Hei ${user.name},`}</p>
-        <p>Olet oikeutettu fuksilaitteeseen, anna ei-helsinki.fi sähköpostisi</p>
-        <p>{`Hello ${user.name},`}</p>
-        <p>You’re entitled to a fresher device. Please type in your non-helsinki.fi email to ensure you’ll receive pickup and other device related information.</p>
+        <p>{`${translations.hello[locale]} ${user.name},`}</p>
+        <p>{translations.youAreEntitledToADevice[locale]}</p>
         <Form>
-          <Input fluid error={inputRed} label="Email" placeholder="@gmail.com" onChange={changeEmail} data-cy="otherEmailInput" />
+          <Input fluid error={inputRed} label={translations.email[locale]} placeholder="@gmail.com" onChange={changeEmail} data-cy="otherEmailInput" />
           <br />
           <br />
           <div style={{ display: 'flex', alignItems: 'center', paddingBottom: '1em' }}>
@@ -83,21 +114,15 @@ const RequestDeviceForm = () => {
               }}
               data-cy="terms"
             >
-                Laitteen ehdot hyväksytty / Device terms accepted
+              {translations.instructionsRead[locale]}
             </span>
           </div>
           <div style={{ display: 'flex' }}>
-            <Button style={{ flex: 0.5 }} color="purple" onClick={handleRequestClick} disabled={primaryButtonDisabled} data-cy="getDevicePrimary">
-              Haluan laitteen
-              <br />
-              <br />
-              I want a device
+            <Button style={{ flex: 0.5, paddingTop: '2em', paddingBottom: '2em' }} color="purple" onClick={handleRequestClick} disabled={primaryButtonDisabled} data-cy="getDevicePrimary">
+              {translations.iWantDevice[locale]}
             </Button>
-            <Button style={{ flex: 0.5 }} onClick={handleNoEmailRequestClick} negative disabled={secondaryButtonDisabled} data-cy="getDeviceSecondary">
-              Haluan laitteen, mutta en halua antaa toista sähköpostiosoitettani
-              <br />
-              <br />
-              I want a device, but I don’t want to give out my email
+            <Button style={{ flex: 0.5, paddingTop: '2em', paddingBottom: '2em' }} onClick={handleNoEmailRequestClick} negative disabled={secondaryButtonDisabled} data-cy="getDeviceSecondary">
+              {translations.iWantDeviceWithoutEmail[locale]}
             </Button>
           </div>
         </Form>
