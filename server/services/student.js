@@ -10,7 +10,7 @@ const {
   STUDENT_API_URL, STUDENT_API_TOKEN, DIGI_COURSES, inProduction,
 } = require('../util/common')
 const { createUserStudyprogrammes } = require('../util/authenticationMiddleware')
-const mockData = require('./mockData.json')
+const mock = require('./mock')
 
 const getServiceStatusObject = () => serviceStatusController.getServiceStatusObject().then(serviceStatusObject => serviceStatusObject)
 
@@ -57,34 +57,10 @@ const getSemesterEnrollments = async (studentNumber) => {
 }
 
 const isEligible = async (studentNumber, at) => {
-  if (!inProduction) {
-    const eligibilityReasons = {
-      hasValidStudyright: true,
-      isPresent: true,
-      didRegisterBeforeEndingTime: true,
-      signedUpForFreshmanDeviceThisYear: true,
-    }
-    let eligible = false
-    switch (studentNumber) {
-      case 'fuksi':
-        eligible = true
-        break
-      case 'non-fuksi':
-        eligibilityReasons.signedUpForFreshmanDeviceThisYear = false
-        break
-      default:
-        break
-    }
-
-    return {
-      eligible,
-      studyrights: mockData.mockStudyrights,
-      eligibilityReasons,
-    }
-  }
   const settings = await getServiceStatusObject()
-  const studyrights = await getStudyRightsFor(studentNumber)
-  const semesterEnrollments = await getSemesterEnrollments(studentNumber)
+  const studyrights = inProduction ? await getStudyRightsFor(studentNumber) : mock.findStudyrights(studentNumber)
+  const semesterEnrollments = inProduction ? await getSemesterEnrollments(studentNumber) : mock.findSemesterEnrollments(studentNumber)
+
   const foundStudent = await db.user.findOne({
     where: {
       studentNumber,
@@ -151,6 +127,20 @@ const isEligible = async (studentNumber, at) => {
     console.log('isPresent                        \t', isPresent)
     console.log('didRegisterBeforeEndingTime      \t', didRegisterBeforeEndingTime)
     console.log('signedUpForFreshmanDeviceThisYear\t', signedUpForFreshmanDeviceThisYear)
+  }
+
+  if (!inProduction) {
+    const eligible = studentNumber === 'fuksi' ? true : (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime && signedUpForFreshmanDeviceThisYear)
+    return {
+      studyrights,
+      eligible,
+      eligibilityReasons: {
+        hasValidStudyright: !hasPreviousStudyright && hasNewStudyright,
+        isPresent,
+        didRegisterBeforeEndingTime,
+        signedUpForFreshmanDeviceThisYear,
+      },
+    }
   }
 
   return {

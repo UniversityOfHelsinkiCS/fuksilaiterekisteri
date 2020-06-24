@@ -78,8 +78,42 @@ const possibleUsers = [
   },
 ]
 
+const eligilityTestUsers = [
+  {
+    uid: 'eligible1',
+    schacPersonalUniqueCode: 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:eligible1',
+    sn: 'eligible1',
+  },
+  {
+    uid: 'eligible2',
+    schacPersonalUniqueCode: 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:eligible2',
+    sn: 'eligible2',
+  },
+  {
+    uid: 'eligible3',
+    schacPersonalUniqueCode: 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:eligible3',
+    sn: 'eligible3',
+  },
+  {
+    uid: 'ineligible1',
+    schacPersonalUniqueCode: 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:ineligible1',
+    sn: 'ineligible1',
+  },
+  {
+    uid: 'ineligible2',
+    schacPersonalUniqueCode: 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:ineligible2',
+    sn: 'ineligible2',
+  },
+  {
+    uid: 'ineligible3',
+    schacPersonalUniqueCode: 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:ineligible3',
+    sn: 'ineligible3',
+  },
+
+]
+
 const setHeaders = (uid) => {
-  const user = possibleUsers.find(u => u.uid === uid)
+  const user = possibleUsers.concat(eligilityTestUsers).find(u => u.uid === uid)
   if (!user) return
 
   localStorage.setItem(ITEM_NAME, JSON.stringify(user))
@@ -96,6 +130,7 @@ const clearHeaders = () => {
 
 module.exports = {
   possibleUsers,
+  eligilityTestUsers,
   setHeaders,
   getHeaders,
   clearHeaders,
