@@ -62,6 +62,32 @@ context('Admin', () => {
     cy.contains('test123')
   })
 
+  it("Can mark device as returned", () => {
+    cy.createUser("fuksi")
+    cy.contains('FUKSILAITTEET')
+    cy.get('[data-cy=terms]').click()
+    cy.get('[data-cy=acceptTerms]').click()
+    cy.get('[data-cy=getDeviceSecondary]').click()
+    cy.get('[data-cy=taskStatus]').contains('Tehtävien tila')
+
+    cy.login("jakelija")
+    cy.visit('/')
+    cy.contains('FUKSILAITTEET')
+
+    cy.get('input').eq(0).type("fuksi")
+    cy.contains('Hae').click()
+
+    cy.get('#device-serial-input').type('RAB12')
+    cy.contains('Anna laite').click()
+
+    cy.login("admin")
+    cy.visit("/")
+
+    cy.contains('fuksiEtunimi fuksi').parent().parent().find("[data-cy=markDeviceReturned]").click()
+    cy.contains('fuksiEtunimi fuksi').parent().parent().find("[data-cy=markDeviceReturned]").should("be.disabled")
+
+  })
+
   it("Can set registration deadline", () => {
     cy.visit("/")
     cy.get('[data-cy=servicestatus-tab]').click()

@@ -140,7 +140,7 @@ const UserTable = ({ users, handleAdminNoteClick }) => {
       renderCell: ({
         studentNumber, deviceReturned, deviceGivenAt,
       }) => (
-        <Button disabled={!studentNumber || deviceReturned || !deviceGivenAt} onClick={() => markDeviceReturned(studentNumber)} color="blue">
+        <Button data-cy="markDeviceReturned" disabled={!studentNumber || deviceReturned || !deviceGivenAt} onClick={() => markDeviceReturned(studentNumber)} color="blue">
           Mark device as returned
         </Button>
       ),
