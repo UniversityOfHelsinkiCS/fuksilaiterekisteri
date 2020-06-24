@@ -64,6 +64,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.JSONB,
         field: 'eligibility_reasons',
       },
+      reclaimStatus: {
+        type: DataTypes.ENUM('OPEN', 'CONTACTED', 'CLOSED'),
+        field: 'reclaim_status',
+      },
+      deviceReturned: {
+        type: DataTypes.BOOLEAN,
+        field: 'device_returned',
+      },
     },
     {
       underscored: true,
