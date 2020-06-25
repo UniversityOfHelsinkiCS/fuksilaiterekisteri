@@ -1,6 +1,7 @@
 const db = require('@models')
 const { Op } = require('sequelize')
 const logger = require('@util/logger')
+const { updateStudentReclaimStatuses } = require('../services/student')
 
 const getStudent = async (req, res) => {
   const { studentNumber } = req.params
@@ -111,10 +112,34 @@ const getStudentsForStaff = async (req, res) => {
   }
 }
 
+const updateReclaimStatuses = async (req, res) => {
+  try {
+    await updateStudentReclaimStatuses()
+
+    const studentsWithReclaimStatus = await db.user.findAll({
+      where: {
+        studentNumber: {
+          [Op.ne]: null,
+        },
+        reclaimStatus: {
+          [Op.ne]: null,
+        },
+      },
+      include: [{ model: db.studyProgram, as: 'studyPrograms' }],
+    })
+
+    return res.status(200).json(studentsWithReclaimStatus)
+  } catch (e) {
+    logger.error(e)
+    return res.status(500).json({ error: 'there was an error updating student reclaim statuses' })
+  }
+}
+
 module.exports = {
   getStudent,
   markStudentEligible,
   getStudentsForStaff,
   updateStudentStatus,
   markDeviceReturned,
+  updateReclaimStatuses,
 }

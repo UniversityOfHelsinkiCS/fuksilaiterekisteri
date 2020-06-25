@@ -43,12 +43,15 @@ router.post('/user/:id/admin', checkAdmin, userController.toggleAdmin)
 router.post('/user/:id/distributor', checkAdmin, userController.toggleDistributor)
 router.post('/user/:id/admin_note', checkAdmin, validationMiddleware(['id'], ['note']), userController.setAdminNote)
 
+
 router.get('/student/:studentNumber', checkDistributor, studentController.getStudent)
 router.post('/student/:studentNumber/eligible', checkStaffOrAdmin, studentController.markStudentEligible)
 router.post('/student/:studentNumber/deviceReturned', checkStaffOrAdmin, studentController.markDeviceReturned)
 router.post('/student/:studentNumber/status', checkStaff, studentController.updateStudentStatus)
 
 router.get('/staff/students', checkStaff, studentController.getStudentsForStaff)
+
+router.get('/reclaimer/update', studentController.updateReclaimStatuses)
 
 router.post('/email/send', emailController.sendEmail)
 router.get('/email/template/autosend/:type', emailController.getAutosendTemplate)
