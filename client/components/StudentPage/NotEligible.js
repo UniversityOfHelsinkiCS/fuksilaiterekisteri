@@ -31,7 +31,7 @@ const translations = {
 }
 
 
-export default function NotEligible({ user }) {
+export default function NotEligible({ user, notCurrentYearsFuksi }) {
   const { eligibilityReasons } = user
   const locale = useSelector(localeSelector)
 
@@ -45,6 +45,10 @@ export default function NotEligible({ user }) {
         </Header>
         <List>
           {Object.entries(eligibilityReasons).map(([key, status]) => {
+            if (key === 'signedUpForFreshmanDeviceThisYear' && notCurrentYearsFuksi) {
+              // eslint-disable-next-line no-param-reassign
+              status = false
+            }
             const statusColor = status ? 'green' : 'red'
             const iconName = status ? 'check' : 'x'
 

@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-context('Student', () => {
+describe('Student', () => {
   beforeEach(() => {
     cy.login("fuksi")
     cy.visit('/')
@@ -73,5 +73,15 @@ context('Student', () => {
     cy.login("fuksi_without_studentnumber")
     cy.visit("/")
     cy.get("[data-cy=no-student-number-error]")
+  })
+})
+
+describe("Previous years student", () => {
+  it("cant request device after 'fuksiyear' even if was marked eligible last year, and can see correct reason", () => {
+    cy.createUser("fuksi")
+    cy.request("/api/test/advance")
+    cy.visit("/")
+    cy.get('[data-cy=notEligible]')
+    cy.contains('Tämä on ensimmäinen').find(".red")
   })
 })

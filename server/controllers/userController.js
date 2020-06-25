@@ -39,7 +39,8 @@ const getLogoutUrl = async (req, res) => {
 }
 
 const requestDevice = async (req, res) => {
-  if (!req.user.eligible) {
+  const settings = await getServiceStatusObject()
+  if (!req.user.eligible || req.user.signupYear !== settings.currentYear) {
     return res
       .status(403)
       .json({ error: 'Not eligible.' })
