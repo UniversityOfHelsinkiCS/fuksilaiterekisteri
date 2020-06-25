@@ -8,6 +8,7 @@ const { authentication } = require('@util/authenticationMiddleware')
 const { checkAdmin, checkStaffOrAdmin } = require('@util/adminMiddleware')
 const { checkDistributor } = require('@util/distributorMiddleware')
 const { checkStaff } = require('@util/staffMiddleware')
+const { checkReclaimer } = require('@util/reclaimerMiddleware')
 const { validationMiddleware } = require('@util/validationMiddleware')
 const { inProduction } = require('@util/common')
 
@@ -51,7 +52,7 @@ router.post('/student/:studentNumber/status', checkStaff, studentController.upda
 
 router.get('/staff/students', checkStaff, studentController.getStudentsForStaff)
 
-router.get('/reclaimer/update', studentController.updateReclaimStatuses)
+router.get('/reclaimer/update', checkReclaimer, studentController.updateReclaimStatuses)
 
 router.post('/email/send', emailController.sendEmail)
 router.get('/email/template/autosend/:type', emailController.getAutosendTemplate)
