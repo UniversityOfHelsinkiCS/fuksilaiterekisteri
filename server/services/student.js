@@ -252,11 +252,13 @@ const updateEligibleStudentStatuses = async () => {
 }
 
 const checkStudentEligibilities = async () => {
+  const settings = await getServiceStatusObject()
   const students = await db.user.findAll({
     where: {
       studentNumber: {
         [Op.ne]: null,
       },
+      signupYear: settings.currentYear,
     },
     attributes: ['studentNumber', 'eligible', 'createdAt'],
   })
