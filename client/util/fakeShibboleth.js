@@ -80,11 +80,6 @@ const possibleUsers = [
 
 const eligilityTestUsers = [
   {
-    uid: 'eligible1',
-    schacPersonalUniqueCode: 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:eligible1',
-    sn: 'eligible1',
-  },
-  {
     uid: 'eligible2',
     schacPersonalUniqueCode: 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:eligible2',
     sn: 'eligible2',

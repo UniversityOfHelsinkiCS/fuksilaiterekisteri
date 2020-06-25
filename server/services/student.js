@@ -139,10 +139,9 @@ const isEligible = async (studentNumber, at) => {
   }
 
   if (!inProduction) {
-    const eligible = studentNumber === 'fuksi' ? true : (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime && signedUpForFreshmanDeviceThisYear)
     return {
       studyrights,
-      eligible,
+      eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime && signedUpForFreshmanDeviceThisYear),
       eligibilityReasons: {
         hasValidStudyright: !hasPreviousStudyright && hasNewStudyright,
         isPresent,

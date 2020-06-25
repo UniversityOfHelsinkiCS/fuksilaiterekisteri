@@ -38,7 +38,7 @@ const mockData = {
       ],
     },
   },
-  eligible1: {
+  fuksi: {
     studyrights: {
       data: [
         {

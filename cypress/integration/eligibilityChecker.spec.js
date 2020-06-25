@@ -16,7 +16,7 @@ describe("Eligiblity checker", () => {
 
   describe("Eligible=true", () => {
     it("Current year's fuksi", () => {
-      isEligible("eligible1")
+      isEligible("fuksi")
     })
    
     it("Previous year's fuksi, postponed for valid reason", () => {
