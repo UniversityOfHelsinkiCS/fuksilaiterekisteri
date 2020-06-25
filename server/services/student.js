@@ -1,6 +1,7 @@
 const axios = require('axios')
 const https = require('https')
 const { Op } = require('sequelize')
+const { differenceInYears } = require('date-fns')
 const db = require('@models')
 const logger = require('@util/logger')
 const completionChecker = require('@util/completionChecker')
@@ -53,6 +54,11 @@ const hasEnrolledForCourse = async (studentNumber, studytrackId, courseId) => {
 
 const getSemesterEnrollments = async (studentNumber) => {
   const res = await userApi.get(`/students/${studentNumber}/semesterEnrollments`)
+  return res.data
+}
+
+const getYearsCredits = async (studentNumber, startingSemester) => {
+  const res = await userApi.get(`/students/${studentNumber}/fuksiYearCredits/${startingSemester}`)
   return res.data
 }
 
@@ -304,10 +310,63 @@ const updateStudentEligibility = async (studentNumber) => {
   await completionChecker(updatedStudent, readyEmail)
 }
 
+const isDeviceHeldUnderFiveYears = deviceGivenAt => differenceInYears(new Date(), new Date(deviceGivenAt)) < 5
+
+const isPresent = async (studentNumber) => {
+  const semesterEnrollments = await getSemesterEnrollments(studentNumber)
+  const settings = await getServiceStatusObject()
+  const currentSemester = semesterEnrollments.data.find(({ semester_code }) => semester_code === settings.currentSemester)
+
+  return currentSemester && currentSemester.semester_enrollment_type_code === 1
+}
+
+const studentHasOverThirtyCredits = (studentNumber, signUpYear) => {
+  const semesterCode = signUpYear * 1 // magiaa tänne TODO
+  const credits = getYearsCredits(studentNumber, semesterCode)
+  return credits >= 30
+}
+
+const updateStudentReclaimStatuses = async () => {
+  const deviceHolders = await db.user.findAll({
+    where: {
+      deviceSerial: { [Op.ne]: null },
+      deviceReturned: false,
+    },
+  })
+
+  const dbPromises = []
+  for (let i = 0; i < deviceHolders.length; i++) {
+    try {
+      const deviceHeldUnderFiveYears = isDeviceHeldUnderFiveYears(deviceHolders[i].deviceGivenAt)
+      const present = await isPresent(deviceHolders[i].studentNumber) // eslint-disable-line
+      const hasOverThirtyCredits = await studentHasOverThirtyCredits(deviceHolders[i].studentNumber, deviceHolders[i].signupYear) // eslint-disable-line
+
+      if (!deviceHeldUnderFiveYears || !present || !hasOverThirtyCredits) {
+        dbPromises.push(
+          new Promise(async (res) => { // eslint-disable-line
+            try {
+              await deviceHolders[i].update({ reclaimStatus: 'OPEN' })
+              res(true)
+            } catch (e) {
+              logger.error(`Failed updating student ${deviceHolders[i].studentNumber}`, e)
+              res(false)
+            }
+          }),
+        )
+      }
+    } catch (e) {
+      logger.error(`Failed fetching oodi data for student ${deviceHolders[i].studentNumber}`)
+    }
+  }
+
+  await Promise.all(dbPromises)
+}
+
 module.exports = {
   getStudentStatus,
   isEligible,
   updateEligibleStudentStatuses,
   checkStudentEligibilities,
   updateStudentEligibility,
+  updateStudentReclaimStatuses,
 }
