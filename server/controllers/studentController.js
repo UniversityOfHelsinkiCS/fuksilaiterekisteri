@@ -112,6 +112,27 @@ const getStudentsForStaff = async (req, res) => {
   }
 }
 
+const getStudentsForReclaimer = async (req, res) => {
+  try {
+    const studentsWithReclaimStatus = await db.user.findAll({
+      where: {
+        studentNumber: {
+          [Op.ne]: null,
+        },
+        reclaimStatus: {
+          [Op.ne]: null,
+        },
+      },
+      include: [{ model: db.studyProgram, as: 'studyPrograms' }],
+    })
+
+    return res.status(200).json(studentsWithReclaimStatus)
+  } catch (e) {
+    logger.error(e)
+    return res.status(500).json({ error: 'there was an error getting students with reclaim status' })
+  }
+}
+
 const updateReclaimStatuses = async (req, res) => {
   try {
     await updateStudentReclaimStatuses()
@@ -141,5 +162,6 @@ module.exports = {
   getStudentsForStaff,
   updateStudentStatus,
   markDeviceReturned,
+  getStudentsForReclaimer,
   updateReclaimStatuses,
 }

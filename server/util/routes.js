@@ -52,6 +52,7 @@ router.post('/student/:studentNumber/status', checkStaff, studentController.upda
 
 router.get('/staff/students', checkStaff, studentController.getStudentsForStaff)
 
+router.get('/reclaimer/students', checkStaff, studentController.getStudentsForReclaimer)
 router.get('/reclaimer/update', checkReclaimer, studentController.updateReclaimStatuses)
 
 router.post('/email/send', emailController.sendEmail)
