@@ -125,9 +125,22 @@ const createSomeUsers = async (req, res) => {
   }
 }
 
+const advance = async (req, res) => {
+  try {
+    const obj = await getServiceStatusObject()
+    obj.currentYear = 2020
+    await obj.save()
+    return res.status(200).end()
+  } catch (e) {
+    logger.error('error', e)
+    return res.status(500).json({ error: 'error' })
+  }
+}
+
 module.exports = {
   resetTestUsers,
   resetServiceStatus,
   disableStudentRegs,
   createSomeUsers,
+  advance,
 }

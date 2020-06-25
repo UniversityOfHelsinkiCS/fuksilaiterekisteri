@@ -77,6 +77,14 @@ context('Distributor', () => {
     cy.contains('Ei oikeutettu laitteeseen!')
   })
 
+  it("Can't give a device to a previous years eligible student", () => {
+    cy.request("/api/test/advance")
+    cy.login("jakelija")
+    cy.visit("/")
+    findStudent('fuksi')
+    cy.contains('Ei oikeutettu laitteeseen!')
+  })
+
   it("Can 'register' when studentRegistration is closed", () => {
     cy.request("/api/test/disableStudentRegs")
     cy.request("/api/test/reset/user")

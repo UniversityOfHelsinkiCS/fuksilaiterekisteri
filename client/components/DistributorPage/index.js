@@ -78,6 +78,7 @@ const DistributorPage = () => {
   const deviceClaim = useSelector(state => state.deviceClaim)
   const student = useSelector(state => state.student.data)
   const error = useSelector(state => state.student.error)
+  const currentYear = useSelector(state => state.serviceStatus.data.currentYear)
   const [studentNumber, setStudentNumber] = useState('')
   const [deviceId, setDeviceId] = useState('')
   const [studentNumberValid, setStudentNumberValid] = useState(false)
@@ -168,7 +169,7 @@ const DistributorPage = () => {
   const inputRed = !studentNumberValid
   const buttonDisabled = !student
 
-  const isEligibleForDevice = () => student && student.eligible && student.digiSkillsCompleted && student.courseRegistrationCompleted && student.wantsDevice
+  const isEligibleForDevice = () => student && student.eligible && student.digiSkillsCompleted && student.courseRegistrationCompleted && student.wantsDevice && student.signupYear === currentYear
 
   const renderStudentData = () => {
     if (!student && !error) return null

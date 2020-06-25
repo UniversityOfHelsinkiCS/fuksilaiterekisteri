@@ -1,6 +1,7 @@
 const db = require('@models')
 const completionChecker = require('@util/completionChecker')
 const logger = require('@util/logger')
+const { getServiceStatusObject } = require('./serviceStatusController')
 
 const validateEmail = (checkEmail) => {
   const validationRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
@@ -88,6 +89,7 @@ const claimDevice = async (req, res) => {
 
     if (!student) return res.status(404).json({ error: 'student not found' })
 
+    const settings = await getServiceStatusObject()
     if (
       !(
         student.eligible
@@ -95,6 +97,7 @@ const claimDevice = async (req, res) => {
         && student.digiSkillsCompleted
         && student.courseRegistrationCompleted
         && !student.deviceGivenAt
+        && student.signupYear === settings.currentYear
       )
     ) {
       return res.status(403).json({ error: 'student not egilible for device' })

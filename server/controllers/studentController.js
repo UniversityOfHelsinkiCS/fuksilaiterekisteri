@@ -21,6 +21,7 @@ const getStudent = async (req, res) => {
       code: s.code,
     })),
     deviceGivenAt: student.deviceGivenAt,
+    signupYear: student.signupYear,
   }
 
   return res.send(response)
