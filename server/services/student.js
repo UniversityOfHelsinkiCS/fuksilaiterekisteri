@@ -34,7 +34,9 @@ const getMinMaxSemesters = async () => {
 }
 
 const getStudyRightsFor = async (studentNumber) => {
-  const res = await userApi.get(`/students/${studentNumber}/studyrights`)
+  const res = inProduction
+    ? await userApi.get(`/students/${studentNumber}/studyrights`)
+    : mock.findStudyrights(studentNumber)
   return res.data
 }
 
@@ -53,19 +55,23 @@ const hasEnrolledForCourse = async (studentNumber, studytrackId, courseId) => {
 }
 
 const getSemesterEnrollments = async (studentNumber) => {
-  const res = await userApi.get(`/students/${studentNumber}/semesterEnrollments`)
+  const res = inProduction
+    ? await userApi.get(`/students/${studentNumber}/semesterEnrollments`)
+    : mock.findSemesterEnrollments(studentNumber)
   return res.data
 }
 
 const getYearsCredits = async (studentNumber, startingSemester) => {
-  const res = await userApi.get(`/students/${studentNumber}/fuksiYearCredits/${startingSemester}`)
+  const res = inProduction
+    ? await userApi.get(`/students/${studentNumber}/fuksiYearCredits/${startingSemester}`)
+    : mock.findFirstYearCredits()
   return res.data
 }
 
 const isEligible = async (studentNumber, at) => {
   const settings = await getServiceStatusObject()
-  const studyrights = inProduction ? await getStudyRightsFor(studentNumber) : mock.findStudyrights(studentNumber)
-  const semesterEnrollments = inProduction ? await getSemesterEnrollments(studentNumber) : mock.findSemesterEnrollments(studentNumber)
+  const studyrights = await getStudyRightsFor(studentNumber)
+  const semesterEnrollments = await getSemesterEnrollments(studentNumber)
 
   const foundStudent = await db.user.findOne({
     where: {
@@ -319,8 +325,10 @@ const isPresent = async (studentNumber) => {
   return currentSemester && currentSemester.semester_enrollment_type_code === 1
 }
 
+const getSemesterCode = year => (year - 1950) * 2 + 1
+
 const studentHasOverThirtyCredits = (studentNumber, signUpYear) => {
-  const semesterCode = signUpYear * 1 // magiaa tänne TODO
+  const semesterCode = getSemesterCode(signUpYear)
   const credits = getYearsCredits(studentNumber, semesterCode)
   return credits >= 30
 }
