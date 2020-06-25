@@ -34,9 +34,8 @@ const getMinMaxSemesters = async () => {
 }
 
 const getStudyRightsFor = async (studentNumber) => {
-  const res = inProduction
-    ? await userApi.get(`/students/${studentNumber}/studyrights`)
-    : mock.findStudyrights(studentNumber)
+  if (!inProduction) return Promise.resolve(mock.findStudyrights(studentNumber))
+  const res = await userApi.get(`/students/${studentNumber}/studyrights`)
   return res.data
 }
 
@@ -55,16 +54,13 @@ const hasEnrolledForCourse = async (studentNumber, studytrackId, courseId) => {
 }
 
 const getSemesterEnrollments = async (studentNumber) => {
-  const res = inProduction
-    ? await userApi.get(`/students/${studentNumber}/semesterEnrollments`)
-    : mock.findSemesterEnrollments(studentNumber)
+  if (!inProduction) return Promise.resolve(mock.findSemesterEnrollments(studentNumber))
+  const res = await userApi.get(`/students/${studentNumber}/semesterEnrollments`)
   return res.data
 }
 
 const getYearsCredits = async (studentNumber, startingSemester) => {
-  const res = inProduction
-    ? await userApi.get(`/students/${studentNumber}/fuksiYearCredits/${startingSemester}`)
-    : mock.findFirstYearCredits()
+  const res = await userApi.get(`/students/${studentNumber}/fuksiYearCredits/${startingSemester}`)
   return res.data
 }
 

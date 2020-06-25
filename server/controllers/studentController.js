@@ -1,7 +1,7 @@
 const db = require('@models')
 const { Op } = require('sequelize')
 const logger = require('@util/logger')
-const { updateStudentReclaimStatuses } = require('../services/student')
+// const { updateStudentReclaimStatuses } = require('@services/student')
 
 const getStudent = async (req, res) => {
   const { studentNumber } = req.params
@@ -135,7 +135,7 @@ const getStudentsForReclaimer = async (req, res) => {
 
 const updateReclaimStatuses = async (req, res) => {
   try {
-    await updateStudentReclaimStatuses()
+    // await updateStudentReclaimStatuses()
 
     const studentsWithReclaimStatus = await db.user.findAll({
       where: {

@@ -44,7 +44,6 @@ router.post('/user/:id/admin', checkAdmin, userController.toggleAdmin)
 router.post('/user/:id/distributor', checkAdmin, userController.toggleDistributor)
 router.post('/user/:id/admin_note', checkAdmin, validationMiddleware(['id'], ['note']), userController.setAdminNote)
 
-
 router.get('/student/:studentNumber', checkDistributor, studentController.getStudent)
 router.post('/student/:studentNumber/eligible', checkStaffOrAdmin, studentController.markStudentEligible)
 router.post('/student/:studentNumber/deviceReturned', checkStaffOrAdmin, studentController.markDeviceReturned)
@@ -52,7 +51,7 @@ router.post('/student/:studentNumber/status', checkStaff, studentController.upda
 
 router.get('/staff/students', checkStaff, studentController.getStudentsForStaff)
 
-router.get('/reclaimer/students', checkStaff, studentController.getStudentsForReclaimer)
+router.get('/reclaimer/students', checkReclaimer, studentController.getStudentsForReclaimer)
 router.get('/reclaimer/update', checkReclaimer, studentController.updateReclaimStatuses)
 
 router.post('/email/send', emailController.sendEmail)

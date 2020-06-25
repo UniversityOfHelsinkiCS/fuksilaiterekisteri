@@ -267,10 +267,8 @@ const mockData = {
 
 const findSemesterEnrollments = studentNumber => (mockData[studentNumber] ? mockData[studentNumber].semesterEnrollments : mockData.default.semesterEnrollments)
 const findStudyrights = studentNumber => (mockData[studentNumber] ? mockData[studentNumber].studyrights : mockData.default.studyrights)
-const findFirstYearCredits = () => 40
 
 module.exports = {
   findSemesterEnrollments,
   findStudyrights,
-  findFirstYearCredits,
 }
