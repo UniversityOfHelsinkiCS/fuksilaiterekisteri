@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Icon, Checkbox } from 'semantic-ui-react'
 import {
-  markStudentEligible as markStudentEligibleAction, toggleUserStaff as toggleUserStaffAction, toggleUserDistributor as toggleUserDistributorAction, toggleUserAdminAction,
+  markStudentEligible as markStudentEligibleAction, toggleUserStaff as toggleUserStaffAction, toggleUserDistributor as toggleUserDistributorAction, toggleUserAdminAction, markDeviceReturnedAction,
 } from '../../../util/redux/usersReducer'
 import dateFormatter from '../../../util/dateFormatter'
 import VirtualizedTable from '../../VirtualizedTable'
@@ -13,6 +13,11 @@ const UserTable = ({ users, handleAdminNoteClick }) => {
   const markStudentEligible = (studentNumber, name) => {
     const reason = window.prompt(`Please write down the reason ${name} is marked eligible:`)
     if (reason) dispatch(markStudentEligibleAction({ studentNumber, reason }))
+  }
+
+  const markDeviceReturned = (studentNumber) => {
+    const confirm = window.confirm(`This will mark device as returned for student number ${studentNumber}`)
+    if (confirm)dispatch(markDeviceReturnedAction(studentNumber))
   }
 
   const currentUser = useSelector(state => state.user.data)
@@ -128,6 +133,19 @@ const UserTable = ({ users, handleAdminNoteClick }) => {
       ),
       disableSort: true,
       width: 180,
+    },
+    {
+      key: 'mark_returned',
+      label: '',
+      renderCell: ({
+        studentNumber, deviceReturned, deviceGivenAt,
+      }) => (
+        <Button data-cy="markDeviceReturned" disabled={!studentNumber || deviceReturned || !deviceGivenAt} onClick={() => markDeviceReturned(studentNumber)} color="blue">
+          Mark device as returned
+        </Button>
+      ),
+      disableSort: true,
+      width: 250,
     },
   ]
 

@@ -5,12 +5,13 @@ const defaultTranslations = require('../../util/defaultTranslations.json')
 const { getServiceStatusObject } = require('./serviceStatusController')
 
 const _ = require('lodash')
+const fakeShibboleth = require('../../client/util/fakeShibboleth')
 
 const resetTestUsers = async (req, res) => {
   try {
     await db.user.destroy({
       where: {
-        userId: ['fuksi', 'non_fuksi_student', 'jakelija', 'admin'],
+        userId: fakeShibboleth.possibleUsers.concat(fakeShibboleth.eligilityTestUsers).map(u => u.uid),
       },
     })
     return res.status(200).end()
@@ -42,7 +43,7 @@ const resetServiceStatus = async (req, res) => {
       studentRegistrationOnline: true,
       currentYear: 2019,
       currentSemester: 139,
-      registrationDeadline: new Date(),
+      registrationDeadline: new Date().setHours(23, 59, 59),
       customTexts: defaultTranslations,
     })
 

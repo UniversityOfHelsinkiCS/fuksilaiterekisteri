@@ -46,6 +46,24 @@ const markStudentEligible = async (req, res) => {
   }
 }
 
+const markDeviceReturned = async (req, res) => {
+  try {
+    const { studentNumber } = req.params
+    if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
+
+    const student = await db.user.findOne({ where: { studentNumber }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
+    if (!student) return res.status(404).json({ error: 'student not found' })
+
+    await student.update({ deviceReturned: true })
+
+    logger.info(`Student ${studentNumber} device marked as returned by ${req.user.userId}`)
+    return res.json(student)
+  } catch (e) {
+    logger.error(e)
+    return res.status(500).json({ error: 'error' })
+  }
+}
+
 const updateStudentStatus = async (req, res) => {
   try {
     const { studentNumber } = req.params
@@ -97,4 +115,5 @@ module.exports = {
   markStudentEligible,
   getStudentsForStaff,
   updateStudentStatus,
+  markDeviceReturned,
 }

@@ -14,6 +14,13 @@ export const markStudentEligible = ({ studentNumber, reason }) => {
   return callBuilder(route, prefix, method, data)
 }
 
+export const markDeviceReturnedAction = (studentNumber) => {
+  const route = `/student/${studentNumber}/deviceReturned`
+  const prefix = 'MARK_DEVICE_RETURNED'
+  const method = 'post'
+  return callBuilder(route, prefix, method)
+}
+
 export const toggleUserStaff = (id) => {
   const route = `/user/${id}/staff`
   const prefix = 'TOGGLE_USER_STAFF'
@@ -69,6 +76,11 @@ export default (state = INITIAL_STATE, action) => {
       }
 
     case 'MARK_STUDENT_ELIGIBLE_SUCCESS':
+      return {
+        ...state,
+        data: handleUsersUpdate(action.response, state.data),
+      }
+    case 'MARK_DEVICE_RETURNED_SUCCESS':
       return {
         ...state,
         data: handleUsersUpdate(action.response, state.data),

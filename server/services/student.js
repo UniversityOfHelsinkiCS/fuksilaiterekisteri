@@ -11,7 +11,7 @@ const {
   STUDENT_API_URL, STUDENT_API_TOKEN, DIGI_COURSES, inProduction,
 } = require('../util/common')
 const { createUserStudyprogrammes } = require('../util/authenticationMiddleware')
-const mockData = require('./mockData.json')
+const mock = require('./mock')
 
 const getServiceStatusObject = () => serviceStatusController.getServiceStatusObject().then(serviceStatusObject => serviceStatusObject)
 
@@ -63,34 +63,10 @@ const getYearsCredits = async (studentNumber, startingSemester) => {
 }
 
 const isEligible = async (studentNumber, at) => {
-  if (!inProduction) {
-    const eligibilityReasons = {
-      hasValidStudyright: true,
-      isPresent: true,
-      didRegisterBeforeEndingTime: true,
-      signedUpForFreshmanDeviceThisYear: true,
-    }
-    let eligible = false
-    switch (studentNumber) {
-      case 'fuksi':
-        eligible = true
-        break
-      case 'non-fuksi':
-        eligibilityReasons.signedUpForFreshmanDeviceThisYear = false
-        break
-      default:
-        break
-    }
-
-    return {
-      eligible,
-      studyrights: mockData.mockStudyrights,
-      eligibilityReasons,
-    }
-  }
   const settings = await getServiceStatusObject()
-  const studyrights = await getStudyRightsFor(studentNumber)
-  const semesterEnrollments = await getSemesterEnrollments(studentNumber)
+  const studyrights = inProduction ? await getStudyRightsFor(studentNumber) : mock.findStudyrights(studentNumber)
+  const semesterEnrollments = inProduction ? await getSemesterEnrollments(studentNumber) : mock.findSemesterEnrollments(studentNumber)
+
   const foundStudent = await db.user.findOne({
     where: {
       studentNumber,
@@ -98,18 +74,26 @@ const isEligible = async (studentNumber, at) => {
   })
 
   const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
-  const { min, max } = await getMinMaxSemesters()
-  const minTime = new Date(min).getTime() // Those who started before spring 2008 dont count -  "min": "2008-07-30T21:00:00.000Z",
+  const { min, max } = inProduction ? await getMinMaxSemesters() : {
+    min: '2008-07-30T21:00:00.000Z',
+    max: '2019-07-31T21:00:00.000Z',
+  }
+  const minTime = new Date(min).getTime() // 2008-07-30T21:00:00.000Z
   const maxTime = new Date(max).getTime() // When current semester started. Semester swaps on 31.7.
 
   let hasNewStudyright = false
   let hasPreviousStudyright = false
+  let hasPre2008Studyright = false
   if (mlu) {
     mlu.elements.forEach(({ start_date }) => {
       const startTime = new Date(start_date).getTime()
 
-      if (startTime > minTime && startTime < maxTime) {
-        hasPreviousStudyright = true // Has studyright which started in between 2008F and before current semester.
+      if (startTime < maxTime) {
+        hasPreviousStudyright = true // Has studyright which started before current semester.
+      }
+
+      if (startTime < minTime) {
+        hasPre2008Studyright = true
       }
 
       if (startTime >= maxTime) {
@@ -118,7 +102,7 @@ const isEligible = async (studentNumber, at) => {
     })
   }
 
-  if (mlu && mlu.elements.length && !hasNewStudyright && hasPreviousStudyright) {
+  if (mlu && mlu.elements.length && !hasPre2008Studyright && !hasNewStudyright && hasPreviousStudyright) {
     let hasBeenPresentBefore = false
 
     semesterEnrollments.data.forEach(({ semester_code, semester_enrollment_type_code }) => {
@@ -152,6 +136,20 @@ const isEligible = async (studentNumber, at) => {
     console.log('isPresent                        \t', isPresent)
     console.log('didRegisterBeforeEndingTime      \t', didRegisterBeforeEndingTime)
     console.log('signedUpForFreshmanDeviceThisYear\t', signedUpForFreshmanDeviceThisYear)
+  }
+
+  if (!inProduction) {
+    const eligible = studentNumber === 'fuksi' ? true : (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime && signedUpForFreshmanDeviceThisYear)
+    return {
+      studyrights,
+      eligible,
+      eligibilityReasons: {
+        hasValidStudyright: !hasPreviousStudyright && hasNewStudyright,
+        isPresent,
+        didRegisterBeforeEndingTime,
+        signedUpForFreshmanDeviceThisYear,
+      },
+    }
   }
 
   return {

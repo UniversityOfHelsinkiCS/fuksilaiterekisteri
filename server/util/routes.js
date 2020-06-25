@@ -44,6 +44,7 @@ router.post('/user/:id/admin_note', checkAdmin, validationMiddleware(['id'], ['n
 
 router.get('/student/:studentNumber', checkDistributor, studentController.getStudent)
 router.post('/student/:studentNumber/eligible', checkStaffOrAdmin, studentController.markStudentEligible)
+router.post('/student/:studentNumber/deviceReturned', checkStaffOrAdmin, studentController.markDeviceReturned)
 router.post('/student/:studentNumber/status', checkStaff, studentController.updateStudentStatus)
 
 router.get('/staff/students', checkStaff, studentController.getStudentsForStaff)
