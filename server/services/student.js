@@ -6,11 +6,11 @@ const db = require('@models')
 const logger = require('@util/logger')
 const completionChecker = require('@util/completionChecker')
 const serviceStatusController = require('@controllers/serviceStatusController')
+const { createUserStudyprogrammes } = require('@controllers/studentController')
 
 const {
   STUDENT_API_URL, STUDENT_API_TOKEN, DIGI_COURSES, inProduction,
 } = require('../util/common')
-const { createUserStudyprogrammes } = require('../util/authenticationMiddleware')
 const mock = require('./mock')
 
 const getServiceStatusObject = () => serviceStatusController.getServiceStatusObject().then(serviceStatusObject => serviceStatusObject)

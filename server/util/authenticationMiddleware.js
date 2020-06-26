@@ -4,44 +4,8 @@ const { inProduction } = require('./common')
 const logger = require('@util/logger')
 const { getServiceStatusObject } = require('@controllers/serviceStatusController')
 
-const createUserStudyprogrammes = async (studyrights, user) => {
-  const allStudyprograms = await db.studyProgram.findAll({
-    attributes: ['id', 'code'],
-  })
+const { createUserStudyprogrammes } = require('@controllers/studentController')
 
-  const studyprogramCodeToId = allStudyprograms.reduce((acc, { id, code }) => {
-    acc[code] = id
-    return acc
-  }, {})
-  const allStudyprogramCodes = new Set(allStudyprograms.map(({ code }) => code))
-
-  return Promise.all([
-    studyrights.data.map(
-      ({ elements }) => new Promise(async (resolveStudyright) => {
-        await Promise.all([
-          elements.map(
-            ({ code }) => new Promise(async (resolveElement) => {
-              if (
-                allStudyprogramCodes.has(code)
-                    && !(
-                      user.studyPrograms
-                      && user.studyPrograms.map(c => c.code).includes(code)
-                    )
-              ) {
-                await db.userStudyProgram.create({
-                  userId: user.id,
-                  studyProgramId: studyprogramCodeToId[code],
-                })
-                resolveElement()
-              }
-            }),
-          ),
-        ])
-        resolveStudyright()
-      }),
-    ),
-  ])
-}
 
 const createStaffStudyprogrammes = async (codes, user) => {
   const studyprograms = await db.studyProgram.findAll({
@@ -159,5 +123,4 @@ const authentication = async (req, res, next) => {
 
 module.exports = {
   authentication,
-  createUserStudyprogrammes,
 }

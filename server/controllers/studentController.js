@@ -1,7 +1,7 @@
 const db = require('@models')
 const { Op } = require('sequelize')
 const logger = require('@util/logger')
-// const { updateStudentReclaimStatuses } = require('@services/student')
+const { updateStudentReclaimStatuses } = require('@services/student')
 
 const getStudent = async (req, res) => {
   const { studentNumber } = req.params
@@ -135,7 +135,7 @@ const getStudentsForReclaimer = async (req, res) => {
 
 const updateReclaimStatuses = async (req, res) => {
   try {
-    // await updateStudentReclaimStatuses()
+    await updateStudentReclaimStatuses()
 
     const studentsWithReclaimStatus = await db.user.findAll({
       where: {
@@ -156,6 +156,45 @@ const updateReclaimStatuses = async (req, res) => {
   }
 }
 
+const createUserStudyprogrammes = async (studyrights, user) => {
+  const allStudyprograms = await db.studyProgram.findAll({
+    attributes: ['id', 'code'],
+  })
+
+  const studyprogramCodeToId = allStudyprograms.reduce((acc, { id, code }) => {
+    acc[code] = id
+    return acc
+  }, {})
+  const allStudyprogramCodes = new Set(allStudyprograms.map(({ code }) => code))
+
+  return Promise.all([
+    studyrights.data.map(
+      ({ elements }) => new Promise(async (resolveStudyright) => {
+        await Promise.all([
+          elements.map(
+            ({ code }) => new Promise(async (resolveElement) => {
+              if (
+                allStudyprogramCodes.has(code)
+                    && !(
+                      user.studyPrograms
+                      && user.studyPrograms.map(c => c.code).includes(code)
+                    )
+              ) {
+                await db.userStudyProgram.create({
+                  userId: user.id,
+                  studyProgramId: studyprogramCodeToId[code],
+                })
+                resolveElement()
+              }
+            }),
+          ),
+        ])
+        resolveStudyright()
+      }),
+    ),
+  ])
+}
+
 module.exports = {
   getStudent,
   markStudentEligible,
@@ -164,4 +203,5 @@ module.exports = {
   markDeviceReturned,
   getStudentsForReclaimer,
   updateReclaimStatuses,
+  createUserStudyprogrammes,
 }
