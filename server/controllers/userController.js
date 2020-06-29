@@ -10,9 +10,11 @@ const validateEmail = (checkEmail) => {
   return validationRegex.test(checkEmail) && !checkEmail.includes('helsinki.') && !checkEmail.includes('@cs.')
 }
 
-const validateSerial = (serial) => {
-  const regex = /^PF1[A-Z0-9]{5}$/
-  return regex.test(serial)
+const validateSerial = async (serial) => {
+  const FULL_SERIAL_LENGTH = 20
+  const settings = await getServiceStatusObject()
+  if (serial.length === FULL_SERIAL_LENGTH && serial.substr(0, settings.deviceSerial.length) === settings.deviceSerial) return true
+  return false
 }
 
 const getUser = (req, res) => {
@@ -80,7 +82,9 @@ const claimDevice = async (req, res) => {
     } = req
 
     if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
-    if (!validateSerial(deviceId)) return res.status(400).json({ error: 'device id missing or invalid' })
+
+    const validSerial = await validateSerial(deviceId)
+    if (!validSerial) return res.status(400).json({ error: 'device id missing or invalid' })
 
     const student = await db.user.findOne({
       where: {

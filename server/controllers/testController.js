@@ -45,6 +45,7 @@ const resetServiceStatus = async (req, res) => {
       currentSemester: 139,
       registrationDeadline: new Date().setHours(23, 59, 59),
       customTexts: defaultTranslations,
+      deviceSerial: '1s20N3S2NJ00PF1',
     })
 
     return res.status(200).end()
@@ -137,10 +138,24 @@ const advance = async (req, res) => {
   }
 }
 
+const setSerial = async (req, res) => {
+  try {
+    const newSerial = req.params.serial
+    const obj = await getServiceStatusObject()
+    obj.deviceSerial = newSerial
+    await obj.save()
+    return res.status(200).end()
+  } catch (e) {
+    logger.error('error', e)
+    return res.status(500).json({ error: 'error' })
+  }
+}
+
 module.exports = {
   resetTestUsers,
   resetServiceStatus,
   disableStudentRegs,
   createSomeUsers,
   advance,
+  setSerial,
 }

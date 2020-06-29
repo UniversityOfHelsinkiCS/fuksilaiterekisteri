@@ -182,7 +182,7 @@ context('Admin', () => {
 
   it("Can update device serial", () => {
     cy.get('[data-cy=servicestatus-tab]').click()
-    cy.get("[data-cy=deviceSerial]").type("1s20N3S2NJ12345")
+    cy.get("[data-cy=deviceSerial]").clear().type("1s20N3S2NJ12345")
     cy.get("[data-cy=updateSerial]").click()
     cy.reload()
     cy.get('[data-cy=servicestatus-tab]').click()
