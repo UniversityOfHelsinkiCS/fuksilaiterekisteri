@@ -46,7 +46,7 @@ export default () => {
         filtered = users
         break
       case 'deviceHolders':
-        filtered = users.filter(u => !!u.deviceGivenAt) // TODO: Check if device is returned.
+        filtered = users.filter(u => !!u.deviceGivenAt && !u.deviceReturned)
         hiddenColumns = ['admin', 'staff', 'distributor']
         break
       case 'currentYearEligible':

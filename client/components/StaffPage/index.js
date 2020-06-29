@@ -25,7 +25,7 @@ export default () => {
         filtered = students
         break
       case 'deviceHolders':
-        filtered = students.filter(u => !!u.deviceGivenAt) // TODO: Check if device is returned.
+        filtered = students.filter(u => !!u.deviceGivenAt && !u.deviceReturned)
         break
       case 'currentYearEligible':
         filtered = students.filter(u => u.signupYear === settings.currentYear && u.eligible)
