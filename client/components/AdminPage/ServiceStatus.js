@@ -7,6 +7,7 @@ import {
 import RegistrationDeadlineSelector from './RegistrationDeadlineSelector'
 import TaskDeadlineSelector from './TaskDeadlineSelector'
 import CustomTexts from './CustomTexts'
+import DeviceSerial from './DeviceSerial'
 
 export default function ServiceStatus() {
   const dispatch = useDispatch()
@@ -94,6 +95,7 @@ export default function ServiceStatus() {
       </Segment>
       <RegistrationDeadlineSelector />
       <TaskDeadlineSelector />
+      <DeviceSerial />
       <CustomTexts />
     </div>
   )
