@@ -40,34 +40,38 @@ export default () => {
 
   const doFiltering = () => {
     let filtered
+    let hiddenColumns = []
     switch (filter) {
       case 'all':
         filtered = users
         break
       case 'deviceHolders':
         filtered = users.filter(u => !!u.deviceGivenAt) // TODO: Check if device is returned.
+        hiddenColumns = ['admin', 'staff', 'distributor']
         break
       case 'currentYearEligible':
         filtered = users.filter(u => u.signupYear === settings.currentYear && u.eligible)
+        hiddenColumns = ['admin', 'staff', 'distributor', 'eligible']
         break
       case 'allStaff':
         filtered = users.filter(u => u.admin || u.staff || u.distributor || u.reclaimer)
+        hiddenColumns = ['student_number', 'studyPrograms', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'device_given_at', 'device_id', 'device_distributed_by', 'mark_eligible', 'mark_returned']
         break
       default:
         filtered = users
         break
     }
-    return filtered
+    return { filteredUsers: filtered, hiddenColumns }
   }
 
-  const filteredUsers = useMemo(doFiltering, [filter, users])
+  const { filteredUsers, hiddenColumns } = useMemo(doFiltering, [filter, users])
 
   return (
     <div className="tab-content">
       <UserModal user={selectedUser} handleClose={handleModalClose} handleSubmit={handleModalSubmit} open={modalUser !== null} />
       <StatsTable students={users.filter(u => u.studentNumber)} />
       <AdminFilter totalCount={users.length} filteredCount={filteredUsers.length} filter={filter} setFilter={setFilter} />
-      <UserTable handleAdminNoteClick={handleAdminNoteClick} users={filteredUsers} />
+      <UserTable handleAdminNoteClick={handleAdminNoteClick} users={filteredUsers} hiddenColumns={hiddenColumns} />
     </div>
   )
 }
