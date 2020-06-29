@@ -55,6 +55,12 @@ const resetServiceStatus = async (req, res) => {
   }
 }
 
+const createDeviceGivenAt = () => {
+  const a = Math.random() < 0.5
+
+  return a ? new Date().getTime() : new Date(2014).getTime()
+}
+
 const createNewUser = async (i, spid) => {
   const b = Math.random() < 0.5
   const c = Math.random() < 0.5
@@ -64,7 +70,7 @@ const createNewUser = async (i, spid) => {
   const deviceStuff = {
     device_distributed_by: hasDevice ? 'admin' : null,
     deviceSerial: hasDevice ? `RAs${i}` : null,
-    deviceGivenAt: hasDevice ? new Date().getTime() : null,
+    deviceGivenAt: hasDevice ? createDeviceGivenAt() : null,
     wantsDevice: hasDevice,
   }
 

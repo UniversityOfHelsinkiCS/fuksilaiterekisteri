@@ -15,12 +15,24 @@ export const getStudentsAction = () => {
   return callBuilder(route, prefix)
 }
 
+export const getStudentsWithOpenReclaimStatus = () => {
+  const route = '/reclaimer/students'
+  const prefix = 'GET_STUDENTS'
+  return callBuilder(route, prefix)
+}
+
 export const updateStudentStatus = ({ digiSkills, enrolled, studentNumber }) => {
   const route = `/student/${studentNumber}/status`
   const prefix = 'UPDATE_STUDENT_STATUS'
   const method = 'post'
   const data = { digiSkills, enrolled }
   return callBuilder(route, prefix, method, data)
+}
+
+export const updateStudentReclainmStatuses = () => {
+  const route = '/reclaimer/update'
+  const prefix = 'GET_STUDENTS'
+  return callBuilder(route, prefix)
 }
 
 export const clearStudentAction = () => ({
