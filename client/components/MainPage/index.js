@@ -6,6 +6,7 @@ const getRedirectPathForUser = (user) => {
   if (user.admin) return '/admin'
   if (user.distributor) return '/distributor'
   if (user.staff) return '/staff'
+  if (user.reclaimer) return '/reclaimer'
   if (user.studentNumber) return '/student'
   return '/unauthorized'
 }
