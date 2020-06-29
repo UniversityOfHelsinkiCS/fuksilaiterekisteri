@@ -67,7 +67,7 @@ const StudentStatusPage = () => {
         {showClaimingInfo
           && (
             <Segment>
-              <div>{translations.tasksFinished[locale]}</div>
+              <TranslatedMarkdown textKey="distributionInfo" />
             </Segment>
           )
         }

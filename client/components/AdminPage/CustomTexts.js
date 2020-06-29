@@ -21,6 +21,7 @@ export default function CustomTexts() {
     { key: 'notEligible', value: 'notEligible', text: 'Not eligible text' },
     { key: 'registrationClosed', value: 'registrationClosed', text: 'Registration closed text' },
     { key: 'acceptableTerms', value: 'acceptableTerms', text: 'Acceptable terms (Text which user has to agree on when wanting a device)' },
+    { key: 'distributionInfo', value: 'distributionInfo', text: 'Distribution info (When and where the device can be claimed)' },
   ]
 
   const handleSubmit = () => {
