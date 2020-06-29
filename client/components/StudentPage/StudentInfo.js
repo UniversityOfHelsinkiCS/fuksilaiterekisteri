@@ -22,7 +22,7 @@ const translations = {
   },
   studyPrograms: {
     en: 'Study programs(s):',
-    fi: 'Optino-ohjelma(t):',
+    fi: 'Opinto-ohjelma(t):',
   },
   notGiven: {
     en: 'Not given',
