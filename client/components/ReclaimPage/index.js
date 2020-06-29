@@ -18,8 +18,10 @@ const ReclaimPage = () => {
   }
 
   return (
-    <div style={{ maxWidth: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Button onClick={handleUpdateClick} style={{ marginBottom: '1em' }}>Run student status updater</Button>
+    <div style={{ maxWidth: '100%', display: 'flex', flexDirection: 'column' }} data-cy="reclaimerContent">
+      <Button onClick={handleUpdateClick} style={{ marginBottom: '1em' }} data-cy="updateReclaimStatuses">
+        Run student status updater
+      </Button>
       <ReclaimTable students={students} />
     </div>
   )

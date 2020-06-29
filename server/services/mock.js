@@ -37,6 +37,7 @@ const mockData = {
         },
       ],
     },
+    firstYearCredits: 55,
   },
   fuksi: {
     studyrights: {
@@ -70,6 +71,74 @@ const mockData = {
         },
       ],
     },
+  },
+  modelStudent: {
+    semesterEnrollments: {
+      md5: '12345',
+      status: 200,
+      elapsed: 0.002677027,
+      data: [
+        {
+          full_time_student: 'true',
+          semester_enrollment_type_code: 1,
+          absence_reason_code: null,
+          semester_enrollment_date: '2016-06-30T21:00:00.000Z',
+          semester_code: 139,
+        },
+      ],
+    },
+    firstYearCredits: 30,
+  },
+  absentDeviceHolder: {
+    semesterEnrollments: {
+      md5: '12345',
+      status: 200,
+      elapsed: 0.002677027,
+      data: [
+        {
+          full_time_student: 'true',
+          semester_enrollment_type_code: 1,
+          absence_reason_code: null,
+          semester_enrollment_date: '2016-06-30T21:00:00.000Z',
+          semester_code: 138,
+        },
+      ],
+    },
+    firstYearCredits: 30,
+  },
+  lowCreditsDeviceHolder: {
+    semesterEnrollments: {
+      md5: '12345',
+      status: 200,
+      elapsed: 0.002677027,
+      data: [
+        {
+          full_time_student: 'true',
+          semester_enrollment_type_code: 1,
+          absence_reason_code: null,
+          semester_enrollment_date: '2016-06-30T21:00:00.000Z',
+          semester_code: 139,
+        },
+      ],
+    },
+    firstYearCredits: 29,
+  },
+  exDeviceHolder: {
+    semesterEnrollments: {
+      md5: '12345',
+      status: 200,
+      elapsed: 0.002677027,
+      data: [
+        {
+          full_time_student: 'true',
+          semester_enrollment_type_code: 1,
+          absence_reason_code: null,
+          semester_enrollment_date: '2016-06-30T21:00:00.000Z',
+          semester_code: 138,
+        },
+      ],
+    },
+    firstYearCredits: 29,
   },
   eligible2: {
     studyrights: {
@@ -265,10 +334,14 @@ const mockData = {
   },
 }
 
-const findSemesterEnrollments = studentNumber => (mockData[studentNumber] ? mockData[studentNumber].semesterEnrollments : mockData.default.semesterEnrollments)
-const findStudyrights = studentNumber => (mockData[studentNumber] ? mockData[studentNumber].studyrights : mockData.default.studyrights)
+const findData = (studentNumber, field) => (mockData[studentNumber] ? mockData[studentNumber][field] : mockData.default[field])
+
+const findSemesterEnrollments = studentNumber => findData(studentNumber, 'semesterEnrollments')
+const findStudyrights = studentNumber => findData(studentNumber, 'studyrights')
+const findFirstYearCredits = studentNumber => findData(studentNumber, 'firstYearCredits')
 
 module.exports = {
   findSemesterEnrollments,
   findStudyrights,
+  findFirstYearCredits,
 }

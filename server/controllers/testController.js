@@ -61,6 +61,31 @@ const createDeviceGivenAt = () => {
   return a ? new Date().getTime() : new Date(2014).getTime()
 }
 
+const createCustomUser = async (userOverrides) => {
+  const defaults = {
+    admin: false,
+    distributor: false,
+    staff: false,
+    reclaimer: false,
+    hyEmail: 'hyEmail@helsinli.fi',
+    personalEmail: 'personal@personal.com',
+    dateOfBirth: new Date('1.1.2050').getTime(),
+    eligible: true,
+    digiSkillsCompleted: true,
+    courseRegistrationCompleted: true,
+    adminNote: null,
+    signupYear: 2019,
+    eligibilityReasons: {},
+    wantsDevice: true,
+    device_distributed_by: null,
+    deviceSerial: null,
+    deviceGivenAt: null,
+    ...userOverrides,
+  }
+
+  await db.user.findOrCreate({ where: { userId: userOverrides.userId }, defaults })
+}
+
 const createNewUser = async (i, spid) => {
   const b = Math.random() < 0.5
   const c = Math.random() < 0.5
@@ -132,6 +157,17 @@ const createSomeUsers = async (req, res) => {
   }
 }
 
+const createUser = async (req, res) => {
+  try {
+    const { userInfo } = req.body
+    await createCustomUser(userInfo)
+    return res.status(200).end()
+  } catch (e) {
+    logger.error('error creating custom user: ', e)
+    return res.status(500).json({ error: 'error' })
+  }
+}
+
 const advance = async (req, res) => {
   try {
     const obj = await getServiceStatusObject()
@@ -163,5 +199,6 @@ module.exports = {
   disableStudentRegs,
   createSomeUsers,
   advance,
+  createUser,
   setSerial,
 }

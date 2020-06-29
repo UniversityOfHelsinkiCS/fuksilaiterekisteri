@@ -38,3 +38,8 @@ Cypress.Commands.add("createUser", (uid) => {
   cy.visit("/")
   cy.wait("@createUser")
 })
+
+// Add user straight into DB
+Cypress.Commands.add("createCustomUser", (userInfo) => {
+  cy.request("POST", '/api/test/createUser', { userInfo })
+})
