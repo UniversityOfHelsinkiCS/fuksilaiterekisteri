@@ -189,4 +189,19 @@ context('Admin', () => {
     cy.get("[data-cy=deviceSerial]").should("have.value","1s20N3S2NJ12345")
   })
 
+  it("Superadmin can use login as", () => {
+    cy.visit("/")
+    cy.contains("non-fuksiEtunimi non-fuksi").parent().parent().find("[data-cy=loginAs]").click()
+    cy.get('[data-cy=notEligible]')
+    cy.contains("Stop login as").click()
+  })
+
+  it("Non superadmin cant use loginAs", () => {
+    cy.contains('non-fuksiEtunimi').parent().parent().find('[data-cy="toggleAdmin"]').click()
+    cy.login("non_fuksi_student")
+    cy.visit("/")
+    cy.get('[data-cy=servicestatus-tab]')
+    cy.contains("adminEtunimi admin").parent().parent().find("[data-cy=loginAs]").should("not.exist")
+  })
+
 })

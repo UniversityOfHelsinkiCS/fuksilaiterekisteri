@@ -27,6 +27,11 @@ const UserTable = ({ users, handleAdminNoteClick }) => {
   const toggleUserAdmin = id => dispatch(toggleUserAdminAction(id))
   const boolToString = bool => (bool ? 'Kyllä' : 'Ei')
 
+  const loginAs = (userId) => {
+    localStorage.setItem('adminLoggedInAs', userId)
+    window.location.reload()
+  }
+
   const columns = [
     {
       key: 'name',
@@ -148,6 +153,22 @@ const UserTable = ({ users, handleAdminNoteClick }) => {
       width: 250,
     },
   ]
+
+  if (currentUser.superAdmin) {
+    columns.push({
+      key: 'login_as',
+      label: '',
+      renderCell: ({
+        userId,
+      }) => (
+        <Button data-cy="loginAs" onClick={() => loginAs(userId)} color="blue">
+        Login as
+        </Button>
+      ),
+      disableSort: true,
+      width: 110,
+    })
+  }
 
   return (
     <VirtualizedTable

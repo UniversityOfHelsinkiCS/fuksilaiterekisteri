@@ -6,12 +6,20 @@ import { setLocale } from 'Utilities/redux/localeReducer'
 export default ({ handleMenuClick }) => {
   const dispatch = useDispatch()
 
+  const stopLoginAs = () => {
+    window.localStorage.removeItem('adminLoggedInAs')
+    window.location.reload()
+  }
+
+  const loggedInAs = window.localStorage.getItem('adminLoggedInAs')
+
   return (
     <div className="navbar" style={{ display: 'flex', alignItems: 'center' }}>
       <div style={{ padding: '1em' }}>
         <Flag data-cy="setlocale-fi" onClick={() => dispatch(setLocale('fi'))} name="fi" />
         <Flag data-cy="setlocale-en" onClick={() => dispatch(setLocale('en'))} name="gb" />
       </div>
+      {loggedInAs && <Button negative onClick={stopLoginAs}>{`Stop login as ${loggedInAs}`}</Button>}
       <h1 style={{ margin: '0 auto' }}>
         FUKSILAITTEET
       </h1>
