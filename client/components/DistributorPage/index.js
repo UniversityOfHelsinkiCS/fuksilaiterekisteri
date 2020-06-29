@@ -66,19 +66,14 @@ const StudentInfo = ({ student }) => {
   )
 }
 
-const parseId = (rawId) => {
-  if (rawId.length !== 5 && rawId.length !== 20) return null
-  if (rawId.length === 5) return `PF1${rawId.toUpperCase()}`
-  if (rawId.substring(0, 15) === '1s20N3S2NJ00PF1') return rawId.substring(12, 20).toUpperCase()
-  return null
-}
+const FULL_SERIAL_LENGTH = 20
 
 const DistributorPage = () => {
   const dispatch = useDispatch()
   const deviceClaim = useSelector(state => state.deviceClaim)
   const student = useSelector(state => state.student.data)
   const error = useSelector(state => state.student.error)
-  const currentYear = useSelector(state => state.serviceStatus.data.currentYear)
+  const settings = useSelector(state => state.serviceStatus.data)
   const [studentNumber, setStudentNumber] = useState('')
   const [deviceId, setDeviceId] = useState('')
   const [studentNumberValid, setStudentNumberValid] = useState(false)
@@ -88,6 +83,16 @@ const DistributorPage = () => {
   const claimDevice = payload => dispatch(claimDeviceAction(payload))
   const clearStudent = () => dispatch(clearStudentAction())
   const getStudent = payload => dispatch(getStudentAction(payload))
+
+  const parseId = (rawId) => {
+    const manualLength = FULL_SERIAL_LENGTH - settings.deviceSerial.length
+
+    if (rawId.length !== manualLength && rawId.length !== FULL_SERIAL_LENGTH) return null
+    if (rawId.length === manualLength) return settings.deviceSerial + rawId
+    if (rawId.substring(0, settings.deviceSerial.length) === settings.deviceSerial) return rawId
+
+    return null
+  }
 
   const handleDeviceRef = (node) => {
     deviceIdInput.current = node
@@ -169,7 +174,7 @@ const DistributorPage = () => {
   const inputRed = !studentNumberValid
   const buttonDisabled = !student
 
-  const isEligibleForDevice = () => student && student.eligible && student.digiSkillsCompleted && student.courseRegistrationCompleted && student.wantsDevice && student.signupYear === currentYear
+  const isEligibleForDevice = () => student && student.eligible && student.digiSkillsCompleted && student.courseRegistrationCompleted && student.wantsDevice && student.signupYear === settings.currentYear
 
   const renderStudentData = () => {
     if (!student && !error) return null
@@ -179,6 +184,7 @@ const DistributorPage = () => {
     return (
       <>
         <StudentInfo student={student} />
+        <div>{`Skannaa viivakoodi, tai syötä sarjanumeron viimeiset ${FULL_SERIAL_LENGTH - settings.deviceSerial.length} merkkiä`}</div>
         <Form>
           <Form.Group>
             <Ref innerRef={handleDeviceRef}>
@@ -211,8 +217,8 @@ const DistributorPage = () => {
           showParsedDeviceId
           && (
           <>
-            <span>{`${parseId(deviceId).substring(0, 4)}`}</span>
-            <span style={{ color: '#a333c8' }}>{`${parseId(deviceId).substring(4, 8)}`}</span>
+            <span>{`${parseId(deviceId).substring(0, settings.deviceSerial.length)}`}</span>
+            <span style={{ color: '#a333c8' }}>{`${parseId(deviceId).substring(settings.deviceSerial.length, FULL_SERIAL_LENGTH)}`}</span>
           </>
           )
         }

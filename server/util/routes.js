@@ -27,6 +27,7 @@ if (!inProduction) {
   router.get('/test/createSomeUsers', testController.createSomeUsers)
   router.get('/test/advance', testController.advance)
   router.post('/test/createUser', testController.createUser)
+  router.get('/test/setSerial/:serial', testController.setSerial)
 }
 
 router.get('/serviceStatus', serviceStatusController.getServiceStatus) // Before authentication, because contains translations and does not contain any sensitive data.

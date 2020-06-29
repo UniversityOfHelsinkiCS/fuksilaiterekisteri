@@ -10,6 +10,10 @@ const getAxios = axios.create({ baseURL: `${basePath}api` })
 
 export const callApi = async (url, method = 'get', data) => {
   const headers = { ...(!inProduction ? getHeaders() : {}) }
+
+  const adminLoggedInAs = localStorage.getItem('adminLoggedInAs') // uid
+  if (adminLoggedInAs) headers['x-admin-logged-in-as'] = adminLoggedInAs
+
   return getAxios({
     method,
     url,

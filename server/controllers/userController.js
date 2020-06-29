@@ -2,6 +2,7 @@ const db = require('@models')
 const completionChecker = require('@util/completionChecker')
 const logger = require('@util/logger')
 const { getServiceStatusObject } = require('./serviceStatusController')
+const { inProduction } = require('@util/common')
 
 const validateEmail = (checkEmail) => {
   const validationRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
@@ -10,13 +11,35 @@ const validateEmail = (checkEmail) => {
   return validationRegex.test(checkEmail) && !checkEmail.includes('helsinki.') && !checkEmail.includes('@cs.')
 }
 
-const validateSerial = (serial) => {
-  const regex = /^PF1[A-Z0-9]{5}$/
-  return regex.test(serial)
+const validateSerial = async (serial) => {
+  const FULL_SERIAL_LENGTH = 20
+  const settings = await getServiceStatusObject()
+  if (serial.length === FULL_SERIAL_LENGTH && serial.substr(0, settings.deviceSerial.length) === settings.deviceSerial) return true
+  return false
 }
 
-const getUser = (req, res) => {
-  res.send(req.user)
+const isSuperAdmin = (userId) => {
+  if (userId === 'admin' && !inProduction) return true
+  if (process.env.SUPERADMINS && process.env.SUPERADMINS.split(',').find(u => u === userId)) return true
+  return false
+}
+
+const getUser = async (req, res) => {
+  const superAdmin = isSuperAdmin(req.user.userId)
+  const loggedInAs = req.headers['x-admin-logged-in-as']
+
+  if (loggedInAs) {
+    if (superAdmin) {
+      const fakeUser = await db.user.findOne({ where: { userId: loggedInAs } })
+      req.user = fakeUser
+    } else {
+      logger.warn(`Non superadmin ${req.user.userId} tried to use loginAs without permissions`)
+    }
+  }
+  res.send({
+    ...req.user.dataValues,
+    superAdmin,
+  })
 }
 
 const getLogoutUrl = async (req, res) => {
@@ -80,7 +103,9 @@ const claimDevice = async (req, res) => {
     } = req
 
     if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
-    if (!validateSerial(deviceId)) return res.status(400).json({ error: 'device id missing or invalid' })
+
+    const validSerial = await validateSerial(deviceId)
+    if (!validSerial) return res.status(400).json({ error: 'device id missing or invalid' })
 
     const student = await db.user.findOne({
       where: {
