@@ -71,7 +71,7 @@ export default () => {
       <UserModal user={selectedUser} handleClose={handleModalClose} handleSubmit={handleModalSubmit} open={modalUser !== null} />
       <StatsTable students={users.filter(u => u.studentNumber)} />
       <AdminFilter totalCount={users.length} filteredCount={filteredUsers.length} filter={filter} setFilter={setFilter} />
-      <UserTable handleAdminNoteClick={handleAdminNoteClick} users={filteredUsers} hiddenColumns={hiddenColumns} />
+      <UserTable handleAdminNoteClick={handleAdminNoteClick} users={filteredUsers} hiddenColumns={hiddenColumns} filter={filter} />
     </div>
   )
 }

@@ -7,7 +7,9 @@ import {
 import dateFormatter from '../../../util/dateFormatter'
 import VirtualizedTable from '../../VirtualizedTable'
 
-const UserTable = ({ users, handleAdminNoteClick, hiddenColumns }) => {
+const UserTable = ({
+  users, handleAdminNoteClick, hiddenColumns, filter,
+}) => {
   const dispatch = useDispatch()
   const valOrEmpty = val => (val !== null ? val : '-')
   const markStudentEligible = (studentNumber, name) => {
@@ -43,6 +45,7 @@ const UserTable = ({ users, handleAdminNoteClick, hiddenColumns }) => {
         </span>
       ),
       getCellVal: ({ name }) => valOrEmpty(name),
+      width: filter === 'allStaff' ? 300 : 125,
     },
     {
       key: 'email',
@@ -55,6 +58,7 @@ const UserTable = ({ users, handleAdminNoteClick, hiddenColumns }) => {
         </span>
       ),
       getCellVal: ({ hyEmail }) => hyEmail,
+      width: filter === 'allStaff' ? 300 : 125,
     },
     {
       key: 'student_number',
