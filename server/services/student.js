@@ -60,7 +60,7 @@ const getSemesterEnrollments = async (studentNumber) => {
 }
 
 const getYearsCredits = async (studentNumber, startingSemester) => {
-  if (!inProduction) return Promise.resolve(31)
+  if (!inProduction) return Promise.resolve(mock.findFirstYearCredits(studentNumber))
   const res = await userApi.get(`/students/${studentNumber}/fuksiYearCredits/${startingSemester}`)
   return res.data
 }
