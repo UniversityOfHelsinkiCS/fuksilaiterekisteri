@@ -60,6 +60,7 @@ const getSemesterEnrollments = async (studentNumber) => {
 }
 
 const getYearsCredits = async (studentNumber, startingSemester) => {
+  if (!inProduction) return Promise.resolve(31)
   const res = await userApi.get(`/students/${studentNumber}/fuksiYearCredits/${startingSemester}`)
   return res.data
 }
@@ -323,9 +324,9 @@ const isPresent = async (studentNumber) => {
 
 const getSemesterCode = year => (year - 1950) * 2 + 1
 
-const studentHasOverThirtyCredits = (studentNumber, signUpYear) => {
+const studentHasOverThirtyCredits = async (studentNumber, signUpYear) => {
   const semesterCode = getSemesterCode(signUpYear)
-  const credits = getYearsCredits(studentNumber, semesterCode)
+  const credits = await getYearsCredits(studentNumber, semesterCode)
   return credits >= 30
 }
 

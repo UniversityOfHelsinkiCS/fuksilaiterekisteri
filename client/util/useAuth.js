@@ -5,6 +5,7 @@ const pathAccessRights = {
   distributor: ['distributor'],
   staff: ['staff'],
   student: ['student'],
+  reclaimer: ['reclaimer'],
 }
 
 export const parseUserRights = (user) => {
@@ -12,6 +13,7 @@ export const parseUserRights = (user) => {
   if (user.admin) res.push('admin')
   if (user.distributor) res.push('distributor')
   if (user.staff) res.push('staff')
+  if (user.reclaimer) res.push('reclaimer')
   if (user.studentNumber) res.push('student')
   return res
 }

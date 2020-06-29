@@ -9,6 +9,7 @@ import StaffPage from 'Components/StaffPage'
 import StudentPage from 'Components/StudentPage'
 import UnauthorizedPage from 'Components/UnauthorizedPage'
 import NotFoundPage from 'Components/NotFoundPage'
+import ReclaimPage from 'Components/ReclaimPage'
 
 const Router = () => {
   const user = useSelector(state => state.user.data)
@@ -20,6 +21,7 @@ const Router = () => {
         <Route exact path="/admin" component={AdminPage} />
         <Route exact path="/distributor" component={DistributorPage} />
         <Route exact path="/staff" component={StaffPage} />
+        <Route exact path="/reclaimer" component={ReclaimPage} />
         <Route exact path="/student" component={StudentPage} />
         <Route exact path="/unauthorized" component={UnauthorizedPage} />
         <Route path="*" component={NotFoundPage} />
