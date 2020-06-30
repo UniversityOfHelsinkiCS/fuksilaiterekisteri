@@ -46,15 +46,23 @@ const Task = ({ task, completed }) => {
   )
 }
 
-const StudentStatusPage = () => {
-  const user = useSelector(state => state.user.data)
+const fake = {
+  user: {
+    eligible: true,
+    courseRegistrationCompleted: true,
+    digiSkillsCompleted: true,
+  },
+}
+
+const StudentStatusPage = ({ faking }) => {
+  const user = faking ? fake.user : useSelector(state => state.user.data)
   const locale = useSelector(localeSelector)
 
-  const showClaimingInfo = user.eligible && user.digiSkillsCompleted && user.courseRegistrationCompleted
+  const showClaimingInfo = (user.eligible && user.digiSkillsCompleted && user.courseRegistrationCompleted) || faking
 
   return (
     <Segment.Group>
-      <StudentInfo />
+      <StudentInfo faking={faking} />
       <Segment>
         <Header as="h3" data-cy="taskStatus">{translations.taskStatus[locale]}</Header>
         <Segment.Group horizontal>
