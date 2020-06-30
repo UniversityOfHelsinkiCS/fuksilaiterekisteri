@@ -59,6 +59,16 @@ context('Reclaimer', () => {
       deviceGivenAt: new Date().getTime(),
       signupYear: 2017,
     })
+    cy.createCustomUser({
+      userId: '981',
+      hyEmail:"vastaamatonVille@helsinki.fi",
+      name: 'Vastaamaton Ville',
+      studentNumber: 'lowCreditsDeviceHolder',
+      deviceSerial: '1240',
+      deviceReturned: false,
+      deviceGivenAt: new Date(2000).getTime(),
+      reclaimStatus: 'CONTACTED'
+    })
     cy.login('reclaimer')
     cy.visit('/')
     cy.get('[data-cy=updateReclaimStatuses]').click()
@@ -94,5 +104,9 @@ context('Reclaimer', () => {
 
   it('Doesn\'t show third+ year student with under 30 credits on first study year', () => {
     cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Senior Opiskelija')
+  })
+
+  it('Doesn\'t reset reclaim status for contacted students when statuses are updated', () => {
+    cy.get('[data-cy=reclaimerContent]').contains('CONTACTED')
   })
 })
