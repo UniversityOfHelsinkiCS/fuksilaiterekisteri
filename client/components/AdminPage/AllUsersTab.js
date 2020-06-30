@@ -3,6 +3,7 @@ import React, {
 } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { NotificationManager } from 'react-notifications'
+import { Button } from 'semantic-ui-react'
 import { getUsersAction, setUserAdminNote } from '../../util/redux/usersReducer'
 import UserTable from './UserTable'
 import UserModal from './UserModal'
@@ -11,6 +12,7 @@ import AdminFilter from './AdminFilter'
 
 export default () => {
   const [modalUser, setModalUser] = useState(null)
+  const [hideStatsTable, setHideStatsTable] = useState(false)
   const dispatch = useDispatch()
   const users = useSelector(state => state.users.data)
   const settings = useSelector(state => state.serviceStatus.data)
@@ -40,34 +42,46 @@ export default () => {
 
   const doFiltering = () => {
     let filtered
+    let hiddenColumns = []
     switch (filter) {
       case 'all':
         filtered = users
         break
       case 'deviceHolders':
-        filtered = users.filter(u => !!u.deviceGivenAt) // TODO: Check if device is returned.
+        filtered = users.filter(u => !!u.deviceGivenAt && !u.deviceReturned)
+        hiddenColumns = ['admin', 'staff', 'distributor']
         break
       case 'currentYearEligible':
         filtered = users.filter(u => u.signupYear === settings.currentYear && u.eligible)
+        hiddenColumns = ['admin', 'staff', 'distributor', 'eligible']
         break
       case 'allStaff':
         filtered = users.filter(u => u.admin || u.staff || u.distributor || u.reclaimer)
+        hiddenColumns = ['student_number', 'studyPrograms', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'device_given_at', 'device_id', 'device_distributed_by', 'mark_eligible', 'mark_returned']
         break
       default:
         filtered = users
         break
     }
-    return filtered
+    return { filteredUsers: filtered, hiddenColumns }
   }
 
-  const filteredUsers = useMemo(doFiltering, [filter, users])
+  const { filteredUsers, hiddenColumns } = useMemo(doFiltering, [filter, users])
+
+
+  const ToggleStatsTable = () => (
+    <Button size="mini" style={{ width: '20em' }} onClick={() => setHideStatsTable(!hideStatsTable)}>
+      {hideStatsTable ? 'Show Stats-table' : 'Hide Stats-table'}
+    </Button>
+  )
 
   return (
     <div className="tab-content">
       <UserModal user={selectedUser} handleClose={handleModalClose} handleSubmit={handleModalSubmit} open={modalUser !== null} />
-      <StatsTable students={users.filter(u => u.studentNumber)} />
+      <StatsTable students={users.filter(u => u.studentNumber)} hide={hideStatsTable} />
+      <ToggleStatsTable />
       <AdminFilter totalCount={users.length} filteredCount={filteredUsers.length} filter={filter} setFilter={setFilter} />
-      <UserTable handleAdminNoteClick={handleAdminNoteClick} users={filteredUsers} />
+      <UserTable handleAdminNoteClick={handleAdminNoteClick} users={filteredUsers} hiddenColumns={hiddenColumns} filter={filter} />
     </div>
   )
 }

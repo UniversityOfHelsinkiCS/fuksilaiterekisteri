@@ -30,7 +30,7 @@ const getUser = async (req, res) => {
 
   if (loggedInAs) {
     if (superAdmin) {
-      const fakeUser = await db.user.findOne({ where: { userId: loggedInAs } })
+      const fakeUser = await db.user.findOne({ where: { userId: loggedInAs }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
       req.user = fakeUser
     } else {
       logger.warn(`Non superadmin ${req.user.userId} tried to use loginAs without permissions`)

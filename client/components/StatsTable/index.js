@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { Table } from 'semantic-ui-react'
 
-const StatsTable = ({ students }) => {
+const StatsTable = ({ students, hide }) => {
   const getStats = () => {
     const def = {
       wants: 0, needs: 0, received: 0, total: 0,
@@ -62,6 +62,9 @@ const StatsTable = ({ students }) => {
 
   const { stats, totals } = useMemo(() => getStats(), [students])
   const { Cubbli, Windows, ...programmeStats } = stats
+
+
+  if (hide) return null
 
   return (
     <div style={{ overflow: 'auto', maxWidth: '100%', marginBottom: '10px' }}>

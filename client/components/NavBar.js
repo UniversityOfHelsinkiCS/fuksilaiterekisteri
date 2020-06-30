@@ -3,9 +3,18 @@ import { Button, Flag } from 'semantic-ui-react'
 import { useDispatch } from 'react-redux'
 import { setLocale } from 'Utilities/redux/localeReducer'
 
-export default ({ handleMenuClick }) => {
+export const LocaleSelector = (props) => {
   const dispatch = useDispatch()
 
+  return (
+    <div {...props}>
+      <Flag data-cy="setlocale-fi" onClick={() => dispatch(setLocale('fi'))} name="fi" />
+      <Flag data-cy="setlocale-en" onClick={() => dispatch(setLocale('en'))} name="gb" />
+    </div>
+  )
+}
+
+export default ({ handleMenuClick }) => {
   const stopLoginAs = () => {
     window.localStorage.removeItem('adminLoggedInAs')
     window.location.reload()
@@ -15,10 +24,7 @@ export default ({ handleMenuClick }) => {
 
   return (
     <div className="navbar" style={{ display: 'flex', alignItems: 'center' }}>
-      <div style={{ padding: '1em' }}>
-        <Flag data-cy="setlocale-fi" onClick={() => dispatch(setLocale('fi'))} name="fi" />
-        <Flag data-cy="setlocale-en" onClick={() => dispatch(setLocale('en'))} name="gb" />
-      </div>
+      <LocaleSelector style={{ padding: '1em' }} />
       {loggedInAs && <Button negative onClick={stopLoginAs}>{`Stop login as ${loggedInAs}`}</Button>}
       <h1 style={{ margin: '0 auto' }}>
         FUKSILAITTEET

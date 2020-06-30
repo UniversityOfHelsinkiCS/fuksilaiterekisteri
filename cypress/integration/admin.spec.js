@@ -93,7 +93,7 @@ context('Admin', () => {
     cy.get('[data-cy=servicestatus-tab]').click()
     
     cy.get(".react-datepicker__input-container").eq(0).find("input").click()
-    cy.get(".react-datepicker__navigation").click()
+    cy.get(".react-datepicker__navigation").last().click()
     cy.get(".react-datepicker__day--024").click()
     cy.get("[data-cy=updateRegistrationDeadline]").click()
     cy.contains("Settings saved")

@@ -30,9 +30,19 @@ const translations = {
   },
 }
 
+const fake = {
+  user: {
+    eligibilityReasons: {
+      isPresent: true,
+      hasValidStudyright: false,
+      didRegisterBeforeEndingTime: false,
+      signedUpForFreshmanDeviceThisYear: true,
+    },
+  },
+}
 
-export default function NotEligible({ user, notCurrentYearsFuksi }) {
-  const { eligibilityReasons } = user
+export default function NotEligible({ user, notCurrentYearsFuksi, faking }) {
+  const { eligibilityReasons } = faking ? fake.user : user
   const locale = useSelector(localeSelector)
 
   const EligibilityBreakdown = () => {

@@ -38,7 +38,7 @@ const translations = {
   },
 }
 
-const RequestDeviceForm = () => {
+const RequestDeviceForm = ({ faking }) => {
   const [email, setEmail] = useState('')
   const [emailValid, setEmailValid] = useState(false)
   const [termsOpen, setTermsOpen] = useState(false)
@@ -63,11 +63,12 @@ const RequestDeviceForm = () => {
   }
 
   const handleRequestClick = () => {
-    if (!emailValid) return
+    if (!emailValid || faking) return
     dispatch(deviceRequestAction({ email }))
   }
 
   const handleNoEmailRequestClick = () => {
+    if (faking) return
     const res = window.confirm(translations.areYouSure[locale])
     if (res) {
       dispatch(deviceRequestAction({ email: null }))

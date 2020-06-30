@@ -14,5 +14,9 @@
   "registrationClosed": {
     "en": "The registration for students is currently closed. Next registration starts at xx.yy.zzzz, please check back later.",
     "fi": "Rekisteröityminen ei ole juuri nyt avoinna opiskelijoille. Rekisteröityminen aukeaa xx.yy.zzzz, ole hyvä ja tarkista myöhemmin uudelleen."
+  },
+  "distributionInfo": {
+    "en": "You have completed the tasks required for fresher device. Info regarding distribution will be added here later...",
+    "fi": "Olet suorittanut fuksilaitteeseen vaadittavat tehtävät. Tiedot jakelusta tulevat tähän myöhemmin..."
   }
 }

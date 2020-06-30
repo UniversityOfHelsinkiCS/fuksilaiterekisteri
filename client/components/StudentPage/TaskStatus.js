@@ -11,6 +11,10 @@ const translations = {
     en: 'Task status:',
     fi: 'Tehtävien tila:',
   },
+  beFuksi: {
+    en: 'Be a fresher',
+    fi: 'Ole fuksi',
+  },
   registeredToRelevant: {
     en: 'Registered to relevant course',
     fi: 'Rekisteröitynyt relevantille kurssille',
@@ -42,19 +46,27 @@ const Task = ({ task, completed }) => {
   )
 }
 
-const StudentStatusPage = () => {
-  const user = useSelector(state => state.user.data)
+const fake = {
+  user: {
+    eligible: true,
+    courseRegistrationCompleted: true,
+    digiSkillsCompleted: true,
+  },
+}
+
+const StudentStatusPage = ({ faking }) => {
+  const user = faking ? fake.user : useSelector(state => state.user.data)
   const locale = useSelector(localeSelector)
 
-  const showClaimingInfo = user.eligible && user.digiSkillsCompleted && user.courseRegistrationCompleted
+  const showClaimingInfo = (user.eligible && user.digiSkillsCompleted && user.courseRegistrationCompleted) || faking
 
   return (
     <Segment.Group>
-      <StudentInfo />
+      <StudentInfo faking={faking} />
       <Segment>
         <Header as="h3" data-cy="taskStatus">{translations.taskStatus[locale]}</Header>
         <Segment.Group horizontal>
-          <Task task="True Fuksi" completed={user.eligible} />
+          <Task task={translations.beFuksi[locale]} completed={user.eligible} />
           <Task
             task={translations.registeredToRelevant[locale]}
             completed={user.courseRegistrationCompleted}
@@ -67,7 +79,7 @@ const StudentStatusPage = () => {
         {showClaimingInfo
           && (
             <Segment>
-              <div>{translations.tasksFinished[locale]}</div>
+              <TranslatedMarkdown textKey="distributionInfo" />
             </Segment>
           )
         }

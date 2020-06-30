@@ -22,7 +22,7 @@ const translations = {
   },
   studyPrograms: {
     en: 'Study programs(s):',
-    fi: 'Optino-ohjelma(t):',
+    fi: 'Opinto-ohjelma(t):',
   },
   notGiven: {
     en: 'Not given',
@@ -39,8 +39,18 @@ const getOs = (code) => {
   return <p style={{ marginLeft: '10px', fontWeight: 'bold', color: 'blue' }}>Windows</p>
 }
 
-const StudentInfo = () => {
-  const user = useSelector(state => state.user.data)
+const fake = {
+  user: {
+    name: 'fake',
+    studentNumber: 'fake',
+    hyEmail: 'fake',
+    personalEmail: 'fake',
+    studyPrograms: [{ name: 'fakeprogram', code: 'fakecode' }],
+  },
+}
+
+const StudentInfo = ({ faking }) => {
+  const user = faking ? fake.user : useSelector(state => state.user.data)
   const locale = useSelector(localeSelector)
 
   return (
