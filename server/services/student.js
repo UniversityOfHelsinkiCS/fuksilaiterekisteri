@@ -314,12 +314,11 @@ const updateStudentEligibility = async (studentNumber) => {
 
 const isDeviceHeldUnderFiveYears = deviceGivenAt => differenceInYears(new Date(), new Date(deviceGivenAt)) < 5
 
-const isPresent = async (studentNumber) => {
+const isPresent = async (studentNumber, currentSemester) => {
   const semesterEnrollments = await getSemesterEnrollments(studentNumber)
-  const settings = await getServiceStatusObject()
-  const currentSemester = semesterEnrollments.data.find(({ semester_code }) => semester_code === settings.currentSemester)
+  const currentSemesterEnrollment = semesterEnrollments.data.find(({ semester_code }) => semester_code === currentSemester)
 
-  return currentSemester && currentSemester.semester_enrollment_type_code === 1
+  return currentSemesterEnrollment && currentSemesterEnrollment.semester_enrollment_type_code === 1
 }
 
 const getSemesterCode = year => (year - 1950) * 2 + 1
@@ -333,7 +332,7 @@ const getFirstYearCredits = async (studentNumber, signUpYear) => {
 const FIRST_YEAR_CREDIT_LIMIT = 30
 
 const updateStudentReclaimStatuses = async () => {
-  const { currentYear } = await getServiceStatusObject()
+  const { currentSemester, currentYear } = await getServiceStatusObject()
 
   const deviceHolders = await db.user.findAll({
     where: {
@@ -346,9 +345,9 @@ const updateStudentReclaimStatuses = async () => {
   for (let i = 0; i < deviceHolders.length; i++) {
     try {
       const deviceHeldUnderFiveYears = isDeviceHeldUnderFiveYears(deviceHolders[i].deviceGivenAt)
-      const present = await isPresent(deviceHolders[i].studentNumber) // eslint-disable-line
+      const present = await isPresent(deviceHolders[i].studentNumber, currentSemester) // eslint-disable-line
 
-      const thirdYearOrLaterStudent = currentYear - deviceHolders[i].signUpYear > 1
+      const thirdYearOrLaterStudent = currentYear - deviceHolders[i].signupYear > 1
 
       const firstYearCredits = thirdYearOrLaterStudent
         ? deviceHolders[i].firstYearCredits
@@ -356,7 +355,7 @@ const updateStudentReclaimStatuses = async () => {
 
       const reclaimActionNeeded = !deviceHeldUnderFiveYears || !present || (!thirdYearOrLaterStudent && firstYearCredits < FIRST_YEAR_CREDIT_LIMIT)
 
-      const reclaimStatus = reclaimActionNeeded && 'OPEN'
+      const reclaimStatus = reclaimActionNeeded && deviceHolders[i].reclaimStatus !== 'CONTACTED' ? 'OPEN' : deviceHolders[i].reclaimStatus
 
       dbPromises.push(
         new Promise(async (res) => { // eslint-disable-line
