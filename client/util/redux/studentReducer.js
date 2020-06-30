@@ -29,6 +29,14 @@ export const updateStudentStatus = ({ digiSkills, enrolled, studentNumber }) => 
   return callBuilder(route, prefix, method, data)
 }
 
+export const updateStudentReclaimStatus = (reclaimStatus, studentNumber) => {
+  const route = `/student/${studentNumber}/reclaim_status`
+  const prefix = 'UPDATE_STUDENT_STATUS'
+  const method = 'post'
+  const data = { reclaimStatus }
+  return callBuilder(route, prefix, method, data)
+}
+
 export const updateStudentReclainmStatuses = () => {
   const route = '/reclaimer/update'
   const prefix = 'GET_STUDENTS'

@@ -88,6 +88,25 @@ const updateStudentStatus = async (req, res) => {
   }
 }
 
+const updateStudentReclaimStatus = async (req, res) => {
+  try {
+    const { studentNumber } = req.params
+    const { reclaimStatus } = req.body
+
+    if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
+
+    const student = await db.user.findOne({ where: { studentNumber }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
+    if (!student) return res.status(404).json({ error: 'student not found' })
+
+    await student.update({ reclaimStatus })
+    logger.info(`Student ${studentNumber} reclaim status updated by ${req.user.userId}`)
+    return res.json(student)
+  } catch (e) {
+    logger.error(e)
+    return res.status(500).json({ error: 'error' })
+  }
+}
+
 const getStudentsForStaff = async (req, res) => {
   try {
     const { user } = req
@@ -204,4 +223,5 @@ module.exports = {
   getStudentsForReclaimer,
   updateReclaimStatuses,
   createUserStudyprogrammes,
+  updateStudentReclaimStatus,
 }

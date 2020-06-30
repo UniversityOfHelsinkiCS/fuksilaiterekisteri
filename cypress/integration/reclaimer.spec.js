@@ -53,7 +53,7 @@ context('Reclaimer', () => {
       userId: '982',
       hyEmail:"seniorOpiskelija@helsinki.fi",
       name: 'Senior Opiskelija',
-      studentNumber: 'lowCreditsDeviceHolder',
+      studentNumber: 'seniorOpiskelija',
       deviceSerial: '1239',
       deviceReturned: false,
       deviceGivenAt: new Date().getTime(),
@@ -63,7 +63,7 @@ context('Reclaimer', () => {
       userId: '981',
       hyEmail:"vastaamatonVille@helsinki.fi",
       name: 'Vastaamaton Ville',
-      studentNumber: 'lowCreditsDeviceHolder',
+      studentNumber: 'vastaamatoVille',
       deviceSerial: '1240',
       deviceReturned: false,
       deviceGivenAt: new Date(2000).getTime(),
@@ -108,5 +108,11 @@ context('Reclaimer', () => {
 
   it('Doesn\'t reset reclaim status for contacted students when statuses are updated', () => {
     cy.get('[data-cy=reclaimerContent]').contains('CONTACTED')
+  })
+
+  it('Turns status to closed when clicking close', () => {
+    cy.login('reclaimer')
+    cy.get('[data-cy=markStatusClosed]').eq(0).click()
+    cy.get('[data-cy=reclaimerContent]').contains('CLOSED')
   })
 })

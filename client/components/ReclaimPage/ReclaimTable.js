@@ -1,8 +1,13 @@
 import React from 'react'
+import { Button } from 'semantic-ui-react'
 import VirtualizedTable from 'Components/VirtualizedTable'
 import dateFormatter from 'Utilities/dateFormatter'
+import { useDispatch } from 'react-redux'
+import { updateStudentReclaimStatus } from 'Utilities/redux/studentReducer'
 
 const ReclaimTable = ({ students }) => {
+  const dispatch = useDispatch()
+
   const valOrEmpty = val => (val !== null ? val : '-')
   const boolToString = bool => (bool ? 'Kyllä' : 'Ei')
   const statusColor = (status) => {
@@ -14,6 +19,10 @@ const ReclaimTable = ({ students }) => {
       default:
         return 'red'
     }
+  }
+
+  const markReclaimStatusClosed = (studentNumber) => {
+    dispatch(updateStudentReclaimStatus('CLOSED', studentNumber))
   }
 
   const columns = [
@@ -71,6 +80,25 @@ const ReclaimTable = ({ students }) => {
       label: 'Status',
       renderCell: ({ reclaimStatus }) => <span style={{ color: statusColor(reclaimStatus), fontWeight: 550 }}>{valOrEmpty(reclaimStatus)}</span>,
       getCellVal: ({ reclaimStatus }) => reclaimStatus,
+      width: 100,
+    },
+    {
+      key: 'mark_closed',
+      label: '',
+      renderCell: ({
+        studentNumber, reclaimStatus,
+      }) => (
+        <Button
+          data-cy="markStatusClosed"
+          disabled={reclaimStatus === 'CLOSED'}
+          onClick={() => markReclaimStatusClosed(studentNumber)}
+          color="blue"
+          size="tiny"
+        >
+          Close
+        </Button>
+      ),
+      disableSort: true,
       width: 100,
     },
   ]

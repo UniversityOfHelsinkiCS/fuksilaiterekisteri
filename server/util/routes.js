@@ -50,6 +50,7 @@ router.get('/student/:studentNumber', checkDistributor, studentController.getStu
 router.post('/student/:studentNumber/eligible', checkStaffOrAdmin, studentController.markStudentEligible)
 router.post('/student/:studentNumber/deviceReturned', checkStaffOrAdmin, studentController.markDeviceReturned)
 router.post('/student/:studentNumber/status', checkStaff, studentController.updateStudentStatus)
+router.post('/student/:studentNumber/reclaim_status', checkReclaimer, studentController.updateStudentReclaimStatus)
 
 router.get('/staff/students', checkStaff, studentController.getStudentsForStaff)
 
