@@ -6,6 +6,7 @@ context('Reclaimer', () => {
     cy.createUser('fuksi')
     cy.createCustomUser({
       userId: '987',
+      hyEmail:"oldDeviceHolder@helsinki.fi",
       name: 'Laite Vanhatar',
       studentNumber: 'oldDeviceHolder',
       deviceSerial: '1234',
@@ -14,6 +15,7 @@ context('Reclaimer', () => {
     })
     cy.createCustomUser({
       userId: '986',
+      hyEmail:"modelStudent@helsinki.fi",
       name: 'Oppilas Mallikas',
       studentNumber: 'modelStudent',
       deviceSerial: '1235',
@@ -22,6 +24,7 @@ context('Reclaimer', () => {
     })
     cy.createCustomUser({
       userId: '985',
+      hyEmail:"absentDeviceHolder@helsinki.fi",
       name: 'Haltija Poissanen',
       studentNumber: 'absentDeviceHolder',
       deviceSerial: '1236',
@@ -30,6 +33,7 @@ context('Reclaimer', () => {
     })
     cy.createCustomUser({
       userId: '984',
+      hyEmail:"lowCreditsDeviceHolder@helsinki.fi",
       name: 'Haltija Pisteetön',
       studentNumber: 'lowCreditsDeviceHolder',
       deviceSerial: '1237',
@@ -38,6 +42,7 @@ context('Reclaimer', () => {
     })
     cy.createCustomUser({
       userId: '983',
+      hyEmail:"exDeviceHolder@helsinki.fi",
       name: 'Haltijaton Paikalloton',
       studentNumber: 'exDeviceHolder',
       deviceSerial: '1238',
