@@ -5,6 +5,16 @@ import dateFormatter from 'Utilities/dateFormatter'
 const ReclaimTable = ({ students }) => {
   const valOrEmpty = val => (val !== null ? val : '-')
   const boolToString = bool => (bool ? 'Kyllä' : 'Ei')
+  const statusColor = (status) => {
+    switch (status) {
+      case 'OPEN':
+        return 'green'
+      case 'CONTACTED':
+        return 'orange'
+      default:
+        return 'red'
+    }
+  }
 
   const columns = [
     {
@@ -55,6 +65,13 @@ const ReclaimTable = ({ students }) => {
       renderCell: ({ firstYearCredits }) => valOrEmpty(firstYearCredits),
       getCellVal: ({ firstYearCredits }) => firstYearCredits,
       width: 200,
+    },
+    {
+      key: 'reclaim_status',
+      label: 'Status',
+      renderCell: ({ reclaimStatus }) => <span style={{ color: statusColor(reclaimStatus), fontWeight: 550 }}>{valOrEmpty(reclaimStatus)}</span>,
+      getCellVal: ({ reclaimStatus }) => reclaimStatus,
+      width: 100,
     },
   ]
 
