@@ -351,7 +351,12 @@ const updateStudentReclaimStatuses = async () => {
         dbPromises.push(
           new Promise(async (res) => { // eslint-disable-line
             try {
-              await deviceHolders[i].update({ reclaimStatus: 'OPEN', present, firstYearCredits })
+              await deviceHolders[i].update({
+                reclaimStatus: 'OPEN',
+                present,
+                firstYearCredits,
+                deviceReturnDeadlinePassed: !deviceHeldUnderFiveYears,
+              })
               res(true)
             } catch (e) {
               logger.error(`Failed updating student ${deviceHolders[i].studentNumber}`, e)
