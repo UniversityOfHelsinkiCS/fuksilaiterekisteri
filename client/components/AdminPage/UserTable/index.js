@@ -45,7 +45,7 @@ const UserTable = ({
         </span>
       ),
       getCellVal: ({ name }) => valOrEmpty(name),
-      width: filter === 'allStaff' ? 300 : 125,
+      width: filter === 'allStaff' || filter === 'deviceHolders' ? 300 : 125,
     },
     {
       key: 'email',
@@ -58,7 +58,7 @@ const UserTable = ({
         </span>
       ),
       getCellVal: ({ hyEmail }) => hyEmail,
-      width: filter === 'allStaff' ? 300 : 125,
+      width: filter === 'allStaff' || filter === 'deviceHolders' ? 300 : 125,
     },
     {
       key: 'student_number',
