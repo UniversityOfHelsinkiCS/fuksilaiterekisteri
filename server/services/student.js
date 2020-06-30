@@ -324,11 +324,13 @@ const isPresent = async (studentNumber) => {
 
 const getSemesterCode = year => (year - 1950) * 2 + 1
 
-const studentHasOverThirtyCredits = async (studentNumber, signUpYear) => {
+const getFirstYearCredits = async (studentNumber, signUpYear) => {
   const semesterCode = getSemesterCode(signUpYear)
   const credits = await getYearsCredits(studentNumber, semesterCode)
-  return credits >= 30
+  return credits
 }
+
+const FIRST_YEAR_CREDIT_LIMIT = 30
 
 const updateStudentReclaimStatuses = async () => {
   const deviceHolders = await db.user.findAll({
@@ -343,13 +345,13 @@ const updateStudentReclaimStatuses = async () => {
     try {
       const deviceHeldUnderFiveYears = isDeviceHeldUnderFiveYears(deviceHolders[i].deviceGivenAt)
       const present = await isPresent(deviceHolders[i].studentNumber) // eslint-disable-line
-      const hasOverThirtyCredits = await studentHasOverThirtyCredits(deviceHolders[i].studentNumber, deviceHolders[i].signupYear) // eslint-disable-line
+      const firstYearCredits = await getFirstYearCredits(deviceHolders[i].studentNumber, deviceHolders[i].signupYear) // eslint-disable-line
 
-      if (!deviceHeldUnderFiveYears || !present || !hasOverThirtyCredits) {
+      if (!deviceHeldUnderFiveYears || !present || firstYearCredits < FIRST_YEAR_CREDIT_LIMIT) {
         dbPromises.push(
           new Promise(async (res) => { // eslint-disable-line
             try {
-              await deviceHolders[i].update({ reclaimStatus: 'OPEN' })
+              await deviceHolders[i].update({ reclaimStatus: 'OPEN', present, firstYearCredits })
               res(true)
             } catch (e) {
               logger.error(`Failed updating student ${deviceHolders[i].studentNumber}`, e)
