@@ -4,6 +4,7 @@ import dateFormatter from 'Utilities/dateFormatter'
 
 const ReclaimTable = ({ students }) => {
   const valOrEmpty = val => (val !== null ? val : '-')
+  const boolToString = bool => (bool ? 'Kyllä' : 'Ei')
 
   const columns = [
     {
@@ -40,6 +41,20 @@ const ReclaimTable = ({ students }) => {
       renderCell: ({ deviceGivenAt }) => valOrEmpty(dateFormatter(deviceGivenAt)),
       getCellVal: ({ deviceGivenAt }) => new Date(deviceGivenAt).getTime(),
       width: 160,
+    },
+    {
+      key: 'present',
+      label: 'Present',
+      renderCell: ({ present }) => boolToString(present),
+      getCellVal: ({ present }) => !!present,
+      width: 80,
+    },
+    {
+      key: 'first_year_credits',
+      label: 'Fresher year credits',
+      renderCell: ({ firstYearCredits }) => valOrEmpty(firstYearCredits),
+      getCellVal: ({ firstYearCredits }) => firstYearCredits,
+      width: 200,
     },
   ]
 
