@@ -115,4 +115,16 @@ context('Reclaimer', () => {
     cy.get('[data-cy=markStatusClosed]').eq(0).click()
     cy.get('[data-cy=reclaimerContent]').contains('CLOSED')
   })
+
+  it('Returning device changes status to closed', () => {
+    cy.login('admin')
+    cy.visit('/')
+
+    cy.contains('Haltija Poissanen').parent().parent().find('[data-cy=markDeviceReturned]').click()
+
+    cy.login('reclaimer')
+    cy.visit('/')
+
+    cy.contains('Haltija Poissanen').parent().parent().contains('CLOSED')
+  })
 })

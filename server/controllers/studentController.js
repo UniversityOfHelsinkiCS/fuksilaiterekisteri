@@ -56,7 +56,9 @@ const markDeviceReturned = async (req, res) => {
     const student = await db.user.findOne({ where: { studentNumber }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
     if (!student) return res.status(404).json({ error: 'student not found' })
 
-    await student.update({ deviceReturned: true })
+    const reclaimStatus = student.reclaimStatus ? 'CLOSED' : null
+
+    await student.update({ deviceReturned: true, reclaimStatus })
 
     logger.info(`Student ${studentNumber} device marked as returned by ${req.user.userId}`)
     return res.json(student)
