@@ -358,25 +358,23 @@ const updateStudentReclaimStatuses = async () => {
 
       const reclaimStatus = reclaimActionNeeded && 'OPEN'
 
-      if (!deviceHeldUnderFiveYears || !present || firstYearCredits < FIRST_YEAR_CREDIT_LIMIT) {
-        dbPromises.push(
-          new Promise(async (res) => { // eslint-disable-line
-            try {
-              await deviceHolders[i].update({
-                reclaimStatus,
-                present,
-                firstYearCredits,
-                deviceReturnDeadlinePassed: !deviceHeldUnderFiveYears,
-                thirdYearOrLaterStudent,
-              })
-              res(true)
-            } catch (e) {
-              logger.error(`Failed updating student reclaim status ${deviceHolders[i].studentNumber}`, e)
-              res(false)
-            }
-          }),
-        )
-      }
+      dbPromises.push(
+        new Promise(async (res) => { // eslint-disable-line
+          try {
+            await deviceHolders[i].update({
+              reclaimStatus,
+              present,
+              firstYearCredits,
+              deviceReturnDeadlinePassed: !deviceHeldUnderFiveYears,
+              thirdYearOrLaterStudent,
+            })
+            res(true)
+          } catch (e) {
+            logger.error(`Failed updating student reclaim status ${deviceHolders[i].studentNumber}`, e)
+            res(false)
+          }
+        }),
+      )
     } catch (e) {
       logger.error(`Failed fetching oodi data for student ${deviceHolders[i].studentNumber}`)
     }
