@@ -47,7 +47,7 @@ const ReclaimTable = ({ students }) => {
       label: 'Present',
       renderCell: ({ present }) => boolToString(present),
       getCellVal: ({ present }) => !!present,
-      width: 80,
+      width: 100,
     },
     {
       key: 'first_year_credits',
