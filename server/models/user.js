@@ -80,6 +80,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         field: 'present',
       },
+      deviceReturnDeadlinePassed: {
+        type: DataTypes.BOOLEAN,
+        field: 'device_return_deadline_passed',
+      },
     },
     {
       underscored: true,
