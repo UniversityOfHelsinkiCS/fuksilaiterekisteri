@@ -49,6 +49,16 @@ context('Reclaimer', () => {
       deviceReturned: true,
       deviceGivenAt: new Date(2000).getTime()
     })
+    cy.createCustomUser({
+      userId: '982',
+      hyEmail:"seniorOpiskelija@helsinki.fi",
+      name: 'Senior Opiskelija',
+      studentNumber: 'lowCreditsDeviceHolder',
+      deviceSerial: '1239',
+      deviceReturned: false,
+      deviceGivenAt: new Date().getTime(),
+      signupYear: 2017,
+    })
     cy.login('reclaimer')
     cy.visit('/')
     cy.get('[data-cy=updateReclaimStatuses]').click()
@@ -80,5 +90,9 @@ context('Reclaimer', () => {
 
   it('Shows device holder with under 30 credits first study year', () => {
     cy.get('[data-cy=reclaimerContent]').contains('Haltija Pisteetön')
+  })
+
+  it('Doesn\'t show third+ year student with under 30 credits on first study year', () => {
+    cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Senior Opiskelija')
   })
 })
