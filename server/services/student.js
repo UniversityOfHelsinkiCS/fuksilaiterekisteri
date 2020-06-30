@@ -333,6 +333,8 @@ const getFirstYearCredits = async (studentNumber, signUpYear) => {
 const FIRST_YEAR_CREDIT_LIMIT = 30
 
 const updateStudentReclaimStatuses = async () => {
+  const { currentYear } = await getServiceStatusObject()
+
   const deviceHolders = await db.user.findAll({
     where: {
       deviceSerial: { [Op.ne]: null },
@@ -345,21 +347,31 @@ const updateStudentReclaimStatuses = async () => {
     try {
       const deviceHeldUnderFiveYears = isDeviceHeldUnderFiveYears(deviceHolders[i].deviceGivenAt)
       const present = await isPresent(deviceHolders[i].studentNumber) // eslint-disable-line
-      const firstYearCredits = await getFirstYearCredits(deviceHolders[i].studentNumber, deviceHolders[i].signupYear) // eslint-disable-line
+
+      const thirdYearOrLaterStudent = currentYear - deviceHolders[i].signUpYear > 1
+
+      const firstYearCredits = thirdYearOrLaterStudent
+        ? deviceHolders[i].firstYearCredits
+        : await getFirstYearCredits(deviceHolders[i].studentNumber, deviceHolders[i].signupYear) // eslint-disable-line
+
+      const reclaimActionNeeded = !deviceHeldUnderFiveYears || !present || (!thirdYearOrLaterStudent && firstYearCredits < FIRST_YEAR_CREDIT_LIMIT)
+
+      const reclaimStatus = reclaimActionNeeded && 'OPEN'
 
       if (!deviceHeldUnderFiveYears || !present || firstYearCredits < FIRST_YEAR_CREDIT_LIMIT) {
         dbPromises.push(
           new Promise(async (res) => { // eslint-disable-line
             try {
               await deviceHolders[i].update({
-                reclaimStatus: 'OPEN',
+                reclaimStatus,
                 present,
                 firstYearCredits,
                 deviceReturnDeadlinePassed: !deviceHeldUnderFiveYears,
+                thirdYearOrLaterStudent,
               })
               res(true)
             } catch (e) {
-              logger.error(`Failed updating student ${deviceHolders[i].studentNumber}`, e)
+              logger.error(`Failed updating student reclaim status ${deviceHolders[i].studentNumber}`, e)
               res(false)
             }
           }),
