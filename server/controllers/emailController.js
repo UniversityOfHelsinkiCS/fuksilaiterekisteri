@@ -4,6 +4,10 @@ const db = require('@models')
 
 const sendEmail = async (req, res) => {
   try {
+    if (process.env.EMAIL_ENABLED !== 'true') {
+      logger.error('Email disabled, set EMAIL_ENABLED=true to enable.')
+      return res.status(501).json({ error: 'EMAIL_ENABLED = false' })
+    }
     const {
       recipientEmails,
       subject,
@@ -24,10 +28,10 @@ const sendEmail = async (req, res) => {
       text,
       replyTo,
     })
-    res.status(200).json({ message: 'OK' })
+    return res.status(200).json({ message: 'OK' })
   } catch (e) {
     logger.error('Error sending emails', e)
-    res.status(500).json({ error: 'Error trying to send emails' })
+    return res.status(500).json({ error: 'Error trying to send emails' })
   }
 }
 
