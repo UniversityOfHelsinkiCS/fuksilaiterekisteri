@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch, shallowEqual } from 'react-redux'
+import React, { useEffect, useState, useMemo } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import {
   Form, TextArea, Label, Button, Input, Accordion, Icon, Loader,
 } from 'semantic-ui-react'
@@ -45,7 +45,8 @@ const MassEmail = () => {
     courseRegistrationCompleted: null,
   })
 
-  const students = useSelector(state => state.users.data.filter(user => user.studentNumber), shallowEqual)
+  const users = useSelector(state => state.users.data)
+  const students = useMemo(() => users.filter(user => user.studentNumber), [users])
   const emailPending = useSelector(state => state.email.pending)
 
   const dispatch = useDispatch()
