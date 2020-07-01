@@ -43,11 +43,14 @@ const MassEmail = () => {
     digiSkillsCompleted: null,
     wantsDevice: null,
     courseRegistrationCompleted: null,
+    deviceClaimed: null,
+    signedUpForDeviceThisYear: null,
   })
 
   const users = useSelector(state => state.users.data)
   const students = useMemo(() => users.filter(user => user.studentNumber), [users])
   const emailPending = useSelector(state => state.email.pending)
+  const settings = useSelector(state => state.serviceStatus.data)
 
   const dispatch = useDispatch()
 
@@ -58,8 +61,19 @@ const MassEmail = () => {
   useEffect(() => {
     const filteredStudentsEmails = students
       .filter(user => (
-        !Object.entries(filters).find(([key, value]) => (
-          user[key] !== value && value !== null))))
+        !Object.entries(filters).find(([filterName, filterValue]) => {
+          if (filterValue === null) return false
+
+          if (filterName === 'deviceClaimed') {
+            return !!user.deviceGivenAt !== filterValue
+          }
+
+          if (filterName === 'signedUpForDeviceThisYear') {
+            return (user.signupYear === settings.currentYear) !== filterValue
+          }
+
+          return user[filterName] !== filterValue
+        })))
       .reduce((emails, student) => {
         emails.push(student.hyEmail)
         if (students.personalEmail) emails.push(student.personalEmail)
@@ -142,6 +156,18 @@ const MassEmail = () => {
           attribute="courseRegistrationCompleted"
           attributeValue={filters.courseRegistrationCompleted}
           label="Course registration"
+          handleClick={handleFilterClick}
+        />
+        <Filter
+          attribute="deviceClaimed"
+          attributeValue={filters.deviceClaimed}
+          label="Has claimed the device"
+          handleClick={handleFilterClick}
+        />
+        <Filter
+          attribute="signedUpForDeviceThisYear"
+          attributeValue={filters.signedUpForDeviceThisYear}
+          label={`Signed up for device in ${settings.currentYear}`}
           handleClick={handleFilterClick}
         />
       </div>
