@@ -338,6 +338,7 @@ const updateStudentReclaimStatuses = async () => {
     where: {
       deviceSerial: { [Op.ne]: null },
       deviceReturned: false,
+      signUpYear: { [Op.not]: currentYear },
     },
   })
 

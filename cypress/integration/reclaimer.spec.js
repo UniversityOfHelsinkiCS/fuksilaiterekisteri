@@ -69,6 +69,16 @@ context('Reclaimer', () => {
       deviceGivenAt: new Date(2000).getTime(),
       reclaimStatus: 'CONTACTED'
     })
+    cy.createCustomUser({
+      userId: '980',
+      hyEmail:"uusiOpiskelija@helsinki.fi",
+      name: 'Uusi Opiskelija',
+      studentNumber: 'uusiOpiskelija',
+      deviceSerial: '1241',
+      deviceReturned: false,
+      deviceGivenAt: new Date(2000).getTime(),
+      signupYear: 2019,
+    })
     cy.login('reclaimer')
     cy.visit('/')
     cy.get('[data-cy=updateReclaimStatuses]').click()
@@ -108,6 +118,10 @@ context('Reclaimer', () => {
 
   it('Doesn\'t reset reclaim status for contacted students when statuses are updated', () => {
     cy.get('[data-cy=reclaimerContent]').contains('CONTACTED')
+  })
+
+  it('Doesn\'t show students who signed up this year', () => {
+    cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Uusi Opiskelija')
   })
 
   it('Turns status to closed when clicking close', () => {
