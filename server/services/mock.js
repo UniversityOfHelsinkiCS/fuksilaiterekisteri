@@ -334,7 +334,7 @@ const mockData = {
   },
 }
 
-const findData = (studentNumber, field) => (mockData[studentNumber] ? mockData[studentNumber][field] : mockData.default[field])
+const findData = (studentNumber, field) => (mockData[studentNumber] && mockData[studentNumber][field] ? mockData[studentNumber][field] : mockData.default[field])
 
 const findSemesterEnrollments = studentNumber => findData(studentNumber, 'semesterEnrollments')
 const findStudyrights = studentNumber => findData(studentNumber, 'studyrights')

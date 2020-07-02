@@ -4,6 +4,7 @@ import { Button } from 'semantic-ui-react'
 import { getStudentsWithOpenReclaimStatus, updateStudentReclainmStatuses } from 'Utilities/redux/studentReducer'
 import ReclaimTable from './ReclaimTable'
 import ReclaimerFilter from './ReclaimerFilter'
+import ReclaimerEmail from './ReclaimerEmail'
 
 const ReclaimPage = () => {
   const dispatch = useDispatch()
@@ -48,6 +49,7 @@ const ReclaimPage = () => {
       <Button onClick={handleUpdateClick} style={{ marginBottom: '1em' }} data-cy="updateReclaimStatuses">
         Run student status updater
       </Button>
+      <ReclaimerEmail students={filteredStudents} />
       <ReclaimerFilter filter={filter} setFilter={setFilter} totalCount={students.length} filteredCount={filteredStudents.length} />
       <ReclaimTable students={filteredStudents} />
     </div>

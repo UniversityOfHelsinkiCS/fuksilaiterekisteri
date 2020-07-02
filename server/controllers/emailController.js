@@ -1,9 +1,14 @@
 const nodemailer = require('nodemailer')
 const logger = require('@util/logger')
 const db = require('@models')
+const { Op } = require('sequelize')
 
 const sendEmail = async (req, res) => {
   try {
+    if (process.env.EMAIL_ENABLED !== 'true') {
+      logger.error('Email disabled, set EMAIL_ENABLED=true to enable.')
+      return res.status(501).json({ error: 'EMAIL_ENABLED = false' })
+    }
     const {
       recipientEmails,
       subject,
@@ -24,10 +29,82 @@ const sendEmail = async (req, res) => {
       text,
       replyTo,
     })
-    res.status(200).json({ message: 'OK' })
+    return res.status(200).json({ message: 'OK' })
   } catch (e) {
     logger.error('Error sending emails', e)
-    res.status(500).json({ error: 'Error trying to send emails' })
+    return res.status(500).json({ error: 'Error trying to send emails' })
+  }
+}
+
+const sendReclaimerEmail = async (req, res) => {
+  try {
+    if (process.env.EMAIL_ENABLED !== 'true') {
+      logger.error('Email disabled, set EMAIL_ENABLED=true to enable.')
+      return res.status(501).json({ error: 'EMAIL_ENABLED = false' })
+    }
+    const {
+      userIds,
+      subject,
+      text,
+      replyTo,
+    } = req.body
+
+    if (!userIds) return res.status(400).json({ error: 'userIds missing' })
+
+    const usersToBeContacted = await db.user.findAll({
+      where: {
+        userId: {
+          [Op.in]: userIds,
+        },
+      },
+    })
+
+    const targetEmails = usersToBeContacted.reduce((pre, cur) => {
+      const { hyEmail, personalEmail } = cur
+      pre.push(hyEmail)
+      if (personalEmail) pre.push(personalEmail)
+      return pre
+    }, [])
+
+    logger.info(`${req.user.userId} - Attempting to send email to ${userIds.length} users, to total of ${targetEmails.length} email-addresses.`)
+
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.helsinki.fi',
+      port: 587,
+      secure: false,
+    })
+
+    const emailResult = await transporter.sendMail({
+      from: 'Fuksilaite Robot <noreply@helsinki.fi>',
+      bcc: targetEmails,
+      subject,
+      text,
+      replyTo,
+    })
+
+    const promises = []
+    const failedToContact = []
+    const successfullyContacted = []
+
+    usersToBeContacted.forEach((user) => {
+      const { hyEmail, personalEmail, userId } = user
+
+      if (emailResult.rejected.includes(hyEmail) && emailResult.rejected.includes(personalEmail)) {
+        failedToContact.push(userId)
+      } else {
+        promises.push(user.update({ reclaimStatus: 'CONTACTED' }))
+        successfullyContacted.push(userId)
+      }
+    })
+
+    await Promise.all(promises)
+    logger.info(`Successfully contacted ${successfullyContacted.length}/${usersToBeContacted.length} users.`)
+    if (failedToContact.length > 0) logger.error(`Failed to contact ${failedToContact.length} users.`)
+
+    return res.status(200).send(emailResult)
+  } catch (error) {
+    logger.error('Error sending emails ', error)
+    return res.status(500).json({ error: error.toString() })
   }
 }
 
@@ -72,4 +149,6 @@ const updateAutosendTemplate = async (req, res) => {
   }
 }
 
-module.exports = { sendEmail, updateAutosendTemplate, getAutosendTemplate }
+module.exports = {
+  sendEmail, sendReclaimerEmail, updateAutosendTemplate, getAutosendTemplate,
+}
