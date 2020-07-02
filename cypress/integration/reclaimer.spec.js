@@ -135,12 +135,12 @@ context('Reclaimer View', () => {
       cy.login('reclaimer')
       cy.visit('/')
       cy.get('[data-cy=updateReclaimStatuses]').click()
+      selectFilter('Open')
     })
 
     it('Turns status to closed when clicking close', () => {
-      cy.login('reclaimer')
       cy.contains('Open Opiskelija').parent().parent().find('[data-cy=markStatusClosed]').click()
-      cy.contains('Open Opiskelija').should("not.exist")
+      cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Open Opiskelija')
     })
   
     it('Returning device changes status to closed', () => {
