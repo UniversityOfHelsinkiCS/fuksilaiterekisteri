@@ -84,6 +84,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         field: 'device_return_deadline_passed',
       },
+      thirdYearOrLaterStudent: {
+        type: DataTypes.BOOLEAN,
+        field: 'third_year_or_later_student',
+      },
     },
     {
       underscored: true,
