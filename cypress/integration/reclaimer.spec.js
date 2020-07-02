@@ -42,7 +42,7 @@ context('Reclaimer', () => {
       studentNumber: 'exDeviceHolder',
       deviceSerial: '1238',
       deviceReturned: true,
-      deviceGivenAt: new Date(2000).getTime()
+      deviceGivenAt: new Date('2000').getTime()
     })
     cy.createCustomUser({
       userId: '982',
@@ -59,7 +59,7 @@ context('Reclaimer', () => {
       studentNumber: 'vastaamatoVille',
       deviceSerial: '1240',
       deviceReturned: false,
-      deviceGivenAt: new Date(2000).getTime(),
+      deviceGivenAt: new Date('2000').getTime(),
       reclaimStatus: 'CONTACTED'
     })
     cy.createCustomUser({
@@ -69,8 +69,18 @@ context('Reclaimer', () => {
       studentNumber: 'uusiOpiskelija',
       deviceSerial: '1241',
       deviceReturned: false,
-      deviceGivenAt: new Date(2000).getTime(),
+      deviceGivenAt: new Date('2000').getTime(),
       signupYear: 2019,
+    })
+    cy.createCustomUser({
+      userId: '979',
+      hyEmail:"openOppilas@helsinki.fi",
+      name: 'Open Opiskelija',
+      studentNumber: 'openOpiskelija',
+      deviceSerial: '1242',
+      deviceReturned: false,
+      deviceGivenAt: new Date('2000').getTime(),
+      reclaimStatus: 'OPEN',
     })
     cy.login('reclaimer')
     cy.visit('/')
@@ -119,8 +129,8 @@ context('Reclaimer', () => {
 
   it('Turns status to closed when clicking close', () => {
     cy.login('reclaimer')
-    cy.get('[data-cy=markStatusClosed]').eq(0).click()
-    cy.get('[data-cy=reclaimerContent]').contains('CLOSED')
+    cy.contains('Open Opiskelija').parent().parent().find('[data-cy=markStatusClosed]').click()
+    cy.contains('Open Opiskelija').parent().parent().contains('CLOSED')
   })
 
   it('Returning device changes status to closed', () => {

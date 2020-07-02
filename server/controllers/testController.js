@@ -74,7 +74,7 @@ const createCustomUser = async (userOverrides) => {
     digiSkillsCompleted: true,
     courseRegistrationCompleted: true,
     adminNote: null,
-    signupYear: 2019,
+    signupYear: 2018,
     eligibilityReasons: {},
     wantsDevice: true,
     device_distributed_by: null,
@@ -83,7 +83,9 @@ const createCustomUser = async (userOverrides) => {
     ...userOverrides,
   }
 
-  await db.user.findOrCreate({ where: { userId: userOverrides.userId }, defaults })
+  await db.user.destroy({ where: { userId: userOverrides.userId } })
+
+  await db.user.create({ ...defaults })
 }
 
 const createNewUser = async (i, spid) => {
