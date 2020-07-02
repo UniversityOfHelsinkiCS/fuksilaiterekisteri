@@ -72,7 +72,7 @@ const ReclaimTable = ({ students }) => {
     {
       key: 'first_year_credits',
       label: 'Fresher year credits',
-      renderCell: ({ firstYearCredits }) => valOrEmpty(firstYearCredits),
+      renderCell: ({ firstYearCredits, thirdYearOrLaterStudent }) => (thirdYearOrLaterStudent ? '3rd+ year student' : valOrEmpty(firstYearCredits)),
       getCellVal: ({ firstYearCredits }) => firstYearCredits,
       width: 200,
     },

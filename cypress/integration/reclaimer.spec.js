@@ -87,6 +87,15 @@ context('Reclaimer', () => {
       deviceGivenAt: new Date('2000').getTime(),
       reclaimStatus: 'OPEN',
     })
+    cy.createCustomUser({
+      userId: '978',
+      name: 'Vanha Ongelmatar',
+      studentNumber: 'vanhaOngelmatar',
+      deviceSerial: '1243',
+      deviceReturned: false,
+      deviceGivenAt: new Date('2000').getTime(),
+      signupYear: 2017,
+    })
     cy.login('reclaimer')
     cy.visit('/')
     cy.get('[data-cy=updateReclaimStatuses]').click()
@@ -133,9 +142,13 @@ context('Reclaimer', () => {
     cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Uusi Opiskelija')
   })
 
+  it('Shows 3rd+ year student instead of credits for 3rd+ year students', () => {
+    selectFilter('Open')
+    cy.contains('Vanha Ongelmatar').parent().parent().contains('3rd+ year student')
+  })
+
   it('Turns status to closed when clicking close', () => {
     cy.login('reclaimer')
-    selectFilter('Open')
     cy.contains('Open Opiskelija').parent().parent().find('[data-cy=markStatusClosed]').click()
     cy.contains('Open Opiskelija').should("not.exist")
   })
