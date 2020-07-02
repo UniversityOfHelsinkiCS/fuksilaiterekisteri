@@ -63,12 +63,13 @@ const createDeviceGivenAt = () => {
 
 const createCustomUser = async (userOverrides) => {
   const defaults = {
+    studentNumber: userOverrides.userId,
     admin: false,
     distributor: false,
     staff: false,
     reclaimer: false,
-    hyEmail: 'hyEmail@helsinli.fi',
-    personalEmail: 'personal@personal.com',
+    hyEmail: `${userOverrides.userId}@helsinki.fi`,
+    personalEmail: `${userOverrides.userId}@toskafake12345.fi`,
     dateOfBirth: new Date('1.1.2050').getTime(),
     eligible: true,
     digiSkillsCompleted: true,
@@ -78,8 +79,9 @@ const createCustomUser = async (userOverrides) => {
     eligibilityReasons: {},
     wantsDevice: true,
     device_distributed_by: null,
-    deviceSerial: null,
+    deviceSerial: userOverrides.deviceGivenAt && `${userOverrides.userId}-serial`,
     deviceGivenAt: null,
+    deviceReturned: false,
     ...userOverrides,
   }
 
