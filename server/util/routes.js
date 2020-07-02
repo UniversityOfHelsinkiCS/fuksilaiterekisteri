@@ -57,9 +57,9 @@ router.get('/staff/students', checkStaff, studentController.getStudentsForStaff)
 router.get('/reclaimer/students', checkReclaimer, studentController.getStudentsForReclaimer)
 router.get('/reclaimer/update', checkReclaimer, studentController.updateReclaimStatuses)
 
-router.post('/email/send', emailController.sendAdminEmail)
-router.get('/email/template/autosend/:type', emailController.getAutosendTemplate)
-router.post('/email/template/autosend', emailController.updateAutosendTemplate)
+router.post('/email/send', checkAdmin, emailController.sendAdminEmail)
+router.get('/email/template/autosend/:type', checkAdmin, emailController.getAutosendTemplate)
+router.post('/email/template/autosend', checkAdmin, emailController.updateAutosendTemplate)
 router.post('/email/reclaimer/send', checkReclaimer, emailController.sendReclaimerEmail)
 
 router.post('/serviceStatus', checkAdmin, serviceStatusController.setServiceStatus)
