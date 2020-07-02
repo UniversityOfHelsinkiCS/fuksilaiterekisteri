@@ -92,7 +92,7 @@ export default function ReclaimerEmail({ students }) {
         closeOnDimmerClick={false}
         trigger={(
           <Button disabled={students.length === 0} color="blue">
-            <Icon size="large" name="mail" />
+            <Icon name="mail" />
             {`Compose email for selected ${students.length} students`}
           </Button>
         )}
