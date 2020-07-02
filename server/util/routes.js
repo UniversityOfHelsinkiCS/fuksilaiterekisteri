@@ -60,6 +60,7 @@ router.get('/reclaimer/update', checkReclaimer, studentController.updateReclaimS
 router.post('/email/send', emailController.sendEmail)
 router.get('/email/template/autosend/:type', emailController.getAutosendTemplate)
 router.post('/email/template/autosend', emailController.updateAutosendTemplate)
+router.post('/email/reclaimer/send', checkReclaimer, emailController.sendReclaimerEmail)
 
 router.post('/serviceStatus', checkAdmin, serviceStatusController.setServiceStatus)
 
