@@ -7,7 +7,12 @@ const completionChecker = async (user, email) => {
       logger.error('Email disabled, set EMAIL_ENABLED=true to enable.')
       return
     }
-    const info = await sendEmail([user.hyEmail, user.personalEmail], email.subject, email.body, email.replyTo)
+    const info = await sendEmail({
+      recipients: [user.hyEmail, user.personalEmail],
+      subject: email.subject,
+      text: email.body,
+      replyTo: email.replyTo,
+    })
     if (info) {
       info.accepted.forEach(accepted => logger.info(`Email sent to ${accepted}.`))
     }

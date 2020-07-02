@@ -1,6 +1,8 @@
 const nodemailer = require('nodemailer')
 
-const sendEmail = async (receivers, subject, text, replyTo, attachments) => {
+const sendEmail = async ({
+  recipients, subject, text, replyTo, attachments,
+}) => {
   const transporter = nodemailer.createTransport({
     host: 'smtp.helsinki.fi',
     port: 587,
@@ -9,7 +11,7 @@ const sendEmail = async (receivers, subject, text, replyTo, attachments) => {
 
   return transporter.sendMail({
     from: 'Fuksilaite Robot <noreply@helsinki.fi>',
-    to: receivers,
+    bcc: recipients,
     subject,
     text,
     attachments,

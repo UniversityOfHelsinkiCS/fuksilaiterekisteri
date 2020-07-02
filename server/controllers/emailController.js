@@ -1,9 +1,9 @@
-const nodemailer = require('nodemailer')
 const logger = require('@util/logger')
 const db = require('@models')
 const { Op } = require('sequelize')
+const sendEmail = require('@util/sendEmail')
 
-const sendEmail = async (req, res) => {
+const sendAdminEmail = async (req, res) => {
   try {
     if (process.env.EMAIL_ENABLED !== 'true') {
       logger.error('Email disabled, set EMAIL_ENABLED=true to enable.')
@@ -16,19 +16,13 @@ const sendEmail = async (req, res) => {
       replyTo,
     } = req.body
 
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.helsinki.fi',
-      port: 587,
-      secure: false,
-    })
-
-    await transporter.sendMail({
-      from: 'Fuksilaite Robot <noreply@helsinki.fi>',
-      bcc: recipientEmails,
+    await sendEmail({
+      recipients: recipientEmails,
       subject,
       text,
       replyTo,
     })
+
     return res.status(200).json({ message: 'OK' })
   } catch (e) {
     logger.error('Error sending emails', e)
@@ -68,15 +62,8 @@ const sendReclaimerEmail = async (req, res) => {
 
     logger.info(`${req.user.userId} - Attempting to send email to ${userIds.length} users, to total of ${targetEmails.length} email-addresses.`)
 
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.helsinki.fi',
-      port: 587,
-      secure: false,
-    })
-
-    const emailResult = await transporter.sendMail({
-      from: 'Fuksilaite Robot <noreply@helsinki.fi>',
-      bcc: targetEmails,
+    const emailResult = await sendEmail({
+      recipients: targetEmails,
       subject,
       text,
       replyTo,
@@ -150,5 +137,5 @@ const updateAutosendTemplate = async (req, res) => {
 }
 
 module.exports = {
-  sendEmail, sendReclaimerEmail, updateAutosendTemplate, getAutosendTemplate,
+  sendAdminEmail, sendReclaimerEmail, updateAutosendTemplate, getAutosendTemplate,
 }
