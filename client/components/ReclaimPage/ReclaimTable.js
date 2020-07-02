@@ -22,7 +22,8 @@ const ReclaimTable = ({ students }) => {
   }
 
   const markReclaimStatusClosed = (studentNumber) => {
-    dispatch(updateStudentReclaimStatus('CLOSED', studentNumber))
+    const confirm = window.confirm(`Close case for ${studentNumber}? (This action cannot be undone.)`)
+    if (confirm) dispatch(updateStudentReclaimStatus('CLOSED', studentNumber))
   }
 
   const columns = [
