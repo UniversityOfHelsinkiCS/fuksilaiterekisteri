@@ -41,5 +41,12 @@ Cypress.Commands.add("createUser", (uid) => {
 
 // Add user straight into DB
 Cypress.Commands.add("createCustomUser", (userInfo) => {
-  cy.request("POST", '/api/test/createUser', { userInfo })
+
+  const uniqueInfo = {
+    ...userInfo,
+    hyEmail : userInfo.hyEmail ? userInfo.hyEmail : `${userInfo.userId}@helsinki.fi`,
+    personalEmail : userInfo.personalEmail ? userInfo.personalEmail : `${userInfo.userId}@toskafake12345.fi`,
+  }
+
+  cy.request("POST", '/api/test/createUser', {userInfo:uniqueInfo})
 })
