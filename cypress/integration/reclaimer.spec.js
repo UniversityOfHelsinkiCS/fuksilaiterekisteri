@@ -1,5 +1,10 @@
 /// <reference types="Cypress" />
 
+const selectFilter = (filter) => {
+  cy.get('[data-cy=reclaimStatusFilter]').click()
+  cy.get('[data-cy=reclaimStatusFilter]').contains(filter).click()
+}
+
 context('Reclaimer', () => {
   before(() => {
     cy.server()
@@ -100,13 +105,15 @@ context('Reclaimer', () => {
   })
 
   it('Doesn\'t reset reclaim status for contacted students when statuses are updated', () => {
-    cy.get('[data-cy=reclaimerContent]').contains('CONTACTED')
+    selectFilter("Contacted")
+    cy.get('[data-cy=reclaimerContent]').contains('CONTACTED')    
   })
 
   it('Turns status to closed when clicking close', () => {
     cy.login('reclaimer')
-    cy.get('[data-cy=markStatusClosed]').eq(0).click()
-    cy.get('[data-cy=reclaimerContent]').contains('CLOSED')
+
+    cy.contains("Vastaamaton Ville").parent().parent().find("[data-cy=markStatusClosed]").click()
+    cy.contains("Vastaamaton Ville").should("not.exist")
   })
 
   it('Returning device changes status to closed', () => {
@@ -118,6 +125,7 @@ context('Reclaimer', () => {
     cy.login('reclaimer')
     cy.visit('/')
 
+    selectFilter("Closed")
     cy.contains('Haltija Poissanen').parent().parent().contains('CLOSED')
   })
 })

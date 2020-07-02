@@ -18,7 +18,7 @@ export default function ReclaimStatusFilter({ selected, setSelected }) {
     }}
     >
       <span>Select which cases to show</span>
-      <Select value={selected} onChange={handleSelect} placeholder="Select" options={selectOptions} />
+      <Select data-cy="reclaimStatusFilter" value={selected} onChange={handleSelect} placeholder="Select" options={selectOptions} />
     </div>
   )
 }
