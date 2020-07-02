@@ -16,12 +16,19 @@ const sendAdminEmail = async (req, res) => {
       replyTo,
     } = req.body
 
-    await sendEmail({
+    logger.info(`${req.user.userId} - Attempting to send email to ${recipientEmails.length} email-addresses.`)
+
+    const emailResult = await sendEmail({
       recipients: recipientEmails,
       subject,
       text,
       replyTo,
     })
+
+    const acceptedEmailAmount = emailResult.accepted.length
+    const rejectedEmailAmount = emailResult.rejected.length
+
+    logger.info(`Successfully sent ${acceptedEmailAmount} emails. Failed to send ${rejectedEmailAmount} emails.`)
 
     return res.status(200).json({ message: 'OK' })
   } catch (e) {
