@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Segment } from 'semantic-ui-react'
-import { getStudentsWithOpenReclaimStatus, updateStudentReclainmStatuses } from 'Utilities/redux/studentReducer'
+import { getStudentsWithReclaimStatus, updateStudentReclainmStatuses } from 'Utilities/redux/studentReducer'
 import ReclaimTable from './ReclaimTable'
 import ReclaimerFilter from './ReclaimerFilter'
 import ReclaimerEmail from './ReclaimerEmail'
@@ -14,7 +14,7 @@ const ReclaimPage = () => {
   const students = useSelector(state => state.student.students)
 
   useEffect(() => {
-    dispatch(getStudentsWithOpenReclaimStatus())
+    dispatch(getStudentsWithReclaimStatus())
   }, [])
 
   const handleUpdateClick = () => {

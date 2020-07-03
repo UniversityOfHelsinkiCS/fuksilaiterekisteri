@@ -15,7 +15,7 @@ export const getStudentsAction = () => {
   return callBuilder(route, prefix)
 }
 
-export const getStudentsWithOpenReclaimStatus = () => {
+export const getStudentsWithReclaimStatus = () => {
   const route = '/reclaimer/students'
   const prefix = 'GET_STUDENTS'
   return callBuilder(route, prefix)

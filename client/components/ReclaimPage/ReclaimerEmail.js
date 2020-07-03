@@ -4,7 +4,7 @@ import {
 } from 'semantic-ui-react'
 import { useDispatch } from 'react-redux'
 import { callApi } from 'Utilities/apiConnection'
-import { getStudentsWithOpenReclaimStatus } from 'Utilities/redux/studentReducer'
+import { getStudentsWithReclaimStatus } from 'Utilities/redux/studentReducer'
 
 export default function ReclaimerEmail({ students }) {
   const dispatch = useDispatch()
@@ -37,7 +37,7 @@ export default function ReclaimerEmail({ students }) {
         const { accepted, rejected } = res.data
         setAcceptedEmails(accepted)
         setRejectedEmails(rejected)
-        dispatch(getStudentsWithOpenReclaimStatus()) // Just get a new list with updated reclaimStatuses
+        dispatch(getStudentsWithReclaimStatus()) // Just get a new list with updated reclaimStatuses
 
         setFormState({
           replyTo: '',
