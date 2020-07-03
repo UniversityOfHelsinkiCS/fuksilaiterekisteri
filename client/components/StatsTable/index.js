@@ -1,7 +1,12 @@
-import React, { useMemo } from 'react'
-import { Table } from 'semantic-ui-react'
+import React, { useMemo, useState } from 'react'
+import {
+  Table, Button, Select, Icon,
+} from 'semantic-ui-react'
 
-const StatsTable = ({ students, hide }) => {
+const StatsTable = ({ students }) => {
+  const [hideStatsTable, setHideStatsTable] = useState(false)
+  const [selectedYear, setSelectedYear] = useState()
+
   const getStats = () => {
     const def = {
       wants: 0, needs: 0, received: 0, total: 0,
@@ -24,7 +29,7 @@ const StatsTable = ({ students, hide }) => {
 
     const hasRequiredComplete = ({ eligible, digiSkillsCompleted, courseRegistrationCompleted }) => eligible && digiSkillsCompleted && courseRegistrationCompleted
 
-    students.forEach((student) => {
+    students.filter(({ signupYear }) => signupYear === selectedYear).forEach((student) => {
       if (!student.studyPrograms || !student.studyPrograms.length) return
       const cubbliProgram = student.studyPrograms.find(({ code }) => cubbli.includes(code))
       const targetOs = cubbliProgram ? 'Cubbli' : 'Windows'
@@ -54,20 +59,51 @@ const StatsTable = ({ students, hide }) => {
     return { stats, totals }
   }
 
+  const years = useMemo(() => {
+    const temp = students.reduce((pre, { signupYear }) => {
+      if (!pre.includes(signupYear)) pre.push(signupYear)
+      return pre
+    }, []).sort((a, b) => b - a)
+
+    setSelectedYear(temp[0])
+
+    return temp.map(e => ({
+      key: e,
+      value: e,
+      text: e,
+    }))
+  }, [students.length])
+
+
   const getCellsFor = (stats, prop) => Object.keys(stats).map(key => (
     <Table.Cell key={key}>
       {stats[key][prop]}
     </Table.Cell>
   ))
 
-  const { stats, totals } = useMemo(() => getStats(), [students])
+  const ToggleStatsTable = () => (
+    <Button style={{ width: '15em' }} onClick={() => setHideStatsTable(!hideStatsTable)}>
+      <Icon name={hideStatsTable ? 'eye' : 'eye slash'} />
+      {hideStatsTable ? 'Show Statistics' : 'Hide Statistics'}
+    </Button>
+  )
+
+  const { stats, totals } = useMemo(() => getStats(), [students, selectedYear])
   const { Cubbli, Windows, ...programmeStats } = stats
 
-
-  if (hide) return null
+  if (hideStatsTable) return <ToggleStatsTable />
 
   return (
     <div style={{ overflow: 'auto', maxWidth: '100%', marginBottom: '10px' }}>
+      <ToggleStatsTable />
+      <span style={{ padding: '0em 1em' }}>Showing statistics form year:</span>
+      <Select
+        data-cy="customTextSelect"
+        value={selectedYear}
+        onChange={(e, { value }) => setSelectedYear(value)}
+        placeholder="Select year for statistics"
+        options={years}
+      />
       <Table definition collapsing>
         <Table.Header>
           <Table.Row>
