@@ -129,7 +129,7 @@ const createNewUser = async (i, spid) => {
   }).then(([user, created]) => {
     if (created) {
       logger.info(`Created user ${i}`)
-      if (b && c) {
+      if (b) {
         db.userStudyProgram.create({
           userId: user.id,
           studyProgramId: spid,
@@ -141,16 +141,13 @@ const createNewUser = async (i, spid) => {
 
 const createSomeUsers = async (req, res) => {
   try {
-    const { id } = await db.studyProgram.findOne({
-      where: {
-        code: 'KH50_005',
-      },
+    const spIds = await db.studyProgram.findAll({
       attributes: ['id', 'code'],
-    })
+    }).map(({ id }) => id)
 
     let i = 0
     while (i++ < 1000) {
-      createNewUser(i, id)
+      createNewUser(i, _.sample(spIds))
     }
 
 
