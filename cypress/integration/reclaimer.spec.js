@@ -138,9 +138,21 @@ context('Reclaimer View', () => {
       selectFilter('Open')
     })
 
-    it('Turns status to closed when clicking close', () => {
-      cy.contains('Open Opiskelija').parent().parent().find('[data-cy=markStatusClosed]').click()
+    it('Can set reclaimStatus to closed and cant reopen closed case', () => {
+      cy.contains('Open Opiskelija').parent().parent().find('[data-cy=setStatusManually]').click()
+      cy.contains("Set as Closed").click()
       cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Open Opiskelija')
+      selectFilter("Closed")
+      cy.get('[data-cy=reclaimerContent]').should('contain', 'Open Opiskelija')
+      cy.contains('Open Opiskelija').parent().parent().find('[data-cy=setStatusManually]').should("be.disabled")
+    })
+
+    it('Can set reclaimStatus to contacted', () => {
+      cy.contains('Open Opiskelija').parent().parent().find('[data-cy=setStatusManually]').click()
+      cy.contains("Set as Contacted").click()
+      cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Open Opiskelija')
+      selectFilter("Contacted")
+      cy.get('[data-cy=reclaimerContent]').should('contain', 'Open Opiskelija')
     })
   
     it('Returning device changes status to closed', () => {

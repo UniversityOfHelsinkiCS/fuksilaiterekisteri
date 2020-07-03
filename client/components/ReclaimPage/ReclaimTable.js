@@ -1,5 +1,5 @@
-import React from 'react'
-import { Button } from 'semantic-ui-react'
+import React, { useState } from 'react'
+import { Button, Modal } from 'semantic-ui-react'
 import VirtualizedTable from 'Components/VirtualizedTable'
 import dateFormatter from 'Utilities/dateFormatter'
 import { useDispatch } from 'react-redux'
@@ -21,9 +21,43 @@ const ReclaimTable = ({ students }) => {
     }
   }
 
-  const markReclaimStatusClosed = (studentNumber) => {
-    const confirm = window.confirm(`Close case for ${studentNumber}? (This action cannot be undone.)`)
-    if (confirm) dispatch(updateStudentReclaimStatus('CLOSED', studentNumber))
+  const [userModalOpen, setUserModalOpen] = useState(false)
+  const [selectedUser, setSelectedUser] = useState(undefined)
+
+  const updateStatus = (newStatus) => {
+    const confirm = window.confirm(`Set status to ${newStatus} for ${selectedUser.name}? (This action cannot be undone.)`)
+    if (confirm) {
+      dispatch(updateStudentReclaimStatus(newStatus, selectedUser.studentNumber))
+      setSelectedUser(undefined)
+      setUserModalOpen(false)
+    }
+  }
+
+  const handleSetStatusClick = (student) => {
+    setSelectedUser(student)
+    setUserModalOpen(true)
+  }
+
+  const ManualStatusUpdateModal = () => {
+    if (!selectedUser) return null
+
+    return (
+      <Modal closeIcon onClose={() => setUserModalOpen(false)} open={userModalOpen}>
+        <Modal.Header>{`Updating status of ${selectedUser.name}`}</Modal.Header>
+        <Modal.Content image>
+          <Modal.Description>
+            {`Current status: ${selectedUser.reclaimStatus}`}
+            <br />
+            {`Student number: ${selectedUser.studentNumber}`}
+
+            <div style={{ marginTop: '1em' }}>
+              <Button disabled={selectedUser.reclaimStatus === 'CONTACTED'} color="orange" onClick={() => updateStatus('CONTACTED')}>Set as Contacted</Button>
+              <Button disabled={selectedUser.reclaimStatus === 'CLOSED'} color="red" onClick={() => updateStatus('CLOSED')}>Set as Closed</Button>
+            </div>
+          </Modal.Description>
+        </Modal.Content>
+      </Modal>
+    )
   }
 
   const columns = [
@@ -84,33 +118,34 @@ const ReclaimTable = ({ students }) => {
       width: 100,
     },
     {
-      key: 'mark_closed',
-      label: '',
-      renderCell: ({
-        studentNumber, reclaimStatus,
-      }) => (
+      key: 'set_status_manually',
+      label: 'Set status manually',
+      renderCell: student => (
         <Button
-          data-cy="markStatusClosed"
-          disabled={reclaimStatus === 'CLOSED'}
-          onClick={() => markReclaimStatusClosed(studentNumber)}
+          disabled={student.reclaimStatus === 'CLOSED'}
+          data-cy="setStatusManually"
+          onClick={() => handleSetStatusClick(student)}
           color="blue"
           size="tiny"
         >
-          Close
+          Set status manually
         </Button>
       ),
       disableSort: true,
-      width: 100,
+      width: 200,
     },
   ]
 
   return (
-    <VirtualizedTable
-      searchable
-      columns={columns}
-      data={students}
-      defaultCellWidth={125}
-    />
+    <>
+      <VirtualizedTable
+        searchable
+        columns={columns}
+        data={students}
+        defaultCellWidth={125}
+      />
+      <ManualStatusUpdateModal />
+    </>
   )
 }
 
