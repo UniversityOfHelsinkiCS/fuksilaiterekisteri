@@ -7,7 +7,7 @@ import dateFormatter from '../../../util/dateFormatter'
 import VirtualizedTable from '../../VirtualizedTable'
 import { updateStudentStatus, markStudentEligible } from '../../../util/redux/studentReducer'
 
-const StudentTable = ({ students }) => {
+const StudentTable = ({ students, hiddenColumns }) => {
   const dispatch = useDispatch()
   const boolToString = bool => (bool ? 'Kyllä' : 'Ei')
   const valOrEmpty = val => (val !== null ? val : '-')
@@ -115,10 +115,11 @@ const StudentTable = ({ students }) => {
     },
   ]
 
+  const filteredColumns = columns.filter(({ key }) => !hiddenColumns.includes(key))
   return (
     <VirtualizedTable
       searchable
-      columns={columns}
+      columns={filteredColumns}
       data={students}
       defaultCellWidth={150}
     />
