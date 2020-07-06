@@ -50,6 +50,16 @@ const possibleUsers = [
     sn: 'non-fuksi',
   },
   {
+    uid: 'fuksi_without_digiskills',
+    employeeNumber: undefined,
+    givenName: 'fuksiWithoutDigi',
+    mail: 'grp-toska+fuksiWithoutDiki@helsinki.fi',
+    schacDateOfBirth: 19850806,
+    schacPersonalUniqueCode:
+      'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:fuksi_without_digiskills',
+    sn: 'fuksi_without_digiskills',
+  },
+  {
     uid: 'non_admin_staff',
     employeeNumber: 1234,
     givenName: 'non-admin-staffEtunimi',

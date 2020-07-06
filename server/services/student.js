@@ -164,7 +164,7 @@ const isEligible = async (studentNumber, at) => {
 }
 
 const getStudentStatus = async (studentNumber, studyrights) => {
-  if (!inProduction) return { digiSkills: true, hasEnrollments: true }
+  if (!inProduction) return { digiSkills: !(studentNumber === 'fuksi_without_digiskills'), hasEnrollments: true }
   const digiSkills = await getDigiSkillsFor(studentNumber)
   const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
   const studyProgramCodes = (await db.studyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
