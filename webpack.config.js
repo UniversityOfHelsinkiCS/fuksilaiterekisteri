@@ -27,6 +27,7 @@ module.exports = (env, argv) => {
 
   return {
     mode,
+    devtool: mode === 'production' ? undefined : 'source-maps',
     output: {
       publicPath: BASE_PATH,
     },
