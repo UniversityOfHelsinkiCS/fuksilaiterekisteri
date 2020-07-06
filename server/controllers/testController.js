@@ -61,7 +61,14 @@ const createDeviceGivenAt = () => {
   return a ? new Date().getTime() : new Date(2014).getTime()
 }
 
-const createCustomUser = async (userOverrides) => {
+const createCustomUser = async (userOverrides, studyProgramCode) => {
+  const { id } = await db.studyProgram.findOne({
+    where: {
+      code: studyProgramCode,
+    },
+    attributes: ['id', 'code'],
+  })
+
   const defaults = {
     studentNumber: userOverrides.userId,
     admin: false,
@@ -87,7 +94,12 @@ const createCustomUser = async (userOverrides) => {
 
   await db.user.destroy({ where: { userId: userOverrides.userId } })
 
-  await db.user.create({ ...defaults })
+  const newUser = await db.user.create({ ...defaults })
+
+  await db.userStudyProgram.create({
+    userId: newUser.id,
+    studyProgramId: id,
+  })
 }
 
 const createNewUser = async (i, spid) => {
@@ -163,8 +175,8 @@ const createSomeUsers = async (req, res) => {
 
 const createUser = async (req, res) => {
   try {
-    const { userInfo } = req.body
-    await createCustomUser(userInfo)
+    const { userInfo, studyProgramCode } = req.body
+    await createCustomUser(userInfo, studyProgramCode)
     return res.status(200).end()
   } catch (e) {
     logger.error('error creating custom user: ', e)

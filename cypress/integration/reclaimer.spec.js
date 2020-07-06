@@ -10,22 +10,22 @@ const createTestUsers = () => {
     userId: 'oldDeviceHolder',
     name: 'Laite Vanhatar',
     deviceGivenAt: new Date('2000').getTime()
-  })
+  }, 'KH50_001')
   cy.createCustomUser({
     userId: 'modelStudent',
     name: 'Oppilas Mallikas',
     deviceGivenAt: new Date().getTime()
-  })
+  }, 'KH50_002')
   cy.createCustomUser({
     userId: 'absentDeviceHolder',
     name: 'Haltija Poissanen',
     deviceGivenAt: new Date().getTime()
-  })
+  }, 'KH50_003')
   cy.createCustomUser({
     userId: 'lowCreditsDeviceHolder',
     name: 'Haltija Pisteetön',
     deviceGivenAt: new Date().getTime()
-  })
+  }, 'KH50_004')
   cy.createCustomUser({
     userId: 'exDeviceHolder',
     name: 'Haltijaton Paikalloton',
@@ -37,31 +37,31 @@ const createTestUsers = () => {
     name: 'Senior Opiskelija',
     deviceGivenAt: new Date().getTime(),
     signupYear: 2017,
-  })
+  }, 'KH50_005')
   cy.createCustomUser({
     userId: 'vastaamatoVille',
     name: 'Vastaamaton Ville',
     deviceGivenAt: new Date('2000').getTime(),
     reclaimStatus: 'CONTACTED'
-  })
+  }, 'KH50_006')
   cy.createCustomUser({
     userId: 'uusiOpiskelija',
     name: 'Uusi Opiskelija',
     deviceGivenAt: new Date('2000').getTime(),
     signupYear: 2019,
-  })
+  }, 'KH50_007')
   cy.createCustomUser({
     userId: 'openOpiskelija',
     name: 'Open Opiskelija',
     deviceGivenAt: new Date('2000').getTime(),
     reclaimStatus: 'OPEN',
-  })
+  }, 'KH50_008')
   cy.createCustomUser({
     userId: 'vanhaOngelmatar',
     name: 'Vanha Ongelmatar',
     deviceGivenAt: new Date('2000').getTime(),
     signupYear: 2017,
-  })
+  }, 'KH50_001')
 }
 
 context('Reclaimer View', () => {

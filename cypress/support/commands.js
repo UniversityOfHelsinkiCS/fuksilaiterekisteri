@@ -40,6 +40,7 @@ Cypress.Commands.add("createUser", (uid) => {
 })
 
 // Add user straight into DB
-Cypress.Commands.add("createCustomUser", (userInfo) => {
-  cy.request("POST", '/api/test/createUser', {userInfo})
+Cypress.Commands.add("createCustomUser", (userInfo, studyProgramCode = 'KH50_005') => {
+  console.log(studyProgramCode)
+  cy.request("POST", '/api/test/createUser', {userInfo, studyProgramCode})
 })
