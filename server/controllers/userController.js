@@ -156,62 +156,16 @@ const getAllUsers = async (req, res) => {
   }
 }
 
-const toggleStaff = async (req, res) => {
+const toggleRole = async (req, res) => {
   try {
-    const { id } = req.params
-
-    if (!id) return res.status(400).json({ error: 'user id missing' })
-
-    const user = await db.user.findOne({
-      where: {
-        id,
-      },
-      include: [{ model: db.studyProgram, as: 'studyPrograms' }],
-    })
-
-    if (!user) return res.status(404).json({ error: 'user not found' })
-
-    await user.update({ staff: !user.staff })
-    logger.info(`User ${user.userId} toggled staff to ${user.staff} by ${req.user.userId}`)
-    return res.json(user)
-  } catch (e) {
-    logger.error(e)
-    return res.status(500).json({ error: 'error' })
-  }
-}
-
-const toggleDistributor = async (req, res) => {
-  try {
-    const { id } = req.params
-
-    if (!id) return res.status(400).json({ error: 'user id missing' })
-
-    const user = await db.user.findOne({
-      where: {
-        id,
-      },
-      include: [{ model: db.studyProgram, as: 'studyPrograms' }],
-    })
-
-    if (!user) return res.status(404).json({ error: 'user not found' })
-
-    await user.update({ distributor: !user.distributor })
-    logger.info(`User ${user.userId} toggled distributor to ${user.distributor} by ${req.user.userId}`)
-    return res.json(user)
-  } catch (e) {
-    logger.error(e)
-    return res.status(500).json({ error: 'error' })
-  }
-}
-
-const toggleAdmin = async (req, res) => {
-  try {
-    const { id } = req.params
+    const { id, role } = req.params
     const ownId = req.user.id
-
-    if ((parseInt(id, 10) === parseInt(ownId, 10))) return res.status(403).json({ error: 'Cant remove admin from yourself.' })
+    const toggleableRoles = ['admin', 'distributor', 'staff', 'reclaimer']
 
     if (!id) return res.status(400).json({ error: 'user id missing' })
+    if (!role || !toggleableRoles.includes(role)) return res.status(400).json({ error: 'role missing or invalid' })
+
+    if ((parseInt(id, 10) === parseInt(ownId, 10)) && role === 'admin') return res.status(403).json({ error: 'Cant remove admin from yourself.' })
 
     const user = await db.user.findOne({
       where: {
@@ -222,8 +176,8 @@ const toggleAdmin = async (req, res) => {
 
     if (!user) return res.status(404).json({ error: 'user not found' })
 
-    await user.update({ admin: !user.admin })
-    logger.info(`User ${user.userId} toggled admin to ${user.admin} by ${req.user.userId}`)
+    await user.update({ [role]: !user[role] })
+    logger.info(`User ${user.userId} toggled ${role} to ${user[role]} by ${req.user.userId}`)
     return res.json(user)
   } catch (e) {
     logger.error(e)
@@ -260,8 +214,6 @@ module.exports = {
   requestDevice,
   claimDevice,
   getAllUsers,
-  toggleStaff,
-  toggleDistributor,
   setAdminNote,
-  toggleAdmin,
+  toggleRole,
 }

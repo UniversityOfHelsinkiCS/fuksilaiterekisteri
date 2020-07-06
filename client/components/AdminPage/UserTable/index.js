@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Icon, Checkbox } from 'semantic-ui-react'
 import {
-  markStudentEligible as markStudentEligibleAction, toggleUserStaff as toggleUserStaffAction, toggleUserDistributor as toggleUserDistributorAction, toggleUserAdminAction, markDeviceReturnedAction,
+  markStudentEligible as markStudentEligibleAction, toggleUserRoleAction, markDeviceReturnedAction,
 } from '../../../util/redux/usersReducer'
 import dateFormatter from '../../../util/dateFormatter'
 import VirtualizedTable from '../../VirtualizedTable'
@@ -23,10 +23,8 @@ const UserTable = ({
   }
 
   const currentUser = useSelector(state => state.user.data)
+  const toggleUserRole = (id, role) => dispatch(toggleUserRoleAction(id, role))
 
-  const toggleUserStaff = id => dispatch(toggleUserStaffAction(id))
-  const toggleUserDistributor = id => dispatch(toggleUserDistributorAction(id))
-  const toggleUserAdmin = id => dispatch(toggleUserAdminAction(id))
   const boolToString = bool => (bool ? 'Kyllä' : 'Ei')
 
   const loginAs = (userId) => {
@@ -114,22 +112,29 @@ const UserTable = ({
     {
       key: 'admin',
       label: 'Admin',
-      renderCell: ({ admin, id }) => <Checkbox data-cy="toggleAdmin" disabled={currentUser.id === id} checked={!!admin} onChange={() => toggleUserAdmin(id)} />,
+      renderCell: ({ admin, id }) => <Checkbox data-cy="toggleAdmin" disabled={currentUser.id === id} checked={!!admin} onChange={() => toggleUserRole(id, 'admin')} />,
       getCellVal: ({ admin }) => admin,
       width: 75,
     },
     {
       key: 'staff',
       label: 'Staff',
-      renderCell: ({ staff, id }) => <Checkbox data-cy="toggleStaff" checked={!!staff} onChange={() => toggleUserStaff(id)} />,
-      getCellVal: ({ staff }) => boolToString(staff),
+      renderCell: ({ staff, id }) => <Checkbox data-cy="toggleStaff" checked={!!staff} onChange={() => toggleUserRole(id, 'staff')} />,
+      getCellVal: ({ staff }) => staff,
       width: 75,
     },
     {
       key: 'distributor',
       label: 'Distributor',
-      renderCell: ({ distributor, id }) => <Checkbox data-cy="toggleDistributor" checked={!!distributor} onChange={() => toggleUserDistributor(id)} />,
+      renderCell: ({ distributor, id }) => <Checkbox data-cy="toggleDistributor" checked={!!distributor} onChange={() => toggleUserRole(id, 'distributor')} />,
       getCellVal: ({ distributor }) => distributor,
+      width: 125,
+    },
+    {
+      key: 'reclaimer',
+      label: 'Reclaimer',
+      renderCell: ({ reclaimer, id }) => <Checkbox data-cy="toggleReclaimer" checked={!!reclaimer} onChange={() => toggleUserRole(id, 'reclaimer')} />,
+      getCellVal: ({ reclaimer }) => reclaimer,
       width: 125,
     },
     {

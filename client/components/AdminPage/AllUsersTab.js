@@ -47,11 +47,11 @@ export default () => {
         break
       case 'deviceHolders':
         filtered = users.filter(u => !!u.deviceGivenAt && !u.deviceReturned)
-        hiddenColumns = ['admin', 'staff', 'distributor', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'mark_eligible']
+        hiddenColumns = ['admin', 'staff', 'distributor', 'reclaimer', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'mark_eligible']
         break
       case 'currentYearEligible':
         filtered = users.filter(u => u.signupYear === settings.currentYear && u.eligible)
-        hiddenColumns = ['admin', 'staff', 'distributor', 'eligible', 'mark_eligible']
+        hiddenColumns = ['admin', 'staff', 'distributor', 'reclaimer', 'eligible', 'mark_eligible']
         break
       case 'allStaff':
         filtered = users.filter(u => u.admin || u.staff || u.distributor || u.reclaimer)
