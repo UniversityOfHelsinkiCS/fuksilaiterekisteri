@@ -25,6 +25,7 @@ const refresh = () => render(
     <BrowserRouter basename={basePath}>
       <ErrorBoundary>
         <App />
+        <button type="submit" style={{ display: 'none' }} onClick={() => Sentry.captureException(new Error('Sentry test'))}>Sentry test</button>
       </ErrorBoundary>
     </BrowserRouter>
   </Provider>,
