@@ -11,7 +11,7 @@ import DeviceSerial from './DeviceSerial'
 
 export default function ServiceStatus() {
   const dispatch = useDispatch()
-  const serviceStatus = useSelector(state => state.serviceStatus.data)
+  const { pending, data: serviceStatus } = useSelector(state => state.serviceStatus)
 
   if (!serviceStatus) return 'Loading serviceStatus'
 
@@ -65,6 +65,7 @@ export default function ServiceStatus() {
       data-cy="enableRegistrations"
       positive
       onClick={handleServiceStart}
+      disabled={pending}
     >
     Enable registrations
     </Button>
@@ -75,6 +76,7 @@ export default function ServiceStatus() {
       data-cy="disableRegistrations"
       negative
       onClick={handleServiceStop}
+      disabled={pending}
     >
     Disable registrations
     </Button>
@@ -91,7 +93,7 @@ export default function ServiceStatus() {
           {`Registrations for year ${currentYear} are currently ${studentRegistrationOnline ? ' open' : ' closed'}`}
         </Header>
         {studentRegistrationOnline ? <StopServiceButton /> : <StartServiceButton /> }
-        <Button data-cy="endDistYear" disabled={studentRegistrationOnline} onClick={handleFinishDistributionYear}>{`End distribution year ${currentYear}`}</Button>
+        <Button data-cy="endDistYear" disabled={studentRegistrationOnline || pending} onClick={handleFinishDistributionYear}>{`End distribution year ${currentYear}`}</Button>
       </Segment>
       <RegistrationDeadlineSelector />
       <TaskDeadlineSelector />
