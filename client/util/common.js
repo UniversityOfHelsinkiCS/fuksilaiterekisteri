@@ -17,4 +17,6 @@ export const basePath = process.env.BASE_PATH || '/'
 
 export const builtAt = process.env.BUILT_AT || '0'
 
+export const sentryIdentifier = process.env.SENTRY_IDENTIFIER || undefined
+
 export * from 'Root/util/common'

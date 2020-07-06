@@ -73,6 +73,7 @@ module.exports = (env, argv) => {
         'process.env.BASE_PATH': JSON.stringify(BASE_PATH),
         'process.env.BUILT_AT': JSON.stringify(new Date().toISOString()),
         'process.env.NODE_ENV': JSON.stringify(mode),
+        'process.env.SENTRY_IDENTIFIER': JSON.stringify(process.env.SENTRY_IDENTIFIER),
       }),
       new HtmlWebpackPlugin({
         title: 'Fuksilaite',
