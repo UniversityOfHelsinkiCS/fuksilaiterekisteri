@@ -12,7 +12,6 @@ services:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
       - EMAIL_ENABLED=false
       - SUPERADMINS=
-      - SENTRY_IDENTIFIER=
     volumes:
       - ./:/usr/src/app
     ports:
