@@ -7,6 +7,9 @@ RUN dpkg-reconfigure -f noninteractive tzdata
 ARG BASE_PATH
 ENV BASE_PATH=$BASE_PATH
 
+ARG SENTRY_IDENTIFIER
+ENV SENTRY_IDENTIFIER=$SENTRY_IDENTIFIER
+
 # Setup
 WORKDIR /usr/src/app
 COPY . .

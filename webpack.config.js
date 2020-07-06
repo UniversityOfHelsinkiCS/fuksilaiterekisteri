@@ -23,6 +23,7 @@ module.exports = (env, argv) => {
   const additionalEntries = mode === 'production' ? [] : ['webpack-hot-middleware/client?http://localhost:8000']
 
   const BASE_PATH = process.env.BASE_PATH || '/'
+  const { SENTRY_IDENTIFIER } = process.env
 
   return {
     mode,
@@ -73,6 +74,7 @@ module.exports = (env, argv) => {
         'process.env.BASE_PATH': JSON.stringify(BASE_PATH),
         'process.env.BUILT_AT': JSON.stringify(new Date().toISOString()),
         'process.env.NODE_ENV': JSON.stringify(mode),
+        'process.env.SENTRY_IDENTIFIER': JSON.stringify(SENTRY_IDENTIFIER),
       }),
       new HtmlWebpackPlugin({
         title: 'Fuksilaite',
