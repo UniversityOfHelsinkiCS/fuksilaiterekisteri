@@ -28,7 +28,7 @@ const ReclaimPage = () => {
         filtered = students
         break
       case 'fresherYearCredits':
-        filtered = students.filter(u => u.firstYearCredits < 30)
+        filtered = students.filter(u => u.firstYearCredits < 30 && !u.thirdYearOrLaterStudent)
         break
       case 'notPresent':
         filtered = students.filter(u => !u.present)
