@@ -23,7 +23,12 @@ const UserTable = ({
   }
 
   const currentUser = useSelector(state => state.user.data)
-  const toggleUserRole = (id, role) => dispatch(toggleUserRoleAction(id, role))
+  const toggleUserRole = (user, role) => {
+    const displayName = user.name || user.studentNumber || user.hyEmail || user.id
+    const msg = user[role] ? `Remove ${role} permissions from ${displayName}?` : `Give ${role} permissions to ${displayName}?`
+    const confirm = window.confirm(msg)
+    if (confirm) dispatch(toggleUserRoleAction(user.id, role))
+  }
 
   const boolToString = bool => (bool ? 'Kyllä' : 'Ei')
 
@@ -112,28 +117,28 @@ const UserTable = ({
     {
       key: 'admin',
       label: 'Admin',
-      renderCell: ({ admin, id }) => <Checkbox data-cy="toggleAdmin" disabled={currentUser.id === id} checked={!!admin} onChange={() => toggleUserRole(id, 'admin')} />,
+      renderCell: user => <Checkbox data-cy="toggleAdmin" disabled={currentUser.id === user.id} checked={!!user.admin} onChange={() => toggleUserRole(user, 'admin')} />,
       getCellVal: ({ admin }) => admin,
       width: 75,
     },
     {
       key: 'staff',
       label: 'Staff',
-      renderCell: ({ staff, id }) => <Checkbox data-cy="toggleStaff" checked={!!staff} onChange={() => toggleUserRole(id, 'staff')} />,
+      renderCell: user => <Checkbox data-cy="toggleStaff" checked={!!user.staff} onChange={() => toggleUserRole(user, 'staff')} />,
       getCellVal: ({ staff }) => staff,
       width: 75,
     },
     {
       key: 'distributor',
       label: 'Distributor',
-      renderCell: ({ distributor, id }) => <Checkbox data-cy="toggleDistributor" checked={!!distributor} onChange={() => toggleUserRole(id, 'distributor')} />,
+      renderCell: user => <Checkbox data-cy="toggleDistributor" checked={!!user.distributor} onChange={() => toggleUserRole(user, 'distributor')} />,
       getCellVal: ({ distributor }) => distributor,
       width: 125,
     },
     {
       key: 'reclaimer',
       label: 'Reclaimer',
-      renderCell: ({ reclaimer, id }) => <Checkbox data-cy="toggleReclaimer" checked={!!reclaimer} onChange={() => toggleUserRole(id, 'reclaimer')} />,
+      renderCell: user => <Checkbox data-cy="toggleReclaimer" checked={!!user.reclaimer} onChange={() => toggleUserRole(user, 'reclaimer')} />,
       getCellVal: ({ reclaimer }) => reclaimer,
       width: 125,
     },
