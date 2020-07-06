@@ -21,23 +21,9 @@ export const markDeviceReturnedAction = (studentNumber) => {
   return callBuilder(route, prefix, method)
 }
 
-export const toggleUserStaff = (id) => {
-  const route = `/user/${id}/staff`
-  const prefix = 'TOGGLE_USER_STAFF'
-  const method = 'post'
-  return callBuilder(route, prefix, method)
-}
-
-export const toggleUserDistributor = (id) => {
-  const route = `/user/${id}/distributor`
-  const prefix = 'TOGGLE_USER_DISTRIBUTOR'
-  const method = 'post'
-  return callBuilder(route, prefix, method)
-}
-
-export const toggleUserAdminAction = (id) => {
-  const route = `/user/${id}/admin`
-  const prefix = 'TOGGLE_USER_ADMIN'
+export const toggleUserRoleAction = (id, role) => {
+  const route = `/user/${id}/${role}`
+  const prefix = 'TOGGLE_USER_ROLE'
   const method = 'post'
   return callBuilder(route, prefix, method)
 }
@@ -85,19 +71,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         data: handleUsersUpdate(action.response, state.data),
       }
-
-    case 'TOGGLE_USER_STAFF_SUCCESS':
-      return {
-        ...state,
-        data: handleUsersUpdate(action.response, state.data),
-      }
-
-    case 'TOGGLE_USER_DISTRIBUTOR_SUCCESS':
-      return {
-        ...state,
-        data: handleUsersUpdate(action.response, state.data),
-      }
-    case 'TOGGLE_USER_ADMIN_SUCCESS':
+    case 'TOGGLE_USER_ROLE_SUCCESS':
       return {
         ...state,
         data: handleUsersUpdate(action.response, state.data),

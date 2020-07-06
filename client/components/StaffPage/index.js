@@ -20,24 +20,27 @@ export default () => {
 
   const doFiltering = () => {
     let filtered
+    let hiddenColumns = []
     switch (filter) {
       case 'all':
         filtered = students
         break
       case 'deviceHolders':
         filtered = students.filter(u => !!u.deviceGivenAt && !u.deviceReturned)
+        hiddenColumns = ['eligible', 'wants_device', 'digitaidot', 'enrolled']
         break
       case 'currentYearEligible':
         filtered = students.filter(u => u.signupYear === settings.currentYear && u.eligible)
+        hiddenColumns = ['eligible', 'mark_eligible']
         break
       default:
         filtered = students
         break
     }
-    return filtered
+    return { filtered, hiddenColumns }
   }
 
-  const filteredStudents = useMemo(doFiltering, [filter, students])
+  const { filtered: filteredStudents, hiddenColumns } = useMemo(doFiltering, [filter, students])
 
   return (
     <div style={{ maxWidth: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -51,7 +54,7 @@ export default () => {
       </Segment>
       <StatsTable students={filteredStudents} />
       <StaffFilter filter={filter} setFilter={setFilter} totalCount={students.length} filteredCount={filteredStudents.length} />
-      <StudentTable students={filteredStudents} />
+      <StudentTable hiddenColumns={hiddenColumns} students={filteredStudents} />
     </div>
   )
 }

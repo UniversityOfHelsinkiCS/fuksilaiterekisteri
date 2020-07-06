@@ -3,7 +3,6 @@ import React, {
 } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { NotificationManager } from 'react-notifications'
-import { Button } from 'semantic-ui-react'
 import { getUsersAction, setUserAdminNote } from '../../util/redux/usersReducer'
 import UserTable from './UserTable'
 import UserModal from './UserModal'
@@ -12,7 +11,6 @@ import AdminFilter from './AdminFilter'
 
 export default () => {
   const [modalUser, setModalUser] = useState(null)
-  const [hideStatsTable, setHideStatsTable] = useState(false)
   const dispatch = useDispatch()
   const users = useSelector(state => state.users.data)
   const settings = useSelector(state => state.serviceStatus.data)
@@ -49,11 +47,11 @@ export default () => {
         break
       case 'deviceHolders':
         filtered = users.filter(u => !!u.deviceGivenAt && !u.deviceReturned)
-        hiddenColumns = ['admin', 'staff', 'distributor', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'mark_eligible']
+        hiddenColumns = ['admin', 'staff', 'distributor', 'reclaimer', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'mark_eligible']
         break
       case 'currentYearEligible':
         filtered = users.filter(u => u.signupYear === settings.currentYear && u.eligible)
-        hiddenColumns = ['admin', 'staff', 'distributor', 'eligible']
+        hiddenColumns = ['admin', 'staff', 'distributor', 'reclaimer', 'eligible', 'mark_eligible']
         break
       case 'allStaff':
         filtered = users.filter(u => u.admin || u.staff || u.distributor || u.reclaimer)
@@ -69,17 +67,10 @@ export default () => {
   const { filteredUsers, hiddenColumns } = useMemo(doFiltering, [filter, users])
 
 
-  const ToggleStatsTable = () => (
-    <Button size="mini" style={{ width: '20em' }} onClick={() => setHideStatsTable(!hideStatsTable)}>
-      {hideStatsTable ? 'Show Stats-table' : 'Hide Stats-table'}
-    </Button>
-  )
-
   return (
     <div className="tab-content">
       <UserModal user={selectedUser} handleClose={handleModalClose} handleSubmit={handleModalSubmit} open={modalUser !== null} />
-      <StatsTable students={users.filter(u => u.studentNumber)} hide={hideStatsTable} />
-      <ToggleStatsTable />
+      <StatsTable students={users.filter(u => u.studentNumber)} />
       <AdminFilter totalCount={users.length} filteredCount={filteredUsers.length} filter={filter} setFilter={setFilter} />
       <UserTable handleAdminNoteClick={handleAdminNoteClick} users={filteredUsers} hiddenColumns={hiddenColumns} filter={filter} />
     </div>
