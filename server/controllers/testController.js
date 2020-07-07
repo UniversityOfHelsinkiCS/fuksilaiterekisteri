@@ -43,7 +43,8 @@ const resetServiceStatus = async (req, res) => {
       studentRegistrationOnline: true,
       currentYear: 2019,
       currentSemester: 139,
-      registrationDeadline: new Date().setHours(23, 59, 59),
+      registrationDeadline: '10-1-2070',
+      taskDeadline: '10-15-2070',
       customTexts: defaultTranslations,
       deviceSerial: '1s20N3S2NJ00PF1',
     })
@@ -206,6 +207,24 @@ const setSerial = async (req, res) => {
   }
 }
 
+const setServiceStatus = async (req, res) => {
+  try {
+    const newSettings = req.body
+
+    const serviceStatus = await db.serviceStatus.findAll({
+      limit: 1,
+      order: [['updatedAt', 'DESC']],
+    })
+
+    await serviceStatus[0].update({ ...newSettings })
+
+    return res.status(200).end()
+  } catch (e) {
+    logger.error('error', e)
+    return res.status(500).json({ error: 'error' })
+  }
+}
+
 module.exports = {
   resetTestUsers,
   resetServiceStatus,
@@ -214,4 +233,5 @@ module.exports = {
   advance,
   createUser,
   setSerial,
+  setServiceStatus,
 }

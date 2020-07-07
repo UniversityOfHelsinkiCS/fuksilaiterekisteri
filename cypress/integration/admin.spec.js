@@ -88,27 +88,6 @@ context('Admin', () => {
 
   })
 
-  it("Can set registration deadline", () => {
-    cy.visit("/")
-    cy.get('[data-cy=servicestatus-tab]').click()
-    
-    cy.get(".react-datepicker__input-container").eq(0).find("input").click()
-    cy.get(".react-datepicker__navigation").last().click()
-    cy.get(".react-datepicker__day--024").click()
-    cy.get("[data-cy=updateRegistrationDeadline]").click()
-    cy.contains("Settings saved")
-  })
-
-  it("Can set task deadline", () => {
-    cy.visit("/")
-    cy.get('[data-cy=servicestatus-tab]').click()
-    
-    cy.get(".react-datepicker__input-container").eq(1).find("input").click()
-    cy.get(".react-datepicker__navigation").click()
-    cy.get(".react-datepicker__day--024").click()
-    cy.get("[data-cy=updateTaskDeadline]").click()
-    cy.contains("Settings saved")
-  })
 
   it("Can disable and enable registrations", () => {
     cy.visit('/', {
@@ -202,6 +181,73 @@ context('Admin', () => {
     cy.visit("/")
     cy.get('[data-cy=servicestatus-tab]')
     cy.contains("adminEtunimi admin").parent().parent().find("[data-cy=loginAs]").should("not.exist")
+  })
+
+})
+
+describe("Deadline sanity checks", () => {
+
+  it("Registration deadline can't be after distribution deadline", () => {
+    cy.request("/api/test/setServiceStatus", {registrationDeadline:null, taskDeadline:null, studentRegistrationOnline:false})
+    cy.login("admin")
+    cy.visit('/')
+    cy.get('[data-cy=servicestatus-tab]').click()
+
+    cy.contains("are currently closed")
+    cy.get("[data-cy=enableRegistrations]").should("be.disabled")
+    cy.contains("registration and distribution deadlines must be set")
+
+
+    cy.get(".react-datepicker__input-container").eq(0).find("input").click()
+    cy.get(".react-datepicker__navigation").last().click()
+    cy.get(".react-datepicker__day--020").click()
+
+    cy.get(".react-datepicker__input-container").eq(1).find("input").click()
+    cy.get(".react-datepicker__navigation").last().click()
+    cy.get(".react-datepicker__day--019").click()
+
+    cy.contains("Update deadlines").click()
+    cy.contains("distribution deadline must not be before the registration deadline")
+  })
+
+  it("Can enable registrations when both deadlines are set correctly to future dates", () =>{
+    cy.request("/api/test/setServiceStatus", {registrationDeadline:null, taskDeadline:null, studentRegistrationOnline:false})
+    cy.login("admin")
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        cy.stub(win, 'prompt').returns('start')
+      }
+    })
+    cy.get('[data-cy=servicestatus-tab]').click()
+
+    cy.contains("are currently closed")
+    cy.get("[data-cy=enableRegistrations]").should("be.disabled")
+    cy.contains("registration and distribution deadlines must be set")
+
+    cy.get(".react-datepicker__input-container").eq(0).find("input").click()
+    cy.get(".react-datepicker__navigation").last().click()
+    cy.get(".react-datepicker__day--010").click()
+
+    cy.get(".react-datepicker__input-container").eq(1).find("input").click()
+    cy.get(".react-datepicker__navigation").last().click()
+    cy.get(".react-datepicker__day--015").click()
+
+    cy.contains("Update deadlines").click()
+    cy.get("[data-cy=enableRegistrations]").should("be.enabled").click()
+
+    cy.contains("are currently open")
+  })
+
+  it("Can't enable registrations without updating old deadlines", () => {
+    cy.request("/api/test/setServiceStatus", {registrationDeadline:new Date(2019,1,1), taskDeadline:new Date(2019,1,2), studentRegistrationOnline:false})
+    cy.login("admin")
+    cy.visit('/')
+    cy.get('[data-cy=servicestatus-tab]').click()
+
+    cy.contains("are currently closed")
+    cy.get("[data-cy=enableRegistrations]").should("be.disabled")
+    cy.contains("registration and distribution deadlines must be set to future date")
+
   })
 
 })
