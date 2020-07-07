@@ -20,8 +20,8 @@ const translations = {
     fi: 'Rekisteröitynyt relevantille kurssille',
   },
   digiSkillsCompleted: {
-    en: 'DIGI-XXXA completed',
-    fi: 'DIGI-XXXA suoritettu',
+    en: 'DIGI-A completed',
+    fi: 'DIGI-A suoritettu',
   },
   tasksFinished: {
     en: 'You have completed the tasks required for fresher device. Info about device distribution will be sent to you by email.',
