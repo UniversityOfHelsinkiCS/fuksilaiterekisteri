@@ -15,6 +15,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { getServiceStatus } from 'Utilities/redux/serviceStatusReducer'
 import useTranslation from 'Utilities/useTranslation'
 import { localeSelector } from 'Utilities/redux/localeReducer'
+import { getStudyProgrammesAction } from 'Utilities/redux/studyProgrammeReducer'
 
 const translations = {
   noStudentNumber: {
@@ -34,6 +35,7 @@ const App = () => {
   useEffect(() => {
     dispatch(getUserAction())
     dispatch(getServiceStatus())
+    dispatch(getStudyProgrammesAction())
     if (inProduction) initShibbolethPinger(60000) // 1 minute
   }, [])
 

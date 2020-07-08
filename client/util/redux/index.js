@@ -10,6 +10,7 @@ import notification from './notificationReducer'
 import email from './emailReducer'
 import serviceStatus from './serviceStatusReducer'
 import common from './localeReducer'
+import studyProgrammes from './studyProgrammeReducer'
 
 export default combineReducers({
   messages,
@@ -22,4 +23,5 @@ export default combineReducers({
   email,
   serviceStatus,
   common,
+  studyProgrammes,
 })

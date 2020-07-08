@@ -4,6 +4,7 @@ const studentController = require('@controllers/studentController')
 const testController = require('@controllers/testController')
 const emailController = require('@controllers/emailController')
 const serviceStatusController = require('@controllers/serviceStatusController')
+const studyProgrammeController = require('@controllers/studyProgrammeController')
 const { authentication } = require('@util/authenticationMiddleware')
 const { checkAdmin, checkStaffOrAdmin } = require('@util/adminMiddleware')
 const { checkDistributor } = require('@util/distributorMiddleware')
@@ -63,6 +64,8 @@ router.post('/email/reclaimer/send', checkReclaimer, emailController.sendReclaim
 
 router.post('/serviceStatus', checkAdmin, serviceStatusController.setServiceStatus)
 
+router.get('/studyProgrammes', studyProgrammeController.getAll)
+router.post('/studyProgrammes', checkAdmin, studyProgrammeController.update)
 router.use('*', (req, res) => res.sendStatus(404))
 
 module.exports = router

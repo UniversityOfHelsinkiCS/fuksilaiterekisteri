@@ -28,6 +28,18 @@ const translations = {
     en: 'Why am I not eligible for a device',
     fi: 'Miksi en ole oikeutettu laitteeseen',
   },
+  contactDetails: {
+    en: 'If you think that there\'s been a mistake, contact your studyprogramme\'s contact person:',
+    fi: 'Jos päätös on mielestäsi virheellinen, ota yhteys koulutusohjelmasi yhteyshenkilöön:',
+  },
+  notSet: {
+    en: 'Not set',
+    fi: 'Ei määritelty',
+  },
+  name: {
+    en: 'Name',
+    fi: 'Nimi',
+  },
 }
 
 const fake = {
@@ -44,6 +56,7 @@ const fake = {
 export default function NotEligible({ user, notCurrentYearsFuksi, faking }) {
   const { eligibilityReasons } = faking ? fake.user : user
   const locale = useSelector(localeSelector)
+  const studyProgrammes = useSelector(state => state.studyProgrammes.data)
 
   const EligibilityBreakdown = () => {
     if (!eligibilityReasons) return null // Only users starting from 2020 have eligibilityReasons (unless updated).
@@ -74,11 +87,22 @@ export default function NotEligible({ user, notCurrentYearsFuksi, faking }) {
     )
   }
 
+  const valOrLocalizedError = param => (param || translations.notSet[locale])
 
   return (
     <Segment style={{ maxWidth: '1024px' }}>
       <TranslatedMarkdown textKey="notEligible" />
       <EligibilityBreakdown />
+
+      <Header as="h3">{translations.contactDetails[locale]}</Header>
+      {studyProgrammes.map(({ name, contactEmail, contactName }) => (
+        <div style={{ display: 'flex', flexDirection: 'column', padding: '0.5em 0em' }}>
+          <span style={{ fontWeight: 'bold' }}>{name}</span>
+          <span>{`${translations.name[locale]}: ${valOrLocalizedError(contactName)}`}</span>
+          <span>{`Email: ${valOrLocalizedError(contactEmail)}`}</span>
+        </div>
+      ))}
+
     </Segment>
   )
 }
