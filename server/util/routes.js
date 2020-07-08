@@ -33,6 +33,7 @@ if (!inProduction) {
 }
 
 router.get('/serviceStatus', serviceStatusController.getServiceStatus) // Before authentication, because contains translations and does not contain any sensitive data.
+router.get('/studyProgrammes', studyProgrammeController.getAll)
 
 router.use('/', authentication)
 
@@ -64,7 +65,6 @@ router.post('/email/reclaimer/send', checkReclaimer, emailController.sendReclaim
 
 router.post('/serviceStatus', checkAdmin, serviceStatusController.setServiceStatus)
 
-router.get('/studyProgrammes', studyProgrammeController.getAll)
 router.post('/studyProgrammes', checkAdmin, studyProgrammeController.update)
 router.use('*', (req, res) => res.sendStatus(404))
 
