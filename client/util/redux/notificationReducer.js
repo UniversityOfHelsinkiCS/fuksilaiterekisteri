@@ -50,6 +50,16 @@ export default (state = initialState, action) => {
         ...state,
         error: 'Error while saving settings',
       }
+    case 'UPDATE_STUDYPROGRAMMES_SUCCESS':
+      return {
+        ...state,
+        success: 'Settings saved',
+      }
+    case 'UPDATE_STUDYPROGRAMMES_FAILURE':
+      return {
+        ...state,
+        error: 'Error while saving settings',
+      }
     default:
       return state
   }
