@@ -183,6 +183,19 @@ context('Admin', () => {
     cy.contains("adminEtunimi admin").parent().parent().find("[data-cy=loginAs]").should("not.exist")
   })
 
+  it("Can update contact details and contact details are saved and shown", () => {
+    cy.visit("/")
+    cy.get('[data-cy=servicestatus-tab]').click()
+    cy.get('[data-cy=form-KH50_005]').find("input").eq(0).clear().type("Contact Name")
+    cy.get('[data-cy=form-KH50_005]').find("input").eq(1).clear().type("Contact.Name@email.com")
+    cy.contains("Save changes").click()
+
+    cy.login("non_fuksi_student")
+    cy.visit("/")
+    cy.contains("Contact Name")
+    cy.contains("Contact.Name@email.com")
+  })
+
 })
 
 describe("Deadline sanity checks", () => {

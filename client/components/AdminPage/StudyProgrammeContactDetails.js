@@ -39,7 +39,7 @@ export default function StudyProgrammeContactDetails() {
         {state.map(({
           code, contactName, contactEmail, name,
         }) => (
-          <div style={{ padding: '1em 0em' }} key={code}>
+          <div data-cy={`form-${code}`} style={{ padding: '1em 0em' }} key={code}>
             <Header as="h4">{name}</Header>
             <Form.Group widths="equal">
               <Form.Field
