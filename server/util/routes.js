@@ -44,11 +44,11 @@ router.post('/request_device', userController.requestDevice)
 router.post('/claim_device', checkDistributor, userController.claimDevice)
 
 router.get('/user', checkAdmin, userController.getAllUsers)
-router.post('/user/:id/:role', checkAdmin, userController.toggleRole)
 router.post('/user/:id/admin_note', checkAdmin, validationMiddleware(['id'], ['note']), userController.setAdminNote)
+router.post('/user/:id/:role', checkAdmin, userController.toggleRole)
 
 router.get('/student/:studentNumber', checkDistributor, studentController.getStudent)
-router.post('/student/:studentNumber/eligible', checkStaffOrAdmin, studentController.markStudentEligible)
+router.post('/student/:studentNumber/eligible', checkStaffOrAdmin, studentController.toggleStudentEligibility)
 router.post('/student/:studentNumber/deviceReturned', checkStaffOrAdmin, studentController.markDeviceReturned)
 router.post('/student/:studentNumber/status', checkStaff, studentController.updateStudentStatus)
 router.post('/student/:studentNumber/reclaim_status', checkReclaimer, studentController.updateStudentReclaimStatus)

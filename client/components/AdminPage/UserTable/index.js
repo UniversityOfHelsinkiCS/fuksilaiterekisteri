@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Icon, Checkbox } from 'semantic-ui-react'
 import {
-  markStudentEligible as markStudentEligibleAction, toggleUserRoleAction, markDeviceReturnedAction,
+  toggleStudentEligiblityAction, toggleUserRoleAction, markDeviceReturnedAction,
 } from '../../../util/redux/usersReducer'
 import dateFormatter from '../../../util/dateFormatter'
 import VirtualizedTable from '../../VirtualizedTable'
@@ -12,9 +12,10 @@ const UserTable = ({
 }) => {
   const dispatch = useDispatch()
   const valOrEmpty = val => (val !== null ? val : '-')
-  const markStudentEligible = (studentNumber, name) => {
-    const reason = window.prompt(`Please write down the reason ${name} is marked eligible:`)
-    if (reason) dispatch(markStudentEligibleAction({ studentNumber, reason }))
+
+  const toggleStudentEligibility = (studentNumber, name, eligible) => {
+    const reason = window.prompt(`Please write down the reason for marking ${name} ${eligible ? 'Ineligible' : 'Eligible'}:`)
+    if (reason) dispatch(toggleStudentEligiblityAction({ studentNumber, reason }))
   }
 
   const markDeviceReturned = (studentNumber) => {
@@ -146,8 +147,8 @@ const UserTable = ({
       key: 'mark_eligible',
       label: '',
       renderCell: ({ studentNumber, eligible, name }) => (
-        <Button disabled={eligible || !studentNumber} onClick={() => markStudentEligible(studentNumber, name)} color="blue">
-          Mark eligible
+        <Button disabled={!studentNumber} onClick={() => toggleStudentEligibility(studentNumber, name, eligible)} color={eligible ? 'red' : 'blue'}>
+          {eligible ? 'Mark ineligible' : 'Mark eligible'}
         </Button>
       ),
       disableSort: true,

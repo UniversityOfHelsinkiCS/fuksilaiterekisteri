@@ -28,7 +28,7 @@ const getStudent = async (req, res) => {
   return res.send(response)
 }
 
-const markStudentEligible = async (req, res) => {
+const toggleStudentEligibility = async (req, res) => {
   try {
     const { studentNumber } = req.params
     const { reason } = req.body
@@ -37,10 +37,14 @@ const markStudentEligible = async (req, res) => {
     const student = await db.user.findOne({ where: { studentNumber }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
     if (!student) return res.status(404).json({ error: 'student not found' })
 
+    const oldEligiblity = student.eligible
     const prevNote = student.adminNote || ''
     const prefix = prevNote.length ? '\n\n' : ''
-    await student.update({ eligible: true, ...(reason ? { adminNote: prevNote.concat(`${prefix}Marked eligible by ${req.user.userId}. Reason: ${reason}`) } : {}) })
-    logger.info(`Student ${studentNumber} marked eligible by ${req.user.userId}`)
+    await student.update({
+      eligible: !oldEligiblity,
+      ...(reason ? { adminNote: prevNote.concat(`${prefix}Marked ${oldEligiblity ? 'Ineligible' : 'Eligible'} by ${req.user.userId}. Reason: ${reason}`) } : {}),
+    })
+    logger.info(`Student ${studentNumber} marked ${oldEligiblity ? 'Ineligible' : 'Eligible'} by ${req.user.userId}`)
     return res.json(student)
   } catch (e) {
     logger.error(e)
@@ -218,7 +222,7 @@ const createUserStudyprogrammes = async (studyrights, user) => {
 
 module.exports = {
   getStudent,
-  markStudentEligible,
+  toggleStudentEligibility,
   getStudentsForStaff,
   updateStudentStatus,
   markDeviceReturned,
