@@ -24,9 +24,18 @@ const UserTable = ({
   }
 
   const currentUser = useSelector(state => state.user.data)
+
   const toggleUserRole = (user, role) => {
     const displayName = user.name || user.studentNumber || user.hyEmail || user.id
-    const msg = user[role] ? `Remove ${role} permissions from ${displayName}?` : `Give ${role} permissions to ${displayName}?`
+    const editingPermissions = !['digiSkillsCompleted', 'courseRegistrationCompleted', 'wantsDevice'].includes(role)
+
+    let msg
+    if (editingPermissions) {
+      msg = user[role] ? `Remove ${role} permissions from ${displayName}?` : `Give ${role} permissions to ${displayName}?`
+    } else {
+      msg = `Mark ${role} as ${(!user[role]).toString()} for user ${displayName}?`
+    }
+
     const confirm = window.confirm(msg)
     if (confirm) dispatch(toggleUserRoleAction(user.id, role))
   }
@@ -81,21 +90,26 @@ const UserTable = ({
       label: 'Eligible',
       renderCell: ({ eligible }) => boolToString(eligible),
       getCellVal: ({ eligible }) => eligible,
+      width: 80,
     },
     {
       key: 'digitaidot',
       label: 'Digi skills',
-      renderCell: ({ digiSkillsCompleted }) => boolToString(digiSkillsCompleted),
+      renderCell: user => <Checkbox data-cy="toggleDigiskills" checked={!!user.digiSkillsCompleted} onChange={() => toggleUserRole(user, 'digiSkillsCompleted')} />,
+      getCellVal: ({ digiSkillsCompleted }) => !!digiSkillsCompleted,
+      width: 100,
     },
     {
       key: 'enrolled',
       label: 'Has enrolled',
-      renderCell: ({ courseRegistrationCompleted }) => boolToString(courseRegistrationCompleted),
+      renderCell: user => <Checkbox data-cy="toggleHasEnrolled" checked={!!user.courseRegistrationCompleted} onChange={() => toggleUserRole(user, 'courseRegistrationCompleted')} />,
+      width: 120,
     },
     {
       key: 'wants_device',
       label: 'Wants device',
-      renderCell: ({ wantsDevice }) => boolToString(wantsDevice),
+      renderCell: user => <Checkbox data-cy="toggleWantsDevice" checked={!!user.wantsDevice} onChange={() => toggleUserRole(user, 'wantsDevice')} />,
+      width: 120,
     },
     {
       key: 'device_given_at',
