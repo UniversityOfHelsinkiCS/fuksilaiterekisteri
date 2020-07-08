@@ -95,8 +95,10 @@ export default function NotEligible({ user, notCurrentYearsFuksi, faking }) {
       <EligibilityBreakdown />
 
       <Header as="h3">{translations.contactDetails[locale]}</Header>
-      {studyProgrammes.map(({ name, contactEmail, contactName }) => (
-        <div style={{ display: 'flex', flexDirection: 'column', padding: '0.5em 0em' }}>
+      {studyProgrammes.map(({
+        code, name, contactEmail, contactName,
+      }) => (
+        <div key={code} style={{ display: 'flex', flexDirection: 'column', padding: '0.5em 0em' }}>
           <span style={{ fontWeight: 'bold' }}>{name}</span>
           <span>{`${translations.name[locale]}: ${valOrLocalizedError(contactName)}`}</span>
           <span>{`Email: ${valOrLocalizedError(contactEmail)}`}</span>
