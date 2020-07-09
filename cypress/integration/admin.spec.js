@@ -276,3 +276,40 @@ describe("Deadline sanity checks", () => {
   })
 
 })
+
+describe("Email template tests", () => {
+
+  beforeEach(() => {
+    cy.request("/api/test/resetAdminEmailTemplates")
+    cy.login("admin")
+    cy.visit("/")
+    cy.get('.tabular > :nth-child(2)').contains("Email").click()
+    cy.contains("Manage email templates").click()
+  })
+
+  it("Can create, update and delete a template", () => {
+    cy.get('[data-cy=selectTemplate]').should("have.class","disabled")
+    cy.get('[data-cy=description] > input').type("My first template")
+    cy.get('[data-cy=subject] > input').type("Test subject")
+    cy.get('[data-cy=body]').type("Test content")
+    cy.contains("Create a new template").click()
+    cy.contains("Email template saved.")
+
+    cy.get('[data-cy=body]').clear().type("Updated test content")
+    cy.contains("Update this template").click()
+
+    cy.visit("/")
+    cy.get('.tabular > :nth-child(2)').contains("Email").click()
+    cy.contains("Manage email templates").click()
+    cy.get('[data-cy=selectTemplate]').click()
+    cy.get('[data-cy=selectTemplate]').find(".item").eq(0).click()
+    cy.get('[data-cy=body]').contains("Updated test content")
+
+    cy.contains("Delete this template").click()
+    cy.contains("Email template deleted.")
+    cy.get('[data-cy=selectTemplate]').should("have.class","disabled")
+   })
+
+
+
+})

@@ -1,0 +1,84 @@
+import React, { useState, useMemo, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import {
+  Form, Input, TextArea, Button, Select,
+} from 'semantic-ui-react'
+import { createAdminTemplateAction, deleteTemplateAction } from 'Utilities/redux/emailReducer'
+
+const initialState = {
+  id: null,
+  replyTo: '',
+  subject: '',
+  body: '',
+  description: '',
+}
+
+export default function ManageEmailTemplates() {
+  const dispatch = useDispatch()
+  const { adminTemplates, pending, createdId } = useSelector(state => state.email)
+
+  const [emailState, setEmailState] = useState(initialState)
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setEmailState({
+      ...emailState,
+      [name]: value,
+    })
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    dispatch(createAdminTemplateAction(emailState))
+  }
+
+  useEffect(() => {
+    if (createdId) {
+      setEmailState({
+        ...emailState,
+        id: createdId,
+      })
+    }
+  }, [createdId])
+
+  const options = useMemo(() => {
+    const temp = adminTemplates.map(({ id, description }) => ({
+      key: id,
+      value: id,
+      text: description,
+    }))
+
+    return temp
+  }, [adminTemplates])
+
+  const handleSelect = (_e, { value }) => {
+    setEmailState(adminTemplates.find(p => p.id === value))
+  }
+
+  const handleDelete = () => {
+    dispatch(deleteTemplateAction(emailState.id))
+    setEmailState(initialState)
+  }
+
+  return (
+    <div>
+      <Select disabled={!options.length} data-cy="selectTemplate" value={emailState.id} onChange={handleSelect} style={{ width: '100%', marginBottom: '1em' }} placeholder="Select template to modify it" options={options} />
+      <Form onSubmit={handleSubmit}>
+        <Input data-cy="description" fluid placeholder="Description" value={emailState.description} name="description" onChange={handleChange} required label="Description" labelPosition="left corner" />
+        <Input data-cy="replyTo" fluid placeholder="Optional" value={emailState.replyTo} name="replyTo" onChange={handleChange} label="Reply-To" type="email" labelPosition="left corner" />
+        <Input data-cy="subject" fluid placeholder="Subject" value={emailState.subject} name="subject" onChange={handleChange} required label="Subject" labelPosition="left corner" />
+        <TextArea data-cy="body" rows={10} placeholder="Body" value={emailState.body} name="body" onChange={handleChange} required />
+        <Button
+          type="submit"
+          primary
+          style={{ marginTop: '1rem', alignSelf: 'flex-start' }}
+          disabled={pending}
+        >
+          {emailState.id ? 'Update this template' : 'Create a new template'}
+        </Button>
+        {emailState.id && <Button negative onClick={handleDelete}>Delete this template</Button>}
+        {emailState.id && <Button onClick={() => setEmailState(initialState)}>Or create a new one instead</Button>}
+      </Form>
+    </div>
+  )
+}

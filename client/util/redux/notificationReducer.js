@@ -60,6 +60,26 @@ export default (state = initialState, action) => {
         ...state,
         error: 'Error while saving settings',
       }
+    case 'CREATE_OR_UPDATE_ADMIN_TEMPLATE_SUCCESS':
+      return {
+        ...state,
+        success: 'Email template saved.',
+      }
+    case 'CREATE_OR_UPDATE_ADMIN_TEMPLATE_FAILURE':
+      return {
+        ...state,
+        error: 'Error while saving email template.',
+      }
+    case 'DELETE_TEMPLATE_SUCCESS':
+      return {
+        ...state,
+        success: 'Email template deleted.',
+      }
+    case 'DELETE_TEMPLATE_FAILURE':
+      return {
+        ...state,
+        error: 'Error while deleting email template.',
+      }
     default:
       return state
   }

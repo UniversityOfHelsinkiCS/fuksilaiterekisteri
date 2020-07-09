@@ -22,7 +22,31 @@ export const updateReadyTemplate = (subject, body, replyTo) => {
   return callBuilder(route, prefix, 'post', data)
 }
 
-const initialState = { pending: false, error: false, readyTemplate: { subject: '', body: '' } }
+export const getAllAdminEmailTemplatesAction = () => {
+  const route = '/email/templates/admin'
+  const prefix = 'GET_ALL_ADMIN_TEMPLATES'
+  return callBuilder(route, prefix)
+}
+
+export const createAdminTemplateAction = (emailState) => {
+  const route = '/email/templates/admin'
+  const prefix = 'CREATE_OR_UPDATE_ADMIN_TEMPLATE'
+  return callBuilder(route, prefix, 'post', emailState)
+}
+
+export const deleteTemplateAction = (id) => {
+  const route = `/email/templates/${id}`
+  const prefix = 'DELETE_TEMPLATE'
+  return callBuilder(route, prefix, 'delete')
+}
+
+const initialState = {
+  pending: false,
+  error: false,
+  readyTemplate: { subject: '', body: '' },
+  adminTemplates: [],
+  createdId: false,
+}
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -77,6 +101,69 @@ export default (state = initialState, action) => {
         readyTemplate: action.response,
       }
     case 'UPDATE_READY_TEMPLATE_FAILURE':
+      return {
+        ...state,
+        pending: false,
+        error: true,
+      }
+    case 'GET_ALL_ADMIN_TEMPLATES_SUCCESS':
+      return {
+        ...state,
+        adminTemplates: action.response,
+        pending: false,
+        error: false,
+      }
+    case 'GET_ALL_ADMIN_TEMPLATES_ATTEMPT':
+      return {
+        ...state,
+        pending: true,
+        error: false,
+      }
+    case 'GET_ALL_ADMIN_TEMPLATES_FAILURE':
+      return {
+        ...state,
+        pending: false,
+        error: true,
+      }
+    case 'CREATE_OR_UPDATE_ADMIN_TEMPLATE_SUCCESS':
+      return {
+        ...state,
+        adminTemplates: action.response.createdId ? state.adminTemplates.concat(action.response.data) : state.adminTemplates.map((t) => {
+          if (t.id === action.response.data.id) {
+            return action.response.data
+          }
+          return t
+        }),
+        createdId: action.response.createdId,
+        pending: false,
+        error: false,
+      }
+    case 'CREATE_OR_UPDATE_ADMIN_TEMPLATE_ATTEMPT':
+      return {
+        ...state,
+        pending: true,
+        error: false,
+      }
+    case 'CREATE_OR_UPDATE_ADMIN_TEMPLATE_FAILURE':
+      return {
+        ...state,
+        pending: false,
+        error: true,
+      }
+    case 'DELETE_TEMPLATE_SUCCESS':
+      return {
+        ...state,
+        adminTemplates: state.adminTemplates.filter(t => t.id !== action.response),
+        pending: false,
+        error: false,
+      }
+    case 'DELETE_TEMPLATE_ATTEMPT':
+      return {
+        ...state,
+        pending: true,
+        error: false,
+      }
+    case 'DELETE_TEMPLATE_FAILURE':
       return {
         ...state,
         pending: false,
