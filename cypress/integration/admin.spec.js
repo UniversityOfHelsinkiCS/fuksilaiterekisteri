@@ -310,6 +310,22 @@ describe("Email template tests", () => {
     cy.get('[data-cy=selectTemplate]').should("have.class","disabled")
    })
 
+   it("Can create and select a template when sending mass-email", () => {
+    cy.get('[data-cy=selectTemplate]').should("have.class","disabled")
+    cy.get('[data-cy=description] > input').type("My first template")
+    cy.get('[data-cy=replyTo] > input').type("testReplyTo@test.com")
+    cy.get('[data-cy=subject] > input').type("Test subject")
+    cy.get('[data-cy=body]').type("Test content")
+    cy.contains("Create a new template").click()
+    cy.contains("Email template saved.")
+    cy.contains("Send mass email").click()
+    cy.get('[data-cy=selectTemplate]').click()
+    cy.get('[data-cy=selectTemplate]').find(".item").eq(0).click()
+    cy.get('input[name="replyTo"]').should("have.value","testReplyTo@test.com")
+    cy.get('input[name="subject"]').should("have.value","Test subject")
+    cy.get("textarea").contains("Test content")
+   })
+
 
 
 })
