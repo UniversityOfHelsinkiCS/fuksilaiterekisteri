@@ -77,6 +77,7 @@ context('Admin', () => {
     cy.createUser("fuksi")
     cy.contains('FUKSILAITTEET')
     cy.get('[data-cy=terms]').click()
+    cy.get('[data-cy=closeTerms]').click()
     cy.get('[data-cy=acceptTerms]').click()
     cy.get('[data-cy=getDeviceSecondary]').click()
     cy.get('[data-cy=taskStatus]').contains('Tehtävien tila')

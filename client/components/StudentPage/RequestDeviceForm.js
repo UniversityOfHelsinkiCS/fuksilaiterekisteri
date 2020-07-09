@@ -28,13 +28,17 @@ const translations = {
     en: 'Email',
     fi: 'Sähköposti',
   },
-  instructionsRead: {
-    en: 'Instructions read',
-    fi: 'Ohjeet luettu',
+  termsAndConditions: {
+    en: 'Read the instructions',
+    fi: 'Lue ohjeet',
   },
   areYouSure: {
     en: 'Are you sure?',
     fi: 'Oletko varma?',
+  },
+  iHaveRead: {
+    en: 'I have read and understood the instructions',
+    fi: 'Olen lukenut ja ymmärtänyt ohjeet',
   },
 }
 
@@ -42,6 +46,7 @@ const RequestDeviceForm = ({ faking }) => {
   const [email, setEmail] = useState('')
   const [emailValid, setEmailValid] = useState(false)
   const [termsOpen, setTermsOpen] = useState(false)
+  const [termsHaveBeenOpened, setTermsHaveBeenOpened] = useState(false)
   const [termsAccepted, setTermsAccepted] = useState(false)
   const dispatch = useDispatch()
   const user = useSelector(state => state.user.data)
@@ -75,24 +80,20 @@ const RequestDeviceForm = ({ faking }) => {
     }
   }
 
-  const handleTermsClick = () => {
-    setTermsOpen(true)
-  }
-
-  const handleAcceptTermsClick = () => {
-    setTermsOpen(false)
-    setTermsAccepted(true)
-  }
-
   const handleTermsClose = () => setTermsOpen(false)
 
   const inputRed = !emailValid && email.includes('@') && /\.fi|\.com/.test(email) // Only color input in certain cases
   const primaryButtonDisabled = !emailValid || !termsAccepted // Always disable if not valid
   const secondaryButtonDisabled = !termsAccepted
 
+  const handleTermsOpen = () => {
+    setTermsOpen(true)
+    setTermsHaveBeenOpened(true)
+  }
+
   return (
     <div>
-      <InstructionModal open={termsOpen} handleAcceptTermsClick={handleAcceptTermsClick} handleClose={handleTermsClose} />
+      <InstructionModal open={termsOpen} handleClose={handleTermsClose} />
       <Segment>
         <p>{`${translations.hello[locale]} ${user.name},`}</p>
         <p>{translations.youAreEntitledToADevice[locale]}</p>
@@ -100,23 +101,20 @@ const RequestDeviceForm = ({ faking }) => {
           <Input fluid error={inputRed} label={translations.email[locale]} placeholder="@gmail.com" onChange={changeEmail} data-cy="otherEmailInput" />
           <br />
           <br />
-          <div style={{ display: 'flex', alignItems: 'center', paddingBottom: '1em' }}>
-            <Checkbox disabled checked={termsAccepted} />
+          <div style={{ display: 'flex', flexDirection: 'column', padding: '1em 0em' }}>
             <span
-              onClick={handleTermsClick}
-              onKeyDown={handleTermsClick}
               role="button"
-              tabIndex={-1}
+              tabIndex={0}
               style={{
-                color: '#4c91cd',
-                fontWeight: '550',
-                paddingLeft: '0.5em',
-                cursor: 'pointer',
+                width: '100%', marginBottom: '1em', cursor: 'pointer', color: 'blue',
               }}
+              onKeyPress={handleTermsOpen}
+              onClick={handleTermsOpen}
               data-cy="terms"
             >
-              {translations.instructionsRead[locale]}
+              {translations.termsAndConditions[locale]}
             </span>
+            <Checkbox data-cy="acceptTerms" checked={termsAccepted} disabled={!termsHaveBeenOpened} onClick={() => setTermsAccepted(!termsAccepted)} label={translations.iHaveRead[locale]} />
           </div>
           <div style={{ display: 'flex' }}>
             <Button style={{ flex: 0.5, paddingTop: '2em', paddingBottom: '2em' }} color="purple" onClick={handleRequestClick} disabled={primaryButtonDisabled} data-cy="getDevicePrimary">

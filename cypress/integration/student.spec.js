@@ -15,6 +15,7 @@ describe('Student', () => {
 
   it('allows eligible students to sign up with email AND localization works', () => {
     cy.get('[data-cy=terms]').click()
+    cy.get('[data-cy=closeTerms]').click()
     cy.get('[data-cy=acceptTerms]').click()
 
     cy.get('button').should('have.class', 'disabled')
@@ -36,6 +37,7 @@ describe('Student', () => {
 
   it('allows eligible students to sign up without email', () => {
     cy.get('[data-cy=terms]').click()
+    cy.get('[data-cy=closeTerms]').click()
     cy.get('[data-cy=acceptTerms]').click()
 
     cy.get('[data-cy=getDeviceSecondary]').click()
