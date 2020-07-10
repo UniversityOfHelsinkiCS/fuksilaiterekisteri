@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  Form, TextArea, Label, Button, Input, Accordion, Icon, Loader, Select,
+  Form, TextArea, Label, Button, Input, Accordion, Icon, Loader, Select, Dropdown,
 } from 'semantic-ui-react'
 import { getUsersAction } from 'Utilities/redux/usersReducer'
 import { sendEmail } from 'Utilities/redux/emailReducer'
@@ -13,7 +13,14 @@ const Filter = ({
   attributeValue,
   handleClick,
 }) => (
-  <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '2em' }}>
+  <div
+    style={{
+      display: 'flex',
+      flexDirection: 'column',
+      marginLeft: '2em',
+      paddingBottom: '1em',
+    }}
+  >
     <span style={{ whiteSpace: 'nowrap' }}>{label}</span>
     <Button.Group compact style={{ alignSelf: 'flex-start' }}>
       <Button toggle active={attributeValue} onClick={() => handleClick(attribute, true)}>
@@ -31,6 +38,19 @@ const Filter = ({
   </div>
 )
 
+const DropdownFilter = ({
+  label,
+  value,
+  onChange,
+  placeholder,
+  options,
+}) => (
+  <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '2em' }}>
+    <span style={{ whiteSpace: 'nowrap' }}>{label}</span>
+    <Dropdown placeholder={placeholder} options={options} value={value} onChange={onChange} selection clearable multiple fluid />
+  </div>
+)
+
 const MassEmail = () => {
   const [confirmationOpen, setConfirmationOpen] = useState(false)
   const [recipientEmails, setRecipientEmails] = useState([])
@@ -44,8 +64,9 @@ const MassEmail = () => {
     digiSkillsCompleted: null,
     wantsDevice: null,
     courseRegistrationCompleted: null,
-    deviceClaimed: null,
+    hasDevice: null,
     signedUpForDeviceThisYear: null,
+    deviceGivenAt: [],
   })
 
   const users = useSelector(state => state.users.data)
@@ -65,12 +86,16 @@ const MassEmail = () => {
         !Object.entries(filters).find(([filterName, filterValue]) => {
           if (filterValue === null) return false
 
-          if (filterName === 'deviceClaimed') {
-            return !!user.deviceGivenAt !== filterValue
+          if (filterName === 'hasDevice') {
+            return (!!user.deviceGivenAt && !user.deviceReturned) !== filterValue
           }
 
           if (filterName === 'signedUpForDeviceThisYear') {
             return (user.signupYear === settings.currentYear) !== filterValue
+          }
+
+          if (filterName === 'deviceGivenAt') {
+            return filterValue.length > 0 && !filterValue.includes(new Date(user.deviceGivenAt).getFullYear())
           }
 
           return user[filterName] !== filterValue
@@ -93,6 +118,14 @@ const MassEmail = () => {
 
     return temp
   }, [adminTemplates])
+
+  const deviceGivenOptions = useMemo(() => {
+    const uniqueYears = Array.from(new Set(students
+      .filter(student => student.deviceGivenAt)
+      .map(studentWithDevice => new Date(studentWithDevice.deviceGivenAt).getFullYear()))).sort()
+    const options = uniqueYears.map(year => ({ key: year, value: year, text: year }))
+    return options
+  }, [students])
 
   const handleFilterClick = (attribute, value) => {
     if (value === filters[attribute]) setFilters({ ...filters, [attribute]: null })
@@ -180,9 +213,9 @@ const MassEmail = () => {
           handleClick={handleFilterClick}
         />
         <Filter
-          attribute="deviceClaimed"
-          attributeValue={filters.deviceClaimed}
-          label="Has claimed the device"
+          attribute="hasDevice"
+          attributeValue={filters.hasDevice}
+          label="Holds device"
           handleClick={handleFilterClick}
         />
         <Filter
@@ -190,6 +223,12 @@ const MassEmail = () => {
           attributeValue={filters.signedUpForDeviceThisYear}
           label={`Signed up for device in ${settings.currentYear}`}
           handleClick={handleFilterClick}
+        />
+        <DropdownFilter
+          label="Device given at"
+          options={deviceGivenOptions}
+          value={filters.deviceGivenAt}
+          onChange={(e, { value }) => setFilters({ ...filters, deviceGivenAt: value })}
         />
       </div>
       <Accordion styled fluid>
