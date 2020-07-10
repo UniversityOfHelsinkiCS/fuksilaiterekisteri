@@ -2,7 +2,7 @@ const db = require('@models')
 const completionChecker = require('@util/completionChecker')
 const logger = require('@util/logger')
 const { getServiceStatusObject } = require('./serviceStatusController')
-const { inProduction } = require('@util/common')
+const { isSuperAdmin } = require('@util/common')
 
 const validateEmail = (checkEmail) => {
   const validationRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
@@ -18,24 +18,9 @@ const validateSerial = async (serial) => {
   return false
 }
 
-const isSuperAdmin = (userId) => {
-  if (userId === 'admin' && !inProduction) return true
-  if (process.env.SUPERADMINS && process.env.SUPERADMINS.split(',').find(u => u === userId)) return true
-  return false
-}
-
 const getUser = async (req, res) => {
   const superAdmin = isSuperAdmin(req.user.userId)
-  const loggedInAs = req.headers['x-admin-logged-in-as']
 
-  if (loggedInAs) {
-    if (superAdmin) {
-      const fakeUser = await db.user.findOne({ where: { userId: loggedInAs }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
-      req.user = fakeUser
-    } else {
-      logger.warn(`Non superadmin ${req.user.userId} tried to use loginAs without permissions`)
-    }
-  }
   res.send({
     ...req.user.dataValues,
     superAdmin,
@@ -216,4 +201,5 @@ module.exports = {
   getAllUsers,
   setAdminNote,
   toggleRole,
+  isSuperAdmin,
 }

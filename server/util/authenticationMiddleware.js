@@ -1,6 +1,6 @@
 const db = require('@models')
 const { getStudentStatus, isEligible } = require('@services/student')
-const { inProduction } = require('./common')
+const { inProduction, isSuperAdmin } = require('./common')
 const logger = require('@util/logger')
 const { getServiceStatusObject } = require('@controllers/serviceStatusController')
 
@@ -33,6 +33,18 @@ const authentication = async (req, res, next) => {
   } = req.headers
 
   if (!uid) return res.status(403).json({ error: 'forbidden' })
+
+  const superAdmin = isSuperAdmin(uid)
+  const loggedInAs = req.headers['x-admin-logged-in-as']
+  if (loggedInAs) {
+    if (superAdmin) {
+      const fakeUser = await db.user.findOne({ where: { userId: loggedInAs }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
+      req.user = fakeUser
+      return next()
+    }
+    logger.warn(`Non superadmin ${uid} tried to use loginAs without permissions`)
+    return res.sendStatus(403)
+  }
 
   const foundUser = await db.user.findOne({
     where: { userId: uid },
