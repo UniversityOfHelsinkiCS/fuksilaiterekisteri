@@ -6,8 +6,8 @@ import TranslatedMarkdown from 'Components/TranslatedMarkdown'
 
 const translations = {
   iHaveRead: {
-    en: 'I have read and understood the instructions',
-    fi: 'Olen lukenut ja ymmärtänyt ohjeet',
+    en: 'I have read and understood the terms',
+    fi: 'Olen lukenut ja ymmärtänyt lainausehdot',
   },
 }
 

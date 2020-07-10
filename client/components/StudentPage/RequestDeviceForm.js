@@ -29,8 +29,8 @@ const translations = {
     fi: 'Sähköposti',
   },
   instructionsRead: {
-    en: 'Instructions read',
-    fi: 'Ohjeet luettu',
+    en: 'Terms read and accepted',
+    fi: 'Lainausehdot luettu ja hyväksytty',
   },
   areYouSure: {
     en: 'Are you sure?',
