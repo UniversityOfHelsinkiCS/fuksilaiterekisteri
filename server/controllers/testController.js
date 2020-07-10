@@ -226,9 +226,10 @@ const setServiceStatus = async (req, res) => {
 }
 
 
-const resetAdminEmailTemplates = async (req, res) => {
+const resetEmailTemplates = async (req, res) => {
   try {
-    await db.email.destroy({ where: { type: 'ADMIN' } })
+    const { type } = req.params
+    await db.email.destroy({ where: { type } })
     return res.status(200).end()
   } catch (e) {
     logger.error('error', e)
@@ -245,5 +246,5 @@ module.exports = {
   createUser,
   setSerial,
   setServiceStatus,
-  resetAdminEmailTemplates,
+  resetEmailTemplates,
 }

@@ -280,7 +280,7 @@ describe("Deadline sanity checks", () => {
 describe("Email template tests", () => {
 
   beforeEach(() => {
-    cy.request("/api/test/resetAdminEmailTemplates")
+    cy.request("/api/test/resetTemplates/ADMIN")
     cy.login("admin")
     cy.visit("/")
     cy.get('.tabular > :nth-child(2)').contains("Email").click()

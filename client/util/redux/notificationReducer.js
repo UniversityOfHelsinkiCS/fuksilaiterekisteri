@@ -80,6 +80,26 @@ export default (state = initialState, action) => {
         ...state,
         error: 'Error while deleting email template.',
       }
+    case 'DELETE_RECLAIMER_TEMPLATE_SUCCESS':
+      return {
+        ...state,
+        success: 'Email template deleted.',
+      }
+    case 'DELETE_RECLAIMER_TEMPLATE_FAILURE':
+      return {
+        ...state,
+        error: 'Error while deleting email template.',
+      }
+    case 'CREATE_OR_UPDATE_RECLAIMER_TEMPLATE_SUCCESS':
+      return {
+        ...state,
+        success: 'Email template saved.',
+      }
+    case 'CREATE_OR_UPDATE_RECLAIMER_TEMPLATE_FAILURE':
+      return {
+        ...state,
+        error: 'Error while saving email template.',
+      }
     default:
       return state
   }

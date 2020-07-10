@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import {
-  Button, Modal, Form, Input, TextArea, Accordion, Icon, Label, Message,
+  Button, Modal, Form, Input, TextArea, Accordion, Icon, Label, Message, Select,
 } from 'semantic-ui-react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { callApi } from 'Utilities/apiConnection'
 import { getStudentsWithReclaimStatus } from 'Utilities/redux/studentReducer'
 
@@ -19,7 +19,9 @@ export default function ReclaimerEmail({ students }) {
   const [pending, setPending] = useState(false)
   const [rejectedEmails, setRejectedEmails] = useState([])
   const [acceptedEmails, setAcceptedEmails] = useState([])
+  const [selectedTemplateId, setSelectedTemplateId] = useState(null)
 
+  const reclaimerTemplates = useSelector(state => state.email.reclaimerTemplates)
   const [showingEmails, setShowingEmails] = useState(false)
   const [names, setNames] = useState([])
 
@@ -57,11 +59,33 @@ export default function ReclaimerEmail({ students }) {
     setNames(students.map(({ name }) => name))
   }, [students])
 
+  const templateOptions = useMemo(() => {
+    const temp = reclaimerTemplates.map(({ id, description }) => ({
+      key: id,
+      value: id,
+      text: description,
+    }))
+
+    return temp
+  }, [reclaimerTemplates])
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormState({
       ...formState,
       [name]: value,
+    })
+  }
+
+  const handleTemplateSelect = (_e, { value }) => {
+    const {
+      id, subject: newSubject, replyTo: newReplyTo, body: newBody,
+    } = reclaimerTemplates.find(p => p.id === value)
+    setSelectedTemplateId(id)
+    setFormState({
+      replyTo: newReplyTo,
+      subject: newSubject,
+      text: newBody,
     })
   }
 
@@ -111,6 +135,13 @@ export default function ReclaimerEmail({ students }) {
           </Accordion>
 
           <Message info>The email will be sent both to @helsinki email, and to personal email (if set).</Message>
+          <div style={{
+            display: 'flex', flexDirection: 'column', marginRight: '1em',
+          }}
+          >
+            <span>{`Select a template? (${templateOptions.length} available)`}</span>
+            <Select disabled={!templateOptions.length} data-cy="selectTemplate" value={selectedTemplateId} onChange={handleTemplateSelect} style={{ width: '100%', marginBottom: '1em' }} placeholder="Select a template to use it" options={templateOptions} />
+          </div>
 
           <Form onSubmit={handleSubmit} style={{ paddingTop: '1em' }}>
             <Input type="email" fluid placeholder="Optional*" value={replyTo} name="replyTo" onChange={handleChange} label="ReplyTo" labelPosition="left corner" />

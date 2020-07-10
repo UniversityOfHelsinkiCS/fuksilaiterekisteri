@@ -30,7 +30,7 @@ if (!inProduction) {
   router.post('/test/createUser', testController.createUser)
   router.get('/test/setSerial/:serial', testController.setSerial)
   router.get('/test/setServiceStatus', testController.setServiceStatus)
-  router.get('/test/resetAdminEmailTemplates', testController.resetAdminEmailTemplates)
+  router.get('/test/resetTemplates/:type', testController.resetEmailTemplates)
 }
 
 router.get('/serviceStatus', serviceStatusController.getServiceStatus) // Before authentication, because contains translations and does not contain any sensitive data.
@@ -66,6 +66,10 @@ router.post('/email/reclaimer/send', checkReclaimer, emailController.sendReclaim
 router.get('/email/templates/admin', checkAdmin, emailController.getAllAdminTemplates)
 router.post('/email/templates/admin', checkAdmin, emailController.createOrUpdateAdminTemplate)
 router.delete('/email/templates/:id', checkAdmin, emailController.deleteTemplate)
+
+router.get('/email/templates/reclaimer', checkReclaimer, emailController.getAllReclaimerTemplates)
+router.post('/email/templates/reclaimer', checkReclaimer, emailController.createOrUpdateReclaimerTemplate)
+router.delete('/email/templates/reclaimer/:id', checkReclaimer, emailController.deleteReclaimerTemplate)
 
 
 router.post('/serviceStatus', checkAdmin, serviceStatusController.setServiceStatus)

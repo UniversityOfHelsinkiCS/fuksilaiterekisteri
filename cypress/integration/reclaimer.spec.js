@@ -168,4 +168,55 @@ context('Reclaimer View', () => {
       cy.contains('Haltija Poissanen').parent().parent().contains('CLOSED')
     })
   })
+
+  describe("Reclaimer email template tests", () => {
+
+    beforeEach(() => {
+      cy.request("/api/test/resetTemplates/RECLAIM")
+      cy.login("reclaimer")
+      cy.visit("/")
+      cy.contains("Manage email templates").click()
+    })
+  
+    it("Can create, update and delete a template", () => {
+      cy.get('[data-cy=selectTemplate]').should("have.class","disabled")
+      cy.get('[data-cy=description] > input').type("My first template")
+      cy.get('[data-cy=subject] > input').type("Test subject")
+      cy.get('[data-cy=body]').type("Test content")
+      cy.contains("Create a new template").click()
+      cy.contains("Email template saved.")
+  
+      cy.get('[data-cy=body]').clear().type("Updated test content")
+      cy.contains("Update this template").click()
+  
+      cy.visit("/")
+      cy.contains("Manage email templates").click()
+      cy.get('[data-cy=selectTemplate]').click()
+      cy.get('[data-cy=selectTemplate]').find(".item").eq(0).click()
+      cy.get('[data-cy=body]').contains("Updated test content")
+  
+      cy.contains("Delete this template").click()
+      cy.contains("Email template deleted.")
+      cy.get('[data-cy=selectTemplate]').should("have.class","disabled")
+     })
+  
+     it("Can create and select a template when sending reclaimer-email", () => {
+      cy.get('[data-cy=selectTemplate]').should("have.class","disabled")
+      cy.get('[data-cy=description] > input').type("My first template")
+      cy.get('[data-cy=replyTo] > input').type("testReplyTo@test.com")
+      cy.get('[data-cy=subject] > input').type("Test subject")
+      cy.get('[data-cy=body]').type("Test content")
+      cy.contains("Create a new template").click()
+      cy.contains("Email template saved.")
+
+      cy.contains("Reclaimer page").click()
+      cy.contains("Compose email for selected").click()
+
+      cy.get('[data-cy=selectTemplate]').click()
+      cy.get('[data-cy=selectTemplate]').find(".item").eq(0).click()
+      cy.get('input[name="replyTo"]').should("have.value","testReplyTo@test.com")
+      cy.get('input[name="subject"]').should("have.value","Test subject")
+      cy.get("textarea").contains("Test content")
+     })
+  })
 })

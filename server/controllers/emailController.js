@@ -195,6 +195,59 @@ const deleteTemplate = async (req, res) => {
   }
 }
 
+const getAllReclaimerTemplates = async (_req, res) => {
+  try {
+    const templates = await db.email.findAll(({ where: { type: 'RECLAIM' } }))
+    return res.status(200).json(templates)
+  } catch (e) {
+    logger.error(e)
+    return res.status(500).json({ error: 'error' })
+  }
+}
+
+const createOrUpdateReclaimerTemplate = async (req, res) => {
+  try {
+    const {
+      subject, body, replyTo, description, id,
+    } = req.body
+
+    if (!subject || !body || !description) {
+      return res.status(400).json({ error: 'invalid parameters' })
+    }
+
+    if (!id) {
+      const createdTemplate = await db.email.create(({
+        type: 'RECLAIM', subject, body, replyTo, description,
+      }))
+      return res.status(200).json({ data: createdTemplate, createdId: createdTemplate.id })
+    }
+
+    const existingTemplate = await db.email.findOne({ where: { id } })
+    if (!existingTemplate) return res.status(400).json({ error: 'template not found' })
+    await existingTemplate.update({
+      subject, body, replyTo, description,
+    })
+
+    return res.status(200).json({ data: existingTemplate, createdId: null })
+  } catch (e) {
+    logger.error(e.toString())
+    return res.status(500).json({ error: 'error' })
+  }
+}
+
+const deleteReclaimerTemplate = async (req, res) => {
+  try {
+    const { id } = req.params
+    if (!id) return res.status(400).json({ error: 'id missing' })
+    const deleteCount = await db.email.destroy(({ where: { id, type: 'RECLAIM' }, limit: 1 }))
+    if (deleteCount === 0) return res.status(400).json({ error: 'id not found' })
+    return res.status(200).send(id)
+  } catch (e) {
+    logger.error(e)
+    return res.status(500).json({ error: 'error' })
+  }
+}
+
 module.exports = {
   sendAdminEmail,
   sendReclaimerEmail,
@@ -203,4 +256,7 @@ module.exports = {
   getAllAdminTemplates,
   createOrUpdateAdminTemplate,
   deleteTemplate,
+  getAllReclaimerTemplates,
+  createOrUpdateReclaimerTemplate,
+  deleteReclaimerTemplate,
 }

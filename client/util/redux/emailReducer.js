@@ -28,7 +28,7 @@ export const getAllAdminEmailTemplatesAction = () => {
   return callBuilder(route, prefix)
 }
 
-export const createAdminTemplateAction = (emailState) => {
+export const createOrUpdateAdminTemplateAction = (emailState) => {
   const route = '/email/templates/admin'
   const prefix = 'CREATE_OR_UPDATE_ADMIN_TEMPLATE'
   return callBuilder(route, prefix, 'post', emailState)
@@ -40,11 +40,30 @@ export const deleteTemplateAction = (id) => {
   return callBuilder(route, prefix, 'delete')
 }
 
+export const getAllReclaimerEmailTemplatesAction = () => {
+  const route = '/email/templates/reclaimer'
+  const prefix = 'GET_ALL_RECLAIMER_TEMPLATES'
+  return callBuilder(route, prefix)
+}
+
+export const createOrUpdateReclaimerTemplateAction = (emailState) => {
+  const route = '/email/templates/reclaimer'
+  const prefix = 'CREATE_OR_UPDATE_RECLAIMER_TEMPLATE'
+  return callBuilder(route, prefix, 'post', emailState)
+}
+
+export const deleteReclaimerTemplateAction = (id) => {
+  const route = `/email/templates/reclaimer/${id}`
+  const prefix = 'DELETE_RECLAIMER_TEMPLATE'
+  return callBuilder(route, prefix, 'delete')
+}
+
 const initialState = {
   pending: false,
   error: false,
   readyTemplate: { subject: '', body: '' },
   adminTemplates: [],
+  reclaimerTemplates: [],
   createdId: false,
 }
 
@@ -125,6 +144,25 @@ export default (state = initialState, action) => {
         pending: false,
         error: true,
       }
+    case 'GET_ALL_RECLAIMER_TEMPLATES_SUCCESS':
+      return {
+        ...state,
+        reclaimerTemplates: action.response,
+        pending: false,
+        error: false,
+      }
+    case 'GET_ALL_RECLAIMER_TEMPLATES_ATTEMPT':
+      return {
+        ...state,
+        pending: true,
+        error: false,
+      }
+    case 'GET_ALL_RECLAIMER_TEMPLATES_FAILURE':
+      return {
+        ...state,
+        pending: false,
+        error: true,
+      }
     case 'CREATE_OR_UPDATE_ADMIN_TEMPLATE_SUCCESS':
       return {
         ...state,
@@ -150,6 +188,31 @@ export default (state = initialState, action) => {
         pending: false,
         error: true,
       }
+    case 'CREATE_OR_UPDATE_RECLAIMER_TEMPLATE_SUCCESS':
+      return {
+        ...state,
+        reclaimerTemplates: action.response.createdId ? state.reclaimerTemplates.concat(action.response.data) : state.reclaimerTemplates.map((t) => {
+          if (t.id === action.response.data.id) {
+            return action.response.data
+          }
+          return t
+        }),
+        createdId: action.response.createdId,
+        pending: false,
+        error: false,
+      }
+    case 'CREATE_OR_UPDATE_RECLAIMER_TEMPLATE_ATTEMPT':
+      return {
+        ...state,
+        pending: true,
+        error: false,
+      }
+    case 'CREATE_OR_UPDATE_RECLAIMER_TEMPLATE_FAILURE':
+      return {
+        ...state,
+        pending: false,
+        error: true,
+      }
     case 'DELETE_TEMPLATE_SUCCESS':
       return {
         ...state,
@@ -164,6 +227,25 @@ export default (state = initialState, action) => {
         error: false,
       }
     case 'DELETE_TEMPLATE_FAILURE':
+      return {
+        ...state,
+        pending: false,
+        error: true,
+      }
+    case 'DELETE_RECLAIMER_TEMPLATE_SUCCESS':
+      return {
+        ...state,
+        reclaimerTemplates: state.reclaimerTemplates.filter(t => t.id !== action.response),
+        pending: false,
+        error: false,
+      }
+    case 'DELETE_RECLAIMER_TEMPLATE_ATTEMPT':
+      return {
+        ...state,
+        pending: true,
+        error: false,
+      }
+    case 'DELETE_RECLAIMER_TEMPLATE_FAILURE':
       return {
         ...state,
         pending: false,
