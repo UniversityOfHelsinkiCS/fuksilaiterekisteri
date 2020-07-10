@@ -16,10 +16,10 @@ export default function ReclaimerFilter({
     name: 'Less than 30 credits on fresher year',
   }, {
     key: 'notPresent',
-    name: 'Not present',
+    name: 'Not enrolled',
   }, {
     key: 'deviceReturnDeadlinePassed',
-    name: 'Device owned for over 5 years',
+    name: 'Device loan expired',
   }]
 
   const style = {

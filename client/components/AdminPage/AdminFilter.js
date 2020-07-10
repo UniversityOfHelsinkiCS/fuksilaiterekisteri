@@ -15,6 +15,9 @@ export default function AdminFilter({
     key: 'deviceHolders',
     name: 'Device holders',
   }, {
+    key: 'returnedDevices',
+    name: 'Returned devices',
+  }, {
     key: 'currentYearEligible',
     name: 'Current years eligible students',
   }, {
