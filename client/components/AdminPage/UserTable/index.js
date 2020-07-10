@@ -103,13 +103,13 @@ const UserTable = ({
       key: 'enrolled',
       label: 'Has enrolled',
       renderCell: user => <Checkbox data-cy="toggleHasEnrolled" checked={!!user.courseRegistrationCompleted} onChange={() => toggleUserRole(user, 'courseRegistrationCompleted')} />,
-      width: 120,
+      width: 130,
     },
     {
       key: 'wants_device',
       label: 'Wants device',
       renderCell: user => <Checkbox data-cy="toggleWantsDevice" checked={!!user.wantsDevice} onChange={() => toggleUserRole(user, 'wantsDevice')} />,
-      width: 120,
+      width: 130,
     },
     {
       key: 'device_given_at',
