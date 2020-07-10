@@ -201,5 +201,4 @@ module.exports = {
   getAllUsers,
   setAdminNote,
   toggleRole,
-  isSuperAdmin,
 }
