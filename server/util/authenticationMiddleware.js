@@ -41,7 +41,7 @@ const authentication = async (req, res, next) => {
         model: db.studyProgram,
         as: 'studyPrograms',
         through: { attributes: [] },
-        attributes: ['name', 'code'],
+        attributes: ['name', 'code', 'contactEmail', 'contactName'],
       },
     ],
   })

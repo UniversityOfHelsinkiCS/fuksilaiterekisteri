@@ -6,9 +6,9 @@ export const getUsersAction = () => {
   return callBuilder(route, prefix)
 }
 
-export const markStudentEligible = ({ studentNumber, reason }) => {
+export const toggleStudentEligiblityAction = ({ studentNumber, reason }) => {
   const route = `/student/${studentNumber}/eligible`
-  const prefix = 'MARK_STUDENT_ELIGIBLE'
+  const prefix = 'TOGGLE_STUDENT_ELIGIBILITY'
   const method = 'post'
   const data = { reason }
   return callBuilder(route, prefix, method, data)
@@ -61,7 +61,7 @@ export default (state = INITIAL_STATE, action) => {
         error: true,
       }
 
-    case 'MARK_STUDENT_ELIGIBLE_SUCCESS':
+    case 'TOGGLE_STUDENT_ELIGIBILITY_SUCCESS':
       return {
         ...state,
         data: handleUsersUpdate(action.response, state.data),

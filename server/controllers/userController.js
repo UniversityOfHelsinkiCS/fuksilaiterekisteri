@@ -160,7 +160,7 @@ const toggleRole = async (req, res) => {
   try {
     const { id, role } = req.params
     const ownId = req.user.id
-    const toggleableRoles = ['admin', 'distributor', 'staff', 'reclaimer']
+    const toggleableRoles = ['admin', 'distributor', 'staff', 'reclaimer', 'digiSkillsCompleted', 'courseRegistrationCompleted', 'wantsDevice']
 
     if (!id) return res.status(400).json({ error: 'user id missing' })
     if (!role || !toggleableRoles.includes(role)) return res.status(400).json({ error: 'role missing or invalid' })

@@ -10,14 +10,16 @@ context('Admin', () => {
 
   it('Redirects admin to the correct page', () => {
     cy.contains('admin')
-    cy.contains('non-fuksiEtunimi').parent().parent().find('.ReactVirtualized__Table__rowColumn:contains(Kyllä)').should('have.length', 2)
+    cy.contains('non-fuksiEtunimi').parent().parent().find('.ReactVirtualized__Table__rowColumn').find('input[checked]').eq(1)
   })
 
-  it('Can mark student eligible', () => {
+  it('Can toggle student eligiblity', () => {
     cy.window().then((win) => {
       cy.stub(win, 'prompt').returns('Some text')
       cy.contains('non-fuksiEtunimi').parent().parent().find('.ReactVirtualized__Table__rowColumn:contains(Mark eligible)').click()
-      cy.contains('non-fuksiEtunimi').parent().parent().find('.ReactVirtualized__Table__rowColumn:contains(Kyllä)').should('have.length', 3)
+      cy.contains('non-fuksiEtunimi').parent().parent().find('.ReactVirtualized__Table__rowColumn:contains(Kyllä)').should('have.length', 1)
+      cy.contains('non-fuksiEtunimi').parent().parent().find('.ReactVirtualized__Table__rowColumn:contains(Mark ineligible)').click()
+      cy.contains('non-fuksiEtunimi').parent().parent().find('.ReactVirtualized__Table__rowColumn:contains(Kyllä)').should('have.length', 0)
     })
   })
 
@@ -46,6 +48,15 @@ context('Admin', () => {
     cy.contains("Matemaattis-luonnontieteellisen tiedekunnan fuksilaitteiden jakelu")
   })
 
+  it("Can toggle digiskills, hasEnrolled and wantsDevice", () => {
+    cy.contains('non-fuksiEtunimi').parent().parent().find('[data-cy="toggleDigiskills"]').click()
+    cy.contains('non-fuksiEtunimi').parent().parent().find('[data-cy="toggleDigiskills"] > input').should("have.attr","checked")
+    cy.contains('non-fuksiEtunimi').parent().parent().find('[data-cy="toggleHasEnrolled"]').click()
+    cy.contains('non-fuksiEtunimi').parent().parent().find('[data-cy="toggleHasEnrolled"] > input').should("have.attr","checked")
+    cy.contains('non-fuksiEtunimi').parent().parent().find('[data-cy="toggleWantsDevice"]').click()
+    cy.contains('non-fuksiEtunimi').parent().parent().find('[data-cy="toggleWantsDevice"] > input').should("not.have.attr","checked")
+  })
+
   // Only fails in ci. Gonna fix later
    it.skip('Can save admin note for user', () => {
     cy.contains('non-fuksiEtunimi').parent().parent().find('.sticky').click()
@@ -66,6 +77,7 @@ context('Admin', () => {
     cy.createUser("fuksi")
     cy.contains('FUKSILAITTEET')
     cy.get('[data-cy=terms]').click()
+    cy.get('[data-cy=closeTerms]').click()
     cy.get('[data-cy=acceptTerms]').click()
     cy.get('[data-cy=getDeviceSecondary]').click()
     cy.get('[data-cy=taskStatus]').contains('Tehtävien tila')
@@ -88,27 +100,6 @@ context('Admin', () => {
 
   })
 
-  it("Can set registration deadline", () => {
-    cy.visit("/")
-    cy.get('[data-cy=servicestatus-tab]').click()
-    
-    cy.get(".react-datepicker__input-container").eq(0).find("input").click()
-    cy.get(".react-datepicker__navigation").last().click()
-    cy.get(".react-datepicker__day--024").click()
-    cy.get("[data-cy=updateRegistrationDeadline]").click()
-    cy.contains("Settings saved")
-  })
-
-  it("Can set task deadline", () => {
-    cy.visit("/")
-    cy.get('[data-cy=servicestatus-tab]').click()
-    
-    cy.get(".react-datepicker__input-container").eq(1).find("input").click()
-    cy.get(".react-datepicker__navigation").click()
-    cy.get(".react-datepicker__day--024").click()
-    cy.get("[data-cy=updateTaskDeadline]").click()
-    cy.contains("Settings saved")
-  })
 
   it("Can disable and enable registrations", () => {
     cy.visit('/', {
@@ -203,5 +194,138 @@ context('Admin', () => {
     cy.get('[data-cy=servicestatus-tab]')
     cy.contains("adminEtunimi admin").parent().parent().find("[data-cy=loginAs]").should("not.exist")
   })
+
+  it("Can update contact details and contact details are saved and shown", () => {
+    cy.visit("/")
+    cy.get('[data-cy=servicestatus-tab]').click()
+    cy.get('[data-cy=form-KH50_005]').find("input").eq(0).clear().type("Contact Name")
+    cy.get('[data-cy=form-KH50_005]').find("input").eq(1).clear().type("Contact.Name@email.com")
+    cy.contains("Save changes").click()
+
+    cy.login("non_fuksi_student")
+    cy.visit("/")
+    cy.contains("Contact Name")
+    cy.contains("Contact.Name@email.com")
+  })
+
+})
+
+describe("Deadline sanity checks", () => {
+
+  it("Registration deadline can't be after distribution deadline", () => {
+    cy.request("/api/test/setServiceStatus", {registrationDeadline:null, taskDeadline:null, studentRegistrationOnline:false})
+    cy.login("admin")
+    cy.visit('/')
+    cy.get('[data-cy=servicestatus-tab]').click()
+
+    cy.contains("are currently closed")
+    cy.get("[data-cy=enableRegistrations]").should("be.disabled")
+    cy.contains("registration and distribution deadlines must be set")
+
+
+    cy.get(".react-datepicker__input-container").eq(0).find("input").click()
+    cy.get(".react-datepicker__navigation").last().click()
+    cy.get(".react-datepicker__day--020").click()
+
+    cy.get(".react-datepicker__input-container").eq(1).find("input").click()
+    cy.get(".react-datepicker__navigation").last().click()
+    cy.get(".react-datepicker__day--019").click()
+
+    cy.contains("Update deadlines").click()
+    cy.contains("distribution deadline must not be before the registration deadline")
+  })
+
+  it("Can enable registrations when both deadlines are set correctly to future dates", () =>{
+    cy.request("/api/test/setServiceStatus", {registrationDeadline:null, taskDeadline:null, studentRegistrationOnline:false})
+    cy.login("admin")
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        cy.stub(win, 'prompt').returns('start')
+      }
+    })
+    cy.get('[data-cy=servicestatus-tab]').click()
+
+    cy.contains("are currently closed")
+    cy.get("[data-cy=enableRegistrations]").should("be.disabled")
+    cy.contains("registration and distribution deadlines must be set")
+
+    cy.get(".react-datepicker__input-container").eq(0).find("input").click()
+    cy.get(".react-datepicker__navigation").last().click()
+    cy.get(".react-datepicker__day--010").click()
+
+    cy.get(".react-datepicker__input-container").eq(1).find("input").click()
+    cy.get(".react-datepicker__navigation").last().click()
+    cy.get(".react-datepicker__day--015").click()
+
+    cy.contains("Update deadlines").click()
+    cy.get("[data-cy=enableRegistrations]").should("be.enabled").click()
+
+    cy.contains("are currently open")
+  })
+
+  it("Can't enable registrations without updating old deadlines", () => {
+    cy.request("/api/test/setServiceStatus", {registrationDeadline:new Date(2019,1,1), taskDeadline:new Date(2019,1,2), studentRegistrationOnline:false})
+    cy.login("admin")
+    cy.visit('/')
+    cy.get('[data-cy=servicestatus-tab]').click()
+
+    cy.contains("are currently closed")
+    cy.get("[data-cy=enableRegistrations]").should("be.disabled")
+    cy.contains("registration and distribution deadlines must be set to future date")
+
+  })
+
+})
+
+describe("Email template tests", () => {
+
+  beforeEach(() => {
+    cy.request("/api/test/resetAdminEmailTemplates")
+    cy.login("admin")
+    cy.visit("/")
+    cy.get('.tabular > :nth-child(2)').contains("Email").click()
+    cy.contains("Manage email templates").click()
+  })
+
+  it("Can create, update and delete a template", () => {
+    cy.get('[data-cy=selectTemplate]').should("have.class","disabled")
+    cy.get('[data-cy=description] > input').type("My first template")
+    cy.get('[data-cy=subject] > input').type("Test subject")
+    cy.get('[data-cy=body]').type("Test content")
+    cy.contains("Create a new template").click()
+    cy.contains("Email template saved.")
+
+    cy.get('[data-cy=body]').clear().type("Updated test content")
+    cy.contains("Update this template").click()
+
+    cy.visit("/")
+    cy.get('.tabular > :nth-child(2)').contains("Email").click()
+    cy.contains("Manage email templates").click()
+    cy.get('[data-cy=selectTemplate]').click()
+    cy.get('[data-cy=selectTemplate]').find(".item").eq(0).click()
+    cy.get('[data-cy=body]').contains("Updated test content")
+
+    cy.contains("Delete this template").click()
+    cy.contains("Email template deleted.")
+    cy.get('[data-cy=selectTemplate]').should("have.class","disabled")
+   })
+
+   it("Can create and select a template when sending mass-email", () => {
+    cy.get('[data-cy=selectTemplate]').should("have.class","disabled")
+    cy.get('[data-cy=description] > input').type("My first template")
+    cy.get('[data-cy=replyTo] > input').type("testReplyTo@test.com")
+    cy.get('[data-cy=subject] > input').type("Test subject")
+    cy.get('[data-cy=body]').type("Test content")
+    cy.contains("Create a new template").click()
+    cy.contains("Email template saved.")
+    cy.contains("Send mass email").click()
+    cy.get('[data-cy=selectTemplate]').click()
+    cy.get('[data-cy=selectTemplate]').find(".item").eq(0).click()
+    cy.get('input[name="replyTo"]').should("have.value","testReplyTo@test.com")
+    cy.get('input[name="subject"]').should("have.value","Test subject")
+    cy.get("textarea").contains("Test content")
+   })
+
+
 
 })

@@ -15,6 +15,7 @@ const pageTranslations = {
   distributor: 'Jakelijan sivu',
   staff: 'Työntekijän sivu',
   student: 'Opiskelijan sivu',
+  reclaimer: 'Takaisinperijän sivu',
 }
 
 const FakeShibboBar = ({

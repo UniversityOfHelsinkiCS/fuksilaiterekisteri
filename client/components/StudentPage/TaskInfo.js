@@ -6,17 +6,17 @@ import { localeSelector } from 'Utilities/redux/localeReducer'
 const translations = {
   notRegisteredToCourse: {
     en: 'You have not yet registered to a course on your study programme. '
-      + 'Please planyour studies and register for courses in Weboodi. (The registration status is updated hourly.)',
+      + 'Please plan your studies and register for courses in Weboodi. (The registration status is updated hourly.)',
     fi: 'Et ole vielä ilmoittautunut oman opintolinjasi kurssille. Suunnittele '
       + 'opintosi ja käy ilmoittautumassa kursseille Weboodissa. (Tämä tieto päivittyy tunneittain.)',
   },
   digiSkillsNotCompleted: {
     en: 'You are yet to complete the course Student\'s digital skills: '
-      + 'Orientation (DIGI-XXXA). (Please note that this course is graded '
+      + 'Orientation (DIGI-A). (Please note that this course is graded '
       + 'only after its test period ends, so there may be a long delay before the '
       + 'credit is registered.)',
-    fi: 'Et ole vielä suorittanut Opiskelijan digitaidot: orientaatio-kurssia (DIGI-XXXA). '
-      + '(Kurssin suoritukset merkitään koejaksoa seuraavalla viikolla, jonka jälkeen suoritus näkyy myös täällä.)',
+    fi: 'Et ole vielä suorittanut Opiskelijan digitaidot: orientaatio-kurssia (DIGI-A). '
+      + '(Kurssin suoritukset kirjataan noin 1-2 viikkoa koejakson jälkeen, jonka jälkeen suoritus näkyy myös täällä.)',
   },
 }
 

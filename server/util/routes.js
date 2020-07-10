@@ -4,6 +4,7 @@ const studentController = require('@controllers/studentController')
 const testController = require('@controllers/testController')
 const emailController = require('@controllers/emailController')
 const serviceStatusController = require('@controllers/serviceStatusController')
+const studyProgrammeController = require('@controllers/studyProgrammeController')
 const { authentication } = require('@util/authenticationMiddleware')
 const { checkAdmin, checkStaffOrAdmin } = require('@util/adminMiddleware')
 const { checkDistributor } = require('@util/distributorMiddleware')
@@ -28,9 +29,12 @@ if (!inProduction) {
   router.get('/test/advance', testController.advance)
   router.post('/test/createUser', testController.createUser)
   router.get('/test/setSerial/:serial', testController.setSerial)
+  router.get('/test/setServiceStatus', testController.setServiceStatus)
+  router.get('/test/resetAdminEmailTemplates', testController.resetAdminEmailTemplates)
 }
 
 router.get('/serviceStatus', serviceStatusController.getServiceStatus) // Before authentication, because contains translations and does not contain any sensitive data.
+router.get('/studyProgrammes', studyProgrammeController.getAll)
 
 router.use('/', authentication)
 
@@ -41,11 +45,11 @@ router.post('/request_device', userController.requestDevice)
 router.post('/claim_device', checkDistributor, userController.claimDevice)
 
 router.get('/user', checkAdmin, userController.getAllUsers)
-router.post('/user/:id/:role', checkAdmin, userController.toggleRole)
 router.post('/user/:id/admin_note', checkAdmin, validationMiddleware(['id'], ['note']), userController.setAdminNote)
+router.post('/user/:id/:role', checkAdmin, userController.toggleRole)
 
 router.get('/student/:studentNumber', checkDistributor, studentController.getStudent)
-router.post('/student/:studentNumber/eligible', checkStaffOrAdmin, studentController.markStudentEligible)
+router.post('/student/:studentNumber/eligible', checkStaffOrAdmin, studentController.toggleStudentEligibility)
 router.post('/student/:studentNumber/deviceReturned', checkStaffOrAdmin, studentController.markDeviceReturned)
 router.post('/student/:studentNumber/status', checkStaff, studentController.updateStudentStatus)
 router.post('/student/:studentNumber/reclaim_status', checkReclaimer, studentController.updateStudentReclaimStatus)
@@ -59,9 +63,14 @@ router.post('/email/send', checkAdmin, emailController.sendAdminEmail)
 router.get('/email/template/autosend/:type', checkAdmin, emailController.getAutosendTemplate)
 router.post('/email/template/autosend', checkAdmin, emailController.updateAutosendTemplate)
 router.post('/email/reclaimer/send', checkReclaimer, emailController.sendReclaimerEmail)
+router.get('/email/templates/admin', checkAdmin, emailController.getAllAdminTemplates)
+router.post('/email/templates/admin', checkAdmin, emailController.createOrUpdateAdminTemplate)
+router.delete('/email/templates/:id', checkAdmin, emailController.deleteTemplate)
+
 
 router.post('/serviceStatus', checkAdmin, serviceStatusController.setServiceStatus)
 
+router.post('/studyProgrammes', checkAdmin, studyProgrammeController.update)
 router.use('*', (req, res) => res.sendStatus(404))
 
 module.exports = router

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  Form, TextArea, Label, Button, Input, Accordion, Icon, Loader,
+  Form, TextArea, Label, Button, Input, Accordion, Icon, Loader, Select,
 } from 'semantic-ui-react'
 import { getUsersAction } from 'Utilities/redux/usersReducer'
 import { sendEmail } from 'Utilities/redux/emailReducer'
@@ -38,6 +38,7 @@ const MassEmail = () => {
   const [text, setText] = useState('')
   const [replyTo, setReplyTo] = useState('')
   const [showingEmails, setShowingEmails] = useState(false)
+  const [selectedTemplateId, setSelectedTemplateId] = useState(null)
   const [filters, setFilters] = useState({
     eligible: null,
     digiSkillsCompleted: null,
@@ -49,7 +50,7 @@ const MassEmail = () => {
 
   const users = useSelector(state => state.users.data)
   const students = useMemo(() => users.filter(user => user.studentNumber), [users])
-  const emailPending = useSelector(state => state.email.pending)
+  const { pending: emailPending, adminTemplates } = useSelector(state => state.email)
   const settings = useSelector(state => state.serviceStatus.data)
 
   const dispatch = useDispatch()
@@ -82,6 +83,16 @@ const MassEmail = () => {
 
     setRecipientEmails(filteredStudentsEmails)
   }, [filters, students])
+
+  const templateOptions = useMemo(() => {
+    const temp = adminTemplates.map(({ id, description }) => ({
+      key: id,
+      value: id,
+      text: description,
+    }))
+
+    return temp
+  }, [adminTemplates])
 
   const handleFilterClick = (attribute, value) => {
     if (value === filters[attribute]) setFilters({ ...filters, [attribute]: null })
@@ -121,6 +132,16 @@ const MassEmail = () => {
     e.preventDefault()
 
     setConfirmationOpen(true)
+  }
+
+  const handleTemplateSelect = (_e, { value }) => {
+    const {
+      id, subject: newSubject, replyTo: newReplyTo, body: newBody,
+    } = adminTemplates.find(p => p.id === value)
+    setSelectedTemplateId(id)
+    setSubject(newSubject)
+    setReplyTo(newReplyTo)
+    setText(newBody)
   }
 
   return (
@@ -180,10 +201,11 @@ const MassEmail = () => {
           {recipientEmails.map(email => <Label key={email}>{email}</Label>)}
         </Accordion.Content>
       </Accordion>
+      <Select disabled={!templateOptions.length} data-cy="selectTemplate" value={selectedTemplateId} onChange={handleTemplateSelect} style={{ width: '100%', margin: '1em 0em' }} placeholder="Select a template to use it" options={templateOptions} />
       <Form onSubmit={handleSubmit} style={{ paddingTop: '1em' }}>
-        <Input type="email" fluid placeholder="Optional" value={replyTo} onChange={handleReplyToChange} label="ReplyTo" labelPosition="left corner" />
-        <Input required fluid placeholder="Enter subject.." value={subject} onChange={handleTitleChange} label="Subject" labelPosition="left corner" />
-        <TextArea rows={10} required placeholder="Enter text.." value={text} onChange={handleMessageChange} />
+        <Input name="replyTo" type="email" fluid placeholder="Optional" value={replyTo} onChange={handleReplyToChange} label="ReplyTo" labelPosition="left corner" />
+        <Input name="subject" required fluid placeholder="Enter subject.." value={subject} onChange={handleTitleChange} label="Subject" labelPosition="left corner" />
+        <TextArea name="text" rows={10} required placeholder="Enter text.." value={text} onChange={handleMessageChange} />
         <Button
           primary
           type="submit"

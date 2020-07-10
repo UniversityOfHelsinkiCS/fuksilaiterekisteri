@@ -1,35 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import { fi } from 'date-fns/locale'
-import {
-  Button, Header, Segment, Message, List,
-} from 'semantic-ui-react'
-import { useDispatch, useSelector } from 'react-redux'
-import { setServiceStatus } from 'Utilities/redux/serviceStatusReducer'
+import { Header, Message, List } from 'semantic-ui-react'
 
 registerLocale('fi', fi)
 
-export default function RegistrationDeadlineSelector() {
-  const dispatch = useDispatch()
-  const [newDeadlineDate, setNewDeadlineDate] = useState(undefined)
-  const currentDeadline = useSelector(state => state.serviceStatus.data.registrationDeadline)
-
-  useEffect(() => {
-    // Might have not been initialized.
-    if (currentDeadline) setNewDeadlineDate(new Date(currentDeadline))
-  }, [currentDeadline])
-
-  const handleDeadlineUpdate = () => {
-    const confirm = window.confirm('Update deadline?')
-
-    if (confirm) {
-      const acualDl = new Date(newDeadlineDate).setHours(23, 59, 59, 0)
-      dispatch(setServiceStatus({ registrationDeadline: acualDl }))
-    }
+export default function RegistrationDeadlineSelector({ newDeadlineDate, setNewDeadlineDate }) {
+  const handleDeadlineUpdate = (date) => {
+    const acualDl = new Date(date).setHours(23, 59, 59, 0)
+    setNewDeadlineDate(acualDl)
   }
 
   return (
-    <Segment>
+    <>
       <Header as="h2">Registration deadline</Header>
       <Message>
         <List bulleted>
@@ -44,8 +27,7 @@ export default function RegistrationDeadlineSelector() {
           </List.Item>
         </List>
       </Message>
-      <DatePicker data-cy="picker" minDate={new Date()} dateFormat="d.M.yyyy" locale="fi" placeholderText="Click to pick a date" selected={newDeadlineDate} onChange={date => setNewDeadlineDate(date)} />
-      <Button data-cy="updateRegistrationDeadline" style={{ marginLeft: '1em' }} onClick={handleDeadlineUpdate}>Update deadline</Button>
-    </Segment>
+      <DatePicker data-cy="picker" minDate={new Date()} dateFormat="d.M.yyyy" locale="fi" placeholderText="Click to pick a date" selected={newDeadlineDate} onChange={date => handleDeadlineUpdate(date)} />
+    </>
   )
 }

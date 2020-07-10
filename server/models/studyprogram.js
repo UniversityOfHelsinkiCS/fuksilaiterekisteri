@@ -4,6 +4,14 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       code: DataTypes.STRING,
+      contactEmail: {
+        type: DataTypes.STRING,
+        field: 'contact_email',
+      },
+      contactName: {
+        type: DataTypes.STRING,
+        field: 'contact_name',
+      },
     },
     {
       underscored: true,
