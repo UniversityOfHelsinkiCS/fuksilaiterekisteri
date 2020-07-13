@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Segment } from 'semantic-ui-react'
+import { Button, Segment, Message } from 'semantic-ui-react'
 import { getStudentsWithReclaimStatus, updateStudentReclainmStatuses } from 'Utilities/redux/studentReducer'
 import { getAllReclaimerEmailTemplatesAction } from 'Utilities/redux/emailReducer'
+import { inProduction } from 'Utilities/common'
 import ReclaimTable from './ReclaimTable'
 import ReclaimerFilter from './ReclaimerFilter'
 import ReclaimerEmail from './ReclaimerEmail'
@@ -50,9 +51,12 @@ const ReclaimPage = () => {
 
   return (
     <div style={{ maxWidth: '100%', display: 'flex', flexDirection: 'column' }} data-cy="reclaimerContent">
+      <Message info>Student statuses are updated automatically 15th of September on a yearly basis.</Message>
+      {!inProduction && (
       <Button onClick={handleUpdateClick} style={{ marginBottom: '1em' }} data-cy="updateReclaimStatuses">
         Run student status updater
       </Button>
+      )}
       <Segment>
         <ReclaimerFilter filter={filter} setFilter={setFilter} totalCount={students.length} filteredCount={filteredStudents.length} />
         <div style={{ display: 'flex', alignItems: 'flex-end' }}>
