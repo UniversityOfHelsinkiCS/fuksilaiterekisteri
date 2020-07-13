@@ -48,7 +48,7 @@ export default () => {
         <Header as="h3">
           Sinulla on oikeus seuraaviin opinto-ohjelmiin:
           <ul>
-            {user.studyPrograms.map(s => <li key={s.code}>{`${s.name} (${s.code})`}</li>)}
+            {user.studyPrograms && user.studyPrograms.map(s => <li key={s.code}>{`${s.name} (${s.code})`}</li>)}
           </ul>
         </Header>
       </Segment>

@@ -13,12 +13,28 @@ const createStaffStudyprogrammes = async (codes, user) => {
     attributes: ['id'],
   })
 
+  const promises = []
   studyprograms.forEach((p) => {
-    db.userStudyProgram.create({
+    promises.push(db.userStudyProgram.create({
       userId: user.id,
       studyProgramId: p.id,
-    })
+    }))
   })
+  await Promise.all(promises)
+
+  const userWithStudyPrograms = await db.user.findOne({
+    where: { userId: user.userId },
+    include: [
+      {
+        model: db.studyProgram,
+        as: 'studyPrograms',
+        through: { attributes: [] },
+        attributes: ['name', 'code', 'contactEmail', 'contactName'],
+      },
+    ],
+  })
+
+  return userWithStudyPrograms
 }
 
 const authentication = async (req, res, next) => {
@@ -90,11 +106,14 @@ const authentication = async (req, res, next) => {
       return res.status(503).send({ errorName: 'studentnumber-missing' })
     }
 
-    const newUser = await db.user.create({
+    let newUser = await db.user.create({
       ...defaultParams,
     })
 
-    if (!inProduction && uid === 'non_admin_staff') await createStaffStudyprogrammes(['KH50_005'], newUser)
+    if (!inProduction && uid === 'non_admin_staff') {
+      const updatedUser = await createStaffStudyprogrammes(['KH50_005'], newUser)
+      newUser = updatedUser
+    }
 
     req.user = newUser
 
