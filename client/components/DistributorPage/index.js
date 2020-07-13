@@ -87,13 +87,16 @@ const DistributorPage = () => {
 
   const { FULL_SERIAL_LENGTH, MANUAL_SERIAL_LENGTH, STATIC_SERIAL_PART } = useMemo(() => {
     if (settings) {
-      return {
-        FULL_SERIAL_LENGTH: settings.deviceSerial.length,
-        MANUAL_SERIAL_LENGTH: settings.deviceSerial.length - settings.serialSeparatorPos,
-        STATIC_SERIAL_PART: settings.deviceSerial.substring(0, settings.serialSeparatorPos),
+      if (settings.deviceSerial) {
+        return {
+          FULL_SERIAL_LENGTH: settings.deviceSerial.length,
+          MANUAL_SERIAL_LENGTH: settings.deviceSerial.length - settings.serialSeparatorPos,
+          STATIC_SERIAL_PART: settings.deviceSerial.substring(0, settings.serialSeparatorPos),
+        }
       }
+      window.alert('Device Serial has not been set. It must be set before distribution.')
     }
-    return undefined
+    return {}
   }, [settings])
 
 
