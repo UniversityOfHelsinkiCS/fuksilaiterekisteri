@@ -46,7 +46,8 @@ const resetServiceStatus = async (req, res) => {
       registrationDeadline: '10-1-2070',
       taskDeadline: '10-15-2070',
       customTexts: defaultTranslations,
-      deviceSerial: '1s20N3S2NJ00PF1',
+      deviceSerial: '1s20N3S2NJ00PF1XXXXX',
+      serialSeparatorPos: 12,
     })
 
     return res.status(200).end()

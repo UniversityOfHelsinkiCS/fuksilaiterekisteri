@@ -89,7 +89,7 @@ context('Admin', () => {
     cy.get('input').eq(0).type("fuksi")
     cy.contains('Hae').click()
 
-    cy.get('#device-serial-input').type('RAB12')
+    cy.get('#device-serial-input').type('XXXRAB12')
     cy.contains('Anna laite').click()
 
     cy.login("admin")
@@ -171,13 +171,18 @@ context('Admin', () => {
     cy.get('[data-cy=allStaff-filter]').click()
   })
 
-  it("Can update device serial", () => {
+  it("Can update device serial and adjust separator position", () => {
     cy.get('[data-cy=servicestatus-tab]').click()
-    cy.get("[data-cy=deviceSerial]").clear().type("1s20N3S2NJ12345")
+    cy.get("[data-cy=deviceSerial] > input").clear().type("STATICPARTcustompart")
+    cy.get('[data-cy=letter-1]').click()
+    cy.get('[data-cy=updateSerial]').should("be.disabled")
+    cy.get('[data-cy=letter-11]').click()
     cy.get("[data-cy=updateSerial]").click()
     cy.reload()
     cy.get('[data-cy=servicestatus-tab]').click()
-    cy.get("[data-cy=deviceSerial]").should("have.value","1s20N3S2NJ12345")
+    cy.get("[data-cy=deviceSerial] > input").should("have.value","STATICPARTcustompart")
+    cy.get('[data-cy=letter-11]').should("have.css","color","rgb(0, 128, 0)")
+    cy.get('[data-cy=letter-10]').should("have.css","color","rgb(255, 0, 0)")
   })
 
   it("Superadmin can use login as", () => {

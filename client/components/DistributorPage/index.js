@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, {
+  useState, useEffect, useRef, useMemo,
+} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   Button, Segment, Form, Header, Ref,
@@ -66,7 +68,6 @@ const StudentInfo = ({ student }) => {
   )
 }
 
-const FULL_SERIAL_LENGTH = 20
 
 const DistributorPage = () => {
   const dispatch = useDispatch()
@@ -84,12 +85,22 @@ const DistributorPage = () => {
   const clearStudent = () => dispatch(clearStudentAction())
   const getStudent = payload => dispatch(getStudentAction(payload))
 
-  const parseId = (rawId) => {
-    const manualLength = FULL_SERIAL_LENGTH - settings.deviceSerial.length
+  const { FULL_SERIAL_LENGTH, MANUAL_SERIAL_LENGTH, STATIC_SERIAL_PART } = useMemo(() => {
+    if (settings) {
+      return {
+        FULL_SERIAL_LENGTH: settings.deviceSerial.length,
+        MANUAL_SERIAL_LENGTH: settings.deviceSerial.length - settings.serialSeparatorPos,
+        STATIC_SERIAL_PART: settings.deviceSerial.substring(0, settings.serialSeparatorPos),
+      }
+    }
+    return undefined
+  }, [settings])
 
-    if (rawId.length !== manualLength && rawId.length !== FULL_SERIAL_LENGTH) return null
-    if (rawId.length === manualLength) return settings.deviceSerial + rawId
-    if (rawId.substring(0, settings.deviceSerial.length) === settings.deviceSerial) return rawId
+
+  const parseId = (rawId) => {
+    if (rawId.length !== MANUAL_SERIAL_LENGTH && rawId.length !== FULL_SERIAL_LENGTH) return null
+    if (rawId.length === MANUAL_SERIAL_LENGTH) return STATIC_SERIAL_PART + rawId
+    if (rawId.substring(0, settings.serialSeparatorPos) === STATIC_SERIAL_PART) return rawId
 
     return null
   }
@@ -184,7 +195,7 @@ const DistributorPage = () => {
     return (
       <>
         <StudentInfo student={student} />
-        <div>{`Skannaa viivakoodi, tai syötä sarjanumeron viimeiset ${FULL_SERIAL_LENGTH - settings.deviceSerial.length} merkkiä`}</div>
+        <div>{`Skannaa viivakoodi, tai syötä sarjanumeron viimeiset ${MANUAL_SERIAL_LENGTH} merkkiä`}</div>
         <Form>
           <Form.Group>
             <Ref innerRef={handleDeviceRef}>
@@ -217,8 +228,8 @@ const DistributorPage = () => {
           showParsedDeviceId
           && (
           <>
-            <span>{`${parseId(deviceId).substring(0, settings.deviceSerial.length)}`}</span>
-            <span style={{ color: '#a333c8' }}>{`${parseId(deviceId).substring(settings.deviceSerial.length, FULL_SERIAL_LENGTH)}`}</span>
+            <span>{`${parseId(deviceId).substring(0, settings.serialSeparatorPos)}`}</span>
+            <span style={{ color: '#a333c8' }}>{`${parseId(deviceId).substring(settings.serialSeparatorPos)}`}</span>
           </>
           )
         }

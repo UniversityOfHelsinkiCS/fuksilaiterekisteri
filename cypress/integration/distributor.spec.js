@@ -6,7 +6,7 @@ const findStudent = (id) => {
 }
 
 const giveDevice = (serial) => {
-  cy.get('#device-serial-input').type(serial ? serial : 'RAB12')
+  cy.get('#device-serial-input').type(serial ? serial : 'XXX12345')
   cy.contains('Anna laite').click()
 }
 
@@ -93,7 +93,19 @@ context('Distributor', () => {
   })
 })
 
-describe("Serial validation works", () => {
+describe("Serial setting and validation works and correct part of the serial is stored in the database", () => {
+
+  const setSerialValidationPattern = (pattern,startOfCustompart) => {
+    cy.login("admin")
+    cy.visit("/")
+    cy.get('[data-cy=servicestatus-tab]').click()
+    cy.get('[data-cy=deviceSerial] > input').clear().type(pattern)
+    cy.get(`[data-cy=letter-${startOfCustompart}]`).click()
+    cy.get('[data-cy=updateSerial]').click()
+    cy.login("jakelija")
+    cy.visit("/")
+  }
+
   
   beforeEach(() => {
     cy.createUser("fuksi")
@@ -103,70 +115,112 @@ describe("Serial validation works", () => {
     cy.get('[data-cy=acceptTerms]').click()
     cy.get('[data-cy=getDeviceSecondary]').click()
     cy.get('[data-cy=taskStatus]').contains('Tehtävien tila')
-    cy.login("jakelija")
-    cy.visit("/")
   })
 
   describe("Correct", () =>{
-    it("10 static, 10 custom", () => {
-      cy.request("/api/test/setSerial/0123456789")
+
+    it("2019", () => {
+      setSerialValidationPattern("1s20N3S2NJ00PF1XXXXX",13)
+      findStudent('fuksi')
+      giveDevice("PF1XXXXX")
+      cy.contains('fuksiEtunimi fuksi').should('not.exist')
+      cy.login("admin")
       cy.visit("/")
+      cy.contains('fuksiEtunimi fuksi').parent().parent().contains("PF1XXXXX")
+    })
+
+    it("10 static, 10 custom", () => {
+      setSerialValidationPattern("0123456789XXXXXXXXXX",11)
       findStudent('fuksi')
       giveDevice("IIIIIIIIII")
       cy.contains('fuksiEtunimi fuksi').should('not.exist')
+      cy.login("admin")
+      cy.visit("/")
+      cy.contains('fuksiEtunimi fuksi').parent().parent().contains("IIIIIIIIII")
     })
   
     it("1 static, 19 custom", () => {
-      cy.request("/api/test/setSerial/1")
-      cy.visit("/")
+      setSerialValidationPattern("1XXXXXXXXXXXXXXXXXXX",2)
       findStudent('fuksi')
       giveDevice("IIIIIIIIIIIIIIIIIII")
       cy.contains('fuksiEtunimi fuksi').should('not.exist')
+      cy.login("admin")
+      cy.visit("/")
+      cy.contains('fuksiEtunimi fuksi').parent().parent().contains("IIIIIIIIIIIIIIIIIII")
     })
   
     it("15 static, 5 custom", () => {
-      cy.request("/api/test/setSerial/012345678901234")
-      cy.visit("/")
+      setSerialValidationPattern("012345678901234XXXXX",16)
       findStudent('fuksi')
       giveDevice("12345")
       cy.contains('fuksiEtunimi fuksi').should('not.exist')
+      cy.login("admin")
+      cy.visit("/")
+      cy.contains('fuksiEtunimi fuksi').parent().parent().contains("12345")
     })
+
+    it("Non 20 length serial FULL", () => {
+      setSerialValidationPattern("0123456789012345678901234XXXXXXX",26)
+      findStudent('fuksi')
+      giveDevice("0123456789012345678901234custom1")
+      cy.contains('fuksiEtunimi fuksi').should('not.exist')
+      cy.login("admin")
+      cy.visit("/")
+      cy.contains('fuksiEtunimi fuksi').parent().parent().contains("custom1")
+    })
+
+    it("Non 20 length serial MANUAL", () => {
+      setSerialValidationPattern("0123456789012345678901234XXXXXXX",22)
+      findStudent('fuksi')
+      giveDevice("1234custom1")
+      cy.contains('fuksiEtunimi fuksi').should('not.exist')
+      cy.login("admin")
+      cy.visit("/")
+      cy.contains('fuksiEtunimi fuksi').parent().parent().contains("1234custom1")
+    })
+
   })
 
   describe("Incorrect", () =>{ 
     it("undefined", () => {
-      cy.request("/api/test/setSerial/012345678901234")
-      cy.visit("/")
+      setSerialValidationPattern("012345678901234XXXXX",16)
       findStudent('fuksi')
       giveBadDevice("")
       cy.contains('fuksiEtunimi fuksi')
     })
     it("too long", () => {
-      cy.request("/api/test/setSerial/012345678901234")
-      cy.visit("/")
+      setSerialValidationPattern("012345678901234XXXXX",16)
       findStudent('fuksi')
       giveBadDevice("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
       cy.contains('fuksiEtunimi fuksi')
     })
     it("deviceSerial", () => {
-      cy.request("/api/test/setSerial/012345678901234")
-      cy.visit("/")
+      setSerialValidationPattern("012345678901234XXXXX",16)
       findStudent('fuksi')
       giveBadDevice("012345678901234")
       cy.contains('fuksiEtunimi fuksi')
     })
     it("order", () => {
-      cy.request("/api/test/setSerial/012345678901234")
-      cy.visit("/")
+      setSerialValidationPattern("012345678901234XXXXX",16)
       findStudent('fuksi')
       giveBadDevice("aaaaa012345678901234")
       cy.contains('fuksiEtunimi fuksi')
     })
     it("case sensitivity", () => {
-      cy.request("/api/test/setSerial/AbC1234567")
-      cy.visit("/")
+      setSerialValidationPattern("ABCXXX",4)
       findStudent('fuksi')
-      giveBadDevice("ABC12345671111111111")
+      giveBadDevice("abc123")
+    })
+    it("Non 20 length serial FULL", () => {
+      setSerialValidationPattern("0123456789012345678901234XXXXXXX",26)
+      findStudent('fuksi')
+      giveDevice("012345678901X345678901234custom1")
+      cy.contains('fuksiEtunimi fuksi')
+    })
+    it("Non 20 length serial MANUAL", () => {
+      setSerialValidationPattern("0123456789012345678901234XXXXXXX",22)
+      findStudent('fuksi')
+      giveDevice("tooshort")
       cy.contains('fuksiEtunimi fuksi')
     })
   })

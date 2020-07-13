@@ -11,10 +11,10 @@ const validateEmail = (checkEmail) => {
   return validationRegex.test(checkEmail) && !checkEmail.includes('helsinki.') && !checkEmail.includes('@cs.')
 }
 
-const validateSerial = async (serial) => {
-  const FULL_SERIAL_LENGTH = 20
-  const settings = await getServiceStatusObject()
-  if (serial.length === FULL_SERIAL_LENGTH && serial.substr(0, settings.deviceSerial.length) === settings.deviceSerial) return true
+const validateSerial = async (serial, settings) => {
+  const FULL_SERIAL_LENGTH = settings.deviceSerial.length
+  const STATIC_SERIAL_PART = settings.deviceSerial.substring(0, settings.serialSeparatorPos)
+  if (serial.length === FULL_SERIAL_LENGTH && (serial.substr(0, settings.serialSeparatorPos) === STATIC_SERIAL_PART)) return true
   return false
 }
 
@@ -87,9 +87,11 @@ const claimDevice = async (req, res) => {
       body: { studentNumber, deviceId },
     } = req
 
+    const settings = await getServiceStatusObject()
+
     if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
 
-    const validSerial = await validateSerial(deviceId)
+    const validSerial = await validateSerial(deviceId, settings)
     if (!validSerial) return res.status(400).json({ error: 'device id missing or invalid' })
 
     const student = await db.user.findOne({
@@ -100,7 +102,6 @@ const claimDevice = async (req, res) => {
 
     if (!student) return res.status(404).json({ error: 'student not found' })
 
-    const settings = await getServiceStatusObject()
     if (
       !(
         student.eligible
@@ -116,7 +117,7 @@ const claimDevice = async (req, res) => {
 
     const deviceData = {
       device_distributed_by: user.userId,
-      deviceSerial: deviceId,
+      deviceSerial: deviceId.substring(settings.serialSeparatorPos),
       deviceGivenAt: new Date(),
     }
 

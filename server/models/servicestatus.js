@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         field: 'device_serial',
       },
+      serialSeparatorPos: {
+        type: DataTypes.INTEGER,
+        field: 'serial_separator_pos',
+      },
     },
     {
       underscored: true,
