@@ -1,29 +1,41 @@
 import React from 'react'
-import { inProduction } from 'Utilities/common'
+import {
+  Message, Button,
+} from 'semantic-ui-react'
 
 export default class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       hasError: false,
+      error: undefined,
+      errorInfo: undefined,
     }
   }
 
-  static getDerivedStateFromError() {
-    return { hasError: true }
-  }
-
-  componentDidCatch() {
-    this.setState({ hasError: true })
+  componentDidCatch(error, errorInfo) {
+    this.setState({ hasError: true, error, errorInfo })
   }
 
   render() {
-    const { hasError } = this.state
+    const { hasError, error, errorInfo } = this.state
     const { children } = this.props
-    if (!hasError || !inProduction) {
+    if (!hasError) {
       return children
     }
-    window.location.reload()
-    return null
+    return (
+      <div style={{ padding: '5em' }}>
+        <Message error>
+          There was an error while loading this page.
+          <br />
+          {errorInfo && `Error: ${error.message.toString()}`}
+          <br />
+          {errorInfo && errorInfo.componentStack}
+          <br />
+          <br />
+          <Button color="blue" onClick={() => window.location.reload()}>Reload the page</Button>
+        </Message>
+      </div>
+    )
   }
 }
