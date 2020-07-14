@@ -8,6 +8,12 @@ jobs:
   sentry:
     name: "Make sentry release and upload sourcemaps"
     runs-on: ubuntu-16.04
+    env:
+      SENTRY_PROJECT: fuksilaiterekisteri
+      SENTRY_ORG: sentry
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_URL: ${{ secrets.SENTRY_URL }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -19,10 +25,10 @@ jobs:
         run: npm run build
       
       - name: Make Sentry release
-        run: SENTRY_PROJECT=fuksilaiterekisteri SENTRY_ORG=sentry npm run sentry-cli -- releases new --finalize fuksilaiterekisteri@$GITHUB_SHA
+        run: npm run sentry-cli -- releases new --finalize fuksilaiterekisteri@$GITHUB_SHA
 
       - name: Upload sourcemaps
-        run: SENTRY_PROJECT=fuksilaiterekisteri SENTRY_ORG=sentry npm run sentry-cli -- releases files fuksilaiterekisteri@$GITHUB_SHA upload-sourcemaps --rewrite ./dist/main.js.map
+        run: npm run sentry-cli -- releases files fuksilaiterekisteri@$GITHUB_SHA upload-sourcemaps --rewrite ./dist/main.js.map
 
   test:
     name: "Run linter and Cypress tests"
