@@ -77,5 +77,5 @@ jobs:
           repository: toska/fuksilaiterekisteri
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          build_args: BASE_PATH=/fuksilaite/,SENTRY_IDENTIFIER=staging,GITHUB_SHA=${GITHUB_SHA}
+          build_args: BASE_PATH=/fuksilaite/,SENTRY_IDENTIFIER=staging,GITHUB_SHA=${{ github.sha }}
           tags: staging
