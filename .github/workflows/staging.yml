@@ -1,5 +1,8 @@
 name: Test and build staging-image
 
+env:
+  SHA12: ${GITHUB_SHA::12}
+
 on:
   push:
     branches: [master]
@@ -7,6 +10,7 @@ on:
 jobs:
   sentry:
     name: "Make sentry release and upload sourcemaps"
+    needs: build
     runs-on: ubuntu-16.04
     env:
       SENTRY_PROJECT: fuksilaiterekisteri
@@ -25,10 +29,10 @@ jobs:
         run: npm run build
       
       - name: Make Sentry release
-        run: npm run sentry-cli -- releases new --finalize fuksilaiterekisteri@$GITHUB_SHA
+        run: npm run sentry-cli -- releases new --finalize fuksilaiterekisteri@${{env.SHA12}}-staging
 
       - name: Upload sourcemaps
-        run: npm run sentry-cli -- releases files fuksilaiterekisteri@$GITHUB_SHA upload-sourcemaps --url-prefix "~/fuksilaite/" --rewrite --validate dist
+        run: npm run sentry-cli -- releases files fuksilaiterekisteri@${{env.SHA12}}-staging upload-sourcemaps --url-prefix "~/fuksilaite/" --rewrite --validate dist
 
   test:
     name: "Run linter and Cypress tests"
@@ -66,7 +70,7 @@ jobs:
 
   build:
     name: 'Build and publish staging image'
-    needs: [test,sentry]
+    needs: test
     runs-on: ubuntu-16.04
     steps:
       - name: Checkout
@@ -77,5 +81,5 @@ jobs:
           repository: toska/fuksilaiterekisteri
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          build_args: BASE_PATH=/fuksilaite/,SENTRY_IDENTIFIER=staging,GITHUB_SHA=${{ github.sha }}
+          build_args: BASE_PATH=/fuksilaite/,SENTRY_IDENTIFIER=staging,GITHUB_SHA=${{env.SHA12}}-staging
           tags: staging
