@@ -57,8 +57,7 @@ context('Admin', () => {
     cy.contains('non-fuksiEtunimi').parent().parent().find('[data-cy="toggleWantsDevice"] > input').should("not.have.attr","checked")
   })
 
-  // Only fails in ci. Gonna fix later
-   it.skip('Can save admin note for user', () => {
+   it('Can save admin note for user', () => {
     cy.contains('non-fuksiEtunimi').parent().parent().find('.sticky').click()
     cy.contains('Edit admin note for user non-fuksiEtunimi non-fuksi')
     cy.get('textarea').type('test123')
