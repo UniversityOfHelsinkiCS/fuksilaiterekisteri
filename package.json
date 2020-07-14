@@ -15,7 +15,8 @@
     "db:seed": "docker-compose run --rm --entrypoint 'npx sequelize-cli db:seed:all --url \"postgres://postgres:postgres@db:5432/postgres\"' app",
     "cli": "node server/util/studentUpdaterCli.js",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run --config video=true,videoCompression=false"
+    "cypress:run": "cypress run --config video=true,videoCompression=false",
+    "sentry-cli": "sentry-cli"
   },
   "engines": {
     "node": ">=10.15"
@@ -77,6 +78,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@sentry/cli": "^1.55.0",
     "babel-preset-stage-2": "^6.24.1",
     "cypress": "^4.10.0",
     "nodemon": "^1.18.10",

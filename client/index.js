@@ -9,7 +9,9 @@ import 'Assets/custom.css'
 import 'react-notifications/lib/notifications.css'
 
 import store from 'Utilities/store'
-import { basePath, inProduction, sentryIdentifier } from 'Utilities/common'
+import {
+  basePath, inProduction, sentryIdentifier, githubSha,
+} from 'Utilities/common'
 import App from 'Components/App'
 import ErrorBoundary from 'Components/ErrorBoundary'
 
@@ -17,6 +19,7 @@ if (inProduction && sentryIdentifier) {
   Sentry.init({
     dsn: 'https://9575a52bb5624ee39377d70de0f67f4a@sentry.toska.cs.helsinki.fi/15',
     environment: sentryIdentifier,
+    release: `fuksilaiterekisteri@${githubSha}`,
   })
 }
 

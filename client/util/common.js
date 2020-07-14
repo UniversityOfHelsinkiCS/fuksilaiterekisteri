@@ -19,4 +19,6 @@ export const builtAt = process.env.BUILT_AT || '0'
 
 export const sentryIdentifier = process.env.SENTRY_IDENTIFIER
 
+export const githubSha = process.env.GITHUB_SHA
+
 export * from 'Root/util/common'
