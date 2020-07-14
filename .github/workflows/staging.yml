@@ -28,7 +28,7 @@ jobs:
         run: npm run sentry-cli -- releases new --finalize fuksilaiterekisteri@$GITHUB_SHA
 
       - name: Upload sourcemaps
-        run: npm run sentry-cli -- releases files fuksilaiterekisteri@$GITHUB_SHA upload-sourcemaps --url-prefix /fuksilaite/ --rewrite dist
+        run: npm run sentry-cli -- releases files fuksilaiterekisteri@$GITHUB_SHA upload-sourcemaps --url-prefix "~/fuksilaite/" --rewrite --validate dist
 
   test:
     name: "Run linter and Cypress tests"
