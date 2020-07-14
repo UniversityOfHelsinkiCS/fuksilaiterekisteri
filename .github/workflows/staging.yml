@@ -12,6 +12,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Temp test
+        run: echo GITHUB_SHA $GITHUB_SHA
+        
       - name: npm ci
         run: npm ci
 
@@ -52,5 +55,5 @@ jobs:
           repository: toska/fuksilaiterekisteri
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          build_args: BASE_PATH=/fuksilaite/,SENTRY_IDENTIFIER=staging
+          build_args: BASE_PATH=/fuksilaite/,SENTRY_IDENTIFIER=staging,GITHUB_SHA=$GITHUB_SHA
           tags: staging
