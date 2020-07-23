@@ -96,7 +96,7 @@ const StatsTable = ({ students }) => {
   return (
     <div style={{ overflow: 'auto', maxWidth: '100%', marginBottom: '10px' }}>
       <ToggleStatsTable />
-      <span style={{ padding: '0em 1em' }}>Showing statistics form year:</span>
+      <span style={{ padding: '0em 1em' }}>Showing statistics from year:</span>
       <Select
         data-cy="customTextSelect"
         value={selectedYear}
