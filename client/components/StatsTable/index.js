@@ -9,7 +9,7 @@ const StatsTable = ({ students }) => {
 
   const getStats = () => {
     const def = {
-      wants: 0, needs: 0, received: 0, total: 0,
+      wants: 0, needs: 0, received: 0, total: 0, returned: 0,
     }
     const stats = {
       Windows: {
@@ -24,6 +24,7 @@ const StatsTable = ({ students }) => {
       totalNeeds: 0,
       totalReceived: 0,
       total: 0,
+      totalReturned: 0,
     }
     const cubbli = ['KH50_002', 'KH50_005', 'KH50_008']
 
@@ -45,9 +46,13 @@ const StatsTable = ({ students }) => {
         stats[targetOs].received++
         stats[targetProgram].received++
       }
+      if (student.deviceReturned) {
+        stats[targetOs].returned++
+        stats[targetProgram].returned++
+      }
     })
     Object.entries(stats).forEach(([key, stat]) => {
-      stats[key].total = Object.values(stat).reduce((acc, curr) => acc + curr, 0)
+      stats[key].total = Object.entries(stat).reduce((acc, [statKey, value]) => (statKey === 'returned' ? acc : acc + value), 0)
       stats[key].devicesNeeded = stats[key].wants + stats[key].needs
     })
     totals.totalWants = stats.Windows.wants + stats.Cubbli.wants
@@ -55,6 +60,7 @@ const StatsTable = ({ students }) => {
     totals.totalReceived = stats.Windows.received + stats.Cubbli.received
     totals.total = stats.Windows.total + stats.Cubbli.total
     totals.devicesNeeded = totals.totalWants + totals.totalNeeds
+    totals.totalReturned = stats.Windows.returned + stats.Cubbli.returned
 
     return { stats, totals }
   }
@@ -199,6 +205,21 @@ const StatsTable = ({ students }) => {
               {totals.devicesNeeded}
             </Table.Cell>
             { getCellsFor(programmeStats, 'devicesNeeded') }
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell collapsing>
+              Devices returned
+            </Table.Cell>
+            <Table.Cell>
+              {Windows.returned}
+            </Table.Cell>
+            <Table.Cell>
+              {Cubbli.returned}
+            </Table.Cell>
+            <Table.Cell active>
+              {totals.totalReturned}
+            </Table.Cell>
+            { getCellsFor(programmeStats, 'returned') }
           </Table.Row>
         </Table.Body>
       </Table>
