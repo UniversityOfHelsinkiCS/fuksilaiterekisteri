@@ -1,7 +1,7 @@
 const db = require('@models')
 const { Op } = require('sequelize')
 const logger = require('@util/logger')
-const { updateStudentReclaimStatuses, runAutumnReclaimStatusUpdater, runSpringReclaimStatusUpdater } = require('@services/student')
+const { runAutumnReclaimStatusUpdater, runSpringReclaimStatusUpdater } = require('@services/student')
 
 const getStudent = async (req, res) => {
   const { studentNumber } = req.params
