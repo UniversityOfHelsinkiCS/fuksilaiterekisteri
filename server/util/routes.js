@@ -31,6 +31,8 @@ if (!inProduction) {
   router.get('/test/setSerial/:serial', testController.setSerial)
   router.get('/test/setServiceStatus', testController.setServiceStatus)
   router.get('/test/resetTemplates/:type', testController.resetEmailTemplates)
+  router.get('/test/run_autumn_updater', studentController.updateAutumunReclaimStatuses)
+  router.get('/test/run_spring_updater', studentController.updateSpringReclaimStatuses)
 }
 
 router.get('/serviceStatus', serviceStatusController.getServiceStatus) // Before authentication, because contains translations and does not contain any sensitive data.
@@ -57,7 +59,6 @@ router.post('/student/:studentNumber/reclaim_status', checkReclaimer, studentCon
 router.get('/staff/students', checkStaff, studentController.getStudentsForStaff)
 
 router.get('/reclaimer/students', checkReclaimer, studentController.getStudentsForReclaimer)
-router.get('/reclaimer/update', checkReclaimer, studentController.updateReclaimStatuses)
 
 router.post('/email/send', checkAdmin, emailController.sendAdminEmail)
 router.get('/email/template/autosend/:type', checkAdmin, emailController.getAutosendTemplate)

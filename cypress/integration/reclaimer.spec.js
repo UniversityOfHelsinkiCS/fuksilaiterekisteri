@@ -9,7 +9,7 @@ const createTestUsers = () => {
   cy.createCustomUser({
     userId: 'oldDeviceHolder',
     name: 'Laite Vanhatar',
-    deviceGivenAt: new Date('2000').getTime()
+    deviceGivenAt: new Date(2014, 8, 25).getTime()
   }, 'KH50_001')
   cy.createCustomUser({
     userId: 'modelStudent',
@@ -64,47 +64,46 @@ const createTestUsers = () => {
   }, 'KH50_001')
 }
 
+const runSharedTests = () => {
+  it('Doesn\'t show students without device', () => {
+    cy.get('[data-cy=reclaimerContent]').should('not.contain', 'fuksiEtunimi')
+  })
+
+  it('Doesn\'t show student who is present with more than 30 credits first year and device newer than five years', () => {
+    cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Oppilas Mallikas')
+  })
+
+  it('Doesn\'t show student who has returned device regardless of status', () => {
+    cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Haltijation Paikalloton')
+  })
+
+  it('Shows device holder who isn\'t present in current semester', () => {
+    cy.get('[data-cy=reclaimerContent]').contains('Haltija Poissanen')
+  })
+}
+
 context('Reclaimer View', () => {
   it('Redirects reclaimer to the correct page', () => {
     cy.login('reclaimer')
     cy.visit('/')
-    cy.contains('Run student status updater')
+    cy.contains('Student statuses')
   })
 
-  context('Table',  () => {
+  context('After running autumn updater', () => {
     before(() => {
       cy.server()
       cy.createUser('fuksi')
       createTestUsers()
+      cy.request("GET", '/api/test/run_autumn_updater')
       cy.login('reclaimer')
       cy.visit('/')
-      cy.get('[data-cy=updateReclaimStatuses]').click()
+      cy.get('[data-cy=reclaimerContent]')
     })
 
-    beforeEach(() => {
-      selectFilter('Open')
+    it('Doesn\'t show student with device turning five years old in autumn', () => {
+      cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Laite Vanhatar')
     })
 
-    it('Doesn\'t show students without device', () => {
-      cy.get('[data-cy=reclaimerContent]').should('not.contain', 'fuksiEtunimi')
-    })
-  
-    it('Doesn\'t show student who is present with more than 30 credits first year and device newer than five years', () => {
-      cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Oppilas Mallikas')
-    })
-  
-    it('Doesn\'t show student who has returned device regardless of status', () => {
-      cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Haltijation Paikalloton')
-    })
-  
-    it('Shows student with device older than five years', () => {
-      cy.get('[data-cy=reclaimerContent]').contains('Laite Vanhatar')
-    })
-  
-    it('Shows device holder who isn\'t present in current semester', () => {
-      cy.get('[data-cy=reclaimerContent]').contains('Haltija Poissanen')
-    })
-  
     it('Shows device holder with under 30 credits first study year', () => {
       cy.get('[data-cy=reclaimerContent]').contains('Haltija Pisteetön')
     })
@@ -112,19 +111,30 @@ context('Reclaimer View', () => {
     it('Doesn\'t show third+ year student with under 30 credits on first study year', () => {
       cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Senior Opiskelija')
     })
-  
-    it('Doesn\'t reset reclaim status for contacted students when statuses are updated', () => {
-      selectFilter("Contacted")
-      cy.get('[data-cy=reclaimerContent]').contains('CONTACTED')    
-    })
-  
+
     it('Doesn\'t show students who signed up this year', () => {
       cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Uusi Opiskelija')
     })
   
-    it('Shows 3rd+ year student instead of credits for 3rd+ year students', () => {
-      cy.contains('Vanha Ongelmatar').parent().parent().contains('3rd+ year student')
+    runSharedTests()
+  })
+
+  context('After running spring updater', () => {
+    before(() => {
+      cy.server()
+      cy.createUser('fuksi')
+      createTestUsers()
+      cy.request("GET", '/api/test/run_spring_updater')
+      cy.login('reclaimer')
+      cy.visit('/')
+      cy.get('[data-cy=reclaimerContent]')
     })
+  
+    it('Shows student with device loan time expired', () => {
+      cy.get('[data-cy=reclaimerContent]').contains('Laite Vanhatar')
+    })
+
+    runSharedTests()
   })
 
   context('Actions', () => {
@@ -132,9 +142,9 @@ context('Reclaimer View', () => {
       cy.server()
       cy.createUser('fuksi')
       createTestUsers()
+      cy.request("GET", '/api/test/run_autumn_updater')
       cy.login('reclaimer')
       cy.visit('/')
-      cy.get('[data-cy=updateReclaimStatuses]').click()
       selectFilter('Open')
     })
 

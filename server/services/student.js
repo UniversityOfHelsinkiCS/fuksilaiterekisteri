@@ -321,18 +321,20 @@ const isPresent = async (studentNumber, currentSemester) => {
   return currentSemesterEnrollment && currentSemesterEnrollment.semester_enrollment_type_code === 1
 }
 
-const getSemesterCode = year => (year - 1950) * 2 + 1
+const getFallSemesterCode = year => (year - 1950) * 2 + 1
+const getSpringSemesterCode = year => (year - 1950) * 2
+const getCurrentYear = () => (inProduction ? new Date().getFullYear() : 2019)
 
 const getFirstYearCredits = async (studentNumber, signUpYear) => {
-  const semesterCode = getSemesterCode(signUpYear)
+  const semesterCode = getFallSemesterCode(signUpYear)
   const credits = await getYearsCredits(studentNumber, semesterCode)
   return credits
 }
 
 const FIRST_YEAR_CREDIT_LIMIT = 30
 
-const updateStudentReclaimStatuses = async () => {
-  const { currentSemester, currentYear } = await getServiceStatusObject()
+const runAutumnReclaimStatusUpdater = async () => {
+  const currentYear = getCurrentYear()
 
   const deviceHolders = await db.user.findAll({
     where: {
@@ -345,8 +347,7 @@ const updateStudentReclaimStatuses = async () => {
   const dbPromises = []
   for (let i = 0; i < deviceHolders.length; i++) {
     try {
-      const deviceHeldUnderFiveYears = isDeviceHeldUnderFiveYears(deviceHolders[i].deviceGivenAt)
-      const present = await isPresent(deviceHolders[i].studentNumber, currentSemester) // eslint-disable-line
+      const present = await isPresent(deviceHolders[i].studentNumber, getFallSemesterCode(currentYear)) // eslint-disable-line
 
       const thirdYearOrLaterStudent = currentYear - deviceHolders[i].signupYear > 1
 
@@ -354,7 +355,7 @@ const updateStudentReclaimStatuses = async () => {
         ? deviceHolders[i].firstYearCredits
         : await getFirstYearCredits(deviceHolders[i].studentNumber, deviceHolders[i].signupYear) // eslint-disable-line
 
-      const reclaimActionNeeded = !deviceHeldUnderFiveYears || !present || (!thirdYearOrLaterStudent && firstYearCredits < FIRST_YEAR_CREDIT_LIMIT)
+      const reclaimActionNeeded = !present || (!thirdYearOrLaterStudent && firstYearCredits < FIRST_YEAR_CREDIT_LIMIT)
 
       const reclaimStatus = reclaimActionNeeded && deviceHolders[i].reclaimStatus !== 'CONTACTED' ? 'OPEN' : deviceHolders[i].reclaimStatus
 
@@ -365,8 +366,50 @@ const updateStudentReclaimStatuses = async () => {
               reclaimStatus,
               present,
               firstYearCredits,
-              deviceReturnDeadlinePassed: !deviceHeldUnderFiveYears,
               thirdYearOrLaterStudent,
+            })
+            res(true)
+          } catch (e) {
+            logger.error(`Failed updating student reclaim status ${deviceHolders[i].studentNumber}`, e)
+            res(false)
+          }
+        }),
+      )
+    } catch (e) {
+      logger.error(`Failed fetching oodi data for student ${deviceHolders[i].studentNumber}`)
+    }
+  }
+
+  await Promise.all(dbPromises)
+}
+
+const runSpringReclaimStatusUpdater = async () => {
+  const currentYear = getCurrentYear()
+
+  const deviceHolders = await db.user.findAll({
+    where: {
+      deviceSerial: { [Op.ne]: null },
+      deviceReturned: false,
+    },
+  })
+
+  const dbPromises = []
+  for (let i = 0; i < deviceHolders.length; i++) {
+    try {
+      const deviceHeldUnderFiveYears = isDeviceHeldUnderFiveYears(deviceHolders[i].deviceGivenAt)
+      const present = await isPresent(deviceHolders[i].studentNumber, getSpringSemesterCode(currentYear)) // eslint-disable-line
+
+      const reclaimActionNeeded = !deviceHeldUnderFiveYears || !present
+
+      const reclaimStatus = reclaimActionNeeded && deviceHolders[i].reclaimStatus !== 'CONTACTED' ? 'OPEN' : deviceHolders[i].reclaimStatus
+
+      dbPromises.push(
+        new Promise(async (res) => { // eslint-disable-line
+          try {
+            await deviceHolders[i].update({
+              reclaimStatus,
+              present,
+              deviceReturnDeadlinePassed: !deviceHeldUnderFiveYears,
             })
             res(true)
           } catch (e) {
@@ -389,5 +432,6 @@ module.exports = {
   updateEligibleStudentStatuses,
   checkStudentEligibilities,
   updateStudentEligibility,
-  updateStudentReclaimStatuses,
+  runAutumnReclaimStatusUpdater,
+  runSpringReclaimStatusUpdater,
 }

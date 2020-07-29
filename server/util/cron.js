@@ -1,6 +1,8 @@
 const { CronJob } = require('cron')
 const logger = require('@util/logger')
-const { updateEligibleStudentStatuses, checkStudentEligibilities, updateStudentReclaimStatuses } = require('@services/student')
+const {
+  updateEligibleStudentStatuses, checkStudentEligibilities, runAutumnReclaimStatusUpdater, runSpringReclaimStatusUpdater,
+} = require('@services/student')
 const { getServiceStatusObject } = require('@controllers/serviceStatusController')
 
 const checkDeadline = async () => {
@@ -51,9 +53,24 @@ const startCron = () => {
   new CronJob({
     cronTime: '30 0 15 9 *', // 15.9. at 00:30 once every year
     onTick: async () => {
-      logger.info('Updating reclaim statuses...')
+      logger.info('Updating reclaim statuses for autumn semester...')
       try {
-        await updateStudentReclaimStatuses()
+        await runAutumnReclaimStatusUpdater()
+      } catch (e) {
+        logger.error('Failed updating reclaim statuses!', e)
+      }
+      logger.info('Reclaim statuses updated.')
+    },
+    start: true,
+    timeZone: 'Europe/Helsinki',
+  })
+
+  new CronJob({
+    cronTime: '30 0 15 1 *', // 15.1. at 00:30 once every year
+    onTick: async () => {
+      logger.info('Updating reclaim statuses for spring semester...')
+      try {
+        await runSpringReclaimStatusUpdater()
       } catch (e) {
         logger.error('Failed updating reclaim statuses!', e)
       }

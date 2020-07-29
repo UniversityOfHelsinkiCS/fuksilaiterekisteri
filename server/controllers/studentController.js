@@ -1,7 +1,7 @@
 const db = require('@models')
 const { Op } = require('sequelize')
 const logger = require('@util/logger')
-const { updateStudentReclaimStatuses } = require('@services/student')
+const { updateStudentReclaimStatuses, runAutumnReclaimStatusUpdater, runSpringReclaimStatusUpdater } = require('@services/student')
 
 const getStudent = async (req, res) => {
   const { studentNumber } = req.params
@@ -137,19 +137,25 @@ const getStudentsForStaff = async (req, res) => {
   }
 }
 
+const getStudentsWithReclaimStatus = async () => {
+  const studentsWithReclaimStatus = await db.user.findAll({
+    where: {
+      studentNumber: {
+        [Op.ne]: null,
+      },
+      reclaimStatus: {
+        [Op.ne]: null,
+      },
+    },
+    include: [{ model: db.studyProgram, as: 'studyPrograms' }],
+  })
+
+  return studentsWithReclaimStatus
+}
+
 const getStudentsForReclaimer = async (req, res) => {
   try {
-    const studentsWithReclaimStatus = await db.user.findAll({
-      where: {
-        studentNumber: {
-          [Op.ne]: null,
-        },
-        reclaimStatus: {
-          [Op.ne]: null,
-        },
-      },
-      include: [{ model: db.studyProgram, as: 'studyPrograms' }],
-    })
+    const studentsWithReclaimStatus = await getStudentsWithReclaimStatus()
 
     return res.status(200).json(studentsWithReclaimStatus)
   } catch (e) {
@@ -158,21 +164,24 @@ const getStudentsForReclaimer = async (req, res) => {
   }
 }
 
-const updateReclaimStatuses = async (req, res) => {
+const updateAutumunReclaimStatuses = async (req, res) => {
   try {
-    await updateStudentReclaimStatuses()
+    await runAutumnReclaimStatusUpdater()
 
-    const studentsWithReclaimStatus = await db.user.findAll({
-      where: {
-        studentNumber: {
-          [Op.ne]: null,
-        },
-        reclaimStatus: {
-          [Op.ne]: null,
-        },
-      },
-      include: [{ model: db.studyProgram, as: 'studyPrograms' }],
-    })
+    const studentsWithReclaimStatus = await getStudentsWithReclaimStatus()
+
+    return res.status(200).json(studentsWithReclaimStatus)
+  } catch (e) {
+    logger.error(e)
+    return res.status(500).json({ error: 'there was an error updating student reclaim statuses' })
+  }
+}
+
+const updateSpringReclaimStatuses = async (req, res) => {
+  try {
+    await runSpringReclaimStatusUpdater()
+
+    const studentsWithReclaimStatus = await getStudentsWithReclaimStatus()
 
     return res.status(200).json(studentsWithReclaimStatus)
   } catch (e) {
@@ -227,7 +236,8 @@ module.exports = {
   updateStudentStatus,
   markDeviceReturned,
   getStudentsForReclaimer,
-  updateReclaimStatuses,
   createUserStudyprogrammes,
   updateStudentReclaimStatus,
+  updateAutumunReclaimStatuses,
+  updateSpringReclaimStatuses,
 }

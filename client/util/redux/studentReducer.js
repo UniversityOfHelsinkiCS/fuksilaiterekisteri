@@ -37,12 +37,6 @@ export const updateStudentReclaimStatus = (reclaimStatus, studentNumber) => {
   return callBuilder(route, prefix, method, data)
 }
 
-export const updateStudentReclainmStatuses = () => {
-  const route = '/reclaimer/update'
-  const prefix = 'GET_STUDENTS'
-  return callBuilder(route, prefix)
-}
-
 export const clearStudentAction = () => ({
   type: 'CLEAR_STUDENT',
 })
