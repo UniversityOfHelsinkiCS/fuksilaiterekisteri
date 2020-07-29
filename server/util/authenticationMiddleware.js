@@ -147,8 +147,9 @@ const authentication = async (req, res, next) => {
     req.user = newUser
     return next()
   } catch (e) {
-    logger.error('Creating student failed', e.response || ', status missing')
-    return res.status(503).end()
+    console.log(e)
+    logger.error(`Creating student failed ${e.response || e}`)
+    return res.status(503).json(e)
   }
 }
 
