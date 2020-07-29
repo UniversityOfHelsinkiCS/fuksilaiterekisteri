@@ -223,6 +223,9 @@ const updateUserStudyPrograms = async (req, res) => {
     await Promise.all(promises)
 
     const user = await db.user.findOne({ where: { id }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
+
+    if (userStudyProgramsToCreate.length === 0) await user.update({ staff: false })
+
     return res.json(user)
   } catch (e) {
     logger.error(e.message)
