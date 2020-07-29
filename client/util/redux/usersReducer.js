@@ -36,6 +36,14 @@ export const setUserAdminNote = ({ id, note }) => {
   return callBuilder(route, prefix, method, data)
 }
 
+export const updateUserStudyPrograms = ({ id, studyPrograms }) => {
+  const route = `/user/${id}/study_programs`
+  const prefix = 'UPDATE_USER_STUDY_PROGRAMS'
+  const method = 'post'
+  const data = { studyPrograms }
+  return callBuilder(route, prefix, method, data)
+}
+
 const INITIAL_STATE = { data: [], settingAdminNote: false }
 
 const handleUsersUpdate = (updatedUser, data) => data.map(user => (user.id === updatedUser.id ? updatedUser : user))
@@ -94,6 +102,17 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         data: handleUsersUpdate(action.response, state.data),
         settingAdminNote: false,
+        error: false,
+      }
+    case 'UPDATE_USER_STUDY_PROGRAMS_FAILURE':
+      return {
+        ...state,
+        error: true,
+      }
+    case 'UPDATE_USER_STUDY_PROGRAMS_SUCCESS':
+      return {
+        ...state,
+        data: handleUsersUpdate(action.response, state.data),
         error: false,
       }
     default:

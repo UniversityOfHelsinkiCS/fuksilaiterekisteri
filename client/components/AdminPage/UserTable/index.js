@@ -8,7 +8,7 @@ import dateFormatter from '../../../util/dateFormatter'
 import VirtualizedTable from '../../VirtualizedTable'
 
 const UserTable = ({
-  users, handleAdminNoteClick, hiddenColumns, filter,
+  users, handleAdminNoteClick, handleStaffSettingClick, hiddenColumns, filter,
 }) => {
   const dispatch = useDispatch()
   const valOrEmpty = val => (val !== null ? val : '-')
@@ -139,7 +139,12 @@ const UserTable = ({
     {
       key: 'staff',
       label: 'Staff',
-      renderCell: user => <Checkbox data-cy="toggleStaff" checked={!!user.staff} onChange={() => toggleUserRole(user, 'staff')} />,
+      renderCell: user => (
+        <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          <Checkbox data-cy="toggleStaff" checked={!!user.staff} onChange={() => toggleUserRole(user, 'staff')} />
+          <Icon name="setting" onClick={() => handleStaffSettingClick(user.id)} style={{ marginLeft: '0.3em', cursor: 'pointer' }} />
+        </div>
+      ),
       getCellVal: ({ staff }) => staff,
       width: 75,
     },

@@ -3,14 +3,16 @@ import React, {
 } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { NotificationManager } from 'react-notifications'
-import { getUsersAction, setUserAdminNote } from '../../util/redux/usersReducer'
+import { getUsersAction, setUserAdminNote, updateUserStudyPrograms } from '../../util/redux/usersReducer'
 import UserTable from './UserTable'
 import UserModal from './UserModal'
 import StatsTable from '../StatsTable'
 import AdminFilter from './AdminFilter'
+import StudyProgramModal from './StudyProgramModal'
 
 export default () => {
-  const [modalUser, setModalUser] = useState(null)
+  const [noteModalUser, setNoteModalUser] = useState(null)
+  const [studyProgrammeModalUser, setStudyProgrammeModalUser] = useState(null)
   const dispatch = useDispatch()
   const users = useSelector(state => state.users.data)
   const settings = useSelector(state => state.serviceStatus.data)
@@ -22,7 +24,7 @@ export default () => {
     if (!settingAdminNote && prevSettingAdminNote.current) {
       if (!error) {
         NotificationManager.success('Saved admin note successfully!')
-        setModalUser(null)
+        setNoteModalUser(null)
       } else NotificationManager.error('Saving admin note failed!')
     }
     prevSettingAdminNote.current = settingAdminNote
@@ -32,10 +34,18 @@ export default () => {
     dispatch(getUsersAction())
   }, [])
 
-  const handleAdminNoteClick = userId => setModalUser(userId)
-  const handleModalClose = () => setModalUser(null)
+  const handleAdminNoteClick = userId => setNoteModalUser(users.find(({ id }) => id === userId))
+  const handleStaffSettingClick = userId => setStudyProgrammeModalUser(users.find(({ id }) => id === userId))
+  const handleModalClose = () => {
+    setNoteModalUser(null)
+    setStudyProgrammeModalUser(null)
+  }
   const handleModalSubmit = param => dispatch(setUserAdminNote(param))
-  const selectedUser = useMemo(() => users.find(({ id }) => id === modalUser), [modalUser])
+  const handleStaffSettingSubmit = (data) => {
+    dispatch(updateUserStudyPrograms(data))
+    setStudyProgrammeModalUser(null)
+  }
+
   const [filter, setFilter] = useState('all')
 
   const doFiltering = () => {
@@ -73,10 +83,16 @@ export default () => {
 
   return (
     <div className="tab-content">
-      <UserModal user={selectedUser} handleClose={handleModalClose} handleSubmit={handleModalSubmit} open={modalUser !== null} />
+      <UserModal user={noteModalUser} handleClose={handleModalClose} handleSubmit={handleModalSubmit} open={noteModalUser !== null} />
+      <StudyProgramModal
+        user={studyProgrammeModalUser}
+        handleClose={handleModalClose}
+        handleSubmit={handleStaffSettingSubmit}
+        open={studyProgrammeModalUser !== null}
+      />
       <StatsTable students={users.filter(u => u.studentNumber)} />
       <AdminFilter totalCount={users.length} filteredCount={filteredUsers.length} filter={filter} setFilter={setFilter} />
-      <UserTable handleAdminNoteClick={handleAdminNoteClick} users={filteredUsers} hiddenColumns={hiddenColumns} filter={filter} />
+      <UserTable handleAdminNoteClick={handleAdminNoteClick} handleStaffSettingClick={handleStaffSettingClick} users={filteredUsers} hiddenColumns={hiddenColumns} filter={filter} />
     </div>
   )
 }

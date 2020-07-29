@@ -194,6 +194,42 @@ const setAdminNote = async (req, res) => {
   }
 }
 
+const updateUserStudyPrograms = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { studyPrograms } = req.body
+
+    const userStudyProgramsToDelete = []
+    const userStudyProgramsToCreate = []
+    Object.entries(studyPrograms).forEach(([studyProgramId, enabled]) => {
+      if (enabled) userStudyProgramsToCreate.push(studyProgramId)
+      else userStudyProgramsToDelete.push(studyProgramId)
+    })
+
+    await db.userStudyProgram.destroy({
+      where: {
+        userId: id,
+        studyProgramId: userStudyProgramsToDelete,
+      },
+    })
+
+    const promises = []
+    userStudyProgramsToCreate.forEach((studyProgramId) => {
+      promises.push(db.userStudyProgram.findOrCreate({
+        where: { userId: id, studyProgramId },
+        defaults: { userId: id, studyProgramId },
+      }))
+    })
+    await Promise.all(promises)
+
+    const user = await db.user.findOne({ where: { id }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
+    return res.json(user)
+  } catch (e) {
+    logger.error(e.message)
+    return res.status(500).json({ error: 'error' })
+  }
+}
+
 module.exports = {
   getUser,
   getLogoutUrl,
@@ -202,4 +238,5 @@ module.exports = {
   getAllUsers,
   setAdminNote,
   toggleRole,
+  updateUserStudyPrograms,
 }
