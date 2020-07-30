@@ -47,9 +47,6 @@ jobs:
       - name: docker-compose up -d
         run: docker-compose up -d
 
-      - name: npm run db:seed
-        run: npm run db:seed
-
       - name: Run cypress tests
         run: ./node_modules/.bin/cypress run --headless *.spec.js
 
