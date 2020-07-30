@@ -102,6 +102,9 @@ const claimDevice = async (req, res) => {
 
     if (!student) return res.status(404).json({ error: 'student not found' })
 
+    const debug = ['wantsDevice', 'digiSkillsCompleted', 'courseRegistrationCompleted', 'deviceGivenAt', 'signupYear']
+      .map(a => !!student[a])
+
     if (
       !(
         student.eligible
@@ -112,7 +115,7 @@ const claimDevice = async (req, res) => {
         && student.signupYear === settings.currentYear
       )
     ) {
-      return res.status(403).json({ error: 'student not egilible for device' })
+      return res.status(403).json({ error: 'student not egilible for device', debug })
     }
 
     const deviceData = {
