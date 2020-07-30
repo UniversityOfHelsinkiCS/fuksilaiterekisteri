@@ -43,7 +43,7 @@ const StudyProgramModal = ({
     <Modal open={open} onClose={handleClose} size="small">
       <Modal.Header>{`Edit study programs for user ${user.name}`}</Modal.Header>
       <Modal.Content>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div data-cy="studyProgramCheckboxes" style={{ display: 'flex', flexDirection: 'column' }}>
           {studyProgramCheckBoxes}
         </div>
       </Modal.Content>
@@ -53,7 +53,12 @@ const StudyProgramModal = ({
           {' '}
           Cancel
         </Button>
-        <Button color="green" inverted onClick={() => handleSubmit({ id: user.id, studyPrograms: studyProgramState })}>
+        <Button
+          data-cy="saveStudyPrograms"
+          color="green"
+          inverted
+          onClick={() => handleSubmit({ id: user.id, studyPrograms: studyProgramState })}
+        >
           <Icon name="save" />
           {' '}
           Save

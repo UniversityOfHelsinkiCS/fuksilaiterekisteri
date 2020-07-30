@@ -4,6 +4,7 @@ context('Admin', () => {
 
   beforeEach(() => {
     cy.createUser("non_fuksi_student")
+    cy.createUser("non_admin_staff")
     cy.login("admin")
     cy.visit('/')
   })
@@ -28,6 +29,36 @@ context('Admin', () => {
     cy.login("non_fuksi_student")
     cy.visit("/")
     cy.contains("Sinulla on oikeus")
+  })
+
+  it('Can update staff study programs', () => {
+    cy.contains('non-admin-staff').parent().parent().find('[data-cy="staffSettings"]').click()
+    cy.get('[data-cy="studyProgramCheckboxes"]').contains('Kemian kandiohjelma').click()
+    cy.get('[data-cy="saveStudyPrograms"]').click()
+  
+    cy.login("non_admin_staff")
+    cy.visit("/")
+    cy.contains("Kemian kandiohjelma (KH50_003)")
+  })
+  
+  it('Removes staff role when removing all study program rights', () => {
+    cy.contains('non-admin-staff').parent().parent().find('[data-cy="staffSettings"]').click()
+    cy.get('[data-cy="studyProgramCheckboxes"]').contains('Tietojenkäsittely').click()
+    cy.get('[data-cy="saveStudyPrograms"]').click()
+  
+    cy.login("non_admin_staff")
+    cy.visit("/")
+    cy.contains('Hei, sinulla ei ole oikeuksia')
+  })
+  
+  it('Opens study program modal when giving staff role if no rights exist', () => {
+    cy.contains('non-admin-staff').parent().parent().find('[data-cy="staffSettings"]').click()
+    cy.get('[data-cy="studyProgramCheckboxes"]').contains('Tietojenkäsittely').click()
+    cy.get('[data-cy="saveStudyPrograms"]').click()
+  
+    cy.contains('non-admin-staff').parent().parent().find('[data-cy="toggleStaff"]').click()
+  
+    cy.contains('Edit study programs')
   })
 
   it('Can give admin role', () => {

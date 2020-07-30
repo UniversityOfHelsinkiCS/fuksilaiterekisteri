@@ -154,7 +154,12 @@ const UserTable = ({
       renderCell: user => (
         <div style={{ display: 'flex', alignItems: 'flex-start' }}>
           <Checkbox data-cy="toggleStaff" checked={!!user.staff} onChange={() => toggleStaff(user)} />
-          <Icon name="setting" onClick={() => handleStaffSettingClick(user.id)} style={{ marginLeft: '0.3em', cursor: 'pointer' }} />
+          <Icon
+            name="setting"
+            data-cy="staffSettings"
+            onClick={() => handleStaffSettingClick(user.id)}
+            style={{ marginLeft: '0.3em', cursor: 'pointer' }}
+          />
         </div>
       ),
       getCellVal: ({ staff }) => staff,
