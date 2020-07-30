@@ -6,7 +6,6 @@ context('Admin', () => {
     cy.createUser("non_fuksi_student")
     cy.createUser("non_admin_staff")
     cy.login("admin")
-    cy.visit('/')
   })
 
   it('Redirects admin to the correct page', () => {
@@ -27,7 +26,6 @@ context('Admin', () => {
   it('Can give staff role', () => {
     cy.contains('non-fuksiEtunimi').parent().parent().find('[data-cy="toggleStaff"]').click()
     cy.login("non_fuksi_student")
-    cy.visit("/")
     cy.contains("Sinulla on oikeus")
   })
 
@@ -37,7 +35,6 @@ context('Admin', () => {
     cy.get('[data-cy="saveStudyPrograms"]').click()
   
     cy.login("non_admin_staff")
-    cy.visit("/")
     cy.contains("Kemian kandiohjelma (KH50_003)")
   })
   
@@ -47,7 +44,6 @@ context('Admin', () => {
     cy.get('[data-cy="saveStudyPrograms"]').click()
   
     cy.login("non_admin_staff")
-    cy.visit("/")
     cy.contains('Hei, sinulla ei ole oikeuksia')
   })
   
@@ -64,7 +60,6 @@ context('Admin', () => {
   it('Can give admin role', () => {
     cy.contains('non-fuksiEtunimi').parent().parent().find('[data-cy="toggleAdmin"]').click()
     cy.login("non_fuksi_student")
-    cy.visit("/")
     cy.get('[data-cy=servicestatus-tab]')
   })
 
@@ -75,7 +70,6 @@ context('Admin', () => {
   it('Can give distributor role', () => {
     cy.contains('non-fuksiEtunimi').parent().parent().find('[data-cy="toggleDistributor"]').click()
     cy.login("non_fuksi_student")
-    cy.visit("/")
     cy.contains("Matemaattis-luonnontieteellisen tiedekunnan fuksilaitteiden jakelu")
   })
 
@@ -113,7 +107,6 @@ context('Admin', () => {
     cy.get('[data-cy=taskStatus]').contains('Tehtävien tila')
 
     cy.login("jakelija")
-    cy.visit('/')
     cy.contains('FUKSILAITTEET')
 
     cy.get('input').eq(0).type("fuksi")
@@ -128,7 +121,6 @@ context('Admin', () => {
     )
 
     cy.login("admin")
-    cy.visit("/")
 
     cy.contains('fuksiEtunimi fuksi').parent().parent().find("[data-cy=markDeviceReturned]").click()
     cy.contains('fuksiEtunimi fuksi').parent().parent().find("[data-cy=markDeviceReturned]").should("be.disabled")
@@ -192,7 +184,6 @@ context('Admin', () => {
     cy.contains("Settings saved")
 
     cy.login("non_fuksi_student")
-    cy.visit("/")
     cy.get('[data-cy=notEligible] > p').should("have.text","Sori, et saa laitetta.")
 
   })
@@ -230,7 +221,6 @@ context('Admin', () => {
   it("Non superadmin cant use loginAs", () => {
     cy.contains('non-fuksiEtunimi').parent().parent().find('[data-cy="toggleAdmin"]').click()
     cy.login("non_fuksi_student")
-    cy.visit("/")
     cy.get('[data-cy=servicestatus-tab]')
     cy.contains("adminEtunimi admin").parent().parent().find("[data-cy=loginAs]").should("not.exist")
   })
@@ -243,7 +233,6 @@ context('Admin', () => {
     cy.contains("Save changes").click()
 
     cy.login("non_fuksi_student")
-    cy.visit("/")
     cy.contains("Contact Name")
     cy.contains("Contact.Name@email.com")
   })
@@ -255,7 +244,6 @@ describe("Deadline sanity checks", () => {
   it("Registration deadline can't be after distribution deadline", () => {
     cy.request("/api/test/setServiceStatus", {registrationDeadline:null, taskDeadline:null, studentRegistrationOnline:false})
     cy.login("admin")
-    cy.visit('/')
     cy.get('[data-cy=servicestatus-tab]').click()
 
     cy.contains("are currently closed")
@@ -306,7 +294,6 @@ describe("Deadline sanity checks", () => {
   it("Can't enable registrations without updating old deadlines", () => {
     cy.request("/api/test/setServiceStatus", {registrationDeadline:new Date(2019,1,1), taskDeadline:new Date(2019,1,2), studentRegistrationOnline:false})
     cy.login("admin")
-    cy.visit('/')
     cy.get('[data-cy=servicestatus-tab]').click()
 
     cy.contains("are currently closed")
@@ -322,7 +309,6 @@ describe("Email template tests", () => {
   beforeEach(() => {
     cy.request("/api/test/resetTemplates/ADMIN")
     cy.login("admin")
-    cy.visit("/")
     cy.get('.tabular > :nth-child(2)').contains("Email").click()
     cy.contains("Manage email templates").click()
   })

@@ -2,13 +2,11 @@
 
 const isEligible = (uid) => {
   cy.login(uid)
-  cy.visit("/")
   cy.get('[data-cy=terms]')
 }
 
 const isNotEligible = (uid) => {
   cy.login(uid)
-  cy.visit("/")
   cy.get("[data-cy=notEligible]")
 }
 

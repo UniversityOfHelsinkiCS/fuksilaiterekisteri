@@ -85,7 +85,6 @@ const runSharedTests = () => {
 context('Reclaimer View', () => {
   it('Redirects reclaimer to the correct page', () => {
     cy.login('reclaimer')
-    cy.visit('/')
     cy.contains('Student statuses')
   })
 
@@ -96,7 +95,6 @@ context('Reclaimer View', () => {
       createTestUsers()
       cy.request("GET", '/api/test/run_autumn_updater')
       cy.login('reclaimer')
-      cy.visit('/')
       cy.get('[data-cy=reclaimerContent]')
     })
 
@@ -126,7 +124,6 @@ context('Reclaimer View', () => {
       createTestUsers()
       cy.request("GET", '/api/test/run_spring_updater')
       cy.login('reclaimer')
-      cy.visit('/')
       cy.get('[data-cy=reclaimerContent]')
     })
   
@@ -144,7 +141,6 @@ context('Reclaimer View', () => {
       createTestUsers()
       cy.request("GET", '/api/test/run_autumn_updater')
       cy.login('reclaimer')
-      cy.visit('/')
       selectFilter('Open')
     })
 
@@ -167,12 +163,10 @@ context('Reclaimer View', () => {
   
     it('Returning device changes status to closed', () => {
       cy.login('admin')
-      cy.visit('/')
   
       cy.contains('Haltija Poissanen').parent().parent().find('[data-cy=markDeviceReturned]').click()
   
       cy.login('reclaimer')
-      cy.visit('/')
   
       selectFilter("Closed")
       cy.contains('Haltija Poissanen').parent().parent().contains('CLOSED')
@@ -184,7 +178,6 @@ context('Reclaimer View', () => {
     beforeEach(() => {
       cy.request("/api/test/resetTemplates/RECLAIM")
       cy.login("reclaimer")
-      cy.visit("/")
       cy.contains("Manage email templates").click()
     })
   
