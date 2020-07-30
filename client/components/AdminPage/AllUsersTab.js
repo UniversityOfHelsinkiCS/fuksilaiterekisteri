@@ -3,7 +3,9 @@ import React, {
 } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { NotificationManager } from 'react-notifications'
-import { getUsersAction, setUserAdminNote, updateUserStudyPrograms } from '../../util/redux/usersReducer'
+import {
+  getUsersAction, setUserAdminNote, updateUserStudyPrograms, toggleUserRoleAction,
+} from 'Utilities/redux/usersReducer'
 import UserTable from './UserTable'
 import UserModal from './UserModal'
 import StatsTable from '../StatsTable'
@@ -43,6 +45,11 @@ export default () => {
   const handleModalSubmit = param => dispatch(setUserAdminNote(param))
   const handleStaffSettingSubmit = (data) => {
     dispatch(updateUserStudyPrograms(data))
+
+    if (!studyProgrammeModalUser.staff && Object.values(data.studyPrograms).some(studyProgramRights => studyProgramRights)) {
+      dispatch(toggleUserRoleAction(studyProgrammeModalUser.id, 'staff'))
+    }
+
     setStudyProgrammeModalUser(null)
   }
 

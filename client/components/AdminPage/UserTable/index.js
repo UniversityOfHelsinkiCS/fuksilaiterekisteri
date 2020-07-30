@@ -40,6 +40,18 @@ const UserTable = ({
     if (confirm) dispatch(toggleUserRoleAction(user.id, role))
   }
 
+  const toggleStaff = (user) => {
+    if (user.staff) {
+      const confirm = window.confirm(`Remove staff permission from ${user.name}?`)
+      if (confirm) dispatch(toggleUserRoleAction(user.id, 'staff'))
+    } else if (!user.staff && user.studyPrograms.length > 0) {
+      const confirm = window.confirm(`Give staff permission from ${user.name}?`)
+      if (confirm) dispatch(toggleUserRoleAction(user.id, 'staff'))
+    } else {
+      handleStaffSettingClick(user.id)
+    }
+  }
+
   const boolToString = bool => (bool ? 'Kyllä' : 'Ei')
 
   const loginAs = (userId) => {
@@ -141,7 +153,7 @@ const UserTable = ({
       label: 'Staff',
       renderCell: user => (
         <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-          <Checkbox data-cy="toggleStaff" checked={!!user.staff} onChange={() => toggleUserRole(user, 'staff')} />
+          <Checkbox data-cy="toggleStaff" checked={!!user.staff} onChange={() => toggleStaff(user)} />
           <Icon name="setting" onClick={() => handleStaffSettingClick(user.id)} style={{ marginLeft: '0.3em', cursor: 'pointer' }} />
         </div>
       ),
