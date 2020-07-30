@@ -100,6 +100,16 @@ export default (state = initialState, action) => {
         ...state,
         error: 'Error while saving email template.',
       }
+    case 'UPDATE_USER_STUDY_PROGRAMS_SUCCESS':
+      return {
+        ...state,
+        success: 'Users study program rights updated',
+      }
+    case 'UPDATE_USER_STUDY_PROGRAMS_FAILURE':
+      return {
+        ...state,
+        error: 'Error while saving users study program rights',
+      }
     default:
       return state
   }
