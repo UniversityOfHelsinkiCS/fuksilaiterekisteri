@@ -59,7 +59,7 @@ export default function NotEligible({ user, notCurrentYearsFuksi, faking }) {
   const studyProgrammes = useSelector(state => state.studyProgrammes.data)
 
   const EligibilityBreakdown = () => {
-    if (!eligibilityReasons) return null // Only users starting from 2020 have eligibilityReasons (unless updated).
+    if (!Object.entries(eligibilityReasons).length) return null // Only users starting from 2020 have eligibilityReasons (unless updated).
 
     return (
       <>
