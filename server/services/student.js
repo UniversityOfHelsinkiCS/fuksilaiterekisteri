@@ -105,6 +105,7 @@ const isEligible = async (studentNumber, at) => {
     })
   }
 
+  // In case a student has a new studyright that he/she has postponed
   if (mlu && mlu.elements.length && !hasPre2008Studyright && !hasNewStudyright && hasPreviousStudyright) {
     let hasBeenPresentBefore = false
 
