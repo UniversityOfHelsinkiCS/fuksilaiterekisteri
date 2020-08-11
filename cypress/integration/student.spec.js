@@ -3,7 +3,6 @@
 describe('Student', () => {
   beforeEach(() => {
     cy.login("fuksi")
-    cy.visit('/')
   })
 
   it('doesnt allow eligible students to proceed without accepting terms', () => {
@@ -46,7 +45,6 @@ describe('Student', () => {
 
   it("non eligible students see why they are not eligible", () => {
     cy.login("non_fuksi_student")
-    cy.visit("/")
     cy.get('[data-cy=notEligible]')
 
     cy.get(".green").eq(2)
@@ -56,7 +54,6 @@ describe('Student', () => {
 
   it("doesn't allow non-students to sign up", () => {
     cy.login("irrelevant_staff")
-    cy.visit("/")
     cy.contains('FUKSILAITTEET')
     cy.contains('Hei, sinulla ei ole oikeuksia fuksilaite-palveluun. Ota yhteyttä grp-toska@helsinki.fi jos sinulla kuuluisi olla oikeudet.')
     cy.visit('/student')
@@ -73,7 +70,6 @@ describe('Student', () => {
 
   it("sees message if does not have studentnumber ready yet", () => {
     cy.login("fuksi_without_studentnumber")
-    cy.visit("/")
     cy.get("[data-cy=no-student-number-error]")
   })
 })

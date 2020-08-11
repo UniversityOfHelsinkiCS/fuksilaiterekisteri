@@ -27,7 +27,6 @@ context('Distributor', () => {
     cy.get('[data-cy=taskStatus]').contains('Tehtävien tila')
 
     cy.login("jakelija")
-    cy.visit('/')
     cy.contains('FUKSILAITTEET')
   })
 
@@ -73,7 +72,6 @@ context('Distributor', () => {
     cy.get('[data-cy=notEligible]')
 
     cy.login("jakelija")
-    cy.visit("/")
     findStudent('non-fuksi')
     cy.contains('Ei oikeutettu laitteeseen!')
   })
@@ -81,7 +79,6 @@ context('Distributor', () => {
   it("Can't give a device to a previous years eligible student", () => {
     cy.request("/api/test/advance")
     cy.login("jakelija")
-    cy.visit("/")
     findStudent('fuksi')
     cy.contains('Ei oikeutettu laitteeseen!')
   })
@@ -97,13 +94,11 @@ describe("Serial setting and validation works and correct part of the serial is 
 
   const setSerialValidationPattern = (pattern,startOfCustompart) => {
     cy.login("admin")
-    cy.visit("/")
     cy.get('[data-cy=servicestatus-tab]').click()
     cy.get('[data-cy=deviceSerial] > input').clear().type(pattern)
     cy.get(`[data-cy=letter-${startOfCustompart}]`).click()
     cy.get('[data-cy=updateSerial]').click()
     cy.login("jakelija")
-    cy.visit("/")
   }
 
   
@@ -125,7 +120,6 @@ describe("Serial setting and validation works and correct part of the serial is 
       giveDevice("PF1XXXXX")
       cy.contains('fuksiEtunimi fuksi').should('not.exist')
       cy.login("admin")
-      cy.visit("/")
       cy.contains('fuksiEtunimi fuksi').parent().parent().contains("PF1XXXXX")
     })
 
@@ -135,7 +129,6 @@ describe("Serial setting and validation works and correct part of the serial is 
       giveDevice("IIIIIIIIII")
       cy.contains('fuksiEtunimi fuksi').should('not.exist')
       cy.login("admin")
-      cy.visit("/")
       cy.contains('fuksiEtunimi fuksi').parent().parent().contains("IIIIIIIIII")
     })
   
@@ -145,7 +138,6 @@ describe("Serial setting and validation works and correct part of the serial is 
       giveDevice("IIIIIIIIIIIIIIIIIII")
       cy.contains('fuksiEtunimi fuksi').should('not.exist')
       cy.login("admin")
-      cy.visit("/")
       cy.contains('fuksiEtunimi fuksi').parent().parent().contains("IIIIIIIIIIIIIIIIIII")
     })
   
@@ -155,7 +147,6 @@ describe("Serial setting and validation works and correct part of the serial is 
       giveDevice("12345")
       cy.contains('fuksiEtunimi fuksi').should('not.exist')
       cy.login("admin")
-      cy.visit("/")
       cy.contains('fuksiEtunimi fuksi').parent().parent().contains("12345")
     })
 
@@ -165,7 +156,6 @@ describe("Serial setting and validation works and correct part of the serial is 
       giveDevice("0123456789012345678901234custom1")
       cy.contains('fuksiEtunimi fuksi').should('not.exist')
       cy.login("admin")
-      cy.visit("/")
       cy.contains('fuksiEtunimi fuksi').parent().parent().contains("custom1")
     })
 
@@ -175,7 +165,6 @@ describe("Serial setting and validation works and correct part of the serial is 
       giveDevice("1234custom1")
       cy.contains('fuksiEtunimi fuksi').should('not.exist')
       cy.login("admin")
-      cy.visit("/")
       cy.contains('fuksiEtunimi fuksi').parent().parent().contains("1234custom1")
     })
 

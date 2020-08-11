@@ -29,6 +29,7 @@ import { setHeaders } from "../../client/util/fakeShibboleth"
 Cypress.Commands.add("login", (uid) => {
   cy.log("Logging in as", uid)
   setHeaders(uid)
+  cy.visit("/")
  })
 
 // Simulate how a user account would normally be generated:

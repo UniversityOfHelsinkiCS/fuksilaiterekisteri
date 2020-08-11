@@ -59,7 +59,7 @@ const FakeShibboBar = ({
   }
 
   return (
-    <Sidebar.Pushable as={Segment}>
+    <Sidebar.Pushable style={{ marginBottom: 0 }} as={Segment}>
       <Sidebar
         as={Menu}
         direction="right"
