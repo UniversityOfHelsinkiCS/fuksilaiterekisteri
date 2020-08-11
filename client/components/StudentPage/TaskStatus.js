@@ -58,8 +58,6 @@ const StudentStatusPage = ({ faking }) => {
   const user = faking ? fake.user : useSelector(state => state.user.data)
   const locale = useSelector(localeSelector)
 
-  const showClaimingInfo = (user.eligible && user.digiSkillsCompleted && user.courseRegistrationCompleted) || faking
-
   return (
     <Segment.Group>
       <StudentInfo faking={faking} />
@@ -76,18 +74,14 @@ const StudentStatusPage = ({ faking }) => {
             completed={user.digiSkillsCompleted}
           />
         </Segment.Group>
-        {showClaimingInfo
-          && (
-            <Segment>
-              <TranslatedMarkdown textKey="distributionInfo" />
-            </Segment>
-          )
-        }
       </Segment>
       <TaskInfo
         courseRegistrationCompleted={user.courseRegistrationCompleted}
         digiSkillsCompleted={user.digiSkillsCompleted}
       />
+      <Segment>
+        <TranslatedMarkdown textKey="distributionInfo" />
+      </Segment>
       <Segment>
         <TranslatedMarkdown textKey="deviceSpecs" />
       </Segment>

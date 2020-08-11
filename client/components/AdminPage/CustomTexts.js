@@ -38,10 +38,10 @@ export default function CustomTexts() {
 
   const options = [
     { key: 'deviceSpecs', value: 'deviceSpecs', text: 'Device specs' },
-    { key: 'notEligible', value: 'notEligible', text: 'Not eligible text' },
+    { key: 'notEligible', value: 'notEligible', text: 'Not eligible text (Shown when student has no valid study rights, has previous study right or is not present)' },
     { key: 'registrationClosed', value: 'registrationClosed', text: 'Registration closed text' },
     { key: 'acceptableTerms', value: 'acceptableTerms', text: 'Acceptable terms (Text which user has to agree on when wanting a device)' },
-    { key: 'distributionInfo', value: 'distributionInfo', text: 'Distribution info (When and where the device can be claimed)' },
+    { key: 'distributionInfo', value: 'distributionInfo', text: 'Task deadline and distribution info' },
   ]
 
   const handleSubmit = () => {
