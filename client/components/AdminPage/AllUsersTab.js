@@ -64,7 +64,7 @@ export default () => {
         break
       case 'deviceHolders':
         filtered = users.filter(u => !!u.deviceGivenAt && !u.deviceReturned)
-        hiddenColumns = ['admin', 'staff', 'distributor', 'reclaimer', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'mark_eligible']
+        hiddenColumns = ['admin', 'staff', 'distributor', 'reclaimer', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'mark_eligible', 'device_returned_at', 'device_returned_by']
         break
       case 'returnedDevices':
         filtered = users.filter(u => u.deviceReturned)
@@ -72,11 +72,11 @@ export default () => {
         break
       case 'currentYearEligible':
         filtered = users.filter(u => u.signupYear === settings.currentYear && u.eligible)
-        hiddenColumns = ['admin', 'staff', 'distributor', 'reclaimer', 'eligible', 'mark_eligible']
+        hiddenColumns = ['admin', 'staff', 'distributor', 'reclaimer', 'eligible', 'mark_eligible', 'device_returned_at', 'device_returned_by']
         break
       case 'allStaff':
         filtered = users.filter(u => u.admin || u.staff || u.distributor || u.reclaimer)
-        hiddenColumns = ['student_number', 'studyPrograms', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'device_given_at', 'device_id', 'device_distributed_by', 'mark_eligible', 'mark_returned']
+        hiddenColumns = ['student_number', 'studyPrograms', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'device_given_at', 'device_id', 'device_distributed_by', 'mark_eligible', 'mark_returned', 'device_returned_at', 'device_returned_by']
         break
       default:
         filtered = users

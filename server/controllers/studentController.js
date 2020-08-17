@@ -62,7 +62,12 @@ const markDeviceReturned = async (req, res) => {
 
     const reclaimStatus = student.reclaimStatus ? 'CLOSED' : null
 
-    await student.update({ deviceReturned: true, reclaimStatus })
+    await student.update({
+      deviceReturned: true,
+      deviceReturnedAt: new Date(),
+      deviceReturnedBy: req.user.userId,
+      reclaimStatus,
+    })
 
     logger.info(`Student ${studentNumber} device marked as returned by ${req.user.userId}`)
     return res.json(student)

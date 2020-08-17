@@ -78,6 +78,7 @@ const VirtualizedTable = ({
                             disableSort={disableSort}
                             width={width || columnWidth}
                             key={key}
+                            className={key} // Helper for Cypress
                             label={label}
                             dataKey={key}
                             cellRenderer={({ rowData }) => renderCell(rowData)}

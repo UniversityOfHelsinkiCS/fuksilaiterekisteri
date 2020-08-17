@@ -136,6 +136,16 @@ const UserTable = ({
       renderCell: ({ deviceSerial }) => valOrEmpty(deviceSerial),
     },
     {
+      key: 'device_returned_at',
+      label: 'Returned at',
+      renderCell: ({ deviceReturnedAt }) => valOrEmpty(dateFormatter(deviceReturnedAt)),
+    },
+    {
+      key: 'device_returned_by',
+      label: 'Returned by',
+      renderCell: ({ deviceReturnedBy }) => valOrEmpty(deviceReturnedBy),
+    },
+    {
       key: 'device_distributed_by',
       label: 'Device distributed by',
       renderCell: ({ device_distributed_by }) => valOrEmpty(device_distributed_by),

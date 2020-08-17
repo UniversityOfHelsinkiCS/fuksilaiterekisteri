@@ -97,7 +97,7 @@ context('Admin', () => {
     cy.contains('test123')
   })
 
-  it("Can mark device as returned", () => {
+  it("Can mark device as returned and see by whom and when the device was returned", () => {
     cy.createUser("fuksi")
     cy.contains('FUKSILAITTEET')
     cy.get('[data-cy=terms]').click()
@@ -124,6 +124,9 @@ context('Admin', () => {
 
     cy.contains('fuksiEtunimi fuksi').parent().parent().find("[data-cy=markDeviceReturned]").click()
     cy.contains('fuksiEtunimi fuksi').parent().parent().find("[data-cy=markDeviceReturned]").should("be.disabled")
+
+    cy.contains('fuksiEtunimi fuksi').parent().parent().find(".device_returned_at").should("not.be.empty")
+    cy.contains('fuksiEtunimi fuksi').parent().parent().find(".device_returned_by").should("have.text","admin")
 
   })
 

@@ -72,6 +72,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         field: 'device_returned',
       },
+      deviceReturnedAt: {
+        type: DataTypes.DATE,
+        field: 'device_returned_at',
+      },
+      deviceReturnedBy: {
+        type: DataTypes.STRING,
+        field: 'device_returned_by',
+      },
       firstYearCredits: {
         type: DataTypes.INTEGER,
         field: 'first_year_credits',
