@@ -35,7 +35,7 @@ const userApi = axios.create({
 })
 
 const getMinMaxSemesters = async () => {
-  const res = await userApi.get('/students/min_max_semesters')
+  const res = await userApi.get('/semesters/min_max_semesters')
   return res.data
 }
 
