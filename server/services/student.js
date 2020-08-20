@@ -184,8 +184,8 @@ const getStudentStatus = async (studentNumber, studyrights) => {
           new Promise(async codeRes => codeRes(await getStudytrackEnrollmentStatusFor(studentNumber, c)))
         )))).includes(true)
       } else if (code === 'KH50_003') {
-        // Chemistry students need to be enrolled for KEK402A
-        enrolled = await hasEnrolledForCourse(studentNumber, 'KH50_003', 'KEK402A')
+        // Chemistry students need to be enrolled for KEK413A (Orientation)
+        enrolled = await hasEnrolledForCourse(studentNumber, 'KH50_003', 'KEK413A')
       } else {
         // Other students should be enrolled to their own programme's courses
         enrolled = await getStudytrackEnrollmentStatusFor(studentNumber, code)
