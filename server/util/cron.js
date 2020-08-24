@@ -23,7 +23,7 @@ const startCron = () => {
   /* eslint-disable no-new */
 
   new CronJob({
-    cronTime: '0 * * * *',
+    cronTime: '*/15 * * * *',
     onTick: async () => {
       logger.info('Updating eligible student statuses...')
       try {
@@ -31,7 +31,14 @@ const startCron = () => {
       } catch (e) {
         logger.error('Failed updating eligible student statuses!', e)
       }
+    },
+    start: true,
+    timeZone: 'Europe/Helsinki',
+  })
 
+  new CronJob({
+    cronTime: '0 * * * *',
+    onTick: async () => {
       logger.info('Checking student eligibilities...')
       try {
         await checkStudentEligibilities()
