@@ -46,11 +46,12 @@ const StudentInfo = ({ student }) => {
   if (!student) return null
   return (
     <div>
-      <div>
+      <div style={{ fontSize: '22px' }}>
         <b>Nimi: </b>
         {student.name}
       </div>
-      <div>
+      <br />
+      <div style={{ fontSize: '22px' }}>
         <b>Syntymäaika: </b>
         {formatDateOfBirth(student.dateOfBirth)}
       </div>
