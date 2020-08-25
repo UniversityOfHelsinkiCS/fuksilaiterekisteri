@@ -71,12 +71,6 @@ const isEligible = async (studentNumber, at) => {
   const semesterEnrollments = await getSemesterEnrollments(studentNumber)
   const acceptableStudyProgramCodes = (await db.studyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
 
-  const foundStudent = await db.user.findOne({
-    where: {
-      studentNumber,
-    },
-  })
-
   const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
   const { min, max } = inProduction ? await getMinMaxSemesters() : {
     min: '2008-07-30T21:00:00.000Z',
@@ -89,7 +83,7 @@ const isEligible = async (studentNumber, at) => {
   let hasPreviousStudyright = false
   let hasPre2008Studyright = false
   if (mlu) {
-    mlu.elements.forEach(({ start_date, code }) => {
+    mlu.elements.forEach(({ start_date }) => {
       const startTime = new Date(start_date).getTime()
 
       if (startTime < maxTime) {
@@ -100,11 +94,15 @@ const isEligible = async (studentNumber, at) => {
         hasPre2008Studyright = true
       }
 
-      if (startTime >= maxTime && acceptableStudyProgramCodes.includes(code)) {
+      if (startTime >= maxTime) {
         hasNewStudyright = true // Has studyright which might have not even started yet. (Maybe true fuksi)
       }
     })
   }
+
+  const hasValidBachelorsStudyright = !!studyrights.data
+    .reduce((pre, { elements }) => pre.concat(elements), [])
+    .find(({ code, end_date }) => acceptableStudyProgramCodes.includes(code) && new Date(end_date) > new Date().getTime())
 
   // In case a student has a new studyright that he/she has postponed
   if (mlu && mlu.elements.length && !hasPre2008Studyright && !hasNewStudyright && hasPreviousStudyright) {
@@ -132,35 +130,34 @@ const isEligible = async (studentNumber, at) => {
   const registrationEndingTime = new Date(settings.registrationDeadline)
   const didRegisterBeforeEndingTime = new Date(at || new Date().getTime()).getTime() < registrationEndingTime.getTime()
 
-  // Student's account may have not yet been created.
-  const signedUpForFreshmanDeviceThisYear = foundStudent ? foundStudent.signupYear === settings.currentYear : true
-
   if (!inProduction) {
     console.log('hasPreviousStudyright            \t', hasPreviousStudyright)
     console.log('hasNewStudyright                 \t', hasNewStudyright)
     console.log('isPresent                        \t', isPresent)
     console.log('didRegisterBeforeEndingTime      \t', didRegisterBeforeEndingTime)
-    console.log('signedUpForFreshmanDeviceThisYear\t', signedUpForFreshmanDeviceThisYear)
+    console.log('hasValidBachelorsStudyright      \t', hasValidBachelorsStudyright)
   }
 
   if (!inProduction) {
     return {
       studyrights,
-      eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime && signedUpForFreshmanDeviceThisYear),
+      eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime && hasValidBachelorsStudyright),
       eligibilityReasons: {
-        hasValidStudyright: !hasPreviousStudyright && hasNewStudyright,
+        hasValidStudyright: hasValidBachelorsStudyright,
         isPresent,
         didRegisterBeforeEndingTime,
-        signedUpForFreshmanDeviceThisYear,
       },
     }
   }
 
+
   return {
     studyrights,
-    eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime && signedUpForFreshmanDeviceThisYear),
+    eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime && hasValidBachelorsStudyright),
     eligibilityReasons: {
-      hasValidStudyright: !hasPreviousStudyright && hasNewStudyright, isPresent, didRegisterBeforeEndingTime, signedUpForFreshmanDeviceThisYear,
+      hasValidStudyright: hasValidBachelorsStudyright,
+      isPresent,
+      didRegisterBeforeEndingTime,
     },
   }
 }
