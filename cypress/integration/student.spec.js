@@ -75,11 +75,10 @@ describe('Student', () => {
 })
 
 describe("Previous years student", () => {
-  it("cant request device after 'fuksiyear' even if was marked eligible last year, and can see correct reason", () => {
+  it("cant request device after 'fuksiyear' even if was marked eligible last year", () => {
     cy.createUser("fuksi")
     cy.request("/api/test/advance")
     cy.visit("/")
     cy.get('[data-cy=notEligible]')
-    cy.contains('Tämä on ensimmäinen').find(".red")
   })
 })

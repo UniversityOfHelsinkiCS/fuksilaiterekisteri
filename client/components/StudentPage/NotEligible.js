@@ -16,6 +16,10 @@ const translations = {
     en: 'You have a studyright which makes you eligible for a device',
     fi: 'Sinulla on laitteeseen oikeuttava opiskeluoikeus',
   },
+  hasNoPreviousStudyRight: {
+    en: 'You are a first-time student at the faculty',
+    fi: 'Olet ensimmäistä kertaa läsnä oleva opiskelija tiedekunnassa',
+  },
   didRegisterBeforeEndingTime: {
     en: 'You registered for a device before the deadline closed',
     fi: 'Rekisteröityit ajoissa ennen määräajan umpeutumista',

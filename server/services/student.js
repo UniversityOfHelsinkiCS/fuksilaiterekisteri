@@ -144,6 +144,7 @@ const isEligible = async (studentNumber, at) => {
       eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime && hasValidBachelorsStudyright),
       eligibilityReasons: {
         hasValidStudyright: hasValidBachelorsStudyright,
+        hasNoPreviousStudyright: !hasPreviousStudyright,
         isPresent,
         didRegisterBeforeEndingTime,
       },

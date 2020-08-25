@@ -243,7 +243,7 @@ const mockData = {
             {
               code: 'KH50_005',
               start_date: '2008-07-31T21:00:00.000Z',
-              end_date: '2013-07-30T21:00:00.000Z',
+              end_date: '2040-07-30T21:00:00.000Z',
             },
           ],
           admission_date: '2017-06-30T21:00:00.000Z',
