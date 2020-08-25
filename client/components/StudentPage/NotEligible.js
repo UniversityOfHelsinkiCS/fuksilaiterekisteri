@@ -16,7 +16,7 @@ const translations = {
     en: 'You have a studyright which makes you eligible for a device',
     fi: 'Sinulla on laitteeseen oikeuttava opiskeluoikeus',
   },
-  hasNoPreviousStudyRight: {
+  hasNoPreviousStudyright: {
     en: 'You are a first-time student at the faculty',
     fi: 'Olet ensimmäistä kertaa läsnä oleva opiskelija tiedekunnassa',
   },
