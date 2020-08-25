@@ -115,6 +115,7 @@ const claimDevice = async (req, res) => {
         && student.signupYear === settings.currentYear
       )
     ) {
+      logger.warn(`User ${user.userId} failed to give a device to ${studentNumber}`)
       return res.status(403).json({ error: 'student not egilible for device', debug })
     }
 
