@@ -69,6 +69,7 @@ const isEligible = async (studentNumber, at) => {
   const settings = await getServiceStatusObject()
   const studyrights = await getStudyRightsFor(studentNumber)
   const semesterEnrollments = await getSemesterEnrollments(studentNumber)
+  const acceptableStudyProgramCodes = (await db.studyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
 
   const foundStudent = await db.user.findOne({
     where: {
@@ -88,7 +89,7 @@ const isEligible = async (studentNumber, at) => {
   let hasPreviousStudyright = false
   let hasPre2008Studyright = false
   if (mlu) {
-    mlu.elements.forEach(({ start_date }) => {
+    mlu.elements.forEach(({ start_date, code }) => {
       const startTime = new Date(start_date).getTime()
 
       if (startTime < maxTime) {
@@ -99,7 +100,7 @@ const isEligible = async (studentNumber, at) => {
         hasPre2008Studyright = true
       }
 
-      if (startTime >= maxTime) {
+      if (startTime >= maxTime && acceptableStudyProgramCodes.includes(code)) {
         hasNewStudyright = true // Has studyright which might have not even started yet. (Maybe true fuksi)
       }
     })
