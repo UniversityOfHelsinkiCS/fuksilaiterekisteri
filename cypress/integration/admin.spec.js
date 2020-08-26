@@ -13,13 +13,31 @@ context('Admin', () => {
     cy.contains('non-fuksiEtunimi').parent().parent().find('.ReactVirtualized__Table__rowColumn').find('input[checked]').eq(1)
   })
 
-  it('Can toggle student eligiblity', () => {
+  it('Can toggle student eligiblity which also updates student signup year', () => {
     cy.window().then((win) => {
       cy.stub(win, 'prompt').returns('Some text')
       cy.contains('non-fuksiEtunimi').parent().parent().find('.ReactVirtualized__Table__rowColumn:contains(Mark eligible)').click()
       cy.contains('non-fuksiEtunimi').parent().parent().find('.ReactVirtualized__Table__rowColumn:contains(Kyllä)').should('have.length', 1)
       cy.contains('non-fuksiEtunimi').parent().parent().find('.ReactVirtualized__Table__rowColumn:contains(Mark ineligible)').click()
       cy.contains('non-fuksiEtunimi').parent().parent().find('.ReactVirtualized__Table__rowColumn:contains(Kyllä)').should('have.length', 0)
+    })
+  })
+
+  it('Marking eligible changes updates student sign up year',  () => {
+    cy.window().then((win) => {
+      cy.stub(win, 'prompt').returns('Some text')
+      cy.createCustomUser({
+        userId: 'ineligible1',
+        name: 'Vanha Oikeutettu',
+        studentNumber: 'oldEligible',
+        eligible: false,
+        signUpYear: 2018,
+      })
+      cy.contains('Vanha Oikeutettu').parent().parent().find('.ReactVirtualized__Table__rowColumn:contains(Mark eligible)').click()
+      cy.contains('Vanha Oikeutettu').parent().parent().find('.ReactVirtualized__Table__rowColumn:contains(Kyllä)').should('have.length', 1)
+
+      cy.contains('Current years eligible students').click()
+      cy.contains('Vanha Oikeutettu')
     })
   })
 

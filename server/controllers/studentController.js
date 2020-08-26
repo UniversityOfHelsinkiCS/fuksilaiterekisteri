@@ -2,6 +2,7 @@ const db = require('@models')
 const { Op } = require('sequelize')
 const logger = require('@util/logger')
 const { runAutumnReclaimStatusUpdater, runSpringReclaimStatusUpdater } = require('@services/student')
+const { getServiceStatusObject } = require('./serviceStatusController')
 
 const getStudent = async (req, res) => {
   const { studentNumber } = req.params
@@ -37,11 +38,14 @@ const toggleStudentEligibility = async (req, res) => {
     const student = await db.user.findOne({ where: { studentNumber }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
     if (!student) return res.status(404).json({ error: 'student not found' })
 
+    const settings = await getServiceStatusObject()
+
     const oldEligiblity = student.eligible
     const prevNote = student.adminNote || ''
     const prefix = prevNote.length ? '\n\n' : ''
     await student.update({
       eligible: !oldEligiblity,
+      signupYear: oldEligiblity ? student.signupYear : settings.currentYear,
       ...(reason ? { adminNote: prevNote.concat(`${prefix}Marked ${oldEligiblity ? 'Ineligible' : 'Eligible'} by ${req.user.userId}. Reason: ${reason}`) } : {}),
     })
     logger.info(`Student ${studentNumber} marked ${oldEligiblity ? 'Ineligible' : 'Eligible'} by ${req.user.userId}`)
