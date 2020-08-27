@@ -6,7 +6,7 @@ const db = require('@models')
 const logger = require('@util/logger')
 const completionChecker = require('@util/completionChecker')
 const serviceStatusController = require('@controllers/serviceStatusController')
-const { createUserStudyprogrammes } = require('@controllers/studentController')
+const { createUserStudyprogrammes } = require('@util/studyProgramCreation')
 
 const {
   STUDENT_API_URL, STUDENT_API_TOKEN, DIGI_COURSES, inProduction,
@@ -279,6 +279,7 @@ const checkStudentEligibilities = async () => {
   else logger.info(`There were ${mismatches} mismatches!`)
 }
 
+// Used in CLI
 const updateStudentEligibility = async (studentNumber) => {
   const foundStudent = await db.user.findOne({
     where: {
@@ -307,6 +308,53 @@ const updateStudentEligibility = async (studentNumber) => {
   logger.info(`${studentNumber} eligibility updated successfully from ${eligibilityBefore} to ${eligible}!`)
   const readyEmail = await db.email.findOne({ where: { type: 'AUTOSEND_WHEN_READY' } })
   await completionChecker(updatedStudent, readyEmail)
+}
+
+const checkAndUpdateEligibility = async (studentNumber) => {
+  try {
+    const settings = await getServiceStatusObject()
+
+    const foundStudent = await db.user.findOne({
+      where: { studentNumber },
+      include: [
+        {
+          model: db.studyProgram,
+          as: 'studyPrograms',
+          through: { attributes: [] },
+          attributes: ['name', 'code', 'contactEmail', 'contactName'],
+        },
+      ],
+    })
+
+    const { studyrights, eligible, eligibilityReasons } = await isEligible(foundStudent.studentNumber)
+
+    if (eligible) {
+      await createUserStudyprogrammes(studyrights, foundStudent)
+      const { digiSkills, hasEnrollments } = await getStudentStatus(
+        foundStudent.studentNumber,
+        studyrights,
+      )
+      await foundStudent.update({
+        eligible,
+        eligibilityReasons,
+        signupYear: settings.currentYear,
+        digiSkills,
+        hasEnrollments,
+      })
+      const readyEmail = await db.email.findOne({
+        where: { type: 'AUTOSEND_WHEN_READY' },
+      })
+      await completionChecker(foundStudent, readyEmail)
+      logger.info(`${studentNumber} eligibility updated automatically`)
+    } else {
+      await foundStudent.update({ eligibilityReasons })
+    }
+
+    return foundStudent
+  } catch (e) {
+    logger.error(`Failed checking and updating ${studentNumber} eligibility`)
+    return null
+  }
 }
 
 const isDeviceHeldUnderFiveYears = deviceGivenAt => differenceInYears(new Date(), new Date(deviceGivenAt)) < 5
@@ -431,4 +479,5 @@ module.exports = {
   updateStudentEligibility,
   runAutumnReclaimStatusUpdater,
   runSpringReclaimStatusUpdater,
+  checkAndUpdateEligibility,
 }

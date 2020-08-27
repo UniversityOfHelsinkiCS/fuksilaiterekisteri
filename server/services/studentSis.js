@@ -11,7 +11,7 @@ const db = require('@models')
 const logger = require('@util/logger')
 const completionChecker = require('@util/completionChecker')
 const serviceStatusController = require('@controllers/serviceStatusController')
-const { createUserStudyprogrammes } = require('@controllers/studentController')
+const { createUserStudyprogrammes } = require('@util/studyProgramCreation')
 
 const {
   STUDENT_API_URL, STUDENT_API_TOKEN, DIGI_COURSES, inProduction,

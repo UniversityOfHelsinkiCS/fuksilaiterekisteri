@@ -43,6 +43,19 @@ describe('Student', () => {
     cy.contains('Tehtävien tila:')
   })
 
+  it('updates eligibility on login', () => {
+    cy.get('[data-cy=terms]')
+    cy.login('admin')
+    cy.window().then((win) => {
+      cy.stub(win, 'prompt').returns('Some text')
+      cy.contains('fuksiEtunimi').parent().parent().find('.ReactVirtualized__Table__rowColumn:contains(Mark ineligible)').click()
+      cy.contains('fuksiEtunimi').parent().parent().find('.ReactVirtualized__Table__rowColumn:contains(Kyllä)').should('have.length', 0)
+    })
+
+    cy.login('fuksi')
+    cy.get('[data-cy=terms]')
+  })
+
   it("non eligible students see why they are not eligible", () => {
     cy.login("non_fuksi_student")
     cy.get('[data-cy=notEligible]')
@@ -80,5 +93,27 @@ describe("Previous years student", () => {
     cy.request("/api/test/advance")
     cy.visit("/")
     cy.get('[data-cy=notEligible]')
+  })
+
+  it('updates sign up year on login if would be eligble this year', () => {
+    cy.createCustomUser({
+      userId: 'eligible2',
+      name: 'eligible lastYear',
+      studentNumber: 'eligible2',
+      signUpYear: 2018,
+      eligible: true,
+      wantsDevice: false,
+    })
+
+    cy.login('admin')
+    cy.contains('Current years eligible students').click()
+    cy.should('not.contain', 'eligible1')
+
+    cy.login('eligible2')
+    cy.get('[data-cy=terms]')
+
+    cy.login('admin')
+    cy.contains('Current years eligible students').click()
+    cy.contains('eligible2')
   })
 })

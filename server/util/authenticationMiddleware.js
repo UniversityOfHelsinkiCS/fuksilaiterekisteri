@@ -1,41 +1,9 @@
 const db = require('@models')
-const { getStudentStatus, isEligible } = require('@services/student')
+const { getStudentStatus, isEligible, checkAndUpdateEligibility } = require('@services/student')
 const { inProduction, isSuperAdmin } = require('./common')
 const logger = require('@util/logger')
+const { createUserStudyprogrammes, createStaffStudyprogrammes } = require('@util/studyProgramCreation')
 const { getServiceStatusObject } = require('@controllers/serviceStatusController')
-
-const { createUserStudyprogrammes } = require('@controllers/studentController')
-
-
-const createStaffStudyprogrammes = async (codes, user) => {
-  const studyprograms = await db.studyProgram.findAll({
-    where: { code: codes },
-    attributes: ['id'],
-  })
-
-  const promises = []
-  studyprograms.forEach((p) => {
-    promises.push(db.userStudyProgram.create({
-      userId: user.id,
-      studyProgramId: p.id,
-    }))
-  })
-  await Promise.all(promises)
-
-  const userWithStudyPrograms = await db.user.findOne({
-    where: { userId: user.userId },
-    include: [
-      {
-        model: db.studyProgram,
-        as: 'studyPrograms',
-        through: { attributes: [] },
-        attributes: ['name', 'code', 'contactEmail', 'contactName'],
-      },
-    ],
-  })
-
-  return userWithStudyPrograms
-}
 
 const authentication = async (req, res, next) => {
   // Headers are in by default lower case, we don't like that.
@@ -74,12 +42,20 @@ const authentication = async (req, res, next) => {
     ],
   })
 
+  const settings = await getServiceStatusObject()
+
   if (foundUser) {
     const formattedName = Buffer.from(`${givenName} ${sn}`, 'binary').toString(
       'utf8',
     )
     if (mail !== foundUser.hyEmail) await foundUser.update({ hyEmail: mail })
     if (formattedName !== foundUser.name) await foundUser.update({ name: formattedName })
+
+    if (foundUser.studentNumber && (!foundUser.eligible || foundUser.signupYear !== settings.currentYear)) {
+      const updatedUser = await checkAndUpdateEligibility(foundUser.studentNumber)
+      req.user = updatedUser || foundUser
+      return next()
+    }
 
     req.user = foundUser
     return next()
@@ -121,7 +97,6 @@ const authentication = async (req, res, next) => {
   }
 
   try {
-    const settings = await getServiceStatusObject()
     if (!settings.studentRegistrationOnline) {
       logger.warn(`User with studentNumber ${studentNumber} tried to create a new account (registrations are closed)`)
       return res.status(503).send({ error: 'Registrations are closed.' })
