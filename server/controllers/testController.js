@@ -187,6 +187,7 @@ const advance = async (req, res) => {
   try {
     const obj = await getServiceStatusObject()
     obj.currentYear = 2020
+    obj.currentSemester = 201
     await obj.save()
     return res.status(200).end()
   } catch (e) {

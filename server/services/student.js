@@ -74,7 +74,7 @@ const isEligible = async (studentNumber, at) => {
   const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
   const { min, max } = inProduction ? await getMinMaxSemesters() : {
     min: '2008-07-30T21:00:00.000Z',
-    max: '2019-07-31T21:00:00.000Z',
+    max: `${settings.currentYear}-07-31T21:00:00.000Z`,
   }
   const minTime = new Date(min).getTime() // 2008-07-30T21:00:00.000Z
   const maxTime = new Date(max).getTime() // When current semester started. Semester swaps on 31.7.
@@ -142,7 +142,7 @@ const isEligible = async (studentNumber, at) => {
     studyrights,
     eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime && hasValidBachelorsStudyright),
     eligibilityReasons: {
-      hasValidStudyright: hasValidBachelorsStudyright && hasNewStudyright,
+      hasValidStudyright: hasValidBachelorsStudyright,
       hasNoPreviousStudyright: !hasPreviousStudyright,
       isPresent,
       didRegisterBeforeEndingTime,
