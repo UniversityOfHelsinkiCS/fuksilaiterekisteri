@@ -325,8 +325,8 @@ const checkAndUpdateEligibility = async (studentNumber) => {
         eligible,
         eligibilityReasons,
         signupYear: settings.currentYear,
-        digiSkills,
-        hasEnrollments,
+        digiSkillsCompleted: digiSkills,
+        courseRegistrationCompleted: hasEnrollments,
       })
       const readyEmail = await db.email.findOne({
         where: { type: 'AUTOSEND_WHEN_READY' },
