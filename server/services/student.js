@@ -138,25 +138,12 @@ const isEligible = async (studentNumber, at) => {
     console.log('hasValidBachelorsStudyright      \t', hasValidBachelorsStudyright)
   }
 
-  if (!inProduction) {
-    return {
-      studyrights,
-      eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime && hasValidBachelorsStudyright),
-      eligibilityReasons: {
-        hasValidStudyright: hasValidBachelorsStudyright,
-        hasNoPreviousStudyright: !hasPreviousStudyright,
-        isPresent,
-        didRegisterBeforeEndingTime,
-      },
-    }
-  }
-
-
   return {
     studyrights,
     eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime && hasValidBachelorsStudyright),
     eligibilityReasons: {
-      hasValidStudyright: hasValidBachelorsStudyright,
+      hasValidStudyright: hasValidBachelorsStudyright && hasNewStudyright,
+      hasNoPreviousStudyright: !hasPreviousStudyright,
       isPresent,
       didRegisterBeforeEndingTime,
     },
