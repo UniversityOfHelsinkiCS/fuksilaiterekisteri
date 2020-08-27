@@ -51,7 +51,7 @@ const authentication = async (req, res, next) => {
     if (mail !== foundUser.hyEmail) await foundUser.update({ hyEmail: mail })
     if (formattedName !== foundUser.name) await foundUser.update({ name: formattedName })
 
-    if (foundUser.studentNumber && (!foundUser.eligible || foundUser.signupYear !== settings.currentYear)) {
+    if (foundUser.studentNumber && !foundUser.deviceGivenAt && (!foundUser.eligible || foundUser.signupYear !== settings.currentYear)) {
       const updatedUser = await checkAndUpdateEligibility(foundUser.studentNumber)
       req.user = updatedUser || foundUser
       return next()
