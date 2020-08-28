@@ -7,6 +7,8 @@
       "@controllers/*": ["server/controllers/*"],
       "@middleware/*": ["server/middleware/*"],
       "@util/*": ["server/util/*"],
+      "@database/*": ["server/database/*"],
+      "@database" : ["server/database/index"],
       "Utilities/*": ["client/util/*"],
       "Components/*": ["client/components/*"],
       "Assets/*": ["client/assets/*"],
