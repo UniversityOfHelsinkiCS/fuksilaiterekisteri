@@ -297,51 +297,49 @@ const updateStudentEligibility = async (studentNumber) => {
   await completionChecker(updatedStudent, readyEmail)
 }
 
-const checkAndUpdateEligibility = async (studentNumber) => {
+const checkAndUpdateEligibility = async (user) => {
   try {
     const settings = await getServiceStatusObject()
 
-    const foundStudent = await User.findOne({
-      where: { studentNumber },
-      include: [
-        {
-          model: StudyProgram,
-          as: 'studyPrograms',
-          through: { attributes: [] },
-          attributes: ['name', 'code', 'contactEmail', 'contactName'],
-        },
-      ],
-    })
-
-    const { studyrights, eligible, eligibilityReasons } = await isEligible(foundStudent.studentNumber)
+    const { studyrights, eligible, eligibilityReasons } = await isEligible(user.studentNumber)
 
     if (eligible) {
-      await createUserStudyprogrammes(studyrights, foundStudent)
-      const { digiSkills, hasEnrollments } = await getStudentStatus(
-        foundStudent.studentNumber,
-        studyrights,
-      )
-      await foundStudent.update({
+      await createUserStudyprogrammes(studyrights, user)
+      await user.update({
         eligible,
         eligibilityReasons,
         signupYear: settings.currentYear,
-        digiSkillsCompleted: digiSkills,
-        courseRegistrationCompleted: hasEnrollments,
       })
+      logger.info(`${user.studentNumber} eligibility updated automatically`)
+    } else {
+      await user.update({ eligibilityReasons })
+    }
+  } catch (e) {
+    logger.error(`Failed checking and updating ${user.studentNumber} eligibility`)
+  }
+  return user
+}
+
+const checkAndUpdateTaskStatuses = async (user) => {
+  try {
+    const studyrights = await getStudyRightsFor(user.studentNumber)
+    const { digiSkills, hasEnrollments } = await getStudentStatus(user.studentNumber, studyrights)
+
+    if (digiSkills !== user.digiSkillsCompleted || hasEnrollments !== user.courseRegistrationCompleted) {
+      await user.update({
+        digiSkillsCompleted: digiSkills || user.digiSkillsCompleted,
+        courseRegistrationCompleted: hasEnrollments || user.courseRegistrationCompleted,
+      })
+
       const readyEmail = await Email.findOne({
         where: { type: 'AUTOSEND_WHEN_READY' },
       })
-      await completionChecker(foundStudent, readyEmail)
-      logger.info(`${studentNumber} eligibility updated automatically`)
-    } else {
-      await foundStudent.update({ eligibilityReasons })
+      await completionChecker(user, readyEmail)
     }
-
-    return foundStudent
   } catch (e) {
-    logger.error(`Failed checking and updating ${studentNumber} eligibility`)
-    return null
+    logger.error(`Failed checking and updating ${user.studentNumber} task statuses: ${e}`)
   }
+  return user
 }
 
 const isDeviceHeldUnderFiveYears = deviceGivenAt => differenceInYears(new Date(), new Date(deviceGivenAt)) < 5
@@ -467,4 +465,5 @@ module.exports = {
   runAutumnReclaimStatusUpdater,
   runSpringReclaimStatusUpdater,
   checkAndUpdateEligibility,
+  checkAndUpdateTaskStatuses,
 }

@@ -1,10 +1,11 @@
 const completionChecker = require('@util/completionChecker')
 const logger = require('@util/logger')
-const { getServiceStatusObject } = require('./serviceStatusController')
 const { isSuperAdmin } = require('@util/common')
 const {
   User, Email, StudyProgram, UserStudyProgram,
 } = require('@models')
+const { checkAndUpdateEligibility, checkAndUpdateTaskStatuses } = require('@services/student')
+const { getServiceStatusObject } = require('./serviceStatusController')
 
 const validateEmail = (checkEmail) => {
   const validationRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
@@ -21,10 +22,21 @@ const validateSerial = async (serial, settings) => {
 }
 
 const getUser = async (req, res) => {
-  const superAdmin = isSuperAdmin(req.user.userId)
+  let { user } = req
+
+  const superAdmin = isSuperAdmin(user.userId)
+
+  const settings = await getServiceStatusObject()
+  if (user.studentNumber && !user.deviceGivenAt && (!user.eligible || user.signupYear !== settings.currentYear)) {
+    user = await checkAndUpdateEligibility(user)
+  }
+
+  if (user.eligible && user.signupYear === settings.currentYear && (!user.digiSkillsCompleted || !user.courseRegistrationCompleted)) {
+    user = await checkAndUpdateTaskStatuses(user)
+  }
 
   res.send({
-    ...req.user.dataValues,
+    ...user.dataValues,
     superAdmin,
   })
 }

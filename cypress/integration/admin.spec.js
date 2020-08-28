@@ -23,16 +23,18 @@ context('Admin', () => {
     })
   })
 
-  it('Marking eligible changes updates student sign up year',  () => {
+  it('Marking eligible updates student sign up year',  () => {
+    cy.createCustomUser({
+      userId: 'ineligible1',
+      name: 'Vanha Oikeutettu',
+      studentNumber: 'oldEligible',
+      eligible: false,
+      signUpYear: 2018,
+    })
+    cy.visit('/')
+
     cy.window().then((win) => {
       cy.stub(win, 'prompt').returns('Some text')
-      cy.createCustomUser({
-        userId: 'ineligible1',
-        name: 'Vanha Oikeutettu',
-        studentNumber: 'oldEligible',
-        eligible: false,
-        signUpYear: 2018,
-      })
       cy.contains('Vanha Oikeutettu').parent().parent().find('.ReactVirtualized__Table__rowColumn:contains(Mark eligible)').click()
       cy.contains('Vanha Oikeutettu').parent().parent().find('.ReactVirtualized__Table__rowColumn:contains(Kyllä)').should('have.length', 1)
 
