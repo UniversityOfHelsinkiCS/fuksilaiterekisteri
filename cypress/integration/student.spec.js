@@ -71,7 +71,7 @@ describe('Student', () => {
     cy.get(".checkmark").eq(2)
   })
 
-  it.only('does not update task statuses that are true', () => {
+  it('does not update task statuses that are true', () => {
     cy.login('fuksi_without_digiskills')
     cy.get('[data-cy=terms]').click()
     cy.get('[data-cy=closeTerms]').click()
