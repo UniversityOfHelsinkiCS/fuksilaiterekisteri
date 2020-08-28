@@ -1,4 +1,4 @@
-const db = require('@models')
+const { User, StudyProgram } = require('@models')
 const { Op } = require('sequelize')
 const logger = require('@util/logger')
 const { runAutumnReclaimStatusUpdater, runSpringReclaimStatusUpdater } = require('@services/student')
@@ -7,7 +7,7 @@ const { getServiceStatusObject } = require('./serviceStatusController')
 const getStudent = async (req, res) => {
   const { studentNumber } = req.params
 
-  const student = await db.user.findOne({ where: { studentNumber }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
+  const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
   if (!student) return res.sendStatus(404)
 
   const response = {
@@ -35,7 +35,7 @@ const toggleStudentEligibility = async (req, res) => {
     const { reason } = req.body
     if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
 
-    const student = await db.user.findOne({ where: { studentNumber }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
+    const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
     if (!student) return res.status(404).json({ error: 'student not found' })
 
     const settings = await getServiceStatusObject()
@@ -61,7 +61,7 @@ const markDeviceReturned = async (req, res) => {
     const { studentNumber } = req.params
     if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
 
-    const student = await db.user.findOne({ where: { studentNumber }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
+    const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
     if (!student) return res.status(404).json({ error: 'student not found' })
 
     const reclaimStatus = student.reclaimStatus ? 'CLOSED' : null
@@ -88,7 +88,7 @@ const updateStudentStatus = async (req, res) => {
 
     if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
 
-    const student = await db.user.findOne({ where: { studentNumber }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
+    const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
     if (!student) return res.status(404).json({ error: 'student not found' })
 
     await student.update({
@@ -110,7 +110,7 @@ const updateStudentReclaimStatus = async (req, res) => {
 
     if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
 
-    const student = await db.user.findOne({ where: { studentNumber }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
+    const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
     if (!student) return res.status(404).json({ error: 'student not found' })
 
     await student.update({ reclaimStatus })
@@ -127,7 +127,7 @@ const getStudentsForStaff = async (req, res) => {
     const { user } = req
 
     const userStudyProgramCodes = user.studyPrograms.map(s => s.code)
-    const allStudents = await db.user.findAll({
+    const allStudents = await User.findAll({
       where: {
         studentNumber: {
           [Op.ne]: null,
@@ -136,7 +136,7 @@ const getStudentsForStaff = async (req, res) => {
           [Op.in]: userStudyProgramCodes,
         },
       },
-      include: [{ model: db.studyProgram, as: 'studyPrograms' }],
+      include: [{ model: StudyProgram, as: 'studyPrograms' }],
     })
 
     return res.status(200).json(allStudents)
@@ -147,7 +147,7 @@ const getStudentsForStaff = async (req, res) => {
 }
 
 const getStudentsWithReclaimStatus = async () => {
-  const studentsWithReclaimStatus = await db.user.findAll({
+  const studentsWithReclaimStatus = await User.findAll({
     where: {
       studentNumber: {
         [Op.ne]: null,
@@ -156,7 +156,7 @@ const getStudentsWithReclaimStatus = async () => {
         [Op.ne]: null,
       },
     },
-    include: [{ model: db.studyProgram, as: 'studyPrograms' }],
+    include: [{ model: StudyProgram, as: 'studyPrograms' }],
   })
 
   return studentsWithReclaimStatus

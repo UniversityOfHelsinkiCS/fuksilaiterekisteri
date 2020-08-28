@@ -1,8 +1,8 @@
-const db = require('@models')
 const logger = require('@util/logger')
+const { ServiceStatus } = require('@models')
 
 const getServiceStatusObject = async () => {
-  const serviceStatus = await db.serviceStatus.findAll({
+  const serviceStatus = await ServiceStatus.findAll({
     limit: 1,
     order: [['updatedAt', 'DESC']],
   })

@@ -1,4 +1,6 @@
-const db = require('@models')
+const {
+  User, ServiceStatus, StudyProgram, UserStudyProgram, Email,
+} = require('@models')
 const logger = require('@util/logger')
 
 const defaultTranslations = require('../../util/defaultTranslations.json')
@@ -9,7 +11,7 @@ const fakeShibboleth = require('../../client/util/fakeShibboleth')
 
 const resetTestUsers = async (req, res) => {
   try {
-    await db.user.destroy({
+    await User.destroy({
       where: {
         userId: fakeShibboleth.possibleUsers.concat(fakeShibboleth.eligilityTestUsers).map(u => u.uid),
       },
@@ -35,11 +37,11 @@ const disableStudentRegs = async (req, res) => {
 
 const resetServiceStatus = async (req, res) => {
   try {
-    await db.serviceStatus.destroy({
+    await ServiceStatus.destroy({
       where: {},
     })
 
-    await db.serviceStatus.create({
+    await ServiceStatus.create({
       studentRegistrationOnline: true,
       currentYear: 2019,
       currentSemester: 139,
@@ -64,7 +66,7 @@ const createDeviceGivenAt = () => {
 }
 
 const createCustomUser = async (userOverrides, studyProgramCode) => {
-  const { id } = await db.studyProgram.findOne({
+  const { id } = await StudyProgram.findOne({
     where: {
       code: studyProgramCode,
     },
@@ -94,11 +96,11 @@ const createCustomUser = async (userOverrides, studyProgramCode) => {
     ...userOverrides,
   }
 
-  await db.user.destroy({ where: { userId: userOverrides.userId } })
+  await User.destroy({ where: { userId: userOverrides.userId } })
 
-  const newUser = await db.user.create({ ...defaults })
+  const newUser = await User.create({ ...defaults })
 
-  await db.userStudyProgram.create({
+  await UserStudyProgram.create({
     userId: newUser.id,
     studyProgramId: id,
   })
@@ -137,14 +139,14 @@ const createNewUser = async (i, spid) => {
     ...deviceStuff,
   }
 
-  db.user.findOrCreate({
+  User.findOrCreate({
     where: { userId: `${i}` },
     defaults,
   }).then(([user, created]) => {
     if (created) {
       logger.info(`Created user ${i}`)
       if (b) {
-        db.userStudyProgram.create({
+        UserStudyProgram.create({
           userId: user.id,
           studyProgramId: spid,
         })
@@ -155,7 +157,7 @@ const createNewUser = async (i, spid) => {
 
 const createSomeUsers = async (req, res) => {
   try {
-    const spIds = await db.studyProgram.findAll({
+    const spIds = await StudyProgram.findAll({
       attributes: ['id', 'code'],
     }).map(({ id }) => id)
 
@@ -213,7 +215,7 @@ const setServiceStatus = async (req, res) => {
   try {
     const newSettings = req.body
 
-    const serviceStatus = await db.serviceStatus.findAll({
+    const serviceStatus = await ServiceStatus.findAll({
       limit: 1,
       order: [['updatedAt', 'DESC']],
     })
@@ -231,7 +233,7 @@ const setServiceStatus = async (req, res) => {
 const resetEmailTemplates = async (req, res) => {
   try {
     const { type } = req.params
-    await db.email.destroy({ where: { type } })
+    await Email.destroy({ where: { type } })
     return res.status(200).end()
   } catch (e) {
     logger.error('error', e)

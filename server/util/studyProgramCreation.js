@@ -1,25 +1,25 @@
-const db = require('@models')
+const { StudyProgram, UserStudyProgram, User } = require('@models')
 
 const createStaffStudyprogrammes = async (codes, user) => {
-  const studyprograms = await db.studyProgram.findAll({
+  const studyprograms = await StudyProgram.findAll({
     where: { code: codes },
     attributes: ['id'],
   })
 
   const promises = []
   studyprograms.forEach((p) => {
-    promises.push(db.userStudyProgram.create({
+    promises.push(UserStudyProgram.create({
       userId: user.id,
       studyProgramId: p.id,
     }))
   })
   await Promise.all(promises)
 
-  const userWithStudyPrograms = await db.user.findOne({
+  const userWithStudyPrograms = await User.findOne({
     where: { userId: user.userId },
     include: [
       {
-        model: db.studyProgram,
+        model: StudyProgram,
         as: 'studyPrograms',
         through: { attributes: [] },
         attributes: ['name', 'code', 'contactEmail', 'contactName'],
@@ -31,7 +31,7 @@ const createStaffStudyprogrammes = async (codes, user) => {
 }
 
 const createUserStudyprogrammes = async (studyrights, user) => {
-  const allStudyprograms = await db.studyProgram.findAll({
+  const allStudyprograms = await StudyProgram.findAll({
     attributes: ['id', 'code'],
   })
 
@@ -54,7 +54,7 @@ const createUserStudyprogrammes = async (studyrights, user) => {
                       && user.studyPrograms.map(c => c.code).includes(code)
                     )
               ) {
-                await db.userStudyProgram.create({
+                await UserStudyProgram.create({
                   userId: user.id,
                   studyProgramId: studyprogramCodeToId[code],
                 })

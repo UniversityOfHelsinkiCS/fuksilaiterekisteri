@@ -1,9 +1,9 @@
-const db = require('@models')
+const { StudyProgram } = require('@models')
 const logger = require('@util/logger')
 
 const getAll = async (req, res) => {
   try {
-    const studyProgrammes = await db.studyProgram.findAll()
+    const studyProgrammes = await StudyProgram.findAll()
     return res.status(200).json(studyProgrammes.sort((a, b) => a.name > b.name))
   } catch (e) {
     logger.error('error', e)
@@ -15,7 +15,7 @@ const update = async (req, res) => {
   try {
     const newData = req.body
 
-    const studyProgrammes = await db.studyProgram.findAll()
+    const studyProgrammes = await StudyProgram.findAll()
 
     const promises = []
     newData.forEach(({ code, contactEmail, contactName }) => {

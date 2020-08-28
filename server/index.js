@@ -4,7 +4,7 @@ const routes = require('@util/routes')
 const logger = require('@util/logger')
 const path = require('path')
 const { startCron } = require('@util/cron')
-const { initializeDatabaseConnection } = require('./database/connection')
+const { initializeDatabaseConnection } = require('@database/connection')
 
 initializeDatabaseConnection()
   .then(() => {

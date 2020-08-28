@@ -1,5 +1,5 @@
 const logger = require('@util/logger')
-const db = require('@models')
+const { User, Email } = require('@models')
 const { Op } = require('sequelize')
 const sendEmail = require('@util/sendEmail')
 
@@ -52,7 +52,7 @@ const sendReclaimerEmail = async (req, res) => {
 
     if (!userIds) return res.status(400).json({ error: 'userIds missing' })
 
-    const usersToBeContacted = await db.user.findAll({
+    const usersToBeContacted = await User.findAll({
       where: {
         userId: {
           [Op.in]: userIds,
@@ -108,7 +108,7 @@ const getAutosendTemplate = async (req, res) => {
 
     if (!type || !type.includes('AUTOSEND')) return res.status(400).json({ error: 'invalid parameter' })
 
-    const template = await db.email.findOne(({ where: { type } }))
+    const template = await Email.findOne(({ where: { type } }))
 
     return res.status(200).json(template)
   } catch (e) {
@@ -127,11 +127,11 @@ const updateAutosendTemplate = async (req, res) => {
       return res.status(400).json({ error: 'invalid parameters' })
     }
 
-    let template = await db.email.findOne({ where: { type } })
+    let template = await Email.findOne({ where: { type } })
 
     if (template) await template.update({ subject, body, replyTo })
     else {
-      template = await db.email.create({
+      template = await Email.create({
         subject, body, type, replyTo,
       })
     }
@@ -145,7 +145,7 @@ const updateAutosendTemplate = async (req, res) => {
 
 const getAllAdminTemplates = async (_req, res) => {
   try {
-    const templates = await db.email.findAll(({ where: { type: 'ADMIN' } }))
+    const templates = await Email.findAll(({ where: { type: 'ADMIN' } }))
     return res.status(200).json(templates)
   } catch (e) {
     logger.error(e)
@@ -164,13 +164,13 @@ const createOrUpdateAdminTemplate = async (req, res) => {
     }
 
     if (!id) {
-      const createdTemplate = await db.email.create(({
+      const createdTemplate = await Email.create(({
         type: 'ADMIN', subject, body, replyTo, description,
       }))
       return res.status(200).json({ data: createdTemplate, createdId: createdTemplate.id })
     }
 
-    const existingTemplate = await db.email.findOne({ where: { id } })
+    const existingTemplate = await Email.findOne({ where: { id } })
     await existingTemplate.update({
       subject, body, replyTo, description,
     })
@@ -186,7 +186,7 @@ const deleteTemplate = async (req, res) => {
   try {
     const { id } = req.params
     if (!id) return res.status(400).json({ error: 'id missing' })
-    const deleteCount = await db.email.destroy(({ where: { id }, limit: 1 }))
+    const deleteCount = await Email.destroy(({ where: { id }, limit: 1 }))
     if (deleteCount === 0) return res.status(400).json({ error: 'id not found' })
     return res.status(200).send(id)
   } catch (e) {
@@ -197,7 +197,7 @@ const deleteTemplate = async (req, res) => {
 
 const getAllReclaimerTemplates = async (_req, res) => {
   try {
-    const templates = await db.email.findAll(({ where: { type: 'RECLAIM' } }))
+    const templates = await Email.findAll(({ where: { type: 'RECLAIM' } }))
     return res.status(200).json(templates)
   } catch (e) {
     logger.error(e)
@@ -216,13 +216,13 @@ const createOrUpdateReclaimerTemplate = async (req, res) => {
     }
 
     if (!id) {
-      const createdTemplate = await db.email.create(({
+      const createdTemplate = await Email.create(({
         type: 'RECLAIM', subject, body, replyTo, description,
       }))
       return res.status(200).json({ data: createdTemplate, createdId: createdTemplate.id })
     }
 
-    const existingTemplate = await db.email.findOne({ where: { id } })
+    const existingTemplate = await Email.findOne({ where: { id } })
     if (!existingTemplate) return res.status(400).json({ error: 'template not found' })
     await existingTemplate.update({
       subject, body, replyTo, description,
@@ -239,7 +239,7 @@ const deleteReclaimerTemplate = async (req, res) => {
   try {
     const { id } = req.params
     if (!id) return res.status(400).json({ error: 'id missing' })
-    const deleteCount = await db.email.destroy(({ where: { id, type: 'RECLAIM' }, limit: 1 }))
+    const deleteCount = await Email.destroy(({ where: { id, type: 'RECLAIM' }, limit: 1 }))
     if (deleteCount === 0) return res.status(400).json({ error: 'id not found' })
     return res.status(200).send(id)
   } catch (e) {

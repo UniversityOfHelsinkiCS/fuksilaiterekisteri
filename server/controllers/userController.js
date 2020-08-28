@@ -1,8 +1,10 @@
-const db = require('@models')
 const completionChecker = require('@util/completionChecker')
 const logger = require('@util/logger')
 const { getServiceStatusObject } = require('./serviceStatusController')
 const { isSuperAdmin } = require('@util/common')
+const {
+  User, Email, StudyProgram, UserStudyProgram,
+} = require('@models')
 
 const validateEmail = (checkEmail) => {
   const validationRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
@@ -63,7 +65,7 @@ const requestDevice = async (req, res) => {
   }
 
   try {
-    const readyEmail = await db.email.findOne({ where: { type: 'AUTOSEND_WHEN_READY' } })
+    const readyEmail = await Email.findOne({ where: { type: 'AUTOSEND_WHEN_READY' } })
     const updatedUser = await req.user.update({ wantsDevice: true, personalEmail: req.body.email })
 
     completionChecker(updatedUser, readyEmail)
@@ -94,7 +96,7 @@ const claimDevice = async (req, res) => {
     const validSerial = await validateSerial(deviceId, settings)
     if (!validSerial) return res.status(400).json({ error: 'device id missing or invalid' })
 
-    const student = await db.user.findOne({
+    const student = await User.findOne({
       where: {
         studentNumber,
       },
@@ -138,7 +140,7 @@ const claimDevice = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await db.user.findAll({ include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
+    const users = await User.findAll({ include: [{ model: StudyProgram, as: 'studyPrograms' }] })
     res.json(users)
   } catch (e) {
     logger.error(e)
@@ -157,11 +159,11 @@ const toggleRole = async (req, res) => {
 
     if ((parseInt(id, 10) === parseInt(ownId, 10)) && role === 'admin') return res.status(403).json({ error: 'Cant remove admin from yourself.' })
 
-    const user = await db.user.findOne({
+    const user = await User.findOne({
       where: {
         id,
       },
-      include: [{ model: db.studyProgram, as: 'studyPrograms' }],
+      include: [{ model: StudyProgram, as: 'studyPrograms' }],
     })
 
     if (!user) return res.status(404).json({ error: 'user not found' })
@@ -180,11 +182,11 @@ const setAdminNote = async (req, res) => {
     const { id } = req.params
     const { note } = req.body
 
-    const user = await db.user.findOne({
+    const user = await User.findOne({
       where: {
         id,
       },
-      include: [{ model: db.studyProgram, as: 'studyPrograms' }],
+      include: [{ model: StudyProgram, as: 'studyPrograms' }],
     })
 
     if (!user) return res.status(404).json({ error: 'user not found' })
@@ -210,7 +212,7 @@ const updateUserStudyPrograms = async (req, res) => {
       else userStudyProgramsToDelete.push(studyProgramId)
     })
 
-    await db.userStudyProgram.destroy({
+    await UserStudyProgram.destroy({
       where: {
         userId: id,
         studyProgramId: userStudyProgramsToDelete,
@@ -219,14 +221,14 @@ const updateUserStudyPrograms = async (req, res) => {
 
     const promises = []
     userStudyProgramsToCreate.forEach((studyProgramId) => {
-      promises.push(db.userStudyProgram.findOrCreate({
+      promises.push(UserStudyProgram.findOrCreate({
         where: { userId: id, studyProgramId },
         defaults: { userId: id, studyProgramId },
       }))
     })
     await Promise.all(promises)
 
-    const user = await db.user.findOne({ where: { id }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
+    const user = await User.findOne({ where: { id }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
 
     if (userStudyProgramsToCreate.length === 0) await user.update({ staff: false })
 

@@ -103,6 +103,7 @@
     "@controllers": "server/controllers",
     "@models": "server/models",
     "@services": "server/services",
-    "@util": "server/util"
+    "@util": "server/util",
+    "@database": "server/database"
   }
 }

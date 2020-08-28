@@ -2,7 +2,7 @@ const axios = require('axios')
 const https = require('https')
 const { Op } = require('sequelize')
 const { differenceInYears } = require('date-fns')
-const db = require('@models')
+const { StudyProgram, User, Email } = require('@models')
 const logger = require('@util/logger')
 const completionChecker = require('@util/completionChecker')
 const serviceStatusController = require('@controllers/serviceStatusController')
@@ -69,7 +69,7 @@ const isEligible = async (studentNumber, at) => {
   const settings = await getServiceStatusObject()
   const studyrights = await getStudyRightsFor(studentNumber)
   const semesterEnrollments = await getSemesterEnrollments(studentNumber)
-  const acceptableStudyProgramCodes = (await db.studyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
+  const acceptableStudyProgramCodes = (await StudyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
 
   const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
   const { min, max } = inProduction ? await getMinMaxSemesters() : {
@@ -154,7 +154,7 @@ const getStudentStatus = async (studentNumber, studyrights) => {
   if (!inProduction) return { digiSkills: !(studentNumber === 'fuksi_without_digiskills'), hasEnrollments: true }
   const digiSkills = await getDigiSkillsFor(studentNumber)
   const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
-  const studyProgramCodes = (await db.studyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
+  const studyProgramCodes = (await StudyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
 
   const enrollmentPromises = mlu ? mlu.elements.map(({ code }) => (
     new Promise(async (resolve) => {
@@ -190,7 +190,7 @@ const updateEligibleStudentStatuses = async () => {
   const isDistributionOver = new Date().getTime() > new Date(settings.taskDeadline).getTime()
   if (isDistributionOver) return
 
-  const targetStudents = await db.user.findAll({
+  const targetStudents = await User.findAll({
     where: {
       eligible: true,
       studentNumber: {
@@ -201,7 +201,7 @@ const updateEligibleStudentStatuses = async () => {
     },
   })
 
-  const readyEmail = await db.email.findOne({ where: { type: 'AUTOSEND_WHEN_READY' } })
+  const readyEmail = await Email.findOne({ where: { type: 'AUTOSEND_WHEN_READY' } })
 
   let done = 0
 
@@ -239,7 +239,7 @@ const updateEligibleStudentStatuses = async () => {
 
 const checkStudentEligibilities = async () => {
   const settings = await getServiceStatusObject()
-  const students = await db.user.findAll({
+  const students = await User.findAll({
     where: {
       studentNumber: {
         [Op.ne]: null,
@@ -268,11 +268,11 @@ const checkStudentEligibilities = async () => {
 
 // Used in CLI
 const updateStudentEligibility = async (studentNumber) => {
-  const foundStudent = await db.user.findOne({
+  const foundStudent = await User.findOne({
     where: {
       studentNumber,
     },
-    include: [{ model: db.studyProgram, as: 'studyPrograms' }],
+    include: [{ model: StudyProgram, as: 'studyPrograms' }],
   })
 
   if (!foundStudent) {
@@ -293,7 +293,7 @@ const updateStudentEligibility = async (studentNumber) => {
   })
 
   logger.info(`${studentNumber} eligibility updated successfully from ${eligibilityBefore} to ${eligible}!`)
-  const readyEmail = await db.email.findOne({ where: { type: 'AUTOSEND_WHEN_READY' } })
+  const readyEmail = await Email.findOne({ where: { type: 'AUTOSEND_WHEN_READY' } })
   await completionChecker(updatedStudent, readyEmail)
 }
 
@@ -301,11 +301,11 @@ const checkAndUpdateEligibility = async (studentNumber) => {
   try {
     const settings = await getServiceStatusObject()
 
-    const foundStudent = await db.user.findOne({
+    const foundStudent = await User.findOne({
       where: { studentNumber },
       include: [
         {
-          model: db.studyProgram,
+          model: StudyProgram,
           as: 'studyPrograms',
           through: { attributes: [] },
           attributes: ['name', 'code', 'contactEmail', 'contactName'],
@@ -328,7 +328,7 @@ const checkAndUpdateEligibility = async (studentNumber) => {
         digiSkillsCompleted: digiSkills,
         courseRegistrationCompleted: hasEnrollments,
       })
-      const readyEmail = await db.email.findOne({
+      const readyEmail = await Email.findOne({
         where: { type: 'AUTOSEND_WHEN_READY' },
       })
       await completionChecker(foundStudent, readyEmail)
@@ -368,7 +368,7 @@ const FIRST_YEAR_CREDIT_LIMIT = 30
 const runAutumnReclaimStatusUpdater = async () => {
   const currentYear = getCurrentYear()
 
-  const deviceHolders = await db.user.findAll({
+  const deviceHolders = await User.findAll({
     where: {
       deviceSerial: { [Op.ne]: null },
       deviceReturned: false,
@@ -418,7 +418,7 @@ const runAutumnReclaimStatusUpdater = async () => {
 const runSpringReclaimStatusUpdater = async () => {
   const currentYear = getCurrentYear()
 
-  const deviceHolders = await db.user.findAll({
+  const deviceHolders = await User.findAll({
     where: {
       deviceSerial: { [Op.ne]: null },
       deviceReturned: false,

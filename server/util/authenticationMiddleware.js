@@ -1,9 +1,9 @@
-const db = require('@models')
 const { getStudentStatus, isEligible, checkAndUpdateEligibility } = require('@services/student')
 const { inProduction, isSuperAdmin } = require('./common')
 const logger = require('@util/logger')
 const { createUserStudyprogrammes, createStaffStudyprogrammes } = require('@util/studyProgramCreation')
 const { getServiceStatusObject } = require('@controllers/serviceStatusController')
+const { StudyProgram, User } = require('@models')
 
 const authentication = async (req, res, next) => {
   // Headers are in by default lower case, we don't like that.
@@ -22,19 +22,18 @@ const authentication = async (req, res, next) => {
   const loggedInAs = req.headers['x-admin-logged-in-as']
   if (loggedInAs) {
     if (superAdmin) {
-      const fakeUser = await db.user.findOne({ where: { userId: loggedInAs }, include: [{ model: db.studyProgram, as: 'studyPrograms' }] })
+      const fakeUser = await User.findOne({ where: { userId: loggedInAs }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
       req.user = fakeUser
       return next()
     }
     logger.warn(`Non superadmin ${uid} tried to use loginAs without permissions`)
     return res.sendStatus(403)
   }
-
-  const foundUser = await db.user.findOne({
+  const foundUser = await User.findOne({
     where: { userId: uid },
     include: [
       {
-        model: db.studyProgram,
+        model: StudyProgram,
         as: 'studyPrograms',
         through: { attributes: [] },
         attributes: ['name', 'code', 'contactEmail', 'contactName'],
@@ -82,7 +81,7 @@ const authentication = async (req, res, next) => {
       return res.status(503).send({ errorName: 'studentnumber-missing' })
     }
 
-    let newUser = await db.user.create({
+    let newUser = await User.create({
       ...defaultParams,
     })
 
@@ -108,7 +107,7 @@ const authentication = async (req, res, next) => {
       studyrights,
     )
 
-    const newUser = await db.user.create({
+    const newUser = await User.create({
       ...defaultParams,
       eligible,
       digiSkillsCompleted: digiSkills,
