@@ -2,7 +2,6 @@ const Umzug = require('umzug')
 const logger = require('@util/logger')
 const { inProduction } = require('@util/common')
 const { sequelize, Sequelize } = require('@database')
-const models = require('../models')
 
 const DB_CONNECTION_RETRY_LIMIT = 60
 

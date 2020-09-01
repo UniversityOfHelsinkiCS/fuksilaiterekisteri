@@ -20,8 +20,6 @@ const {
 const mock = require('./mock')
 
 
-const getServiceStatusObject = () => ServiceStatus.getObject().then(serviceStatusObject => serviceStatusObject)
-
 const userApi = axios.create({
   httpsAgent: new https.Agent({
     // TODO: FIX
