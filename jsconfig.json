@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es2017",
     "allowSyntheticDefaultImports": false,
+    "moduleResolution": "node",
     "baseUrl": "./",
     "paths": {
       "@controllers/*": [
