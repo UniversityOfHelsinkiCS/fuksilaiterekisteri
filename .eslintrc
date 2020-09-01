@@ -9,11 +9,15 @@
       "error",
       "never"
     ],
-    "max-len": [1, 200],
+    "max-len": [
+      1,
+      200
+    ],
     "camelcase": 0,
     "no-plusplus": 0,
     "import/no-unresolved": "off",
     "react/jsx-filename-extension": "off",
+    "class-methods-use-this": "off",
     "react/prop-types": [
       1,
       {

@@ -4,7 +4,6 @@ const {
 const logger = require('@util/logger')
 
 const defaultTranslations = require('../../util/defaultTranslations.json')
-const { getServiceStatusObject } = require('./serviceStatusController')
 
 const _ = require('lodash')
 const fakeShibboleth = require('../../client/util/fakeShibboleth')
@@ -25,7 +24,7 @@ const resetTestUsers = async (req, res) => {
 
 const disableStudentRegs = async (req, res) => {
   try {
-    const obj = await getServiceStatusObject()
+    const obj = await ServiceStatus.getObject()
     obj.studentRegistrationOnline = false
     await obj.save()
     return res.status(200).end()
@@ -187,7 +186,7 @@ const createUser = async (req, res) => {
 
 const advance = async (req, res) => {
   try {
-    const obj = await getServiceStatusObject()
+    const obj = await ServiceStatus.getObject()
     obj.currentYear = 2020
     obj.currentSemester = 201
     await obj.save()
@@ -201,7 +200,7 @@ const advance = async (req, res) => {
 const setSerial = async (req, res) => {
   try {
     const newSerial = req.params.serial
-    const obj = await getServiceStatusObject()
+    const obj = await ServiceStatus.getObject()
     obj.deviceSerial = newSerial
     await obj.save()
     return res.status(200).end()

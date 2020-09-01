@@ -2,7 +2,18 @@ const { Model, DataTypes } = require('sequelize')
 const { sequelize } = require('@database')
 
 class ServiceStatus extends Model {
+  static async getObject() {
+    const serviceStatus = await ServiceStatus.findAll({
+      limit: 1,
+      order: [['updatedAt', 'DESC']],
+    })
 
+    console.log('Got service status')
+
+    if (!serviceStatus[0]) return undefined
+
+    return serviceStatus[0]
+  }
 }
 
 

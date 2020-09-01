@@ -1,6 +1,6 @@
+const ServiceStatus = require('./servicestatus')
 const StudyProgram = require('./studyprogram')
 const User = require('./user')
-const ServiceStatus = require('./servicestatus')
 const UserStudyProgram = require('./userstudyprogram')
 const Email = require('./email')
 

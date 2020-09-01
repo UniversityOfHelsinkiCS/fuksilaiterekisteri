@@ -1,21 +1,9 @@
 const logger = require('@util/logger')
-const { ServiceStatus } = require('@models')
-
-const getServiceStatusObject = async () => {
-  const serviceStatus = await ServiceStatus.findAll({
-    limit: 1,
-    order: [['updatedAt', 'DESC']],
-  })
-
-  if (!serviceStatus[0]) return undefined
-
-  return serviceStatus[0]
-}
-
+const { ServiceStatus } = require('../models')
 
 const getServiceStatus = async (req, res) => {
   try {
-    const serviceStatus = await getServiceStatusObject()
+    const serviceStatus = await ServiceStatus.getObject()
     if (!serviceStatus) return res.sendStatus(404)
     return res.send(serviceStatus)
   } catch (e) {
@@ -28,7 +16,7 @@ const setServiceStatus = async (req, res) => {
   try {
     const newSettings = req.body
 
-    const old = await getServiceStatusObject()
+    const old = await ServiceStatus.getObject()
 
     // Update any key value pait present in req.body. Excluding sequelize stuff:
     Object.keys(newSettings).filter(key => !['id', 'createdAt', 'updatedAt'].includes(key)).forEach((key) => {
@@ -46,6 +34,5 @@ const setServiceStatus = async (req, res) => {
 
 module.exports = {
   getServiceStatus,
-  getServiceStatusObject,
   setServiceStatus,
 }

@@ -7,10 +7,11 @@ const axios = require('axios')
 const https = require('https')
 const { Op } = require('sequelize')
 const { differenceInYears } = require('date-fns')
-const { User, StudyProgram, Email } = require('@models')
+const {
+  User, StudyProgram, Email, ServiceStatus,
+} = require('@models')
 const logger = require('@util/logger')
 const completionChecker = require('@util/completionChecker')
-const serviceStatusController = require('@controllers/serviceStatusController')
 const { createUserStudyprogrammes } = require('@util/studyProgramCreation')
 
 const {
@@ -19,7 +20,7 @@ const {
 const mock = require('./mock')
 
 
-const getServiceStatusObject = () => serviceStatusController.getServiceStatusObject().then(serviceStatusObject => serviceStatusObject)
+const getServiceStatusObject = () => ServiceStatus.getObject().then(serviceStatusObject => serviceStatusObject)
 
 const userApi = axios.create({
   httpsAgent: new https.Agent({
@@ -69,7 +70,7 @@ const getYearsCredits = async (studentNumber, signUpYear) => {
 }
 
 const isEligible = async (studentNumber, at) => {
-  const settings = await getServiceStatusObject()
+  const settings = await ServiceStatus.getObject()
   const studyrights = await getStudyRightsFor(studentNumber)
   const semesterEnrollments = await getSemesterEnrollments(studentNumber)
 
@@ -207,7 +208,7 @@ const getStudentStatus = async (studentNumber, studyrights) => {
 }
 
 const updateEligibleStudentStatuses = async () => {
-  const settings = await getServiceStatusObject()
+  const settings = await ServiceStatus.getObject()
   const isDistributionOver = new Date().getTime() > new Date(settings.taskDeadline).getTime()
   if (isDistributionOver) return
 
@@ -259,7 +260,7 @@ const updateEligibleStudentStatuses = async () => {
 }
 
 const checkStudentEligibilities = async () => {
-  const settings = await getServiceStatusObject()
+  const settings = await ServiceStatus.getObject()
   const students = await User.findAll({
     where: {
       studentNumber: {

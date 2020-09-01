@@ -2,10 +2,9 @@ const completionChecker = require('@util/completionChecker')
 const logger = require('@util/logger')
 const { isSuperAdmin } = require('@util/common')
 const {
-  User, Email, StudyProgram, UserStudyProgram,
+  User, Email, StudyProgram, UserStudyProgram, ServiceStatus,
 } = require('@models')
 const { checkAndUpdateEligibility, checkAndUpdateTaskStatuses } = require('@services/student')
-const { getServiceStatusObject } = require('./serviceStatusController')
 
 const validateEmail = (checkEmail) => {
   const validationRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
@@ -26,7 +25,7 @@ const getUser = async (req, res) => {
 
   const superAdmin = isSuperAdmin(user.userId)
 
-  const settings = await getServiceStatusObject()
+  const settings = await ServiceStatus.getObject()
   if (user.studentNumber && !user.deviceGivenAt && (!user.eligible || user.signupYear !== settings.currentYear)) {
     user = await checkAndUpdateEligibility(user)
   }
@@ -61,7 +60,7 @@ const getLogoutUrl = async (req, res) => {
 }
 
 const requestDevice = async (req, res) => {
-  const settings = await getServiceStatusObject()
+  const settings = await ServiceStatus.getObject()
   if (!req.user.eligible || req.user.signupYear !== settings.currentYear) {
     return res
       .status(403)
@@ -101,7 +100,7 @@ const claimDevice = async (req, res) => {
       body: { studentNumber, deviceId },
     } = req
 
-    const settings = await getServiceStatusObject()
+    const settings = await ServiceStatus.getObject()
 
     if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
 

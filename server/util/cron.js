@@ -3,10 +3,10 @@ const logger = require('@util/logger')
 const {
   updateEligibleStudentStatuses, checkStudentEligibilities, runAutumnReclaimStatusUpdater, runSpringReclaimStatusUpdater,
 } = require('@services/student')
-const { getServiceStatusObject } = require('@controllers/serviceStatusController')
+const { ServiceStatus } = require('@models')
 
 const checkDeadline = async () => {
-  const ssObj = await getServiceStatusObject()
+  const ssObj = await ServiceStatus.getObject()
   const { registrationDeadline, studentRegistrationOnline } = ssObj
 
   if (!studentRegistrationOnline) return

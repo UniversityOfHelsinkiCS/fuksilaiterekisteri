@@ -2,6 +2,7 @@ const Umzug = require('umzug')
 const logger = require('@util/logger')
 const { inProduction } = require('@util/common')
 const { sequelize, Sequelize } = require('@database')
+const models = require('../models')
 
 const DB_CONNECTION_RETRY_LIMIT = 60
 
@@ -44,6 +45,7 @@ const initializeDatabaseConnection = async (attempt = 1) => {
     await sequelize.authenticate()
     await runMigrations()
     if (!inProduction) await runSeeders()
+    console.log('Initialized connection to database')
     return true
   } catch (e) {
     if (attempt === DB_CONNECTION_RETRY_LIMIT) {

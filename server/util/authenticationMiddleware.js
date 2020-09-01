@@ -1,9 +1,8 @@
-const { getStudentStatus, isEligible } = require('@services/student')
+const { getStudentStatus } = require('@services/student')
 const { inProduction, isSuperAdmin } = require('./common')
 const logger = require('@util/logger')
 const { createUserStudyprogrammes, createStaffStudyprogrammes } = require('@util/studyProgramCreation')
-const { getServiceStatusObject } = require('@controllers/serviceStatusController')
-const { StudyProgram, User } = require('@models')
+const { StudyProgram, User, ServiceStatus } = require('@models')
 
 const authentication = async (req, res, next) => {
   // Headers are in by default lower case, we don't like that.
@@ -88,32 +87,35 @@ const authentication = async (req, res, next) => {
   }
 
   try {
-    const settings = await getServiceStatusObject()
+    const settings = await ServiceStatus.getObject()
     if (!settings.studentRegistrationOnline) {
       logger.warn(`User with studentNumber ${studentNumber} tried to create a new account (registrations are closed)`)
       return res.status(503).send({ error: 'Registrations are closed.' })
     }
 
-    const { studyrights, eligible, eligibilityReasons } = await isEligible(studentNumber)
+    const newUser = await User.create({
+      ...defaultParams,
+      // eligible,
+      // digiSkillsCompleted: digiSkills,
+      // courseRegistrationCompleted: hasEnrollments,
+      signupYear: settings.currentYear,
+      // eligibilityReasons,
+    })
+
+
+    const { studyrights, eligible, eligibilityReasons } = await newUser.isEligible()
+
     const { digiSkills, hasEnrollments } = await getStudentStatus(
       studentNumber,
       studyrights,
     )
-
-    const newUser = await User.create({
-      ...defaultParams,
-      eligible,
-      digiSkillsCompleted: digiSkills,
-      courseRegistrationCompleted: hasEnrollments,
-      signupYear: settings.currentYear,
-      eligibilityReasons,
-    })
 
     await createUserStudyprogrammes(studyrights, newUser)
 
     req.user = newUser
     return next()
   } catch (e) {
+    console.log(e)
     logger.error(['Creating student failed', e, e.response])
     return res.status(503).end()
   }
