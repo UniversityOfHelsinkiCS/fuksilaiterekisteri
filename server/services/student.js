@@ -1,5 +1,3 @@
-const axios = require('axios')
-const https = require('https')
 const { Op } = require('sequelize')
 const { differenceInYears } = require('date-fns')
 const {
@@ -13,41 +11,6 @@ const {
   inProduction,
 } = require('../util/common')
 
-
-const getStudentStatus = async (student, studyrights) => {
-  if (!inProduction) return { digiSkills: !(student.studentNumber === 'fuksi_without_digiskills'), hasEnrollments: true }
-  const digiSkills = await student.hasDigiSkills()
-  const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
-  const studyProgramCodes = (await StudyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
-
-  const enrollmentPromises = mlu ? mlu.elements.map(({ code }) => (
-    new Promise(async (resolve) => {
-      let enrolled
-      if (code === 'KH50_008') {
-        // Students in Bachelor’s Programme in Science should be enrolled to any course in H50
-        enrolled = (await Promise.all(studyProgramCodes.map(c => (
-          new Promise(async codeRes => codeRes(await student.getStudytrackEnrollmentStatus(c)))
-        )))).includes(true)
-      } else if (code === 'KH50_004') {
-        // Teacher students should be enrolled to their own or math programmes' courses
-        enrolled = (await Promise.all(['KH50_004', 'KH50_001'].map(c => (
-          new Promise(async codeRes => codeRes(await student.getStudytrackEnrollmentStatus(c)))
-        )))).includes(true)
-      } else {
-        // Other students should be enrolled to their own programme's courses
-        enrolled = await student.getStudytrackEnrollmentStatus(code)
-      }
-      resolve(enrolled)
-    })
-  )) : []
-
-  const hasEnrollments = (await Promise.all(enrollmentPromises)).filter(e => e).length > 0
-
-  return {
-    digiSkills,
-    hasEnrollments,
-  }
-}
 
 const updateEligibleStudentStatuses = async () => {
   const settings = await ServiceStatus.getObject()
@@ -73,8 +36,7 @@ const updateEligibleStudentStatuses = async () => {
   // Lets not bombard oodi...
   for (let i = 0; i < targetStudents.length; i++) {
     try {
-      const { studyrights } = await targetStudents[i].isEligible(targetStudents[i].createdAt) // eslint-disable-line
-      const { digiSkills, hasEnrollments } = await getStudentStatus(targetStudents[i], studyrights) // eslint-disable-line
+      const { digiSkills, hasEnrollments } = await targetStudents[i].getStatus() // eslint-disable-line
 
       dbPromises.push(
         new Promise(async (res) => { // eslint-disable-line
@@ -186,8 +148,7 @@ const checkAndUpdateEligibility = async (user) => {
 
 const checkAndUpdateTaskStatuses = async (user) => {
   try {
-    const studyrights = await user.getStudyRights()
-    const { digiSkills, hasEnrollments } = await getStudentStatus(user.studentNumber, studyrights)
+    const { digiSkills, hasEnrollments } = await user.getStatus()
 
     if (digiSkills !== user.digiSkillsCompleted || hasEnrollments !== user.courseRegistrationCompleted) {
       await user.update({
@@ -284,7 +245,7 @@ const runSpringReclaimStatusUpdater = async () => {
   for (let i = 0; i < deviceHolders.length; i++) {
     try {
       const deviceHeldUnderFiveYears = isDeviceHeldUnderFiveYears(deviceHolders[i].deviceGivenAt)
-      const present = await isPresent(deviceHolders[i].studentNumber, getSpringSemesterCode(currentYear)) // eslint-disable-line
+      const present = await isPresent(deviceHolders[i], getSpringSemesterCode(currentYear)) // eslint-disable-line
 
       const reclaimActionNeeded = !deviceHeldUnderFiveYears || !present
 
@@ -314,7 +275,6 @@ const runSpringReclaimStatusUpdater = async () => {
 }
 
 module.exports = {
-  getStudentStatus,
   updateEligibleStudentStatuses,
   checkStudentEligibilities,
   updateStudentEligibility,

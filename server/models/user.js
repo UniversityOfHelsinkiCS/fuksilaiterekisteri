@@ -104,14 +104,6 @@ class User extends Model {
     const registrationEndingTime = new Date(settings.registrationDeadline)
     const didRegisterBeforeEndingTime = new Date(at || new Date().getTime()).getTime() < registrationEndingTime.getTime()
 
-    if (!inProduction) {
-      console.log('hasPreviousStudyright            \t', hasPreviousStudyright)
-      console.log('hasNewStudyright                 \t', hasNewStudyright)
-      console.log('isPresent                        \t', isPresent)
-      console.log('didRegisterBeforeEndingTime      \t', didRegisterBeforeEndingTime)
-      console.log('hasValidBachelorsStudyright      \t', hasValidBachelorsStudyright)
-    }
-
     return {
       studyrights,
       eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime && hasValidBachelorsStudyright),
@@ -121,6 +113,41 @@ class User extends Model {
         isPresent,
         didRegisterBeforeEndingTime,
       },
+    }
+  }
+
+  async getStatus() {
+    if (!inProduction) return { digiSkills: !(this.studentNumber === 'fuksi_without_digiskills'), hasEnrollments: true }
+    const digiSkills = await this.hasDigiSkills()
+    const mlu = await this.getStudyRights().data.find(({ faculty_code }) => faculty_code === 'H50')
+    const studyProgramCodes = (await StudyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
+
+    const enrollmentPromises = mlu ? mlu.elements.map(({ code }) => (
+      new Promise(async (resolve) => {
+        let enrolled
+        if (code === 'KH50_008') {
+          // Students in Bachelor’s Programme in Science should be enrolled to any course in H50
+          enrolled = (await Promise.all(studyProgramCodes.map(c => (
+            new Promise(async codeRes => codeRes(await this.getStudytrackEnrollmentStatus(c)))
+          )))).includes(true)
+        } else if (code === 'KH50_004') {
+          // Teacher students should be enrolled to their own or math programmes' courses
+          enrolled = (await Promise.all(['KH50_004', 'KH50_001'].map(c => (
+            new Promise(async codeRes => codeRes(await this.getStudytrackEnrollmentStatus(c)))
+          )))).includes(true)
+        } else {
+          // Other students should be enrolled to their own programme's courses
+          enrolled = await this.getStudytrackEnrollmentStatus(code)
+        }
+        resolve(enrolled)
+      })
+    )) : []
+
+    const hasEnrollments = (await Promise.all(enrollmentPromises)).filter(e => e).length > 0
+
+    return {
+      digiSkills,
+      hasEnrollments,
     }
   }
 }

@@ -1,4 +1,3 @@
-const { getStudentStatus } = require('@services/student')
 const { inProduction, isSuperAdmin } = require('./common')
 const logger = require('@util/logger')
 const { createUserStudyprogrammes, createStaffStudyprogrammes } = require('@util/studyProgramCreation')
@@ -102,20 +101,25 @@ const authentication = async (req, res, next) => {
       // eligibilityReasons,
     })
 
-
     const { studyrights, eligible, eligibilityReasons } = await newUser.isEligible()
 
-    const { digiSkills, hasEnrollments } = await getStudentStatus(
+    const { digiSkills, hasEnrollments } = await newUser.getStatus(
       studentNumber,
       studyrights,
     )
 
     await createUserStudyprogrammes(studyrights, newUser)
 
+    await newUser.update({
+      eligible,
+      digiSkillsCompleted: digiSkills,
+      courseRegistrationCompleted: hasEnrollments,
+      eligibilityReasons,
+    })
+
     req.user = newUser
     return next()
   } catch (e) {
-    console.log(e)
     logger.error(['Creating student failed', e, e.response])
     return res.status(503).end()
   }

@@ -8,8 +8,6 @@ class ServiceStatus extends Model {
       order: [['updatedAt', 'DESC']],
     })
 
-    console.log('Got service status')
-
     if (!serviceStatus[0]) return undefined
 
     return serviceStatus[0]
