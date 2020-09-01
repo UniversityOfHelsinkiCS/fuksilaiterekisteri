@@ -4,16 +4,40 @@
     "allowSyntheticDefaultImports": false,
     "baseUrl": "./",
     "paths": {
-      "@controllers/*": ["server/controllers/*"],
-      "@middleware/*": ["server/middleware/*"],
-      "@util/*": ["server/util/*"],
-      "@database/*": ["server/database/*"],
-      "@database" : ["server/database/index"],
-      "Utilities/*": ["client/util/*"],
-      "Components/*": ["client/components/*"],
-      "Assets/*": ["client/assets/*"],
-      "@root/*": ["*"],
+      "@controllers/*": [
+        "server/controllers/*"
+      ],
+      "@middleware/*": [
+        "server/middleware/*"
+      ],
+      "@util/*": [
+        "server/util/*"
+      ],
+      "@database/*": [
+        "server/database/*"
+      ],
+      "@database": [
+        "server/database/index"
+      ],
+      "Utilities/*": [
+        "client/util/*"
+      ],
+      "Components/*": [
+        "client/components/*"
+      ],
+      "Assets/*": [
+        "client/assets/*"
+      ],
+      "@root/*": [
+        "*"
+      ],
+      "@models": [
+        "server/models/index"
+      ],
     }
   },
-  "exclude": ["node_modules", "dist"]
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

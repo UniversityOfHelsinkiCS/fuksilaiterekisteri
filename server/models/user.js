@@ -2,7 +2,13 @@ const { Model, DataTypes } = require('sequelize')
 const { sequelize } = require('@database')
 
 class User extends Model {
+  static a() {
+    console.log('a')
+  }
 
+  b() {
+    console.log(this, 'b')
+  }
 }
 
 User.init(
