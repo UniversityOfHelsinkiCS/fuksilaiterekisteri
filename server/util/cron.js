@@ -23,7 +23,7 @@ const startCron = () => {
   /* eslint-disable no-new */
 
   new CronJob({
-    cronTime: '*/15 * * * *',
+    cronTime: '0 * * * *',
     onTick: async () => {
       logger.info('Updating eligible student statuses...')
       try {
@@ -31,26 +31,26 @@ const startCron = () => {
       } catch (e) {
         logger.error('Failed updating eligible student statuses!', e)
       }
-    },
-    start: true,
-    timeZone: 'Europe/Helsinki',
-  })
-
-  new CronJob({
-    cronTime: '0 * * * *',
-    onTick: async () => {
-      logger.info('Checking student eligibilities...')
-      try {
-        await checkStudentEligibilities()
-      } catch (e) {
-        logger.error('Failed checking student eligibilities!', e)
-      }
 
       logger.info('Checking deadline...')
       try {
         await checkDeadline()
       } catch (e) {
         logger.error('Failed to check deadline', e)
+      }
+    },
+    start: true,
+    timeZone: 'Europe/Helsinki',
+  })
+
+  new CronJob({
+    cronTime: '15 0 * * *',
+    onTick: async () => {
+      logger.info('Checking student eligibilities...')
+      try {
+        await checkStudentEligibilities()
+      } catch (e) {
+        logger.error('Failed checking student eligibilities!', e)
       }
     },
     start: true,
