@@ -30,37 +30,26 @@ const updateEligibleStudentStatuses = async () => {
 
   const readyEmail = await Email.findOne({ where: { type: 'AUTOSEND_WHEN_READY' } })
 
-  let done = 0
+  await targetStudents.reduce(async (promise, student, index) => {
+    await promise // We don't want to spam oodi api so we wait for previous to resolve
 
-  const dbPromises = []
-  // Lets not bombard oodi...
-  for (let i = 0; i < targetStudents.length; i++) {
     try {
-      const { digiSkills, hasEnrollments } = await targetStudents[i].getStatus() // eslint-disable-line
+      const { digiSkills, hasEnrollments } = await student.getStatus()
 
-      dbPromises.push(
-        new Promise(async (res) => { // eslint-disable-line
-          try {
-            const updatedStudent = await targetStudents[i].update({
-              digiSkillsCompleted: digiSkills || targetStudents[i].digiSkillsCompleted,
-              courseRegistrationCompleted: hasEnrollments || targetStudents[i].courseRegistrationCompleted,
-            })
-
-            await completionChecker(updatedStudent, readyEmail)
-            logger.info(`Updated student ${++done}/${targetStudents.length}`)
-            res(true)
-          } catch (e) {
-            logger.error(`Failed updating student ${targetStudents[i].studentNumber}`, e)
-            res(false)
-          }
-        }),
-      )
+      try {
+        const updatedStudent = await student.update({
+          digiSkillsCompleted: digiSkills || student.digiSkillsCompleted,
+          courseRegistrationCompleted: hasEnrollments || student.courseRegistrationCompleted,
+        })
+        await completionChecker(updatedStudent, readyEmail)
+        logger.info(`Updated student ${index + 1}/${targetStudents.length}`)
+      } catch (e) {
+        logger.error(`Failed updating student ${student.studentNumber}`, e)
+      }
     } catch (e) {
-      logger.error(`Failed fetching oodi data for student ${targetStudents[i].studentNumber}`)
+      logger.error(`Failed fetching oodi data for student ${student.studentNumber}`)
     }
-  }
-
-  await Promise.all(dbPromises)
+  }, Promise.resolve())
 }
 
 const checkStudentEligibilities = async () => {
@@ -75,18 +64,18 @@ const checkStudentEligibilities = async () => {
     attributes: ['studentNumber', 'eligible', 'createdAt'],
   })
 
-  let amount = 0
-  let mismatches = 0
-  // Lets not bombard oodi...
-  for (let i = 0; i < students.length; i++) {
-    const { eligible } = await students[i].isEligible(students[i].createdAt) // eslint-disable-line
-    if (eligible !== students[i].eligible) {
-      logger.info(`Eligibility missmatch for ${students[i].studentNumber}!`)
-      mismatches++
+  const mismatches = await students.reduce(async (promise, student, index) => {
+    let currentMismatches = await promise // We don't want to spam oodi api so we wait for previous to resolve
+
+    const { eligible } = await student.isEligible(student.createdAt)
+    if (eligible !== student.eligible) {
+      logger.info(`Eligibility missmatch for ${student.studentNumber}!`)
+      currentMismatches++
     }
-    amount++
-    logger.info(`${amount}/${students.length}`)
-  }
+    logger.info(`${index + 1}/${students.length}`)
+
+    return currentMismatches
+  }, Promise.resolve(0))
 
   if (!mismatches) logger.info('All good!')
   else logger.info(`There were ${mismatches} mismatches!`)
@@ -241,37 +230,30 @@ const runSpringReclaimStatusUpdater = async () => {
     },
   })
 
-  const dbPromises = []
-  for (let i = 0; i < deviceHolders.length; i++) {
+  await deviceHolders.reduce(async (promise, student) => {
+    await promise // We don't want to spam oodi api so we wait for previous to resolve
+
     try {
-      const deviceHeldUnderFiveYears = isDeviceHeldUnderFiveYears(deviceHolders[i].deviceGivenAt)
-      const present = await isPresent(deviceHolders[i], getSpringSemesterCode(currentYear)) // eslint-disable-line
+      const deviceHeldUnderFiveYears = isDeviceHeldUnderFiveYears(student.deviceGivenAt)
+      const present = await isPresent(student, getSpringSemesterCode(currentYear))
 
       const reclaimActionNeeded = !deviceHeldUnderFiveYears || !present
 
-      const reclaimStatus = reclaimActionNeeded && deviceHolders[i].reclaimStatus !== 'CONTACTED' ? 'OPEN' : deviceHolders[i].reclaimStatus
+      const reclaimStatus = reclaimActionNeeded && student.reclaimStatus !== 'CONTACTED' ? 'OPEN' : student.reclaimStatus
 
-      dbPromises.push(
-        new Promise(async (res) => { // eslint-disable-line
-          try {
-            await deviceHolders[i].update({
-              reclaimStatus,
-              present,
-              deviceReturnDeadlinePassed: !deviceHeldUnderFiveYears,
-            })
-            res(true)
-          } catch (e) {
-            logger.error(`Failed updating student reclaim status ${deviceHolders[i].studentNumber}`, e)
-            res(false)
-          }
-        }),
-      )
+      try {
+        await student.update({
+          reclaimStatus,
+          present,
+          deviceReturnDeadlinePassed: !deviceHeldUnderFiveYears,
+        })
+      } catch (e) {
+        logger.error(`Failed updating student reclaim status ${student.studentNumber}`, e)
+      }
     } catch (e) {
-      logger.error(`Failed fetching oodi data for student ${deviceHolders[i].studentNumber}`)
+      logger.error(`Failed fetching oodi data for student ${student.studentNumber}`)
     }
-  }
-
-  await Promise.all(dbPromises)
+  }, Promise.resolve())
 }
 
 module.exports = {
