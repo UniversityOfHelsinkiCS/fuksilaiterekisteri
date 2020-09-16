@@ -199,7 +199,9 @@ const runAutumnReclaimStatusUpdater = async () => {
     },
   })
 
-  const dbPromises = deviceHolders.map(async (student) => {
+  await deviceHolders.reduce(async (promise, student) => {
+    await promise // We don't want to spam oodi api so we wait for previous to resolve
+
     try {
       const present = await isPresent(student, getFallSemesterCode(currentYear))
 
@@ -226,9 +228,7 @@ const runAutumnReclaimStatusUpdater = async () => {
     } catch (e) {
       logger.error(`Failed fetching oodi data for student ${student.studentNumber}`)
     }
-  })
-
-  await Promise.all(dbPromises)
+  }, Promise.resolve())
 }
 
 const runSpringReclaimStatusUpdater = async () => {
