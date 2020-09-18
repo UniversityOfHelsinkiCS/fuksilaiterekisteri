@@ -119,7 +119,8 @@ class User extends Model {
   async getStatus() {
     if (!inProduction) return { digiSkills: !(this.studentNumber === 'fuksi_without_digiskills'), hasEnrollments: true }
     const digiSkills = await this.hasDigiSkills()
-    const mlu = await this.getStudyRights().data.find(({ faculty_code }) => faculty_code === 'H50')
+    const studyrights = await this.getStudyRights()
+    const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
     const studyProgramCodes = (await StudyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
 
     const enrollmentPromises = mlu ? mlu.elements.map(({ code }) => (
