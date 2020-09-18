@@ -188,6 +188,8 @@ const runAutumnReclaimStatusUpdater = async () => {
     },
   })
 
+  logger.info(`Checking reclaim status for ${deviceHolders.length} students`)
+
   await deviceHolders.reduce(async (promise, student) => {
     await promise // We don't want to spam oodi api so we wait for previous to resolve
 
@@ -229,6 +231,8 @@ const runSpringReclaimStatusUpdater = async () => {
       deviceReturned: false,
     },
   })
+
+  logger.info(`Checking reclaim status for ${deviceHolders.length} students`)
 
   await deviceHolders.reduce(async (promise, student) => {
     await promise // We don't want to spam oodi api so we wait for previous to resolve
