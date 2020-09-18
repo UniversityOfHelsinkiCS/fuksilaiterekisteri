@@ -162,7 +162,7 @@ const isPresent = async (student, currentSemester) => {
   const semesterEnrollments = await student.getSemesterEnrollments()
   const currentSemesterEnrollment = semesterEnrollments.data.find(({ semester_code }) => semester_code === currentSemester)
 
-  return currentSemesterEnrollment && currentSemesterEnrollment.semester_enrollment_type_code === 1
+  return !!(currentSemesterEnrollment && currentSemesterEnrollment.semester_enrollment_type_code === 1)
 }
 
 const getFallSemesterCode = year => (year - 1950) * 2 + 1
