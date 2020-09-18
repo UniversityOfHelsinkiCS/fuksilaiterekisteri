@@ -170,7 +170,7 @@ const getSpringSemesterCode = year => (year - 1950) * 2
 const getCurrentYear = () => (inProduction ? new Date().getFullYear() : 2019)
 
 const getFirstYearCredits = async (student) => {
-  const semesterCode = getFallSemesterCode(student.signUpYear)
+  const semesterCode = getFallSemesterCode(student.signupYear)
   const credits = await student.getYearsCredits(semesterCode)
   return credits
 }
