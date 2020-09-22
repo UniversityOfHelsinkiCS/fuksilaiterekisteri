@@ -45,7 +45,7 @@ const ReclaimPage = () => {
   const { filteredStudents } = useMemo(doFiltering, [filter, students, reclaimStatusFilter])
 
   return (
-    <div style={{ maxWidth: '100%', display: 'flex', flexDirection: 'column' }} data-cy="reclaimerContent">
+    <div className="tab-content" data-cy="reclaimerContent">
       <Message info>Student statuses are updated automatically twice a year. (15th of September and 15h of January)</Message>
       <Segment>
         <ReclaimerFilter filter={filter} setFilter={setFilter} totalCount={students.length} filteredCount={filteredStudents.length} />
