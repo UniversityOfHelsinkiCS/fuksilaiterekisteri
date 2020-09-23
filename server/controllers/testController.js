@@ -9,53 +9,38 @@ const _ = require('lodash')
 const fakeShibboleth = require('../../client/util/fakeShibboleth')
 
 const resetTestUsers = async (req, res) => {
-  try {
-    await User.destroy({
-      where: {
-        userId: fakeShibboleth.possibleUsers.concat(fakeShibboleth.eligilityTestUsers).map(u => u.uid),
-      },
-    })
-    return res.status(200).end()
-  } catch (e) {
-    logger.error('error', e)
-    return res.status(500).json({ error: 'error' })
-  }
+  await User.destroy({
+    where: {
+      userId: fakeShibboleth.possibleUsers.concat(fakeShibboleth.eligilityTestUsers).map(u => u.uid),
+    },
+  })
+  return res.status(200).end()
 }
 
 const disableStudentRegs = async (req, res) => {
-  try {
-    const obj = await ServiceStatus.getObject()
-    obj.studentRegistrationOnline = false
-    await obj.save()
-    return res.status(200).end()
-  } catch (e) {
-    logger.error('error', e)
-    return res.status(500).json({ error: 'error' })
-  }
+  const obj = await ServiceStatus.getObject()
+  obj.studentRegistrationOnline = false
+  await obj.save()
+  return res.status(200).end()
 }
 
 const resetServiceStatus = async (req, res) => {
-  try {
-    await ServiceStatus.destroy({
-      where: {},
-    })
+  await ServiceStatus.destroy({
+    where: {},
+  })
 
-    await ServiceStatus.create({
-      studentRegistrationOnline: true,
-      currentYear: 2019,
-      currentSemester: 139,
-      registrationDeadline: '10-1-2070',
-      taskDeadline: '10-15-2070',
-      customTexts: defaultTranslations,
-      deviceSerial: '1s20N3S2NJ00PF1XXXXX',
-      serialSeparatorPos: 12,
-    })
+  await ServiceStatus.create({
+    studentRegistrationOnline: true,
+    currentYear: 2019,
+    currentSemester: 139,
+    registrationDeadline: '10-1-2070',
+    taskDeadline: '10-15-2070',
+    customTexts: defaultTranslations,
+    deviceSerial: '1s20N3S2NJ00PF1XXXXX',
+    serialSeparatorPos: 12,
+  })
 
-    return res.status(200).end()
-  } catch (e) {
-    logger.error('error', e)
-    return res.status(500).json({ error: 'error' })
-  }
+  return res.status(200).end()
 }
 
 const createDeviceGivenAt = () => {
@@ -155,89 +140,59 @@ const createNewUser = async (i, spid) => {
 }
 
 const createSomeUsers = async (req, res) => {
-  try {
-    const spIds = await StudyProgram.findAll({
-      attributes: ['id', 'code'],
-    }).map(({ id }) => id)
+  const spIds = await StudyProgram.findAll({
+    attributes: ['id', 'code'],
+  }).map(({ id }) => id)
 
-    let i = 0
-    while (i++ < 1000) {
-      createNewUser(i, _.sample(spIds))
-    }
-
-
-    return res.status(200).end()
-  } catch (e) {
-    logger.error('error', e)
-    return res.status(500).json({ error: 'error' })
+  let i = 0
+  while (i++ < 1000) {
+    createNewUser(i, _.sample(spIds))
   }
+
+
+  return res.status(200).end()
 }
 
 const createUser = async (req, res) => {
-  try {
-    const { userInfo, studyProgramCode } = req.body
-    await createCustomUser(userInfo, studyProgramCode)
-    return res.status(200).end()
-  } catch (e) {
-    logger.error('error creating custom user: ', e)
-    return res.status(500).json({ error: 'error' })
-  }
+  const { userInfo, studyProgramCode } = req.body
+  await createCustomUser(userInfo, studyProgramCode)
+  return res.status(200).end()
 }
 
 const advance = async (req, res) => {
-  try {
-    const obj = await ServiceStatus.getObject()
-    obj.currentYear = 2020
-    obj.currentSemester = 201
-    await obj.save()
-    return res.status(200).end()
-  } catch (e) {
-    logger.error('error', e)
-    return res.status(500).json({ error: 'error' })
-  }
+  const obj = await ServiceStatus.getObject()
+  obj.currentYear = 2020
+  obj.currentSemester = 201
+  await obj.save()
+  return res.status(200).end()
 }
 
 const setSerial = async (req, res) => {
-  try {
-    const newSerial = req.params.serial
-    const obj = await ServiceStatus.getObject()
-    obj.deviceSerial = newSerial
-    await obj.save()
-    return res.status(200).end()
-  } catch (e) {
-    logger.error('error', e)
-    return res.status(500).json({ error: 'error' })
-  }
+  const newSerial = req.params.serial
+  const obj = await ServiceStatus.getObject()
+  obj.deviceSerial = newSerial
+  await obj.save()
+  return res.status(200).end()
 }
 
 const setServiceStatus = async (req, res) => {
-  try {
-    const newSettings = req.body
+  const newSettings = req.body
 
-    const serviceStatus = await ServiceStatus.findAll({
-      limit: 1,
-      order: [['updatedAt', 'DESC']],
-    })
+  const serviceStatus = await ServiceStatus.findAll({
+    limit: 1,
+    order: [['updatedAt', 'DESC']],
+  })
 
-    await serviceStatus[0].update({ ...newSettings })
+  await serviceStatus[0].update({ ...newSettings })
 
-    return res.status(200).end()
-  } catch (e) {
-    logger.error('error', e)
-    return res.status(500).json({ error: 'error' })
-  }
+  return res.status(200).end()
 }
 
 
 const resetEmailTemplates = async (req, res) => {
-  try {
-    const { type } = req.params
-    await Email.destroy({ where: { type } })
-    return res.status(200).end()
-  } catch (e) {
-    logger.error('error', e)
-    return res.status(500).json({ error: 'error' })
-  }
+  const { type } = req.params
+  await Email.destroy({ where: { type } })
+  return res.status(200).end()
 }
 
 module.exports = {

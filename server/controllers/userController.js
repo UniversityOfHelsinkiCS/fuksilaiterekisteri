@@ -94,160 +94,135 @@ const requestDevice = async (req, res) => {
 }
 
 const claimDevice = async (req, res) => {
-  try {
-    const {
-      user,
-      body: { studentNumber, deviceId },
-    } = req
+  const {
+    user,
+    body: { studentNumber, deviceId },
+  } = req
 
-    const settings = await ServiceStatus.getObject()
+  const settings = await ServiceStatus.getObject()
 
-    if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
+  if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
 
-    const validSerial = await validateSerial(deviceId, settings)
-    if (!validSerial) return res.status(400).json({ error: 'device id missing or invalid' })
+  const validSerial = await validateSerial(deviceId, settings)
+  if (!validSerial) return res.status(400).json({ error: 'device id missing or invalid' })
 
-    const student = await User.findOne({
-      where: {
-        studentNumber,
-      },
-    })
+  const student = await User.findOne({
+    where: {
+      studentNumber,
+    },
+  })
 
-    if (!student) return res.status(404).json({ error: 'student not found' })
+  if (!student) return res.status(404).json({ error: 'student not found' })
 
-    const debug = ['wantsDevice', 'digiSkillsCompleted', 'courseRegistrationCompleted', 'deviceGivenAt', 'signupYear']
-      .map(a => !!student[a])
+  const debug = ['wantsDevice', 'digiSkillsCompleted', 'courseRegistrationCompleted', 'deviceGivenAt', 'signupYear']
+    .map(a => !!student[a])
 
-    if (
-      !(
-        student.eligible
+  if (
+    !(
+      student.eligible
         && student.wantsDevice
         && student.digiSkillsCompleted
         && student.courseRegistrationCompleted
         && !student.deviceGivenAt
         && student.signupYear === settings.currentYear
-      )
-    ) {
-      logger.warn(`User ${user.userId} failed to give a device to ${studentNumber}`)
-      return res.status(403).json({ error: 'student not egilible for device', debug })
-    }
-
-    const deviceData = {
-      device_distributed_by: user.userId,
-      deviceSerial: deviceId.substring(settings.serialSeparatorPos),
-      deviceGivenAt: new Date(),
-    }
-
-    await student.update({
-      ...deviceData,
-    })
-
-    return res.json(deviceData)
-  } catch (e) {
-    logger.error(e)
-    return res.status(500).json({ error: 'error' })
+    )
+  ) {
+    logger.warn(`User ${user.userId} failed to give a device to ${studentNumber}`)
+    return res.status(403).json({ error: 'student not egilible for device', debug })
   }
+
+  const deviceData = {
+    device_distributed_by: user.userId,
+    deviceSerial: deviceId.substring(settings.serialSeparatorPos),
+    deviceGivenAt: new Date(),
+  }
+
+  await student.update({
+    ...deviceData,
+  })
+
+  return res.json(deviceData)
 }
 
 const getAllUsers = async (req, res) => {
-  try {
-    const users = await User.findAll({ include: [{ model: StudyProgram, as: 'studyPrograms' }] })
-    res.json(users)
-  } catch (e) {
-    logger.error(e)
-    res.status(500).json({ error: 'error' })
-  }
+  const users = await User.findAll({ include: [{ model: StudyProgram, as: 'studyPrograms' }] })
+  res.json(users)
 }
 
 const toggleRole = async (req, res) => {
-  try {
-    const { id, role } = req.params
-    const ownId = req.user.id
-    const toggleableRoles = ['admin', 'distributor', 'staff', 'reclaimer', 'digiSkillsCompleted', 'courseRegistrationCompleted', 'wantsDevice']
+  const { id, role } = req.params
+  const ownId = req.user.id
+  const toggleableRoles = ['admin', 'distributor', 'staff', 'reclaimer', 'digiSkillsCompleted', 'courseRegistrationCompleted', 'wantsDevice']
 
-    if (!id) return res.status(400).json({ error: 'user id missing' })
-    if (!role || !toggleableRoles.includes(role)) return res.status(400).json({ error: 'role missing or invalid' })
+  if (!id) return res.status(400).json({ error: 'user id missing' })
+  if (!role || !toggleableRoles.includes(role)) return res.status(400).json({ error: 'role missing or invalid' })
 
-    if ((parseInt(id, 10) === parseInt(ownId, 10)) && role === 'admin') return res.status(403).json({ error: 'Cant remove admin from yourself.' })
+  if ((parseInt(id, 10) === parseInt(ownId, 10)) && role === 'admin') return res.status(403).json({ error: 'Cant remove admin from yourself.' })
 
-    const user = await User.findOne({
-      where: {
-        id,
-      },
-      include: [{ model: StudyProgram, as: 'studyPrograms' }],
-    })
+  const user = await User.findOne({
+    where: {
+      id,
+    },
+    include: [{ model: StudyProgram, as: 'studyPrograms' }],
+  })
 
-    if (!user) return res.status(404).json({ error: 'user not found' })
+  if (!user) return res.status(404).json({ error: 'user not found' })
 
-    await user.update({ [role]: !user[role] })
-    logger.info(`User ${user.userId} toggled ${role} to ${user[role]} by ${req.user.userId}`)
-    return res.json(user)
-  } catch (e) {
-    logger.error(e)
-    return res.status(500).json({ error: 'error' })
-  }
+  await user.update({ [role]: !user[role] })
+  logger.info(`User ${user.userId} toggled ${role} to ${user[role]} by ${req.user.userId}`)
+  return res.json(user)
 }
 
 const setAdminNote = async (req, res) => {
-  try {
-    const { id } = req.params
-    const { note } = req.body
+  const { id } = req.params
+  const { note } = req.body
 
-    const user = await User.findOne({
-      where: {
-        id,
-      },
-      include: [{ model: StudyProgram, as: 'studyPrograms' }],
-    })
+  const user = await User.findOne({
+    where: {
+      id,
+    },
+    include: [{ model: StudyProgram, as: 'studyPrograms' }],
+  })
 
-    if (!user) return res.status(404).json({ error: 'user not found' })
+  if (!user) return res.status(404).json({ error: 'user not found' })
 
-    await user.update({ adminNote: note })
-    logger.info(`User ${user.userId} added admin note by ${req.user.userId}`)
-    return res.json(user)
-  } catch (e) {
-    logger.error(e)
-    return res.status(500).json({ error: 'error' })
-  }
+  await user.update({ adminNote: note })
+  logger.info(`User ${user.userId} added admin note by ${req.user.userId}`)
+  return res.json(user)
 }
 
 const updateUserStudyPrograms = async (req, res) => {
-  try {
-    const { id } = req.params
-    const { studyPrograms } = req.body
+  const { id } = req.params
+  const { studyPrograms } = req.body
 
-    const userStudyProgramsToDelete = []
-    const userStudyProgramsToCreate = []
-    Object.entries(studyPrograms).forEach(([studyProgramId, enabled]) => {
-      if (enabled) userStudyProgramsToCreate.push(studyProgramId)
-      else userStudyProgramsToDelete.push(studyProgramId)
-    })
+  const userStudyProgramsToDelete = []
+  const userStudyProgramsToCreate = []
+  Object.entries(studyPrograms).forEach(([studyProgramId, enabled]) => {
+    if (enabled) userStudyProgramsToCreate.push(studyProgramId)
+    else userStudyProgramsToDelete.push(studyProgramId)
+  })
 
-    await UserStudyProgram.destroy({
-      where: {
-        userId: id,
-        studyProgramId: userStudyProgramsToDelete,
-      },
-    })
+  await UserStudyProgram.destroy({
+    where: {
+      userId: id,
+      studyProgramId: userStudyProgramsToDelete,
+    },
+  })
 
-    const promises = []
-    userStudyProgramsToCreate.forEach((studyProgramId) => {
-      promises.push(UserStudyProgram.findOrCreate({
-        where: { userId: id, studyProgramId },
-        defaults: { userId: id, studyProgramId },
-      }))
-    })
-    await Promise.all(promises)
+  const promises = []
+  userStudyProgramsToCreate.forEach((studyProgramId) => {
+    promises.push(UserStudyProgram.findOrCreate({
+      where: { userId: id, studyProgramId },
+      defaults: { userId: id, studyProgramId },
+    }))
+  })
+  await Promise.all(promises)
 
-    const user = await User.findOne({ where: { id }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
+  const user = await User.findOne({ where: { id }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
 
-    if (userStudyProgramsToCreate.length === 0) await user.update({ staff: false })
+  if (userStudyProgramsToCreate.length === 0) await user.update({ staff: false })
 
-    return res.json(user)
-  } catch (e) {
-    logger.error(e.message)
-    return res.status(500).json({ error: 'error' })
-  }
+  return res.json(user)
 }
 
 module.exports = {
