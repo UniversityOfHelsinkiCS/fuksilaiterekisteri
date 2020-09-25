@@ -2,41 +2,33 @@ const { Model, DataTypes } = require('sequelize')
 const { sequelize } = require('@database')
 const ServiceStatus = require('./servicestatus')
 const StudyProgram = require('./studyprogram')
-const {
-  userApi, getMinMaxSemesters,
-} = require('./lib/userApi')
+const ApiInterface = require('./lib/apiInterface')
+const { inProduction } = require('../util/common')
 
-const mock = require('../services/mock')
-const { DIGI_COURSES, inProduction } = require('../util/common')
+const api = new ApiInterface()
 
 class User extends Model {
   async getStudyRights() {
-    if (!inProduction) return Promise.resolve(mock.findStudyrights(this.studentNumber))
-    const res = await userApi.get(`/students/${this.studentNumber}/studyrights`)
-    return res.data
+    return api.getStudyRights(this.studentNumber)
   }
 
   async hasDigiSkills() {
-    return (await Promise.all(DIGI_COURSES.map(code => (
-      userApi.get(`/students/${this.studentNumber}/courses/${code}`)
-    )))).map(res => res.data).includes(true)
+    return api.hasDigiSkills(this.studentNumber)
   }
 
   async getStudytrackEnrollmentStatus(studytrackId) {
-    const res = await userApi.get(`/students/${this.studentNumber}/enrolled/${studytrackId}`)
-    return res.data
+    return api.getStudytrackEnrollmentStatus(studytrackId)
   }
 
   async getSemesterEnrollments() {
-    if (!inProduction) return Promise.resolve(mock.findSemesterEnrollments(this.studentNumber))
-    const res = await userApi.get(`/students/${this.studentNumber}/semesterEnrollments`)
-    return res.data
+    return api.getSemesterEnrollments(this.studentNumber)
   }
 
+  /**
+   * @param {OODI uses semesterCode, SIS uses startYear} startingSemester
+   */
   async getYearsCredits(startingSemester) {
-    if (!inProduction) return Promise.resolve(mock.findFirstYearCredits(this.studentNumber))
-    const res = await userApi.get(`/students/${this.studentNumber}/fuksiYearCredits/${startingSemester}`)
-    return res.data
+    return api.getYearsCredits(this.studentNumber, startingSemester, this.signupYear)
   }
 
   async isEligible(at) {
@@ -46,7 +38,7 @@ class User extends Model {
     const acceptableStudyProgramCodes = (await StudyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
 
     const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
-    const { min, max } = inProduction ? await getMinMaxSemesters() : {
+    const { min, max } = inProduction ? await api.getMinMaxSemesters() : {
       min: '2008-07-30T21:00:00.000Z',
       max: `${settings.currentYear}-07-31T21:00:00.000Z`,
     }
