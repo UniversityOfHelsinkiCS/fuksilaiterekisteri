@@ -29,120 +29,95 @@ const getStudent = async (req, res) => {
 }
 
 const toggleStudentEligibility = async (req, res) => {
-  try {
-    const { studentNumber } = req.params
-    const { reason } = req.body
-    if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
+  const { studentNumber } = req.params
+  const { reason } = req.body
+  if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
 
-    const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
-    if (!student) return res.status(404).json({ error: 'student not found' })
+  const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
+  if (!student) return res.status(404).json({ error: 'student not found' })
 
-    const settings = await ServiceStatus.getObject()
+  const settings = await ServiceStatus.getObject()
 
-    const oldEligiblity = student.eligible
-    const prevNote = student.adminNote || ''
-    const prefix = prevNote.length ? '\n\n' : ''
-    await student.update({
-      eligible: !oldEligiblity,
-      signupYear: oldEligiblity ? student.signupYear : settings.currentYear,
-      ...(reason ? { adminNote: prevNote.concat(`${prefix}Marked ${oldEligiblity ? 'Ineligible' : 'Eligible'} by ${req.user.userId}. Reason: ${reason}`) } : {}),
-    })
-    logger.info(`Student ${studentNumber} marked ${oldEligiblity ? 'Ineligible' : 'Eligible'} by ${req.user.userId}`)
-    return res.json(student)
-  } catch (e) {
-    logger.error(e)
-    return res.status(500).json({ error: 'error' })
-  }
+  const oldEligiblity = student.eligible
+  const prevNote = student.adminNote || ''
+  const prefix = prevNote.length ? '\n\n' : ''
+  await student.update({
+    eligible: !oldEligiblity,
+    signupYear: oldEligiblity ? student.signupYear : settings.currentYear,
+    ...(reason ? { adminNote: prevNote.concat(`${prefix}Marked ${oldEligiblity ? 'Ineligible' : 'Eligible'} by ${req.user.userId}. Reason: ${reason}`) } : {}),
+  })
+  logger.info(`Student ${studentNumber} marked ${oldEligiblity ? 'Ineligible' : 'Eligible'} by ${req.user.userId}`)
+  return res.json(student)
 }
 
 const markDeviceReturned = async (req, res) => {
-  try {
-    const { studentNumber } = req.params
-    if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
+  const { studentNumber } = req.params
+  if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
 
-    const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
-    if (!student) return res.status(404).json({ error: 'student not found' })
+  const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
+  if (!student) return res.status(404).json({ error: 'student not found' })
 
-    const reclaimStatus = student.reclaimStatus ? 'CLOSED' : null
+  const reclaimStatus = student.reclaimStatus ? 'CLOSED' : null
 
-    await student.update({
-      deviceReturned: true,
-      deviceReturnedAt: new Date(),
-      deviceReturnedBy: req.user.userId,
-      reclaimStatus,
-    })
+  await student.update({
+    deviceReturned: true,
+    deviceReturnedAt: new Date(),
+    deviceReturnedBy: req.user.userId,
+    reclaimStatus,
+  })
 
-    logger.info(`Student ${studentNumber} device marked as returned by ${req.user.userId}`)
-    return res.json(student)
-  } catch (e) {
-    logger.error(e)
-    return res.status(500).json({ error: 'error' })
-  }
+  logger.info(`Student ${studentNumber} device marked as returned by ${req.user.userId}`)
+  return res.json(student)
 }
 
 const updateStudentStatus = async (req, res) => {
-  try {
-    const { studentNumber } = req.params
-    const { digiSkills, enrolled } = req.body
+  const { studentNumber } = req.params
+  const { digiSkills, enrolled } = req.body
 
-    if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
+  if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
 
-    const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
-    if (!student) return res.status(404).json({ error: 'student not found' })
+  const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
+  if (!student) return res.status(404).json({ error: 'student not found' })
 
-    await student.update({
-      digiSkillsCompleted: !!digiSkills || student.digiSkillsCompleted,
-      courseRegistrationCompleted: !!enrolled || student.courseRegistrationCompleted,
-    })
-    logger.info(`Student ${studentNumber} status updated by ${req.user.userId}`)
-    return res.json(student)
-  } catch (e) {
-    logger.error(e)
-    return res.status(500).json({ error: 'error' })
-  }
+  await student.update({
+    digiSkillsCompleted: !!digiSkills || student.digiSkillsCompleted,
+    courseRegistrationCompleted: !!enrolled || student.courseRegistrationCompleted,
+  })
+  logger.info(`Student ${studentNumber} status updated by ${req.user.userId}`)
+  return res.json(student)
 }
 
 const updateStudentReclaimStatus = async (req, res) => {
-  try {
-    const { studentNumber } = req.params
-    const { reclaimStatus } = req.body
+  const { studentNumber } = req.params
+  const { reclaimStatus } = req.body
 
-    if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
+  if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
 
-    const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
-    if (!student) return res.status(404).json({ error: 'student not found' })
+  const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
+  if (!student) return res.status(404).json({ error: 'student not found' })
 
-    await student.update({ reclaimStatus })
-    logger.info(`Student ${studentNumber} reclaim status updated by ${req.user.userId}`)
-    return res.json(student)
-  } catch (e) {
-    logger.error(e)
-    return res.status(500).json({ error: 'error' })
-  }
+  await student.update({ reclaimStatus })
+  logger.info(`Student ${studentNumber} reclaim status updated by ${req.user.userId}`)
+  return res.json(student)
 }
 
 const getStudentsForStaff = async (req, res) => {
-  try {
-    const { user } = req
+  const { user } = req
 
-    const userStudyProgramCodes = user.studyPrograms.map(s => s.code)
-    const allStudents = await User.findAll({
-      where: {
-        studentNumber: {
-          [Op.ne]: null,
-        },
-        '$studyPrograms.code$': {
-          [Op.in]: userStudyProgramCodes,
-        },
+  const userStudyProgramCodes = user.studyPrograms.map(s => s.code)
+  const allStudents = await User.findAll({
+    where: {
+      studentNumber: {
+        [Op.ne]: null,
       },
-      include: [{ model: StudyProgram, as: 'studyPrograms' }],
-    })
+      '$studyPrograms.code$': {
+        [Op.in]: userStudyProgramCodes,
+      },
+    },
+    include: [{ model: StudyProgram, as: 'studyPrograms' }],
+  })
 
-    return res.status(200).json(allStudents)
-  } catch (e) {
-    logger.error(e)
-    return res.status(500).json({ error: 'error' })
-  }
+  return res.status(200).json(allStudents)
 }
 
 const getStudentsWithReclaimStatus = async () => {
@@ -162,40 +137,20 @@ const getStudentsWithReclaimStatus = async () => {
 }
 
 const getStudentsForReclaimer = async (req, res) => {
-  try {
-    const studentsWithReclaimStatus = await getStudentsWithReclaimStatus()
-
-    return res.status(200).json(studentsWithReclaimStatus)
-  } catch (e) {
-    logger.error(e)
-    return res.status(500).json({ error: 'there was an error getting students with reclaim status' })
-  }
+  const studentsWithReclaimStatus = await getStudentsWithReclaimStatus()
+  return res.status(200).json(studentsWithReclaimStatus)
 }
 
 const updateAutumunReclaimStatuses = async (req, res) => {
-  try {
-    await runAutumnReclaimStatusUpdater()
-
-    const studentsWithReclaimStatus = await getStudentsWithReclaimStatus()
-
-    return res.status(200).json(studentsWithReclaimStatus)
-  } catch (e) {
-    logger.error(e)
-    return res.status(500).json({ error: 'there was an error updating student reclaim statuses' })
-  }
+  await runAutumnReclaimStatusUpdater()
+  const studentsWithReclaimStatus = await getStudentsWithReclaimStatus()
+  return res.status(200).json(studentsWithReclaimStatus)
 }
 
 const updateSpringReclaimStatuses = async (req, res) => {
-  try {
-    await runSpringReclaimStatusUpdater()
-
-    const studentsWithReclaimStatus = await getStudentsWithReclaimStatus()
-
-    return res.status(200).json(studentsWithReclaimStatus)
-  } catch (e) {
-    logger.error(e)
-    return res.status(500).json({ error: 'there was an error updating student reclaim statuses' })
-  }
+  await runSpringReclaimStatusUpdater()
+  const studentsWithReclaimStatus = await getStudentsWithReclaimStatus()
+  return res.status(200).json(studentsWithReclaimStatus)
 }
 
 module.exports = {

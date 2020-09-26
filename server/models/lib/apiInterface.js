@@ -1,0 +1,81 @@
+const axios = require('axios')
+const https = require('https')
+const {
+  STUDENT_API_URL, STUDENT_API_TOKEN, SIS, inProduction, DIGI_COURSES,
+} = require('../../util/common')
+const mock = require('../../services/mock')
+
+class ApiInterface {
+  constructor() {
+    this.userApi = axios.create({
+      httpsAgent: new https.Agent({
+        // TODO: FIX
+        rejectUnauthorized: false,
+      }),
+      baseURL: STUDENT_API_URL,
+      headers: {
+        common: {
+          Authorization: STUDENT_API_TOKEN,
+        },
+      },
+    })
+  }
+
+  async getStudyRights(studentNumber) {
+    if (!inProduction) return Promise.resolve(mock.findStudyrights(studentNumber))
+    const res = await this.userApi.get(`/students/${studentNumber}/studyrights`)
+    if (!SIS) {
+      return res.data
+    }
+    return res
+  }
+
+  async getMinMaxSemesters() {
+    if (!SIS) {
+      const res = await this.axios.get(`/semesters/${new Date().getTime()}`)
+      return res.data
+    }
+    const res = await this.axios.get('/semesters/min_max_semesters')
+    return res.data
+  }
+
+  async hasDigiSkills(studentNumber) {
+    if (!SIS) {
+      return (await Promise.all(DIGI_COURSES.map(code => (
+        this.userApi.get(`/students/${studentNumber}/courses/${code}`)
+      )))).map(res => res.data).includes(true)
+    }
+    return (await Promise.all(DIGI_COURSES.map(code => this.userApi.get(`/students/${studentNumber}/has_passed_course/${code}`)))).map(res => res.data).includes(true)
+  }
+
+  async getStudytrackEnrollmentStatus(studentNumber, studytrackId) {
+    if (!SIS) {
+      const res = await this.userApi.get(`/students/${studentNumber}/enrolled/${studytrackId}`)
+      return res.data
+    }
+    const res = await this.userApi.get(`/students/${studentNumber}/enrolled/study_track/${studytrackId}`)
+    return res.data
+  }
+
+  async getSemesterEnrollments(studentNumber) {
+    if (!inProduction) return Promise.resolve(mock.findSemesterEnrollments(studentNumber))
+    if (!SIS) {
+      const res = await this.userApi.get(`/students/${studentNumber}/semesterEnrollments`)
+      return res.data
+    }
+    const res = await this.userApi.get(`/students/${studentNumber}/semester_enrollments`)
+    return res
+  }
+
+  async getYearsCredits(studentNumber, startingSemester, signUpYear) {
+    if (!inProduction) return Promise.resolve(mock.findFirstYearCredits(studentNumber))
+    if (!SIS) {
+      const res = await this.userApi.get(`/students/${studentNumber}/fuksiYearCredits/${startingSemester}`)
+      return res.data
+    }
+    const res = await this.userApi.get(`/students/${studentNumber}/fuksi_year_credits/${signUpYear}`)
+    return res.data
+  }
+}
+
+module.exports = ApiInterface

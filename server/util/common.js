@@ -11,6 +11,7 @@ module.exports = {
   DB_URL: process.env.DB_URL,
   PORT: process.env.PORT || 8000,
   STUDENT_API_URL: process.env.STUDENT_API_URL,
+  SIS: process.env.SIS === 'true',
   STUDENT_API_TOKEN: process.env.STUDENT_API_TOKEN,
   DIGI_COURSES: [
     'DIGI-000A',

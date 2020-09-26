@@ -1,37 +1,26 @@
 const { StudyProgram } = require('@models')
-const logger = require('@util/logger')
 
 const getAll = async (req, res) => {
-  try {
-    const studyProgrammes = await StudyProgram.findAll()
-    return res.status(200).json(studyProgrammes.sort((a, b) => a.name > b.name))
-  } catch (e) {
-    logger.error('error', e)
-    return res.status(500).json({ error: 'error' })
-  }
+  const studyProgrammes = await StudyProgram.findAll()
+  return res.status(200).json(studyProgrammes.sort((a, b) => a.name > b.name))
 }
 
 const update = async (req, res) => {
-  try {
-    const newData = req.body
+  const newData = req.body
 
-    const studyProgrammes = await StudyProgram.findAll()
+  const studyProgrammes = await StudyProgram.findAll()
 
-    const promises = []
-    newData.forEach(({ code, contactEmail, contactName }) => {
-      const temp = studyProgrammes.find(p => p.code === code)
-      temp.contactEmail = contactEmail
-      temp.contactName = contactName
-      promises.push(temp.save())
-    })
+  const promises = []
+  newData.forEach(({ code, contactEmail, contactName }) => {
+    const temp = studyProgrammes.find(p => p.code === code)
+    temp.contactEmail = contactEmail
+    temp.contactName = contactName
+    promises.push(temp.save())
+  })
 
-    await Promise.all(promises)
+  await Promise.all(promises)
 
-    return res.status(200).json(studyProgrammes.sort((a, b) => a.name > b.name))
-  } catch (e) {
-    logger.error('error', e)
-    return res.status(500).json({ error: 'error' })
-  }
+  return res.status(200).json(studyProgrammes.sort((a, b) => a.name > b.name))
 }
 
 

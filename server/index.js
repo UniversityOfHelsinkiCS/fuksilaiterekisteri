@@ -1,5 +1,7 @@
 const express = require('express')
+require('express-async-errors')
 const { PORT, inProduction } = require('@util/common')
+const { ApplicationError } = require('@util/errors')
 const routes = require('@util/routes')
 const logger = require('@util/logger')
 const path = require('path')
@@ -13,6 +15,13 @@ initializeDatabaseConnection()
     app.use(express.json())
 
     app.use('/api', routes)
+
+    app.use((error, req, res, next) => {
+      const normalizedError = error instanceof ApplicationError ? error : new ApplicationError(error.message || 'Something went wrong')
+      logger.error(error.message)
+      res.status(normalizedError.status).json(normalizedError)
+      next(error)
+    })
 
     /**
      * Use hot loading when in development, else serve the static content

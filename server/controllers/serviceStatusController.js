@@ -1,35 +1,25 @@
-const logger = require('@util/logger')
+const { NotFoundError } = require('@util/errors')
 const { ServiceStatus } = require('../models')
 
 const getServiceStatus = async (req, res) => {
-  try {
-    const serviceStatus = await ServiceStatus.getObject()
-    if (!serviceStatus) return res.sendStatus(404)
-    return res.send(serviceStatus)
-  } catch (e) {
-    logger.error(e)
-    return res.status(500).json({ error: 'error' })
-  }
+  const serviceStatus = await ServiceStatus.getObject()
+  if (!serviceStatus) throw new NotFoundError()
+  return res.send(serviceStatus)
 }
 
 const setServiceStatus = async (req, res) => {
-  try {
-    const newSettings = req.body
+  const newSettings = req.body
 
-    const old = await ServiceStatus.getObject()
+  const old = await ServiceStatus.getObject()
 
-    // Update any key value pait present in req.body. Excluding sequelize stuff:
-    Object.keys(newSettings).filter(key => !['id', 'createdAt', 'updatedAt'].includes(key)).forEach((key) => {
-      old[key] = newSettings[key]
-    })
+  // Update any key value pair present in req.body. Excluding sequelize stuff:
+  Object.keys(newSettings).filter(key => !['id', 'createdAt', 'updatedAt'].includes(key)).forEach((key) => {
+    old[key] = newSettings[key]
+  })
 
-    await old.save()
+  await old.save()
 
-    return res.json(old)
-  } catch (e) {
-    logger.error(e)
-    return res.status(500).json({ error: 'error' })
-  }
+  return res.json(old)
 }
 
 module.exports = {
