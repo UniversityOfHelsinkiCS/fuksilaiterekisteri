@@ -184,7 +184,7 @@ class User extends Model {
 
     const allStudyprogramCodes = new Set(allStudyprograms.map(({ code }) => code))
 
-    const studyrightCodes = studyrights
+    const studyrightCodes = studyrights.data
       .reduce((acc, { elements }) => acc.concat(elements), [])
       .reduce((acc, { codes }) => acc.concat(codes), [])
 
