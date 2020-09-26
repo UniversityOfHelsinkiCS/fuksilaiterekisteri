@@ -3,7 +3,32 @@ const { sequelize } = require('@database')
 
 
 class Email extends Model {
+  static async findAutosendTemplate(type) {
+    return this.findOne(({ where: { type } }))
+  }
 
+  static async updateOrCreateAutosendTemplate(newTemplate) {
+    let template = await this.findOne({ where: { type: newTemplate.type } })
+
+    if (template) await template.update({ ...newTemplate })
+    else {
+      template = await this.create({ ...newTemplate })
+    }
+
+    return template
+  }
+
+  static async findAdminTemplates() {
+    return this.findAll(({ where: { type: 'ADMIN' } }))
+  }
+
+  static async findReclaimerTemplates() {
+    return this.findAll(({ where: { type: 'RECLAIM' } }))
+  }
+
+  static async deleteTemplate(id) {
+    return this.destroy(({ where: { id }, limit: 1 }))
+  }
 }
 
 Email.init({

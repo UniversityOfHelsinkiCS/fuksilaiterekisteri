@@ -8,6 +8,10 @@ const { inProduction } = require('../util/common')
 const api = new ApiInterface()
 
 class User extends Model {
+  static async markUsersContacted(userIds) {
+    await this.update({ reclaimStatus: 'CONTACTED' }, { where: { userId: userIds } })
+  }
+
   async getStudyRights() {
     return api.getStudyRights(this.studentNumber)
   }
