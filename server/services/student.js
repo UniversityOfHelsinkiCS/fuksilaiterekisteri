@@ -101,7 +101,7 @@ const updateStudentEligibility = async (studentNumber) => {
     return
   }
 
-  await foundStudent.createUserStudyprogrammes(studyrights)
+  await foundStudent.createUserStudyprograms(studyrights)
   const settings = await ServiceStatus.getObject()
   const updatedStudent = await foundStudent.update({
     eligible,
@@ -120,7 +120,7 @@ const checkAndUpdateEligibility = async (user) => {
     const { studyrights, eligible, eligibilityReasons } = await user.isEligible()
 
     if (eligible) {
-      await user.createUserStudyprogrammes(studyrights)
+      await user.createUserStudyprograms(studyrights)
       await user.update({
         eligible,
         eligibilityReasons,

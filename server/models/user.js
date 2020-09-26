@@ -172,7 +172,7 @@ class User extends Model {
     })
   }
 
-  async createUserStudyprogrammes(studyrights) {
+  async createUserStudyprograms(studyrights) {
     const allStudyprograms = await StudyProgram.findAll({
       attributes: ['id', 'code'],
     })
@@ -186,9 +186,9 @@ class User extends Model {
 
     const studyrightCodes = studyrights.data
       .reduce((acc, { elements }) => acc.concat(elements), [])
-      .reduce((acc, { codes }) => acc.concat(codes), [])
+      .reduce((acc, { code }) => acc.concat(code), [])
 
-    await Promise.all(studyrightCodes.map(code => async () => {
+    await Promise.all(studyrightCodes.map(async (code) => {
       const isRelevantStudyprogram = allStudyprogramCodes.has(code)
       const isAlreadyCreated = this.studyProgram && this.studyProgram.map(c => c.code).includes(code)
       if (isRelevantStudyprogram && !isAlreadyCreated) {

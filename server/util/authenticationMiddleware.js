@@ -106,7 +106,7 @@ const authentication = async (req, res, next) => {
       studyrights,
     )
 
-    await newUser.createUserStudyprogrammes(studyrights)
+    await newUser.createUserStudyprograms(studyrights)
 
     await newUser.update({
       eligible,
