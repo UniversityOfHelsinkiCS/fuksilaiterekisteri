@@ -2,6 +2,7 @@ const { Model, DataTypes } = require('sequelize')
 const { sequelize } = require('@database')
 const ServiceStatus = require('./servicestatus')
 const StudyProgram = require('./studyprogram')
+const UserStudyProgram = require('./userstudyprogram')
 const ApiInterface = require('./lib/apiInterface')
 const { inProduction } = require('../util/common')
 
@@ -146,6 +147,57 @@ class User extends Model {
       digiSkills,
       hasEnrollments,
     }
+  }
+
+  async createStaffStudyprograms(codes) {
+    const studyprograms = await StudyProgram.findAll({
+      where: { code: codes },
+      attributes: ['id'],
+    })
+
+    await Promise.all(studyprograms.map(p => UserStudyProgram.create({
+      userId: this.id,
+      studyProgramId: p.id,
+    })))
+
+    await this.reload({
+      include: [
+        {
+          model: StudyProgram,
+          as: 'studyPrograms',
+          through: { attributes: [] },
+          attributes: ['name', 'code', 'contactEmail', 'contactName'],
+        },
+      ],
+    })
+  }
+
+  async createUserStudyprogrammes(studyrights) {
+    const allStudyprograms = await StudyProgram.findAll({
+      attributes: ['id', 'code'],
+    })
+
+    const studyprogramCodeToId = allStudyprograms.reduce((acc, { id, code }) => {
+      acc[code] = id
+      return acc
+    }, {})
+
+    const allStudyprogramCodes = new Set(allStudyprograms.map(({ code }) => code))
+
+    const studyrightCodes = studyrights
+      .reduce((acc, { elements }) => acc.concat(elements), [])
+      .reduce((acc, { codes }) => acc.concat(codes), [])
+
+    await Promise.all(studyrightCodes.map(code => async () => {
+      const isRelevantStudyprogram = allStudyprogramCodes.has(code)
+      const isAlreadyCreated = this.studyProgram && this.studyProgram.map(c => c.code).includes(code)
+      if (isRelevantStudyprogram && !isAlreadyCreated) {
+        await UserStudyProgram.create({
+          userId: this.id,
+          studyProgramId: studyprogramCodeToId[code],
+        })
+      }
+    }))
   }
 }
 

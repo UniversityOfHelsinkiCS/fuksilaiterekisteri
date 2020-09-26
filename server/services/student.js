@@ -5,7 +5,6 @@ const {
 } = require('@models')
 const logger = require('@util/logger')
 const completionChecker = require('@util/completionChecker')
-const { createUserStudyprogrammes } = require('@util/studyProgramCreation')
 
 const {
   inProduction,
@@ -102,7 +101,7 @@ const updateStudentEligibility = async (studentNumber) => {
     return
   }
 
-  await createUserStudyprogrammes(studyrights, foundStudent)
+  await foundStudent.createUserStudyprogrammes(studyrights)
   const settings = await ServiceStatus.getObject()
   const updatedStudent = await foundStudent.update({
     eligible,
@@ -121,7 +120,7 @@ const checkAndUpdateEligibility = async (user) => {
     const { studyrights, eligible, eligibilityReasons } = await user.isEligible()
 
     if (eligible) {
-      await createUserStudyprogrammes(studyrights, user)
+      await user.createUserStudyprogrammes(studyrights)
       await user.update({
         eligible,
         eligibilityReasons,

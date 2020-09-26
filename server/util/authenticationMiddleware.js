@@ -1,6 +1,5 @@
 const { inProduction, isSuperAdmin } = require('./common')
 const logger = require('@util/logger')
-const { createUserStudyprogrammes, createStaffStudyprogrammes } = require('@util/studyProgramCreation')
 const { StudyProgram, User, ServiceStatus } = require('@models')
 
 const authentication = async (req, res, next) => {
@@ -71,13 +70,12 @@ const authentication = async (req, res, next) => {
       return res.status(503).send({ errorName: 'studentnumber-missing' })
     }
 
-    let newUser = await User.create({
+    const newUser = await User.create({
       ...defaultParams,
     })
 
     if (!inProduction && uid === 'non_admin_staff') {
-      const updatedUser = await createStaffStudyprogrammes(['KH50_005'], newUser)
-      newUser = updatedUser
+      await newUser.createStaffStudyprograms(['KH50_005'])
     }
 
     req.user = newUser
@@ -108,7 +106,7 @@ const authentication = async (req, res, next) => {
       studyrights,
     )
 
-    await createUserStudyprogrammes(studyrights, newUser)
+    await newUser.createUserStudyprogrammes(studyrights)
 
     await newUser.update({
       eligible,
