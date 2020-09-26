@@ -103,8 +103,10 @@ const updateStudentEligibility = async (studentNumber) => {
   }
 
   await createUserStudyprogrammes(studyrights, foundStudent)
+  const settings = await ServiceStatus.getObject()
   const updatedStudent = await foundStudent.update({
     eligible,
+    signupYear: eligible ? settings.currentYear : foundStudent.signupYear,
   })
 
   logger.info(`${studentNumber} eligibility updated successfully from ${eligibilityBefore} to ${eligible}!`)
