@@ -1,4 +1,4 @@
-const sendEmail = require('@util/sendEmail')
+const emailService = require('@services/emailService')
 const logger = require('@util/logger')
 const { ServiceStatus } = require('@models')
 
@@ -13,7 +13,7 @@ const completionChecker = async (user, email) => {
       logger.error('Email disabled, set EMAIL_ENABLED=true to enable.')
       return
     }
-    const info = await sendEmail({
+    const info = await emailService.sendEmail({
       recipients: [user.hyEmail, user.personalEmail],
       subject: email.subject,
       text: email.body,
