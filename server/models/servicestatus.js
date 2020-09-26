@@ -12,6 +12,18 @@ class ServiceStatus extends Model {
 
     return serviceStatus[0]
   }
+
+  static async updateObject(newSettings) {
+    const settings = await this.getObject()
+
+    // Update any key value pair present in argument. Excluding sequelize stuff:
+    Object.keys(newSettings).filter(key => !['id', 'createdAt', 'updatedAt'].includes(key)).forEach((key) => {
+      settings[key] = newSettings[key]
+    })
+
+    await settings.save()
+    return settings
+  }
 }
 
 
