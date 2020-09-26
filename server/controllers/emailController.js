@@ -95,9 +95,9 @@ const createOrUpdateAdminTemplate = async (req, res) => {
     return res.status(200).json({ data: createdTemplate, createdId: createdTemplate.id })
   }
 
-  const updatedTemplate = await Email.update({
-    subject, body, replyTo, description,
-  }, { where: { id } })
+  const updatedTemplate = await Email.findAndUpdateTemplate({
+    id, subject, body, replyTo, description,
+  })
 
   return res.status(200).json({ data: updatedTemplate, createdId: null })
 }
@@ -131,9 +131,9 @@ const createOrUpdateReclaimerTemplate = async (req, res) => {
     return res.status(200).json({ data: createdTemplate, createdId: createdTemplate.id })
   }
 
-  const updatedTemplate = await Email.update({
-    subject, body, replyTo, description,
-  }, { where: { id } })
+  const updatedTemplate = await Email.findAndUpdateTemplate({
+    id, subject, body, replyTo, description,
+  })
 
   return res.status(200).json({ data: updatedTemplate, createdId: null })
 }

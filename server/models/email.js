@@ -29,6 +29,10 @@ class Email extends Model {
   static async deleteTemplate(id) {
     return this.destroy(({ where: { id }, limit: 1 }))
   }
+
+  static async findAndUpdateTemplate(newTemplate) {
+    return (await this.update({ ...newTemplate }, { where: { id: newTemplate.id }, returning: true, plain: true }))[1]
+  }
 }
 
 Email.init({
