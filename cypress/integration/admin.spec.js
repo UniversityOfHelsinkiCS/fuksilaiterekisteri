@@ -71,6 +71,8 @@ context('Admin', () => {
     cy.contains('non-admin-staff').parent().parent().find('[data-cy="staffSettings"]').click()
     cy.get('[data-cy="studyProgramCheckboxes"]').contains('Tietojenkäsittely').click()
     cy.get('[data-cy="saveStudyPrograms"]').click()
+
+    cy.contains('non-admin-staff').parent().parent().find('[data-cy="toggleStaff"]').should("not.have.class","checked") // Wait for previous user-update to be visible
   
     cy.contains('non-admin-staff').parent().parent().find('[data-cy="toggleStaff"]').click()
   
