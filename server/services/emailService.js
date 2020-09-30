@@ -34,10 +34,10 @@ const sendToAddresses = async ({
     replyTo,
   })
 
-  const acceptedEmailAmount = emailResult.accepted.length
-  const rejectedEmailAmount = emailResult.rejected.length
-
-  logger.info(`Successfully sent ${acceptedEmailAmount} emails. Failed to send ${rejectedEmailAmount} emails.`)
+  logger.info(`Successfully sent ${emailResult.accepted.length} emails to ${JSON.stringify(emailResult.accepted)}`)
+  if (emailResult.rejected.length > 0) {
+    logger.info(`Failed to send ${emailResult.rejected.length} emails to ${JSON.stringify(emailResult.rejected)}`)
+  }
 }
 
 const sendToUsers = async ({
@@ -75,7 +75,7 @@ const sendToUsers = async ({
   })
 
   logger.info(`Successfully contacted ${successfullyContacted.length}/${usersToBeContacted.length} users.`)
-  if (failedToContact.length > 0) logger.error(`Failed to contact ${failedToContact.length} users.`)
+  if (failedToContact.length > 0) logger.error(`Failed to contact ${failedToContact.length} users: ${JSON.stringify(failedToContact)}`)
 
   return { emailResult, successfullyContacted, failedToContact }
 }
