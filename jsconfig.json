@@ -8,6 +8,9 @@
       "@controllers/*": [
         "server/controllers/*"
       ],
+      "@services/*": [
+        "server/services/*"
+      ],
       "@middleware/*": [
         "server/middleware/*"
       ],
