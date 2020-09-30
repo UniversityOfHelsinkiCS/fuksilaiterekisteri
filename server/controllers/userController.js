@@ -1,11 +1,11 @@
 const logger = require('@util/logger')
-const { isSuperAdmin } = require('@util/common')
+const { isSuperAdmin, validateEmail } = require('@util/common')
 const {
-  User, StudyProgram, ServiceStatus,
+  User, StudyProgram, ServiceStatus, Email,
 } = require('@models')
 const { ParameterError, NotFoundError, ForbiddenError } = require('@util/errors')
 const { checkAndUpdateEligibility, checkAndUpdateTaskStatuses } = require('@services/student')
-const deviceService = require('@services/deviceService')
+const completionChecker = require('@util/completionChecker')
 
 const getUser = async (req, res) => {
   let { user } = req
@@ -47,7 +47,16 @@ const getLogoutUrl = async (req, res) => {
 }
 
 const requestDevice = async (req, res) => {
-  const updatedUser = await deviceService.requestDevice(req.user, req.body.email)
+  const { email } = req.body
+  const { user } = req
+  const settings = await ServiceStatus.getObject()
+
+  if (!user.eligible || user.signupYear !== settings.currentYear) throw new ForbiddenError('Not eligible')
+  if (email !== null && !validateEmail(email)) throw new ParameterError('Invalid email')
+
+  const updatedUser = await user.requestDevice(email)
+  const readyEmail = await Email.findAutosendTemplate('AUTOSEND_WHEN_READY')
+  await completionChecker(updatedUser, readyEmail)
   return res.json(updatedUser)
 }
 
@@ -68,7 +77,7 @@ const claimDevice = async (req, res) => {
 
   if (!student) throw new NotFoundError('Student not found')
 
-  const deviceData = await deviceService.claimDevice(user, student, deviceId)
+  const deviceData = await student.claimDevice(deviceId, user.userId)
   return res.json(deviceData)
 }
 

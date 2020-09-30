@@ -6,6 +6,20 @@ const isSuperAdmin = (userId) => {
   return false
 }
 
+const validateEmail = (checkEmail) => {
+  const validationRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+
+  // Returns true if valid
+  return validationRegex.test(checkEmail) && !checkEmail.includes('helsinki.') && !checkEmail.includes('@cs.')
+}
+
+const validateSerial = async (serial, settings) => {
+  const FULL_SERIAL_LENGTH = settings.deviceSerial.length
+  const STATIC_SERIAL_PART = settings.deviceSerial.substring(0, settings.serialSeparatorPos)
+  if (serial.length === FULL_SERIAL_LENGTH && (serial.substr(0, settings.serialSeparatorPos) === STATIC_SERIAL_PART)) return true
+  return false
+}
+
 module.exports = {
   ...common,
   DB_URL: process.env.DB_URL,
@@ -23,4 +37,6 @@ module.exports = {
     'DIGI-A',
   ],
   isSuperAdmin,
+  validateEmail,
+  validateSerial,
 }

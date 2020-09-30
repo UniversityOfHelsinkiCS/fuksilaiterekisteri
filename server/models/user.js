@@ -1,10 +1,11 @@
 const { Model, DataTypes, Op } = require('sequelize')
 const { sequelize } = require('@database')
+const { ParameterError, ForbiddenError } = require('@util/errors')
 const ServiceStatus = require('./servicestatus')
 const StudyProgram = require('./studyprogram')
 const UserStudyProgram = require('./userstudyprogram')
 const ApiInterface = require('./lib/apiInterface')
-const { inProduction } = require('../util/common')
+const { inProduction, validateSerial } = require('../util/common')
 
 const api = new ApiInterface()
 
@@ -284,6 +285,43 @@ class User extends Model {
       signupYear: oldEligiblity ? this.signupYear : settings.currentYear,
       ...(reason ? { adminNote: prevNote.concat(`${prefix}Marked ${oldEligiblity ? 'Ineligible' : 'Eligible'} by ${togglersUserId}. Reason: ${reason}`) } : {}),
     })
+  }
+
+  async requestDevice(email) {
+    const updatedUser = await this.update({ wantsDevice: true, personalEmail: email })
+    return updatedUser
+  }
+
+  async claimDevice(deviceId, deviceDistributedBy) {
+    const settings = await ServiceStatus.getObject()
+
+    const validSerial = await validateSerial(deviceId, settings)
+    if (!validSerial) throw new ParameterError('Invalid deviceId')
+
+    if (
+      !(
+        this.eligible
+            && this.wantsDevice
+            && this.digiSkillsCompleted
+            && this.courseRegistrationCompleted
+            && !this.deviceGivenAt
+            && this.signupYear === settings.currentYear
+      )
+    ) {
+      throw new ForbiddenError(`Student ${this.studentNumber} not eligible for device`)
+    }
+
+    const deviceData = {
+      device_distributed_by: deviceDistributedBy,
+      deviceSerial: deviceId.substring(settings.serialSeparatorPos),
+      deviceGivenAt: new Date(),
+    }
+
+    await this.update({
+      ...deviceData,
+    })
+
+    return deviceData
   }
 
   async markDeviceReturned(returnMarkedByUserid) {
