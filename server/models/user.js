@@ -1,4 +1,4 @@
-const { Model, DataTypes } = require('sequelize')
+const { Model, DataTypes, Op } = require('sequelize')
 const { sequelize } = require('@database')
 const ServiceStatus = require('./servicestatus')
 const StudyProgram = require('./studyprogram')
@@ -11,6 +11,34 @@ const api = new ApiInterface()
 class User extends Model {
   static async markUsersContacted(userIds) {
     await this.update({ reclaimStatus: 'CONTACTED' }, { where: { userId: userIds } })
+  }
+
+  static getStudentsForStaff(userStudyProgramCodes) {
+    return this.findAll({
+      where: {
+        studentNumber: {
+          [Op.ne]: null,
+        },
+        '$studyPrograms.code$': {
+          [Op.in]: userStudyProgramCodes,
+        },
+      },
+      include: [{ model: StudyProgram, as: 'studyPrograms' }],
+    })
+  }
+
+  static getStudentsWithReclaimStatus() {
+    return this.findAll({
+      where: {
+        studentNumber: {
+          [Op.ne]: null,
+        },
+        reclaimStatus: {
+          [Op.ne]: null,
+        },
+      },
+      include: [{ model: StudyProgram, as: 'studyPrograms' }],
+    })
   }
 
   async getStudyRights() {
@@ -244,6 +272,40 @@ class User extends Model {
 
   async setAdminNote(note) {
     await this.update({ adminNote: note })
+  }
+
+  async toggleEligibility(reason, togglersUserId) {
+    const settings = await ServiceStatus.getObject()
+    const oldEligiblity = this.eligible
+    const prevNote = this.adminNote || ''
+    const prefix = prevNote.length ? '\n\n' : ''
+    await this.update({
+      eligible: !oldEligiblity,
+      signupYear: oldEligiblity ? this.signupYear : settings.currentYear,
+      ...(reason ? { adminNote: prevNote.concat(`${prefix}Marked ${oldEligiblity ? 'Ineligible' : 'Eligible'} by ${togglersUserId}. Reason: ${reason}`) } : {}),
+    })
+  }
+
+  async markDeviceReturned(returnMarkedByUserid) {
+    const reclaimStatus = this.reclaimStatus ? 'CLOSED' : null
+
+    await this.update({
+      deviceReturned: true,
+      deviceReturnedAt: new Date(),
+      deviceReturnedBy: returnMarkedByUserid,
+      reclaimStatus,
+    })
+  }
+
+  async updateStatus(digiSkills, enrolled) {
+    await this.update({
+      digiSkillsCompleted: !!digiSkills || this.digiSkillsCompleted,
+      courseRegistrationCompleted: !!enrolled || this.courseRegistrationCompleted,
+    })
+  }
+
+  async updateReclaimStatus(reclaimStatus) {
+    await this.update({ reclaimStatus })
   }
 }
 

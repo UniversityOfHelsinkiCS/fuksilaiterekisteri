@@ -1,13 +1,13 @@
-const { User, StudyProgram, ServiceStatus } = require('@models')
-const { Op } = require('sequelize')
+const { User, StudyProgram } = require('@models')
 const logger = require('@util/logger')
 const { runAutumnReclaimStatusUpdater, runSpringReclaimStatusUpdater } = require('@services/student')
+const { NotFoundError, ParameterError } = require('@util/errors')
 
 const getStudent = async (req, res) => {
   const { studentNumber } = req.params
 
   const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
-  if (!student) return res.sendStatus(404)
+  if (!student) throw new NotFoundError('Student not found')
 
   const response = {
     studentNumber: student.studentNumber,
@@ -31,41 +31,24 @@ const getStudent = async (req, res) => {
 const toggleStudentEligibility = async (req, res) => {
   const { studentNumber } = req.params
   const { reason } = req.body
-  if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
+  if (!studentNumber) throw new ParameterError('student number missing')
 
   const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
-  if (!student) return res.status(404).json({ error: 'student not found' })
+  if (!student) throw new NotFoundError('student not found')
 
-  const settings = await ServiceStatus.getObject()
-
-  const oldEligiblity = student.eligible
-  const prevNote = student.adminNote || ''
-  const prefix = prevNote.length ? '\n\n' : ''
-  await student.update({
-    eligible: !oldEligiblity,
-    signupYear: oldEligiblity ? student.signupYear : settings.currentYear,
-    ...(reason ? { adminNote: prevNote.concat(`${prefix}Marked ${oldEligiblity ? 'Ineligible' : 'Eligible'} by ${req.user.userId}. Reason: ${reason}`) } : {}),
-  })
-  logger.info(`Student ${studentNumber} marked ${oldEligiblity ? 'Ineligible' : 'Eligible'} by ${req.user.userId}`)
+  await student.toggleEligibility(reason, req.user.userId)
+  logger.info(`Student ${studentNumber} marked ${!student.eligible ? 'Ineligible' : 'Eligible'} by ${req.user.userId}`)
   return res.json(student)
 }
 
 const markDeviceReturned = async (req, res) => {
   const { studentNumber } = req.params
-  if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
+  if (!studentNumber) throw new ParameterError('student number missing')
 
   const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
-  if (!student) return res.status(404).json({ error: 'student not found' })
+  if (!student) throw new NotFoundError('student not found')
 
-  const reclaimStatus = student.reclaimStatus ? 'CLOSED' : null
-
-  await student.update({
-    deviceReturned: true,
-    deviceReturnedAt: new Date(),
-    deviceReturnedBy: req.user.userId,
-    reclaimStatus,
-  })
-
+  await student.markDeviceReturned(req.user.userId)
   logger.info(`Student ${studentNumber} device marked as returned by ${req.user.userId}`)
   return res.json(student)
 }
@@ -73,16 +56,12 @@ const markDeviceReturned = async (req, res) => {
 const updateStudentStatus = async (req, res) => {
   const { studentNumber } = req.params
   const { digiSkills, enrolled } = req.body
-
-  if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
+  if (!studentNumber) throw new ParameterError('student number missing')
 
   const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
-  if (!student) return res.status(404).json({ error: 'student not found' })
+  if (!student) throw new NotFoundError('student not found')
 
-  await student.update({
-    digiSkillsCompleted: !!digiSkills || student.digiSkillsCompleted,
-    courseRegistrationCompleted: !!enrolled || student.courseRegistrationCompleted,
-  })
+  await student.updateStatus(digiSkills, enrolled)
   logger.info(`Student ${studentNumber} status updated by ${req.user.userId}`)
   return res.json(student)
 }
@@ -90,13 +69,12 @@ const updateStudentStatus = async (req, res) => {
 const updateStudentReclaimStatus = async (req, res) => {
   const { studentNumber } = req.params
   const { reclaimStatus } = req.body
-
-  if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
+  if (!studentNumber) throw new ParameterError('student number missing')
 
   const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
-  if (!student) return res.status(404).json({ error: 'student not found' })
+  if (!student) throw new NotFoundError('student not found')
 
-  await student.update({ reclaimStatus })
+  await student.updateReclaimStatus(reclaimStatus)
   logger.info(`Student ${studentNumber} reclaim status updated by ${req.user.userId}`)
   return res.json(student)
 }
@@ -105,51 +83,25 @@ const getStudentsForStaff = async (req, res) => {
   const { user } = req
 
   const userStudyProgramCodes = user.studyPrograms.map(s => s.code)
-  const allStudents = await User.findAll({
-    where: {
-      studentNumber: {
-        [Op.ne]: null,
-      },
-      '$studyPrograms.code$': {
-        [Op.in]: userStudyProgramCodes,
-      },
-    },
-    include: [{ model: StudyProgram, as: 'studyPrograms' }],
-  })
-
+  const allStudents = await User.getStudentsForStaff(userStudyProgramCodes)
   return res.status(200).json(allStudents)
 }
 
-const getStudentsWithReclaimStatus = async () => {
-  const studentsWithReclaimStatus = await User.findAll({
-    where: {
-      studentNumber: {
-        [Op.ne]: null,
-      },
-      reclaimStatus: {
-        [Op.ne]: null,
-      },
-    },
-    include: [{ model: StudyProgram, as: 'studyPrograms' }],
-  })
-
-  return studentsWithReclaimStatus
-}
 
 const getStudentsForReclaimer = async (req, res) => {
-  const studentsWithReclaimStatus = await getStudentsWithReclaimStatus()
+  const studentsWithReclaimStatus = await User.getStudentsWithReclaimStatus()
   return res.status(200).json(studentsWithReclaimStatus)
 }
 
 const updateAutumunReclaimStatuses = async (req, res) => {
   await runAutumnReclaimStatusUpdater()
-  const studentsWithReclaimStatus = await getStudentsWithReclaimStatus()
+  const studentsWithReclaimStatus = await User.getStudentsWithReclaimStatus()
   return res.status(200).json(studentsWithReclaimStatus)
 }
 
 const updateSpringReclaimStatuses = async (req, res) => {
   await runSpringReclaimStatusUpdater()
-  const studentsWithReclaimStatus = await getStudentsWithReclaimStatus()
+  const studentsWithReclaimStatus = await User.getStudentsWithReclaimStatus()
   return res.status(200).json(studentsWithReclaimStatus)
 }
 
