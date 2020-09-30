@@ -32,10 +32,10 @@ class ApiInterface {
 
   async getMinMaxSemesters() {
     if (!SIS) {
-      const res = await this.axios.get(`/semesters/${new Date().getTime()}`)
+      const res = await this.userApi.get(`/semesters/${new Date().getTime()}`)
       return res.data
     }
-    const res = await this.axios.get('/semesters/min_max_semesters')
+    const res = await this.userApi.get('/semesters/min_max_semesters')
     return res.data
   }
 
