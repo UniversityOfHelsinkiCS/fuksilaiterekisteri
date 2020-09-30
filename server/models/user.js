@@ -22,7 +22,7 @@ class User extends Model {
   }
 
   async getStudytrackEnrollmentStatus(studytrackId) {
-    return api.getStudytrackEnrollmentStatus(studytrackId)
+    return api.getStudytrackEnrollmentStatus(this.studentNumber, studytrackId)
   }
 
   async getSemesterEnrollments() {
