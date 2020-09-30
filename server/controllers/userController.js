@@ -1,24 +1,11 @@
-const completionChecker = require('@util/completionChecker')
 const logger = require('@util/logger')
 const { isSuperAdmin } = require('@util/common')
 const {
-  User, Email, StudyProgram, UserStudyProgram, ServiceStatus,
+  User, StudyProgram, ServiceStatus,
 } = require('@models')
+const { ParameterError, NotFoundError, ForbiddenError } = require('@util/errors')
 const { checkAndUpdateEligibility, checkAndUpdateTaskStatuses } = require('@services/student')
-
-const validateEmail = (checkEmail) => {
-  const validationRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
-
-  // Returns true if valid
-  return validationRegex.test(checkEmail) && !checkEmail.includes('helsinki.') && !checkEmail.includes('@cs.')
-}
-
-const validateSerial = async (serial, settings) => {
-  const FULL_SERIAL_LENGTH = settings.deviceSerial.length
-  const STATIC_SERIAL_PART = settings.deviceSerial.substring(0, settings.serialSeparatorPos)
-  if (serial.length === FULL_SERIAL_LENGTH && (serial.substr(0, settings.serialSeparatorPos) === STATIC_SERIAL_PART)) return true
-  return false
-}
+const deviceService = require('@services/deviceService')
 
 const getUser = async (req, res) => {
   let { user } = req
@@ -60,37 +47,8 @@ const getLogoutUrl = async (req, res) => {
 }
 
 const requestDevice = async (req, res) => {
-  const settings = await ServiceStatus.getObject()
-  if (!req.user.eligible || req.user.signupYear !== settings.currentYear) {
-    return res
-      .status(403)
-      .json({ error: 'Not eligible.' })
-      .end()
-  }
-
-  if (req.body.email !== null && !validateEmail(req.body.email)) {
-    return res
-      .status(400)
-      .json({ error: 'Invalid email.' })
-      .end()
-  }
-
-  try {
-    const readyEmail = await Email.findOne({ where: { type: 'AUTOSEND_WHEN_READY' } })
-    const updatedUser = await req.user.update({ wantsDevice: true, personalEmail: req.body.email })
-
-    completionChecker(updatedUser, readyEmail)
-    return res
-      .status(200)
-      .json(updatedUser)
-      .end()
-  } catch (error) {
-    logger.error('Error requesting device: ', error)
-    return res
-      .status(500)
-      .json({ error: 'Database error.' })
-      .end()
-  }
+  const updatedUser = await deviceService.requestDevice(req.user, req.body.email)
+  return res.json(updatedUser)
 }
 
 const claimDevice = async (req, res) => {
@@ -99,12 +57,8 @@ const claimDevice = async (req, res) => {
     body: { studentNumber, deviceId },
   } = req
 
-  const settings = await ServiceStatus.getObject()
-
-  if (!studentNumber) return res.status(400).json({ error: 'student number missing' })
-
-  const validSerial = await validateSerial(deviceId, settings)
-  if (!validSerial) return res.status(400).json({ error: 'device id missing or invalid' })
+  if (!studentNumber) throw new ParameterError('studentNumber missing')
+  if (!deviceId) throw new ParameterError('deviceId missing')
 
   const student = await User.findOne({
     where: {
@@ -112,39 +66,13 @@ const claimDevice = async (req, res) => {
     },
   })
 
-  if (!student) return res.status(404).json({ error: 'student not found' })
+  if (!student) throw new NotFoundError('Student not found')
 
-  const debug = ['wantsDevice', 'digiSkillsCompleted', 'courseRegistrationCompleted', 'deviceGivenAt', 'signupYear']
-    .map(a => !!student[a])
-
-  if (
-    !(
-      student.eligible
-        && student.wantsDevice
-        && student.digiSkillsCompleted
-        && student.courseRegistrationCompleted
-        && !student.deviceGivenAt
-        && student.signupYear === settings.currentYear
-    )
-  ) {
-    logger.warn(`User ${user.userId} failed to give a device to ${studentNumber}`)
-    return res.status(403).json({ error: 'student not egilible for device', debug })
-  }
-
-  const deviceData = {
-    device_distributed_by: user.userId,
-    deviceSerial: deviceId.substring(settings.serialSeparatorPos),
-    deviceGivenAt: new Date(),
-  }
-
-  await student.update({
-    ...deviceData,
-  })
-
+  const deviceData = await deviceService.claimDevice(user, student, deviceId)
   return res.json(deviceData)
 }
 
-const getAllUsers = async (req, res) => {
+const getAllUsers = async (_req, res) => {
   const users = await User.findAll({ include: [{ model: StudyProgram, as: 'studyPrograms' }] })
   res.json(users)
 }
@@ -154,10 +82,9 @@ const toggleRole = async (req, res) => {
   const ownId = req.user.id
   const toggleableRoles = ['admin', 'distributor', 'staff', 'reclaimer', 'digiSkillsCompleted', 'courseRegistrationCompleted', 'wantsDevice']
 
-  if (!id) return res.status(400).json({ error: 'user id missing' })
-  if (!role || !toggleableRoles.includes(role)) return res.status(400).json({ error: 'role missing or invalid' })
-
-  if ((parseInt(id, 10) === parseInt(ownId, 10)) && role === 'admin') return res.status(403).json({ error: 'Cant remove admin from yourself.' })
+  if (!id) throw new ParameterError('user id missing')
+  if (!role || !toggleableRoles.includes(role)) throw new ParameterError('role missing or invalid')
+  if ((parseInt(id, 10) === parseInt(ownId, 10)) && role === 'admin') throw new ForbiddenError('Cant remove admin from yourself.')
 
   const user = await User.findOne({
     where: {
@@ -166,9 +93,9 @@ const toggleRole = async (req, res) => {
     include: [{ model: StudyProgram, as: 'studyPrograms' }],
   })
 
-  if (!user) return res.status(404).json({ error: 'user not found' })
+  if (!user) throw new NotFoundError('user not found')
 
-  await user.update({ [role]: !user[role] })
+  await user.toggleRole(role)
   logger.info(`User ${user.userId} toggled ${role} to ${user[role]} by ${req.user.userId}`)
   return res.json(user)
 }
@@ -184,9 +111,9 @@ const setAdminNote = async (req, res) => {
     include: [{ model: StudyProgram, as: 'studyPrograms' }],
   })
 
-  if (!user) return res.status(404).json({ error: 'user not found' })
+  if (!user) throw new NotFoundError('user not found')
 
-  await user.update({ adminNote: note })
+  await user.setAdminNote(note)
   logger.info(`User ${user.userId} added admin note by ${req.user.userId}`)
   return res.json(user)
 }
@@ -195,33 +122,10 @@ const updateUserStudyPrograms = async (req, res) => {
   const { id } = req.params
   const { studyPrograms } = req.body
 
-  const userStudyProgramsToDelete = []
-  const userStudyProgramsToCreate = []
-  Object.entries(studyPrograms).forEach(([studyProgramId, enabled]) => {
-    if (enabled) userStudyProgramsToCreate.push(studyProgramId)
-    else userStudyProgramsToDelete.push(studyProgramId)
-  })
-
-  await UserStudyProgram.destroy({
-    where: {
-      userId: id,
-      studyProgramId: userStudyProgramsToDelete,
-    },
-  })
-
-  const promises = []
-  userStudyProgramsToCreate.forEach((studyProgramId) => {
-    promises.push(UserStudyProgram.findOrCreate({
-      where: { userId: id, studyProgramId },
-      defaults: { userId: id, studyProgramId },
-    }))
-  })
-  await Promise.all(promises)
-
   const user = await User.findOne({ where: { id }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
+  if (!user) throw new NotFoundError('User not found')
 
-  if (userStudyProgramsToCreate.length === 0) await user.update({ staff: false })
-
+  await user.updateUserStudyPrograms(studyPrograms)
   return res.json(user)
 }
 

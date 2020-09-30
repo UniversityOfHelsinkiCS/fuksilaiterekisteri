@@ -199,6 +199,52 @@ class User extends Model {
       }
     }))
   }
+
+  async updateUserStudyPrograms(studyPrograms) {
+    const userStudyProgramsToDelete = []
+    const userStudyProgramsToCreate = []
+    Object.entries(studyPrograms).forEach(([studyProgramId, enabled]) => {
+      if (enabled) userStudyProgramsToCreate.push(studyProgramId)
+      else userStudyProgramsToDelete.push(studyProgramId)
+    })
+
+    await UserStudyProgram.destroy({
+      where: {
+        userId: this.id,
+        studyProgramId: userStudyProgramsToDelete,
+      },
+    })
+
+    const promises = []
+    userStudyProgramsToCreate.forEach((studyProgramId) => {
+      promises.push(UserStudyProgram.findOrCreate({
+        where: { userId: this.id, studyProgramId },
+        defaults: { userId: this.id, studyProgramId },
+      }))
+    })
+    await Promise.all(promises)
+
+    await this.reload({
+      include: [
+        {
+          model: StudyProgram,
+          as: 'studyPrograms',
+        },
+      ],
+    })
+
+    if (userStudyProgramsToCreate.length === 0) await this.update({ staff: false })
+  }
+
+  async toggleRole(role) {
+    await this.update({
+      [role]: !this[role],
+    })
+  }
+
+  async setAdminNote(note) {
+    await this.update({ adminNote: note })
+  }
 }
 
 User.init(

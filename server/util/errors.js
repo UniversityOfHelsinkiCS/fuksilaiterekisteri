@@ -24,7 +24,21 @@ class NotFoundError extends ApplicationError {
   }
 }
 
+class ParameterError extends ApplicationError {
+  constructor(message, properties) {
+    super(message || 'Missing or invalid parameters', 400, properties)
+  }
+}
+
+class ForbiddenError extends ApplicationError {
+  constructor(message, properties) {
+    super(message || 'Forbidden action', 403, properties)
+  }
+}
+
 module.exports = {
   ApplicationError,
   NotFoundError,
+  ParameterError,
+  ForbiddenError,
 }
