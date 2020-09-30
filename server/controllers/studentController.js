@@ -1,13 +1,9 @@
-const { User, StudyProgram } = require('@models')
+const { User } = require('@models')
 const logger = require('@util/logger')
 const { runAutumnReclaimStatusUpdater, runSpringReclaimStatusUpdater } = require('@services/student')
-const { NotFoundError, ParameterError } = require('@util/errors')
 
 const getStudent = async (req, res) => {
-  const { studentNumber } = req.params
-
-  const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
-  if (!student) throw new NotFoundError('Student not found')
+  const { student } = req
 
   const response = {
     studentNumber: student.studentNumber,
@@ -31,10 +27,7 @@ const getStudent = async (req, res) => {
 const toggleStudentEligibility = async (req, res) => {
   const { studentNumber } = req.params
   const { reason } = req.body
-  if (!studentNumber) throw new ParameterError('student number missing')
-
-  const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
-  if (!student) throw new NotFoundError('student not found')
+  const { student } = req
 
   await student.toggleEligibility(reason, req.user.userId)
   logger.info(`Student ${studentNumber} marked ${!student.eligible ? 'Ineligible' : 'Eligible'} by ${req.user.userId}`)
@@ -43,10 +36,7 @@ const toggleStudentEligibility = async (req, res) => {
 
 const markDeviceReturned = async (req, res) => {
   const { studentNumber } = req.params
-  if (!studentNumber) throw new ParameterError('student number missing')
-
-  const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
-  if (!student) throw new NotFoundError('student not found')
+  const { student } = req
 
   await student.markDeviceReturned(req.user.userId)
   logger.info(`Student ${studentNumber} device marked as returned by ${req.user.userId}`)
@@ -56,10 +46,7 @@ const markDeviceReturned = async (req, res) => {
 const updateStudentStatus = async (req, res) => {
   const { studentNumber } = req.params
   const { digiSkills, enrolled } = req.body
-  if (!studentNumber) throw new ParameterError('student number missing')
-
-  const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
-  if (!student) throw new NotFoundError('student not found')
+  const { student } = req
 
   await student.updateStatus(digiSkills, enrolled)
   logger.info(`Student ${studentNumber} status updated by ${req.user.userId}`)
@@ -69,10 +56,7 @@ const updateStudentStatus = async (req, res) => {
 const updateStudentReclaimStatus = async (req, res) => {
   const { studentNumber } = req.params
   const { reclaimStatus } = req.body
-  if (!studentNumber) throw new ParameterError('student number missing')
-
-  const student = await User.findOne({ where: { studentNumber }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
-  if (!student) throw new NotFoundError('student not found')
+  const { student } = req
 
   await student.updateReclaimStatus(reclaimStatus)
   logger.info(`Student ${studentNumber} reclaim status updated by ${req.user.userId}`)

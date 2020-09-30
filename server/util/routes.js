@@ -11,6 +11,7 @@ const { checkDistributor } = require('@util/distributorMiddleware')
 const { checkStaff } = require('@util/staffMiddleware')
 const { checkReclaimer } = require('@util/reclaimerMiddleware')
 const { validationMiddleware } = require('@util/validationMiddleware')
+const { checkStudent } = require('@util/studentMiddleware')
 const { inProduction } = require('@util/common')
 
 const router = Router()
@@ -51,6 +52,7 @@ router.post('/user/:id/admin_note', checkAdmin, validationMiddleware(['id'], ['n
 router.post('/user/:id/study_programs', checkAdmin, validationMiddleware(['id'], ['studyPrograms']), userController.updateUserStudyPrograms)
 router.post('/user/:id/:role', checkAdmin, userController.toggleRole)
 
+router.use('/student/:studentNumber', checkStudent)
 router.get('/student/:studentNumber', checkDistributor, studentController.getStudent)
 router.post('/student/:studentNumber/eligible', checkStaffOrAdmin, studentController.toggleStudentEligibility)
 router.post('/student/:studentNumber/deviceReturned', checkStaffOrAdmin, studentController.markDeviceReturned)
