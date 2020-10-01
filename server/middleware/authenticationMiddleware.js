@@ -1,4 +1,4 @@
-const { inProduction, isSuperAdmin } = require('./common')
+const { inProduction, isSuperAdmin } = require('../util/common')
 const logger = require('@util/logger')
 const { StudyProgram, User, ServiceStatus } = require('@models')
 
