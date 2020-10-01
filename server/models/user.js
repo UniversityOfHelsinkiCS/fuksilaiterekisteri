@@ -42,6 +42,28 @@ class User extends Model {
     })
   }
 
+  static getUsers() {
+    return this.findAll({ include: [{ model: StudyProgram, as: 'studyPrograms' }] })
+  }
+
+  static findUser(id) {
+    return this.findOne({
+      where: {
+        id,
+      },
+      include: [{ model: StudyProgram, as: 'studyPrograms' }],
+    })
+  }
+
+  static findStudent(studentNumber) {
+    return this.findOne({
+      where: {
+        studentNumber,
+      },
+      include: [{ model: StudyProgram, as: 'studyPrograms' }],
+    })
+  }
+
   async getStudyRights() {
     return api.getStudyRights(this.studentNumber)
   }

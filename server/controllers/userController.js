@@ -1,8 +1,6 @@
 const logger = require('@util/logger')
 const { isSuperAdmin, validateEmail } = require('@util/common')
-const {
-  User, StudyProgram, ServiceStatus, Email,
-} = require('@models')
+const { User, ServiceStatus, Email } = require('@models')
 const { ParameterError, NotFoundError, ForbiddenError } = require('@util/errors')
 const { checkAndUpdateEligibility, checkAndUpdateTaskStatuses } = require('@services/student')
 const completionChecker = require('@util/completionChecker')
@@ -82,7 +80,7 @@ const claimDevice = async (req, res) => {
 }
 
 const getAllUsers = async (_req, res) => {
-  const users = await User.findAll({ include: [{ model: StudyProgram, as: 'studyPrograms' }] })
+  const users = await User.getUsers()
   res.json(users)
 }
 
@@ -95,12 +93,7 @@ const toggleRole = async (req, res) => {
   if (!role || !toggleableRoles.includes(role)) throw new ParameterError('role missing or invalid')
   if ((parseInt(id, 10) === parseInt(ownId, 10)) && role === 'admin') throw new ForbiddenError('Cant remove admin from yourself.')
 
-  const user = await User.findOne({
-    where: {
-      id,
-    },
-    include: [{ model: StudyProgram, as: 'studyPrograms' }],
-  })
+  const user = await User.findUser(id)
 
   if (!user) throw new NotFoundError('user not found')
 
@@ -113,12 +106,7 @@ const setAdminNote = async (req, res) => {
   const { id } = req.params
   const { note } = req.body
 
-  const user = await User.findOne({
-    where: {
-      id,
-    },
-    include: [{ model: StudyProgram, as: 'studyPrograms' }],
-  })
+  const user = await User.findUser(id)
 
   if (!user) throw new NotFoundError('user not found')
 
@@ -131,7 +119,7 @@ const updateUserStudyPrograms = async (req, res) => {
   const { id } = req.params
   const { studyPrograms } = req.body
 
-  const user = await User.findOne({ where: { id }, include: [{ model: StudyProgram, as: 'studyPrograms' }] })
+  const user = await User.findUser(id)
   if (!user) throw new NotFoundError('User not found')
 
   await user.updateUserStudyPrograms(studyPrograms)

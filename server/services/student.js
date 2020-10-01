@@ -1,8 +1,6 @@
 const { Op } = require('sequelize')
 const { differenceInYears } = require('date-fns')
-const {
-  StudyProgram, User, Email, ServiceStatus,
-} = require('@models')
+const { User, Email, ServiceStatus } = require('@models')
 const logger = require('@util/logger')
 const completionChecker = require('@util/completionChecker')
 
@@ -82,12 +80,7 @@ const checkStudentEligibilities = async () => {
 
 // Used in CLI
 const updateStudentEligibility = async (studentNumber) => {
-  const foundStudent = await User.findOne({
-    where: {
-      studentNumber,
-    },
-    include: [{ model: StudyProgram, as: 'studyPrograms' }],
-  })
+  const foundStudent = await User.findStudent(studentNumber)
 
   if (!foundStudent) {
     logger.info('User not found!')
