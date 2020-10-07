@@ -172,23 +172,27 @@ class User extends Model {
     const studyProgramCodes = (await StudyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
 
     const enrollmentPromises = mlu ? mlu.elements.map(({ code }) => (
-      new Promise(async (resolve) => {
+      new Promise(async (resolve, reject) => {
         let enrolled
-        if (code === 'KH50_008') {
-          // Students in Bachelor’s Programme in Science should be enrolled to any course in H50
-          enrolled = (await Promise.all(studyProgramCodes.map(c => (
-            new Promise(async codeRes => codeRes(await this.getStudytrackEnrollmentStatus(c)))
-          )))).includes(true)
-        } else if (code === 'KH50_004') {
-          // Teacher students should be enrolled to their own or math programmes' courses
-          enrolled = (await Promise.all(['KH50_004', 'KH50_001'].map(c => (
-            new Promise(async codeRes => codeRes(await this.getStudytrackEnrollmentStatus(c)))
-          )))).includes(true)
-        } else {
-          // Other students should be enrolled to their own programme's courses
-          enrolled = await this.getStudytrackEnrollmentStatus(code)
+        try {
+          if (code === 'KH50_008') {
+            // Students in Bachelor’s Programme in Science should be enrolled to any course in H50
+            enrolled = (await Promise.all(studyProgramCodes.map(c => (
+              new Promise(async codeRes => codeRes(await this.getStudytrackEnrollmentStatus(c)))
+            )))).includes(true)
+          } else if (code === 'KH50_004') {
+            // Teacher students should be enrolled to their own or math programmes' courses
+            enrolled = (await Promise.all(['KH50_004', 'KH50_001'].map(c => (
+              new Promise(async codeRes => codeRes(await this.getStudytrackEnrollmentStatus(c)))
+            )))).includes(true)
+          } else {
+            // Other students should be enrolled to their own programme's courses
+            enrolled = await this.getStudytrackEnrollmentStatus(code)
+          }
+          resolve(enrolled)
+        } catch (e) {
+          reject(e)
         }
-        resolve(enrolled)
       })
     )) : []
 
