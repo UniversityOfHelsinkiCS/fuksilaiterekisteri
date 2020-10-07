@@ -140,9 +140,10 @@ const createNewUser = async (i, spid) => {
 }
 
 const createSomeUsers = async (req, res) => {
-  const spIds = await StudyProgram.findAll({
+  const spIds = (await StudyProgram.findAll({
     attributes: ['id', 'code'],
-  }).map(({ id }) => id)
+  })).map(({ id }) => id)
+
 
   let i = 0
   while (i++ < 1000) {
