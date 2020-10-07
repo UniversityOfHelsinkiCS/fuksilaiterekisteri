@@ -47,6 +47,7 @@ const updateEligibleStudentStatuses = async () => {
       logger.error(`Failed fetching oodi data for student ${student.studentNumber}`)
     }
   }, Promise.resolve())
+  logger.info('Done updating eligible student statuses.')
 }
 
 const checkStudentEligibilities = async () => {
