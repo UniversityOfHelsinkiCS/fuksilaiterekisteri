@@ -8,6 +8,11 @@ const {
   inProduction,
 } = require('../util/common')
 
+const printProgress = (identifier, progress, total) => {
+  if (progress % Math.floor((total / 10)) === 0) {
+    logger.info(`${identifier} ${Math.floor((progress) / total * 100)}% done`)
+  }
+}
 
 const updateEligibleStudentStatuses = async () => {
   const settings = await ServiceStatus.getObject()
@@ -34,12 +39,16 @@ const updateEligibleStudentStatuses = async () => {
       const { digiSkills, hasEnrollments } = await student.getStatus()
 
       try {
-        const updatedStudent = await student.update({
-          digiSkillsCompleted: digiSkills || student.digiSkillsCompleted,
-          courseRegistrationCompleted: hasEnrollments || student.courseRegistrationCompleted,
-        })
-        await completionChecker(updatedStudent, readyEmail)
-        logger.info(`Updated student ${index + 1}/${targetStudents.length}`)
+        const statusChanged = student.digiSkillsCompleted !== digiSkills || student.courseRegistrationCompleted !== hasEnrollments
+        if (statusChanged) {
+          const updatedStudent = await student.update({
+            digiSkillsCompleted: digiSkills || student.digiSkillsCompleted,
+            courseRegistrationCompleted: hasEnrollments || student.courseRegistrationCompleted,
+          })
+          await completionChecker(updatedStudent, readyEmail)
+          logger.info(`Updated statuses for student ${student.studentNumber}`)
+        }
+        printProgress('Updating eligible student statuses', index + 1, targetStudents.length)
       } catch (e) {
         logger.error(`Failed updating student ${student.studentNumber}`, e)
       }
@@ -70,7 +79,7 @@ const checkStudentEligibilities = async () => {
       logger.info(`Eligibility missmatch for ${student.studentNumber}!`)
       currentMismatches++
     }
-    logger.info(`${index + 1}/${students.length}`)
+    printProgress('Checking student eligiblitities', index + 1, students.length)
 
     return currentMismatches
   }, Promise.resolve(0))
