@@ -44,6 +44,14 @@ export const updateUserStudyPrograms = ({ id, studyPrograms }) => {
   return callBuilder(route, prefix, method, data)
 }
 
+export const updateSerial = (studentNumber, newSerial) => {
+  const route = `/student/${studentNumber}/serial`
+  const prefix = 'UPDATE_STUDENT_SERIAL'
+  const method = 'post'
+  const data = { newSerial }
+  return callBuilder(route, prefix, method, data)
+}
+
 const INITIAL_STATE = { data: [], settingAdminNote: false }
 
 const handleUsersUpdate = (updatedUser, data) => data.map(user => (user.id === updatedUser.id ? updatedUser : user))
@@ -114,6 +122,17 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         data: handleUsersUpdate(action.response, state.data),
         error: false,
+      }
+    case 'UPDATE_STUDENT_SERIAL_SUCCESS':
+      return {
+        ...state,
+        data: handleUsersUpdate(action.response, state.data),
+        error: false,
+      }
+    case 'UPDATE_STUDENT_SERIAL_FAILURE':
+      return {
+        ...state,
+        error: true,
       }
     default:
       return state

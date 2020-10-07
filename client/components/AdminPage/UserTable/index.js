@@ -1,6 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Icon, Checkbox } from 'semantic-ui-react'
+import { updateSerial } from 'Utilities/redux/usersReducer'
 import {
   toggleStudentEligiblityAction, toggleUserRoleAction, markDeviceReturnedAction,
 } from '../../../util/redux/usersReducer'
@@ -57,6 +58,13 @@ const UserTable = ({
   const loginAs = (userId) => {
     localStorage.setItem('adminLoggedInAs', userId)
     window.location.reload()
+  }
+
+  const handleDeviceIdChange = (studentNumber) => {
+    const newSerial = window.prompt('New serial:')
+    if (!newSerial) return
+
+    dispatch(updateSerial(studentNumber, newSerial))
   }
 
   const columns = [
@@ -135,7 +143,19 @@ const UserTable = ({
     {
       key: 'device_id',
       label: 'Device id',
-      renderCell: ({ deviceSerial }) => valOrEmpty(deviceSerial),
+      renderCell: ({ deviceSerial, studentNumber }) => (
+        <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          {valOrEmpty(deviceSerial)}
+          {!!deviceSerial && (
+          <Icon
+            name="pencil alternate"
+            data-cy="updateSerial"
+            onClick={() => handleDeviceIdChange(studentNumber)}
+            style={{ marginLeft: '0.3em', cursor: 'pointer' }}
+          />
+          ) }
+        </div>
+      ),
     },
     {
       key: 'device_returned_at',

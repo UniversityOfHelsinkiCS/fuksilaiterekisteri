@@ -152,6 +152,26 @@ context('Admin', () => {
 
   })
 
+  it("Can update device serial", () => {
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        cy.stub(win, 'prompt').returns('NEW123')
+      }
+    })
+
+    cy.createCustomUser({
+      userId: 'perusUser',
+      name: 'Perus User',
+      studentNumber: '12345',
+      eligible: true,
+      signUpYear: 2018,
+      deviceSerial:"RAB12"
+    })
+
+    cy.contains('erus User').parent().parent().find("[data-cy=updateSerial]").click()
+    cy.contains("Serial updated")
+  })
+
 
   it("Can disable and enable registrations", () => {
     cy.visit('/', {

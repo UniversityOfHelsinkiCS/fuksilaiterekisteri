@@ -368,6 +368,12 @@ class User extends Model {
     })
   }
 
+  async updateSerial(newSerial) {
+    await this.update({
+      deviceSerial: newSerial,
+    })
+  }
+
   async updateReclaimStatus(reclaimStatus) {
     await this.update({ reclaimStatus })
   }

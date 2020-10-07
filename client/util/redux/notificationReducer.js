@@ -110,6 +110,16 @@ export default (state = initialState, action) => {
         ...state,
         error: 'Error while saving users study program rights',
       }
+    case 'UPDATE_STUDENT_SERIAL_SUCCESS':
+      return {
+        ...state,
+        success: 'Serial updated',
+      }
+    case 'UPDATE_STUDENT_SERIAL_FAILURE':
+      return {
+        ...state,
+        error: 'Serial update failed',
+      }
     default:
       return state
   }

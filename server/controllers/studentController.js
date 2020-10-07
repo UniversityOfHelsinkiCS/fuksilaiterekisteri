@@ -1,6 +1,7 @@
 const { User } = require('@models')
 const logger = require('@util/logger')
 const { runAutumnReclaimStatusUpdater, runSpringReclaimStatusUpdater } = require('@services/student')
+const { ParameterError } = require('@util/errors')
 
 const getStudent = async (req, res) => {
   const { student } = req
@@ -89,6 +90,17 @@ const updateSpringReclaimStatuses = async (req, res) => {
   return res.status(200).json(studentsWithReclaimStatus)
 }
 
+const updateDeviceSerial = async (req, res) => {
+  const { student } = req
+  const { newSerial } = req.body
+
+  if (newSerial.trim().length < 3) throw new ParameterError('Serial has to be longer than 2 chars')
+
+  await student.updateSerial(newSerial)
+  logger.info(`Student ${student.studentNumber} serial updated by ${req.user.userId}`)
+  return res.json(student)
+}
+
 module.exports = {
   getStudent,
   toggleStudentEligibility,
@@ -99,4 +111,5 @@ module.exports = {
   updateStudentReclaimStatus,
   updateAutumunReclaimStatuses,
   updateSpringReclaimStatuses,
+  updateDeviceSerial,
 }
