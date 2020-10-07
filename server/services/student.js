@@ -54,6 +54,7 @@ const updateEligibleStudentStatuses = async () => {
       }
     } catch (e) {
       logger.error(`Failed fetching oodi data for student ${student.studentNumber}`)
+      console.log(e.stack) // eslint-disable-line no-console
     }
   }, Promise.resolve())
   logger.info('Done updating eligible student statuses.')
@@ -74,12 +75,17 @@ const checkStudentEligibilities = async () => {
   const mismatches = await students.reduce(async (promise, student, index) => {
     let currentMismatches = await promise // We don't want to spam oodi api so we wait for previous to resolve
 
-    const { eligible } = await student.isEligible(student.createdAt)
-    if (eligible !== student.eligible) {
-      logger.info(`Eligibility missmatch for ${student.studentNumber}!`)
-      currentMismatches++
+    try {
+      const { eligible } = await student.isEligible(student.createdAt)
+      if (eligible !== student.eligible) {
+        logger.info(`Eligibility missmatch for ${student.studentNumber}!`)
+        currentMismatches++
+      }
+      printProgress('Checking student eligiblitities', index + 1, students.length)
+    } catch (e) {
+      logger.info(`Failed checking eligiblity for ${student.studentNumber}`)
+      console.log(e.stack) // eslint-disable-line no-console
     }
-    printProgress('Checking student eligiblitities', index + 1, students.length)
 
     return currentMismatches
   }, Promise.resolve(0))
@@ -222,6 +228,7 @@ const runAutumnReclaimStatusUpdater = async () => {
       }
     } catch (e) {
       logger.error(`Failed fetching oodi data for student ${student.studentNumber}`)
+      console.log(e.stack) // eslint-disable-line no-console
     }
   }, Promise.resolve())
 }
@@ -260,6 +267,7 @@ const runSpringReclaimStatusUpdater = async () => {
       }
     } catch (e) {
       logger.error(`Failed fetching oodi data for student ${student.studentNumber}`)
+      console.log(e.stack) // eslint-disable-line no-console
     }
   }, Promise.resolve())
 }
