@@ -86,7 +86,7 @@ const authentication = async (req, res, next) => {
   try {
     const settings = await ServiceStatus.getObject()
     if (!settings.studentRegistrationOnline) {
-      logger.warn(`User with studentNumber ${studentNumber} tried to create a new account (registrations are closed)`)
+      logger.info(`User with studentNumber ${studentNumber} tried to create a new account (registrations are closed)`)
       return res.status(503).send({ error: 'Registrations are closed.' })
     }
 
