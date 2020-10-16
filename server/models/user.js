@@ -475,6 +475,33 @@ User.init(
       type: DataTypes.BOOLEAN,
       field: 'third_year_or_later_student',
     },
+    isStudent: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return !!this.studentNumber
+      },
+      set() {
+        throw new Error('Do not try to set the `isStudent` value!')
+      },
+    },
+    hasDeviceGiven: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return !!this.deviceGivenAt
+      },
+      set() {
+        throw new Error('Do not try to set the `hasDeviceGiven` value!')
+      },
+    },
+    hasCompletedAllTasks: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.digiSkillsCompleted && this.courseRegistrationCompleted
+      },
+      set() {
+        throw new Error('Do not try to set the `hasCompletedTasks` value!')
+      },
+    },
   },
   {
     sequelize,

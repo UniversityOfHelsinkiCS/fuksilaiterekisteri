@@ -11,11 +11,15 @@ const getUser = async (req, res) => {
   const superAdmin = isSuperAdmin(user.userId)
 
   const settings = await ServiceStatus.getObject()
-  if (user.studentNumber && !user.deviceGivenAt && (!user.eligible || user.signupYear !== settings.currentYear)) {
+  let userIsEligibleThisYear = user.eligible && user.signupYear === settings.currentYear
+  const userIsPotentiallyEligible = user.isStudent && !user.hasDeviceGiven && !userIsEligibleThisYear
+
+  if (userIsPotentiallyEligible) {
     user = await checkAndUpdateEligibility(user)
+    userIsEligibleThisYear = user.eligible && user.signupYear === settings.currentYear
   }
 
-  if (user.eligible && user.signupYear === settings.currentYear && (!user.digiSkillsCompleted || !user.courseRegistrationCompleted)) {
+  if (userIsEligibleThisYear && !user.hasCompletedAllTasks) {
     user = await checkAndUpdateTaskStatuses(user)
   }
 
