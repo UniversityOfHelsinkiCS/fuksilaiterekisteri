@@ -3,7 +3,7 @@ const rl = require('readline').createInterface({
   input: process.stdin,
   output: process.stdout,
 })
-const { checkStudentEligibilities, updateStudentEligibility, updateEligibleStudentStatuses } = require('../services/student')
+const { checkStudentEligibilities, updateStudentEligibility, updateEligibleStudentStatuses } = require('../services/updaterService')
 
 const commands = {
   0: {

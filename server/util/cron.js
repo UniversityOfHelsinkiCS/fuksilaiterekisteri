@@ -2,7 +2,7 @@ const { CronJob } = require('cron')
 const logger = require('@util/logger')
 const {
   updateEligibleStudentStatuses, checkStudentEligibilities, runAutumnReclaimStatusUpdater, runSpringReclaimStatusUpdater,
-} = require('@services/student')
+} = require('@services/updaterService')
 const { ServiceStatus } = require('@models')
 
 const checkDeadline = async () => {

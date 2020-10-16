@@ -1,6 +1,6 @@
 const { User } = require('@models')
 const logger = require('@util/logger')
-const { runAutumnReclaimStatusUpdater, runSpringReclaimStatusUpdater } = require('@services/student')
+const { runAutumnReclaimStatusUpdater, runSpringReclaimStatusUpdater } = require('@services/updaterService')
 const { ParameterError } = require('@util/errors')
 
 const getStudent = async (req, res) => {

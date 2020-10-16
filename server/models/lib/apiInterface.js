@@ -3,7 +3,7 @@ const https = require('https')
 const {
   STUDENT_API_URL, STUDENT_API_TOKEN, SIS, inProduction, DIGI_COURSES,
 } = require('../../util/common')
-const mock = require('../../services/mock')
+const mock = require('./mock')
 
 class ApiInterface {
   constructor() {
