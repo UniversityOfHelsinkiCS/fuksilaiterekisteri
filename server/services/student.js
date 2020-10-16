@@ -1,6 +1,6 @@
 const { Op } = require('sequelize')
 const { differenceInYears } = require('date-fns')
-const { User, Email, ServiceStatus } = require('@models')
+const { User, ServiceStatus } = require('@models')
 const logger = require('@util/logger')
 const completionChecker = require('@util/completionChecker')
 
@@ -30,8 +30,6 @@ const updateEligibleStudentStatuses = async () => {
     },
   })
 
-  const readyEmail = await Email.findOne({ where: { type: 'AUTOSEND_WHEN_READY' } })
-
   await targetStudents.reduce(async (promise, student, index) => {
     await promise // We don't want to spam oodi api so we wait for previous to resolve
 
@@ -45,7 +43,7 @@ const updateEligibleStudentStatuses = async () => {
             digiSkillsCompleted: digiSkills || student.digiSkillsCompleted,
             courseRegistrationCompleted: hasEnrollments || student.courseRegistrationCompleted,
           })
-          await completionChecker(updatedStudent, readyEmail)
+          await completionChecker(updatedStudent)
           logger.info(`Updated statuses for student ${student.studentNumber}`)
         }
         printProgress('Updating eligible student statuses', index + 1, targetStudents.length)
@@ -118,29 +116,7 @@ const updateStudentEligibility = async (studentNumber) => {
   })
 
   logger.info(`${studentNumber} eligibility updated successfully from ${eligibilityBefore} to ${eligible}!`)
-  const readyEmail = await Email.findOne({ where: { type: 'AUTOSEND_WHEN_READY' } })
-  await completionChecker(updatedStudent, readyEmail)
-}
-
-const checkAndUpdateTaskStatuses = async (user) => {
-  try {
-    const { digiSkills, hasEnrollments } = await user.getStatus()
-
-    if (digiSkills !== user.digiSkillsCompleted || hasEnrollments !== user.courseRegistrationCompleted) {
-      await user.update({
-        digiSkillsCompleted: digiSkills || user.digiSkillsCompleted,
-        courseRegistrationCompleted: hasEnrollments || user.courseRegistrationCompleted,
-      })
-
-      const readyEmail = await Email.findOne({
-        where: { type: 'AUTOSEND_WHEN_READY' },
-      })
-      await completionChecker(user, readyEmail)
-    }
-  } catch (e) {
-    logger.error(`Failed checking and updating ${user.studentNumber} task statuses: ${e}`)
-  }
-  return user
+  await completionChecker(updatedStudent)
 }
 
 const isDeviceHeldUnderFiveYears = deviceGivenAt => differenceInYears(new Date(), new Date(deviceGivenAt)) < 5
@@ -255,5 +231,4 @@ module.exports = {
   updateStudentEligibility,
   runAutumnReclaimStatusUpdater,
   runSpringReclaimStatusUpdater,
-  checkAndUpdateTaskStatuses,
 }

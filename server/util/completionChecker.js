@@ -1,8 +1,8 @@
 const emailService = require('@services/emailService')
 const logger = require('@util/logger')
-const { ServiceStatus } = require('@models')
+const { ServiceStatus, Email } = require('@models')
 
-const completionChecker = async (user, email) => {
+const completionChecker = async (user) => {
   if (user.wantsDevice && user.eligible && user.digiSkillsCompleted && user.courseRegistrationCompleted) {
     const settings = await ServiceStatus.getObject()
     const isDistributionOver = new Date().getTime() > new Date(settings.taskDeadline).getTime()
@@ -13,6 +13,9 @@ const completionChecker = async (user, email) => {
       logger.error('Email disabled, set EMAIL_ENABLED=true to enable.')
       return
     }
+
+    const email = await Email.findAutosendTemplate('AUTOSEND_WHEN_READY')
+
     const info = await emailService.sendEmail({
       recipients: [user.hyEmail, user.personalEmail],
       subject: email.subject,

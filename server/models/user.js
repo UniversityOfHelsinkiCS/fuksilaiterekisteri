@@ -225,6 +225,18 @@ class User extends Model {
     }
   }
 
+  async checkAndUpdateTaskStatuses() {
+    try {
+      const { digiSkills, hasEnrollments } = await this.getStatus()
+
+      this.digiSkillsCompleted = digiSkills || this.digiSkillsCompleted
+      this.courseRegistrationCompleted = hasEnrollments || this.courseRegistrationCompleted
+      await this.save()
+    } catch (e) {
+      logger.error(`Failed checking and updating ${this.studentNumber} task statuses: ${e}`)
+    }
+  }
+
   async createStaffStudyprograms(codes) {
     const studyprograms = await StudyProgram.findAll({
       where: { code: codes },

@@ -1,12 +1,11 @@
 const logger = require('@util/logger')
 const { isSuperAdmin, validateEmail } = require('@util/common')
-const { User, ServiceStatus, Email } = require('@models')
+const { User, ServiceStatus } = require('@models')
 const { ParameterError, NotFoundError, ForbiddenError } = require('@util/errors')
-const { checkAndUpdateTaskStatuses } = require('@services/student')
 const completionChecker = require('@util/completionChecker')
 
 const getUser = async (req, res) => {
-  let { user } = req
+  const { user } = req
 
   const superAdmin = isSuperAdmin(user.userId)
 
@@ -20,7 +19,8 @@ const getUser = async (req, res) => {
   }
 
   if (userIsEligibleThisYear && !user.hasCompletedAllTasks) {
-    user = await checkAndUpdateTaskStatuses(user)
+    await user.checkAndUpdateTaskStatuses()
+    await completionChecker(user)
   }
 
   res.send({
@@ -57,8 +57,7 @@ const requestDevice = async (req, res) => {
   if (email !== null && !validateEmail(email)) throw new ParameterError('Invalid email')
 
   const updatedUser = await user.requestDevice(email)
-  const readyEmail = await Email.findAutosendTemplate('AUTOSEND_WHEN_READY')
-  await completionChecker(updatedUser, readyEmail)
+  await completionChecker(updatedUser)
   return res.json(updatedUser)
 }
 
