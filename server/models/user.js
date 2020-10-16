@@ -1,6 +1,7 @@
 const { Model, DataTypes, Op } = require('sequelize')
 const { sequelize } = require('@database')
 const { ParameterError, ForbiddenError } = require('@util/errors')
+const logger = require('@util/logger')
 const ServiceStatus = require('./servicestatus')
 const StudyProgram = require('./studyprogram')
 const UserStudyProgram = require('./userstudyprogram')
@@ -201,6 +202,26 @@ class User extends Model {
     return {
       digiSkills,
       hasEnrollments,
+    }
+  }
+
+  async checkAndUpdateEligibility() {
+    try {
+      const settings = await ServiceStatus.getObject()
+
+      const { studyrights, eligible, eligibilityReasons } = await this.isEligible()
+
+      if (eligible) {
+        await this.createUserStudyprograms(studyrights)
+        this.eligible = eligible
+        this.signupYear = settings.currentYear
+        logger.info(`${this.studentNumber} eligibility updated automatically`)
+      }
+
+      this.eligibilityReasons = eligibilityReasons
+      await this.save()
+    } catch (e) {
+      logger.error(`Failed checking and updating ${this.studentNumber} eligibility`)
     }
   }
 

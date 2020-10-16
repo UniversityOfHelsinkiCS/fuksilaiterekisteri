@@ -2,7 +2,7 @@ const logger = require('@util/logger')
 const { isSuperAdmin, validateEmail } = require('@util/common')
 const { User, ServiceStatus, Email } = require('@models')
 const { ParameterError, NotFoundError, ForbiddenError } = require('@util/errors')
-const { checkAndUpdateEligibility, checkAndUpdateTaskStatuses } = require('@services/student')
+const { checkAndUpdateTaskStatuses } = require('@services/student')
 const completionChecker = require('@util/completionChecker')
 
 const getUser = async (req, res) => {
@@ -15,7 +15,7 @@ const getUser = async (req, res) => {
   const userIsPotentiallyEligible = user.isStudent && !user.hasDeviceGiven && !userIsEligibleThisYear
 
   if (userIsPotentiallyEligible) {
-    user = await checkAndUpdateEligibility(user)
+    await user.checkAndUpdateEligibility()
     userIsEligibleThisYear = user.eligible && user.signupYear === settings.currentYear
   }
 

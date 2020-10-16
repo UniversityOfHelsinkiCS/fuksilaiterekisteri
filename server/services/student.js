@@ -122,29 +122,6 @@ const updateStudentEligibility = async (studentNumber) => {
   await completionChecker(updatedStudent, readyEmail)
 }
 
-const checkAndUpdateEligibility = async (user) => {
-  try {
-    const settings = await ServiceStatus.getObject()
-
-    const { studyrights, eligible, eligibilityReasons } = await user.isEligible()
-
-    if (eligible) {
-      await user.createUserStudyprograms(studyrights)
-      await user.update({
-        eligible,
-        eligibilityReasons,
-        signupYear: settings.currentYear,
-      })
-      logger.info(`${user.studentNumber} eligibility updated automatically`)
-    } else {
-      await user.update({ eligibilityReasons })
-    }
-  } catch (e) {
-    logger.error(`Failed checking and updating ${user.studentNumber} eligibility`)
-  }
-  return user
-}
-
 const checkAndUpdateTaskStatuses = async (user) => {
   try {
     const { digiSkills, hasEnrollments } = await user.getStatus()
@@ -278,6 +255,5 @@ module.exports = {
   updateStudentEligibility,
   runAutumnReclaimStatusUpdater,
   runSpringReclaimStatusUpdater,
-  checkAndUpdateEligibility,
   checkAndUpdateTaskStatuses,
 }
