@@ -347,8 +347,7 @@ class User extends Model {
   }
 
   async requestDevice(email) {
-    const updatedUser = await this.update({ wantsDevice: true, personalEmail: email })
-    return updatedUser
+    await this.update({ wantsDevice: true, personalEmail: email })
   }
 
   async claimDevice(deviceId, deviceDistributedBy) {

@@ -53,12 +53,14 @@ const requestDevice = async (req, res) => {
   const { user } = req
   const settings = await ServiceStatus.getObject()
 
-  if (!user.eligible || user.signupYear !== settings.currentYear) throw new ForbiddenError('Not eligible')
+  const userIsEligibleThisYear = user.eligible && user.signupYear === settings.currentYear
+  if (!userIsEligibleThisYear) throw new ForbiddenError('Not eligible')
+
   if (email !== null && !validateEmail(email)) throw new ParameterError('Invalid email')
 
-  const updatedUser = await user.requestDevice(email)
-  await completionChecker(updatedUser)
-  return res.json(updatedUser)
+  await user.requestDevice(email)
+  await completionChecker(user)
+  return res.json(user)
 }
 
 const claimDevice = async (req, res) => {
