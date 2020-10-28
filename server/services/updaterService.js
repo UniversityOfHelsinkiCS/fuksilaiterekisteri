@@ -74,7 +74,7 @@ const checkStudentEligibilities = async () => {
     let currentMismatches = await promise // We don't want to spam oodi api so we wait for previous to resolve
 
     try {
-      const { eligible } = await student.isEligible(student.createdAt)
+      const { eligible } = await student.checkEligibility()
       if (eligible !== student.eligible) {
         logger.info(`Eligibility missmatch for ${student.studentNumber}!`)
         currentMismatches++
@@ -102,13 +102,13 @@ const updateStudentEligibility = async (studentNumber) => {
   }
 
   const eligibilityBefore = foundStudent.eligible
-  const { eligible, studyrights } = await foundStudent.isEligible(foundStudent.createdAt)
+  const { eligible } = await foundStudent.checkEligibility()
   if (foundStudent.eligible === eligible) {
     logger.info(`${studentNumber} eligibility hasn't changed.`)
     return
   }
 
-  await foundStudent.createUserStudyprograms(studyrights)
+  await foundStudent.createUserStudyprograms()
   const settings = await ServiceStatus.getObject()
   const updatedStudent = await foundStudent.update({
     eligible,

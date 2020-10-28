@@ -91,8 +91,8 @@ describe('Student', () => {
     cy.login("non_fuksi_student")
     cy.get('[data-cy=notEligible]')
 
-    cy.get(".green").eq(2)
-    cy.get(".red").eq(0)
+    cy.get(".green").its('length').should('eq', 2)
+    cy.get(".red").its('length').should('eq', 1)
 
   })
 

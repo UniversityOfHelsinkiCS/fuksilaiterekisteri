@@ -1,3 +1,4 @@
+const ServiceStatus = require('../servicestatus')
 
 const mockData = {
   default: {
@@ -386,9 +387,17 @@ const findData = (studentNumber, field) => (mockData[studentNumber] && mockData[
 const findSemesterEnrollments = studentNumber => findData(studentNumber, 'semesterEnrollments')
 const findStudyrights = studentNumber => findData(studentNumber, 'studyrights')
 const findFirstYearCredits = studentNumber => findData(studentNumber, 'firstYearCredits')
+const findMinMaxSemesters = async () => {
+  const settings = await ServiceStatus.getObject()
+  return {
+    min: '2008-07-30T21:00:00.000Z',
+    max: `${settings.currentYear}-07-31T21:00:00.000Z`,
+  }
+}
 
 module.exports = {
   findSemesterEnrollments,
   findStudyrights,
   findFirstYearCredits,
+  findMinMaxSemesters,
 }

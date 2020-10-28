@@ -99,14 +99,11 @@ const authentication = async (req, res, next) => {
       // eligibilityReasons,
     })
 
-    const { studyrights, eligible, eligibilityReasons } = await newUser.isEligible()
+    const { eligible, eligibilityReasons } = await newUser.checkEligibility()
 
-    const { digiSkills, hasEnrollments } = await newUser.getStatus(
-      studentNumber,
-      studyrights,
-    )
+    const { digiSkills, hasEnrollments } = await newUser.getStatus()
 
-    await newUser.createUserStudyprograms(studyrights)
+    await newUser.createUserStudyprograms()
 
     await newUser.update({
       eligible,

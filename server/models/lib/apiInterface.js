@@ -31,6 +31,10 @@ class ApiInterface {
   }
 
   async getMinMaxSemesters() {
+    if (!inProduction) {
+      const res = await mock.findMinMaxSemesters()
+      return res
+    }
     if (!SIS) {
       const res = await this.userApi.get(`/semesters/${new Date().getTime()}`)
       return res.data

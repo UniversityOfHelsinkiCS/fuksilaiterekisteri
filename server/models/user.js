@@ -10,6 +10,50 @@ const { inProduction, validateSerial } = require('../util/common')
 
 const api = new ApiInterface()
 
+const includesValidBachelorStudyright = async (studyrights) => {
+  const acceptableStudyProgramCodes = (await StudyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
+  return !!studyrights.data
+    .reduce((pre, { elements }) => pre.concat(elements), [])
+    .find(({ code, end_date }) => acceptableStudyProgramCodes.includes(code) && new Date(end_date) > new Date().getTime())
+}
+
+const getMinMaxSemesterStartTimes = async () => {
+  const { min, max } = await api.getMinMaxSemesters()
+  const minSemesterStartTime = new Date(min).getTime() // 2008-07-30T21:00:00.000Z
+  const maxSemesterStartTime = new Date(max).getTime() // When current semester started. Semester swaps on 31.7.
+
+  return { minSemesterStartTime, maxSemesterStartTime }
+}
+
+const getStudyrightValidities = async (studyrights, semesterEnrollments, currentSemester) => {
+  const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
+  const mluElements = mlu ? mlu.elements : []
+  const { minSemesterStartTime, maxSemesterStartTime } = await getMinMaxSemesterStartTimes()
+
+  let hasNewStudyright = mluElements.some(element => new Date(element.start_date).getTime() >= maxSemesterStartTime)
+
+  // Has studyright which started before current semester.
+  let hasPreviousStudyright = mluElements.some(element => new Date(element.start_date).getTime() < maxSemesterStartTime)
+
+  const hasPre2008Studyright = mluElements.some(element => new Date(element.start_date).getTime() < minSemesterStartTime)
+
+  const previousStudyrightIsPossiblyNew = !hasPre2008Studyright && !hasNewStudyright && hasPreviousStudyright
+
+  if (previousStudyrightIsPossiblyNew) {
+    const hasBeenPresentBefore = semesterEnrollments.data.some(({ semester_code, semester_enrollment_type_code }) => (
+      semester_code < currentSemester && semester_enrollment_type_code !== 2))
+
+    if (!hasBeenPresentBefore) {
+      hasPreviousStudyright = false
+      hasNewStudyright = true
+    }
+  }
+
+  const hasValidBachelorsStudyright = await includesValidBachelorStudyright(studyrights)
+
+  return { hasPreviousStudyright, hasNewStudyright, hasValidBachelorsStudyright }
+}
+
 class User extends Model {
   static async markUsersContacted(userIds) {
     await this.update({ reclaimStatus: 'CONTACTED' }, { where: { userId: userIds } })
@@ -66,7 +110,10 @@ class User extends Model {
   }
 
   async getStudyRights() {
-    return api.getStudyRights(this.studentNumber)
+    if (this.studyrights) return this.studyrights
+    const studyrights = await api.getStudyRights(this.studentNumber)
+    this.studyrights = studyrights
+    return studyrights
   }
 
   async hasDigiSkills() {
@@ -88,79 +135,26 @@ class User extends Model {
     return api.getYearsCredits(this.studentNumber, startingSemester, this.signupYear)
   }
 
-  async isEligible(at) {
+  async checkEligibility() {
     const settings = await ServiceStatus.getObject()
     const studyrights = await this.getStudyRights()
     const semesterEnrollments = await this.getSemesterEnrollments()
-    const acceptableStudyProgramCodes = (await StudyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
 
-    const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
-    const { min, max } = inProduction ? await api.getMinMaxSemesters() : {
-      min: '2008-07-30T21:00:00.000Z',
-      max: `${settings.currentYear}-07-31T21:00:00.000Z`,
-    }
-    const minTime = new Date(min).getTime() // 2008-07-30T21:00:00.000Z
-    const maxTime = new Date(max).getTime() // When current semester started. Semester swaps on 31.7.
+    const {
+      hasPreviousStudyright,
+      hasNewStudyright,
+      hasValidBachelorsStudyright,
+    } = await getStudyrightValidities(studyrights, semesterEnrollments, settings.currentSemester)
 
-    let hasNewStudyright = false
-    let hasPreviousStudyright = false
-    let hasPre2008Studyright = false
-    if (mlu) {
-      mlu.elements.forEach(({ start_date }) => {
-        const startTime = new Date(start_date).getTime()
-
-        if (startTime < maxTime) {
-          hasPreviousStudyright = true // Has studyright which started before current semester.
-        }
-
-        if (startTime < minTime) {
-          hasPre2008Studyright = true
-        }
-
-        if (startTime >= maxTime) {
-          hasNewStudyright = true // Has studyright which might have not even started yet. (Maybe true fuksi)
-        }
-      })
-    }
-
-    const hasValidBachelorsStudyright = !!studyrights.data
-      .reduce((pre, { elements }) => pre.concat(elements), [])
-      .find(({ code, end_date }) => acceptableStudyProgramCodes.includes(code) && new Date(end_date) > new Date().getTime())
-
-    // In case a student has a new studyright that he/she has postponed
-    if (mlu && mlu.elements.length && !hasPre2008Studyright && !hasNewStudyright && hasPreviousStudyright) {
-      let hasBeenPresentBefore = false
-
-      semesterEnrollments.data.forEach(({ semester_code, semester_enrollment_type_code }) => {
-        if (semester_code < settings.currentSemester && semester_enrollment_type_code !== 2) {
-          hasBeenPresentBefore = true
-        }
-      })
-
-      if (!hasBeenPresentBefore) {
-        hasPreviousStudyright = false
-        hasNewStudyright = true
-      }
-    }
-
-    const currentSemester = semesterEnrollments.data.find(({ semester_code }) => semester_code === settings.currentSemester)
-
-    let isPresent = false
-    if (currentSemester && currentSemester.semester_enrollment_type_code === 1) {
-      isPresent = true
-    }
-
-    const registrationEndingTime = new Date(settings.registrationDeadline)
-    const didRegisterBeforeEndingTime = new Date(at || new Date().getTime()).getTime() < registrationEndingTime.getTime()
+    const isPresent = semesterEnrollments.data.some(enrollment => (
+      enrollment.semester_code === settings.currentSemester && enrollment.semester_enrollment_type_code === 1))
 
     return {
-      studyrights,
-      eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && didRegisterBeforeEndingTime && hasValidBachelorsStudyright),
+      eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && hasValidBachelorsStudyright),
       eligibilityReasons: {
         hasValidStudyright: hasValidBachelorsStudyright,
         hasNoPreviousStudyright: !hasPreviousStudyright,
         isPresent,
-        didRegisterBeforeEndingTime,
       },
     }
   }
@@ -209,10 +203,10 @@ class User extends Model {
     try {
       const settings = await ServiceStatus.getObject()
 
-      const { studyrights, eligible, eligibilityReasons } = await this.isEligible()
+      const { eligible, eligibilityReasons } = await this.checkEligibility()
 
       if (eligible) {
-        await this.createUserStudyprograms(studyrights)
+        await this.createUserStudyprograms()
         this.eligible = eligible
         this.signupYear = settings.currentYear
         logger.info(`${this.studentNumber} eligibility updated automatically`)
@@ -260,7 +254,9 @@ class User extends Model {
     })
   }
 
-  async createUserStudyprograms(studyrights) {
+  async createUserStudyprograms() {
+    const studyrights = await this.getStudyRights()
+
     const allStudyprograms = await StudyProgram.findAll({
       attributes: ['id', 'code'],
     })
@@ -533,6 +529,9 @@ User.init(
       set() {
         throw new Error('Do not try to set the `hasCompletedTasks` value!')
       },
+    },
+    studyrights: {
+      type: DataTypes.VIRTUAL,
     },
   },
   {
