@@ -15,7 +15,7 @@ class ApiInterface {
       baseURL: STUDENT_API_URL,
       headers: {
         common: {
-          Authorization: STUDENT_API_TOKEN,
+          [SIS ? 'Token' : 'Authorization']: STUDENT_API_TOKEN,
         },
       },
     })
