@@ -73,7 +73,7 @@ const startCron = () => {
   })
 
   new CronJob({
-    cronTime: '30 0 15 0 *', // 15.1. at 00:30 once every year
+    cronTime: '30 0 31 0 *', // 31.1. at 00:30 once every year
     onTick: async () => {
       logger.info('Updating reclaim statuses for spring semester...')
       try {
