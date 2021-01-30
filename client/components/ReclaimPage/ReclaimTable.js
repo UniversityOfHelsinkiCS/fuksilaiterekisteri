@@ -9,7 +9,6 @@ const ReclaimTable = ({ reclaimCases }) => {
   const dispatch = useDispatch()
 
   const valOrEmpty = val => (val !== null ? val : '-')
-  const boolToString = bool => (bool ? 'Kyllä' : 'Ei')
   const statusColor = (status) => {
     switch (status) {
       case 'OPEN':
@@ -97,18 +96,23 @@ const ReclaimTable = ({ reclaimCases }) => {
       width: 160,
     },
     {
-      key: 'present',
-      label: 'Present',
-      renderCell: ({ absent }) => boolToString(!absent),
-      getCellVal: ({ absent }) => !absent,
-      width: 100,
-    },
-    {
       key: 'first_year_credits',
-      label: 'Fresher year credits',
+      label: '1st year credits',
       renderCell: ({ student: { firstYearCredits } }) => valOrEmpty(firstYearCredits),
       getCellVal: ({ student: { firstYearCredits } }) => firstYearCredits,
-      width: 200,
+      width: 150,
+    },
+    {
+      key: 'reasons',
+      label: 'Reasons',
+      renderCell: ({ absent, creditsUnderLimit, loanExpired }) => {
+        const reasons = []
+        if (absent) reasons.push('Absent')
+        if (creditsUnderLimit) reasons.push('Credits under limit')
+        if (loanExpired) reasons.push('Loan expired')
+        return reasons.join(', ')
+      },
+      width: 150,
     },
     {
       key: 'reclaim_status',
