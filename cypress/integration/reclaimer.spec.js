@@ -139,6 +139,7 @@ context('Reclaimer View', () => {
       cy.server()
       cy.resetReclaimCases()
       cy.createUser('fuksi')
+      cy.request("GET", '/api/test/run_autumn_updater')
       cy.request("GET", '/api/test/run_spring_updater')
       cy.login('reclaimer')
       selectFilter('Open')
@@ -170,6 +171,16 @@ context('Reclaimer View', () => {
   
       selectFilter("Closed")
       cy.contains('Haltija Poissanen').parent().parent().contains('CLOSED')
+    })
+
+    it.only('Filtering cases by semester works', () => {
+      cy.get('[data-cy=reclaimerContent]').should('contain', 'Laite Vanhatar')
+
+      cy.get('[data-cy=reclaimSemesterFilter]').click()
+      cy.get('[data-cy=reclaimSemesterFilter]').contains('2019 AUTUMN').click()
+
+      cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Laite Vanhatar')
+      cy.get('[data-cy=reclaimerContent]').should('contain', 'Haltija Pisteetön')
     })
   })
 
