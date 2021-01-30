@@ -4,9 +4,9 @@ import {
 } from 'semantic-ui-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { callApi } from 'Utilities/apiConnection'
-import { getStudentsWithReclaimStatus } from 'Utilities/redux/studentReducer'
+import { getReclaimCasesAction } from 'Utilities/redux/reclaimCaseReducer'
 
-export default function ReclaimerEmail({ students }) {
+export default function ReclaimerEmail({ reclaimCases }) {
   const dispatch = useDispatch()
   const [formState, setFormState] = useState({
     replyTo: '',
@@ -27,11 +27,11 @@ export default function ReclaimerEmail({ students }) {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    const confirm = window.confirm(`The email will be sent to ${students.length} students IMMEDIATELY. Are you sure?`)
+    const confirm = window.confirm(`The email will be sent to ${reclaimCases.length} students IMMEDIATELY. Are you sure?`)
     if (!confirm) return
 
     setPending(true)
-    callApi('/email/reclaimer/send', 'POST', { ...formState, userIds: students.map(s => s.userId) })
+    callApi('/email/reclaimer/send', 'POST', { ...formState, reclaimCaseIds: reclaimCases.map(rc => rc.id) })
       .then((res) => {
         setPending(false)
         setError(false)
@@ -39,7 +39,7 @@ export default function ReclaimerEmail({ students }) {
         const { accepted, rejected } = res.data
         setAcceptedEmails(accepted)
         setRejectedEmails(rejected)
-        dispatch(getStudentsWithReclaimStatus()) // Just get a new list with updated reclaimStatuses
+        dispatch(getReclaimCasesAction()) // Just get a new list with updated reclaimStatuses
 
         setFormState({
           replyTo: '',
@@ -56,8 +56,8 @@ export default function ReclaimerEmail({ students }) {
   }
 
   useEffect(() => {
-    setNames(students.map(({ name }) => name))
-  }, [students])
+    setNames(reclaimCases.map(({ student }) => student.name))
+  }, [reclaimCases])
 
   const templateOptions = useMemo(() => {
     const temp = reclaimerTemplates.map(({ id, description }) => ({
@@ -115,9 +115,9 @@ export default function ReclaimerEmail({ students }) {
         size="large"
         closeOnDimmerClick={false}
         trigger={(
-          <Button disabled={students.length === 0} color="blue">
+          <Button disabled={reclaimCases.length === 0} color="blue">
             <Icon name="mail" />
-            {`Compose email for selected ${students.length} students`}
+            {`Compose email for selected ${reclaimCases.length} students`}
           </Button>
         )}
       >
@@ -152,7 +152,7 @@ export default function ReclaimerEmail({ students }) {
               primary
               type="submit"
               loading={pending}
-              disabled={students.length === 0 || error}
+              disabled={reclaimCases.length === 0 || error}
               style={{ marginTop: '0.5em' }}
             >
               Send

@@ -40,6 +40,10 @@ Cypress.Commands.add("createUser", (uid) => {
   cy.wait("@createUser")
 })
 
+Cypress.Commands.add("resetReclaimCases", () => {
+  cy.request("GET", '/api/test/reset/reclaimCase')
+})
+
 // Add user straight into DB
 Cypress.Commands.add("createCustomUser", (userInfo, studyProgramCode = 'KH50_005') => {
   console.log(studyProgramCode)

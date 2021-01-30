@@ -1,5 +1,5 @@
 const {
-  User, ServiceStatus, StudyProgram, UserStudyProgram, Email,
+  User, ServiceStatus, StudyProgram, UserStudyProgram, Email, ReclaimCase,
 } = require('@models')
 const logger = require('@util/logger')
 
@@ -196,6 +196,11 @@ const resetEmailTemplates = async (req, res) => {
   return res.status(200).end()
 }
 
+const resetReclaimCases = async (req, res) => {
+  await ReclaimCase.destroy({ where: {} })
+  return res.status(200).end()
+}
+
 module.exports = {
   resetTestUsers,
   resetServiceStatus,
@@ -206,4 +211,5 @@ module.exports = {
   setSerial,
   setServiceStatus,
   resetEmailTemplates,
+  resetReclaimCases,
 }

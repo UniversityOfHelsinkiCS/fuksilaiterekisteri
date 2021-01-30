@@ -21,15 +21,22 @@ const VirtualizedTable = ({
     return result
   }, [sortBy, sortDirection, data])
 
+  const valueIsObject = value => typeof value === 'object' && value !== null
+
+  const valueContainsSearch = value => value && String(value).trim().toLowerCase().includes(filter.trim().toLowerCase())
+
+  const traverseSearch = (value) => {
+    if (!valueIsObject(value)) {
+      return valueContainsSearch(value)
+    }
+    return Object.values(value).some(v => traverseSearch(v))
+  }
+
   const filteredData = useMemo(() => sortedData.filter((params) => {
-    let flag = false
-    Object.values(params).forEach((value) => {
-      if (flag) return
-      if (!filter || (value && String(value).trim().toLowerCase().includes(filter.trim().toLowerCase()))) {
-        flag = true
-      }
-    })
-    return flag
+    if (!filter) {
+      return true
+    }
+    return traverseSearch(params)
   }), [sortBy, sortDirection, filter, data])
 
   const handleFilterChange = debounce((_, { value }) => {

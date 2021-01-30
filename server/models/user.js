@@ -55,10 +55,6 @@ const getStudyrightValidities = async (studyrights, semesterEnrollments, current
 }
 
 class User extends Model {
-  static async markUsersContacted(userIds) {
-    await this.update({ reclaimStatus: 'CONTACTED' }, { where: { userId: userIds } })
-  }
-
   static getStudentsForStaff(userStudyProgramCodes) {
     return this.findAll({
       where: {
@@ -67,20 +63,6 @@ class User extends Model {
         },
         '$studyPrograms.code$': {
           [Op.in]: userStudyProgramCodes,
-        },
-      },
-      include: [{ model: StudyProgram, as: 'studyPrograms' }],
-    })
-  }
-
-  static getStudentsWithReclaimStatus() {
-    return this.findAll({
-      where: {
-        studentNumber: {
-          [Op.ne]: null,
-        },
-        reclaimStatus: {
-          [Op.ne]: null,
         },
       },
       include: [{ model: StudyProgram, as: 'studyPrograms' }],
@@ -379,13 +361,10 @@ class User extends Model {
   }
 
   async markDeviceReturned(returnMarkedByUserid) {
-    const reclaimStatus = this.reclaimStatus ? 'CLOSED' : null
-
     await this.update({
       deviceReturned: true,
       deviceReturnedAt: new Date(),
       deviceReturnedBy: returnMarkedByUserid,
-      reclaimStatus,
     })
   }
 
@@ -400,10 +379,6 @@ class User extends Model {
     await this.update({
       deviceSerial: newSerial,
     })
-  }
-
-  async updateReclaimStatus(reclaimStatus) {
-    await this.update({ reclaimStatus })
   }
 }
 
@@ -471,10 +446,6 @@ User.init(
       type: DataTypes.JSONB,
       field: 'eligibility_reasons',
     },
-    reclaimStatus: {
-      type: DataTypes.ENUM('OPEN', 'CONTACTED', 'CLOSED'),
-      field: 'reclaim_status',
-    },
     deviceReturned: {
       type: DataTypes.BOOLEAN,
       field: 'device_returned',
@@ -490,14 +461,6 @@ User.init(
     firstYearCredits: {
       type: DataTypes.INTEGER,
       field: 'first_year_credits',
-    },
-    present: {
-      type: DataTypes.BOOLEAN,
-      field: 'present',
-    },
-    deviceReturnDeadlinePassed: {
-      type: DataTypes.BOOLEAN,
-      field: 'device_return_deadline_passed',
     },
     thirdYearOrLaterStudent: {
       type: DataTypes.BOOLEAN,

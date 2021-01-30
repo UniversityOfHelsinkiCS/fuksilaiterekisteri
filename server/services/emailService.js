@@ -6,6 +6,11 @@ const logger = require('@util/logger')
 const sendEmail = async ({
   recipients, subject, text, replyTo, attachments,
 }) => {
+  if (process.env.EMAIL_ENABLED !== 'true') {
+    logger.error('Email disabled, set EMAIL_ENABLED=true to enable.')
+    return { accepted: [], rejected: recipients }
+  }
+
   const transporter = nodemailer.createTransport({
     host: 'smtp.helsinki.fi',
     port: 587,
@@ -38,6 +43,8 @@ const sendToAddresses = async ({
   if (emailResult.rejected.length > 0) {
     logger.info(`Failed to send ${emailResult.rejected.length} emails to ${JSON.stringify(emailResult.rejected)}`)
   }
+
+  return emailResult
 }
 
 const sendToUsers = async ({

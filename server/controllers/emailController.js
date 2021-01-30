@@ -1,5 +1,5 @@
 const logger = require('@util/logger')
-const { User, Email } = require('@models')
+const { Email } = require('@models')
 const emailService = require('@services/emailService')
 
 const sendAdminEmail = async (req, res) => {
@@ -21,31 +21,6 @@ const sendAdminEmail = async (req, res) => {
   })
 
   return res.status(200).json({ message: 'OK' })
-}
-
-const sendReclaimerEmail = async (req, res) => {
-  if (process.env.EMAIL_ENABLED !== 'true') {
-    logger.error('Email disabled, set EMAIL_ENABLED=true to enable.')
-    return res.status(501).json({ error: 'EMAIL_ENABLED = false' })
-  }
-  const {
-    userIds,
-    subject,
-    text,
-    replyTo,
-  } = req.body
-
-  if (!userIds) return res.status(400).json({ error: 'userIds missing' })
-
-  logger.info(`${req.user.userId} is sending emails`)
-
-  const { emailResult, successfullyContacted } = await emailService.sendToUsers({
-    userIds, subject, text, replyTo,
-  })
-
-  await User.markUsersContacted(successfullyContacted)
-
-  return res.status(200).send(emailResult)
 }
 
 const getAutosendTemplate = async (req, res) => {
@@ -148,7 +123,6 @@ const deleteReclaimerTemplate = async (req, res) => {
 
 module.exports = {
   sendAdminEmail,
-  sendReclaimerEmail,
   updateAutosendTemplate,
   getAutosendTemplate,
   getAllAdminTemplates,

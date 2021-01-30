@@ -3,9 +3,9 @@ import { Button, Modal } from 'semantic-ui-react'
 import VirtualizedTable from 'Components/VirtualizedTable'
 import dateFormatter from 'Utilities/dateFormatter'
 import { useDispatch } from 'react-redux'
-import { updateStudentReclaimStatus } from 'Utilities/redux/studentReducer'
+import { updateReclaimCaseStatusAction } from 'Utilities/redux/reclaimCaseReducer'
 
-const ReclaimTable = ({ students }) => {
+const ReclaimTable = ({ reclaimCases }) => {
   const dispatch = useDispatch()
 
   const valOrEmpty = val => (val !== null ? val : '-')
@@ -22,37 +22,37 @@ const ReclaimTable = ({ students }) => {
   }
 
   const [userModalOpen, setUserModalOpen] = useState(false)
-  const [selectedUser, setSelectedUser] = useState(undefined)
+  const [selectedCase, setSelectedCase] = useState(undefined)
 
   const updateStatus = (newStatus) => {
-    const confirm = window.confirm(`Set status to ${newStatus} for ${selectedUser.name}? (This action cannot be undone.)`)
+    const confirm = window.confirm(`Set status to ${newStatus} for ${selectedCase.student.name}? (This action cannot be undone.)`)
     if (confirm) {
-      dispatch(updateStudentReclaimStatus(newStatus, selectedUser.studentNumber))
-      setSelectedUser(undefined)
+      dispatch(updateReclaimCaseStatusAction(newStatus, selectedCase.id))
+      setSelectedCase(undefined)
       setUserModalOpen(false)
     }
   }
 
-  const handleSetStatusClick = (student) => {
-    setSelectedUser(student)
+  const handleSetStatusClick = (reclaimCase) => {
+    setSelectedCase(reclaimCase)
     setUserModalOpen(true)
   }
 
   const ManualStatusUpdateModal = () => {
-    if (!selectedUser) return null
+    if (!selectedCase) return null
 
     return (
       <Modal closeIcon onClose={() => setUserModalOpen(false)} open={userModalOpen}>
-        <Modal.Header>{`Updating status of ${selectedUser.name}`}</Modal.Header>
+        <Modal.Header>{`Updating status of ${selectedCase.student.name}`}</Modal.Header>
         <Modal.Content image>
           <Modal.Description>
-            {`Current status: ${selectedUser.reclaimStatus}`}
+            {`Current status: ${selectedCase.status}`}
             <br />
-            {`Student number: ${selectedUser.studentNumber}`}
+            {`Student number: ${selectedCase.student.studentNumber}`}
 
             <div style={{ marginTop: '1em' }}>
-              <Button disabled={selectedUser.reclaimStatus === 'CONTACTED'} color="orange" onClick={() => updateStatus('CONTACTED')}>Set as Contacted</Button>
-              <Button disabled={selectedUser.reclaimStatus === 'CLOSED'} color="red" onClick={() => updateStatus('CLOSED')}>Set as Closed</Button>
+              <Button disabled={selectedCase.status === 'CONTACTED'} color="orange" onClick={() => updateStatus('CONTACTED')}>Set as Contacted</Button>
+              <Button disabled={selectedCase.status === 'CLOSED'} color="red" onClick={() => updateStatus('CLOSED')}>Set as Closed</Button>
             </div>
           </Modal.Description>
         </Modal.Content>
@@ -64,67 +64,67 @@ const ReclaimTable = ({ students }) => {
     {
       key: 'name',
       label: 'Name',
-      renderCell: ({ name }) => (
+      renderCell: ({ student: { name } }) => (
         <span>
           {valOrEmpty(name)}
         </span>
       ),
-      getCellVal: ({ name }) => valOrEmpty(name),
+      getCellVal: ({ student: { name } }) => valOrEmpty(name),
     },
     {
       key: 'email',
       label: 'Email',
-      renderCell: ({ hyEmail, personalEmail }) => (
+      renderCell: ({ student: { hyEmail, personalEmail } }) => (
         <span>
           {hyEmail}
           <br />
           {personalEmail}
         </span>
       ),
-      getCellVal: ({ hyEmail }) => hyEmail,
+      getCellVal: ({ student: { hyEmail } }) => hyEmail,
     },
     {
       key: 'student_number',
       label: 'Student number',
-      renderCell: ({ studentNumber }) => valOrEmpty(studentNumber),
+      renderCell: ({ student: { studentNumber } }) => valOrEmpty(studentNumber),
       width: 180,
     },
     {
       key: 'device_given_at',
       label: 'Device given at',
-      renderCell: ({ deviceGivenAt }) => valOrEmpty(dateFormatter(deviceGivenAt)),
-      getCellVal: ({ deviceGivenAt }) => new Date(deviceGivenAt).getTime(),
+      renderCell: ({ student: { deviceGivenAt } }) => valOrEmpty(dateFormatter(deviceGivenAt)),
+      getCellVal: ({ student: { deviceGivenAt } }) => new Date(deviceGivenAt).getTime(),
       width: 160,
     },
     {
       key: 'present',
       label: 'Present',
-      renderCell: ({ present }) => boolToString(present),
-      getCellVal: ({ present }) => !!present,
+      renderCell: ({ absent }) => boolToString(!absent),
+      getCellVal: ({ absent }) => !absent,
       width: 100,
     },
     {
       key: 'first_year_credits',
       label: 'Fresher year credits',
-      renderCell: ({ firstYearCredits, thirdYearOrLaterStudent }) => (thirdYearOrLaterStudent ? '3rd+ year student' : valOrEmpty(firstYearCredits)),
-      getCellVal: ({ firstYearCredits }) => firstYearCredits,
+      renderCell: ({ student: { firstYearCredits } }) => valOrEmpty(firstYearCredits),
+      getCellVal: ({ student: { firstYearCredits } }) => firstYearCredits,
       width: 200,
     },
     {
       key: 'reclaim_status',
       label: 'Status',
-      renderCell: ({ reclaimStatus }) => <span style={{ color: statusColor(reclaimStatus), fontWeight: 550 }}>{valOrEmpty(reclaimStatus)}</span>,
-      getCellVal: ({ reclaimStatus }) => reclaimStatus,
+      renderCell: ({ status }) => <span style={{ color: statusColor(status), fontWeight: 550 }}>{valOrEmpty(status)}</span>,
+      getCellVal: ({ status }) => status,
       width: 100,
     },
     {
       key: 'set_status_manually',
       label: 'Set status manually',
-      renderCell: student => (
+      renderCell: reclaimCase => (
         <Button
-          disabled={student.reclaimStatus === 'CLOSED'}
+          disabled={reclaimCase.status === 'CLOSED'}
           data-cy="setStatusManually"
-          onClick={() => handleSetStatusClick(student)}
+          onClick={() => handleSetStatusClick(reclaimCase)}
           color="blue"
           size="tiny"
         >
@@ -141,7 +141,7 @@ const ReclaimTable = ({ students }) => {
       <VirtualizedTable
         searchable
         columns={columns}
-        data={students}
+        data={reclaimCases}
         defaultCellWidth={125}
       />
       <ManualStatusUpdateModal />

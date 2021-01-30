@@ -9,22 +9,22 @@ const createTestUsers = () => {
   cy.createCustomUser({
     userId: 'oldDeviceHolder',
     name: 'Laite Vanhatar',
-    deviceGivenAt: new Date(2014, 8, 25).getTime()
+    deviceGivenAt: new Date(2013, 9, 15).getTime()
   }, 'KH50_001')
   cy.createCustomUser({
     userId: 'modelStudent',
     name: 'Oppilas Mallikas',
-    deviceGivenAt: new Date().getTime()
+    deviceGivenAt: new Date('2018').getTime()
   }, 'KH50_002')
   cy.createCustomUser({
     userId: 'absentDeviceHolder',
     name: 'Haltija Poissanen',
-    deviceGivenAt: new Date().getTime()
+    deviceGivenAt: new Date('2018').getTime()
   }, 'KH50_003')
   cy.createCustomUser({
     userId: 'lowCreditsDeviceHolder',
     name: 'Haltija Pisteetön',
-    deviceGivenAt: new Date().getTime()
+    deviceGivenAt: new Date('2018').getTime()
   }, 'KH50_004')
   cy.createCustomUser({
     userId: 'exDeviceHolder',
@@ -35,7 +35,7 @@ const createTestUsers = () => {
   cy.createCustomUser({
     userId: 'seniorOpiskelija',
     name: 'Senior Opiskelija',
-    deviceGivenAt: new Date().getTime(),
+    deviceGivenAt: new Date('2017').getTime(),
     signupYear: 2017,
   }, 'KH50_005')
   cy.createCustomUser({
@@ -47,21 +47,20 @@ const createTestUsers = () => {
   cy.createCustomUser({
     userId: 'uusiOpiskelija',
     name: 'Uusi Opiskelija',
-    deviceGivenAt: new Date('2000').getTime(),
+    deviceGivenAt: new Date('2019').getTime(),
     signupYear: 2019,
   }, 'KH50_007')
   cy.createCustomUser({
-    userId: 'openOpiskelija',
-    name: 'Open Opiskelija',
-    deviceGivenAt: new Date('2000').getTime(),
-    reclaimStatus: 'OPEN',
-  }, 'KH50_008')
-  cy.createCustomUser({
     userId: 'vanhaOngelmatar',
     name: 'Vanha Ongelmatar',
-    deviceGivenAt: new Date('2000').getTime(),
+    deviceGivenAt: new Date('2017').getTime(),
     signupYear: 2017,
-  }, 'KH50_001')
+  }, 'KH50_001'),
+  cy.createCustomUser({
+    userId: 'openOpiskelija',
+    name: 'Open Opiskelija',
+    deviceGivenAt: new Date(2013, 9, 15).getTime(),
+  }, 'KH50_008')
 }
 
 const runSharedTests = () => {
@@ -91,7 +90,7 @@ context('Reclaimer View', () => {
   context('After running autumn updater', () => {
     before(() => {
       cy.server()
-      cy.createUser('fuksi')
+      cy.resetReclaimCases()
       createTestUsers()
       cy.request("GET", '/api/test/run_autumn_updater')
       cy.login('reclaimer')
@@ -120,6 +119,7 @@ context('Reclaimer View', () => {
   context('After running spring updater', () => {
     before(() => {
       cy.server()
+      cy.resetReclaimCases()
       cy.createUser('fuksi')
       createTestUsers()
       cy.request("GET", '/api/test/run_spring_updater')
@@ -137,9 +137,9 @@ context('Reclaimer View', () => {
   context('Actions', () => {
     beforeEach(() => {
       cy.server()
+      cy.resetReclaimCases()
       cy.createUser('fuksi')
-      createTestUsers()
-      cy.request("GET", '/api/test/run_autumn_updater')
+      cy.request("GET", '/api/test/run_spring_updater')
       cy.login('reclaimer')
       selectFilter('Open')
     })

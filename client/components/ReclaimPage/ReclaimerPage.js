@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Segment, Message } from 'semantic-ui-react'
-import { getStudentsWithReclaimStatus } from 'Utilities/redux/studentReducer'
+import { getReclaimCasesAction } from 'Utilities/redux/reclaimCaseReducer'
 import { getAllReclaimerEmailTemplatesAction } from 'Utilities/redux/emailReducer'
 import ReclaimTable from './ReclaimTable'
 import ReclaimerFilter from './ReclaimerFilter'
@@ -12,10 +12,10 @@ const ReclaimPage = () => {
   const dispatch = useDispatch()
   const [filter, setFilter] = useState('all')
   const [reclaimStatusFilter, setReclaimStatusFilter] = useState('OPEN')
-  const students = useSelector(state => state.student.students)
+  const reclaimCases = useSelector(state => state.reclaimCases.data)
 
   useEffect(() => {
-    dispatch(getStudentsWithReclaimStatus())
+    dispatch(getReclaimCasesAction())
     dispatch(getAllReclaimerEmailTemplatesAction())
   }, [])
 
@@ -23,38 +23,38 @@ const ReclaimPage = () => {
     let filtered
     switch (filter) {
       case 'all':
-        filtered = students
+        filtered = reclaimCases
         break
       case 'fresherYearCredits':
-        filtered = students.filter(u => u.firstYearCredits < 30 && !u.thirdYearOrLaterStudent)
+        filtered = reclaimCases.filter(rc => rc.creditsUnderLimit)
         break
       case 'notPresent':
-        filtered = students.filter(u => !u.present)
+        filtered = reclaimCases.filter(rc => rc.absent)
         break
       case 'deviceReturnDeadlinePassed':
-        filtered = students.filter(u => u.deviceReturnDeadlinePassed)
+        filtered = reclaimCases.filter(rc => rc.loanExpired)
         break
       default:
-        filtered = students
+        filtered = reclaimCases
         break
     }
-    filtered = filtered.filter(student => student.reclaimStatus === reclaimStatusFilter)
-    return { filteredStudents: filtered }
+    filtered = filtered.filter(rc => rc.status === reclaimStatusFilter)
+    return { filteredCases: filtered }
   }
 
-  const { filteredStudents } = useMemo(doFiltering, [filter, students, reclaimStatusFilter])
+  const { filteredCases } = useMemo(doFiltering, [filter, reclaimCases, reclaimStatusFilter])
 
   return (
     <div className="tab-content" data-cy="reclaimerContent">
       <Message info>Student statuses are updated automatically twice a year. (15th of September and 31th of January)</Message>
       <Segment>
-        <ReclaimerFilter filter={filter} setFilter={setFilter} totalCount={students.length} filteredCount={filteredStudents.length} />
+        <ReclaimerFilter filter={filter} setFilter={setFilter} totalCount={reclaimCases.length} filteredCount={filteredCases.length} />
         <div style={{ display: 'flex', alignItems: 'flex-end' }}>
           <ReclaimStatusFilter selected={reclaimStatusFilter} setSelected={setReclaimStatusFilter} />
-          <ReclaimerEmail students={filteredStudents} />
+          <ReclaimerEmail reclaimCases={filteredCases} />
         </div>
       </Segment>
-      <ReclaimTable students={filteredStudents} />
+      <ReclaimTable reclaimCases={filteredCases} />
     </div>
   )
 }

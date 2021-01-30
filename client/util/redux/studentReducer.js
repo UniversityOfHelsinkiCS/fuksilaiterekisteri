@@ -15,25 +15,12 @@ export const getStudentsAction = () => {
   return callBuilder(route, prefix)
 }
 
-export const getStudentsWithReclaimStatus = () => {
-  const route = '/reclaimer/students'
-  const prefix = 'GET_STUDENTS'
-  return callBuilder(route, prefix)
-}
 
 export const updateStudentStatus = ({ digiSkills, enrolled, studentNumber }) => {
   const route = `/student/${studentNumber}/status`
   const prefix = 'UPDATE_STUDENT_STATUS'
   const method = 'post'
   const data = { digiSkills, enrolled }
-  return callBuilder(route, prefix, method, data)
-}
-
-export const updateStudentReclaimStatus = (reclaimStatus, studentNumber) => {
-  const route = `/student/${studentNumber}/reclaim_status`
-  const prefix = 'UPDATE_STUDENT_STATUS'
-  const method = 'post'
-  const data = { reclaimStatus }
   return callBuilder(route, prefix, method, data)
 }
 

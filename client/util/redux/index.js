@@ -11,6 +11,7 @@ import email from './emailReducer'
 import serviceStatus from './serviceStatusReducer'
 import common from './localeReducer'
 import studyProgrammes from './studyProgrammeReducer'
+import reclaimCases from './reclaimCaseReducer'
 
 export default combineReducers({
   messages,
@@ -24,4 +25,5 @@ export default combineReducers({
   serviceStatus,
   common,
   studyProgrammes,
+  reclaimCases,
 })

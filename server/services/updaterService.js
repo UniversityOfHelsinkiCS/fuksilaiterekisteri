@@ -1,6 +1,6 @@
 const { Op } = require('sequelize')
 const { differenceInYears } = require('date-fns')
-const { User, ServiceStatus } = require('@models')
+const { User, ServiceStatus, ReclaimCase } = require('@models')
 const logger = require('@util/logger')
 const completionChecker = require('@util/completionChecker')
 
@@ -119,13 +119,11 @@ const updateStudentEligibility = async (studentNumber) => {
   await completionChecker(updatedStudent)
 }
 
-const isDeviceHeldUnderFiveYears = deviceGivenAt => differenceInYears(new Date(), new Date(deviceGivenAt)) < 5
-
-const isPresent = async (student, currentSemester) => {
+const isAbsent = async (student, currentSemester) => {
   const semesterEnrollments = await student.getSemesterEnrollments()
   const currentSemesterEnrollment = semesterEnrollments.data.find(({ semester_code }) => semester_code === currentSemester)
 
-  return !!(currentSemesterEnrollment && currentSemesterEnrollment.semester_enrollment_type_code === 1)
+  return !(currentSemesterEnrollment && currentSemesterEnrollment.semester_enrollment_type_code === 1)
 }
 
 const getFallSemesterCode = year => (year - 1950) * 2 + 1
@@ -157,31 +155,32 @@ const runAutumnReclaimStatusUpdater = async () => {
     await promise // We don't want to spam oodi api so we wait for previous to resolve
 
     try {
-      const present = await isPresent(student, getFallSemesterCode(currentYear))
-
-      const thirdYearOrLaterStudent = currentYear - student.signupYear > 1
-
-      const firstYearCredits = thirdYearOrLaterStudent
-        ? student.firstYearCredits
-        : await getFirstYearCredits(student)
-
-      const reclaimActionNeeded = !present || (!thirdYearOrLaterStudent && firstYearCredits < FIRST_YEAR_CREDIT_LIMIT)
-
-      const reclaimStatus = reclaimActionNeeded && student.reclaimStatus !== 'CONTACTED' ? 'OPEN' : student.reclaimStatus
-
-      try {
-        await student.update({
-          reclaimStatus,
-          present,
-          firstYearCredits,
-          thirdYearOrLaterStudent,
-        })
-      } catch (e) {
-        logger.error(`Failed updating student reclaim status ${student.studentNumber}`, e)
+      const deviceHeldForAYear = currentYear - new Date(student.deviceGivenAt).getFullYear() === 1
+      if (deviceHeldForAYear) {
+        const firstYearCredits = await getFirstYearCredits(student)
+        await student.update({ firstYearCredits })
       }
+
+      const creditsUnderLimit = deviceHeldForAYear && student.firstYearCredits < FIRST_YEAR_CREDIT_LIMIT
+      const absent = await isAbsent(student, getFallSemesterCode(currentYear))
+
+      if (absent || creditsUnderLimit) {
+        await ReclaimCase.create({
+          userId: student.id,
+          status: 'OPEN',
+          absent,
+          loanExpired: false,
+          creditsUnderLimit,
+          year: currentYear,
+          semester: 'AUTUMN',
+        })
+      }
+
+      return Promise.resolve()
     } catch (e) {
-      logger.error(`Failed fetching oodi data for student ${student.studentNumber}`)
+      logger.error(`Failed checking reclaim status for student ${student.studentNumber}`)
       console.log(e.stack) // eslint-disable-line no-console
+      return Promise.reject(e)
     }
   }, Promise.resolve())
 }
@@ -202,25 +201,26 @@ const runSpringReclaimStatusUpdater = async () => {
     await promise // We don't want to spam oodi api so we wait for previous to resolve
 
     try {
-      const deviceHeldUnderFiveYears = isDeviceHeldUnderFiveYears(student.deviceGivenAt)
-      const present = await isPresent(student, getSpringSemesterCode(currentYear))
+      const loanExpiredThisYear = differenceInYears(new Date(`${currentYear}`), new Date(student.deviceGivenAt)) === 5
+      const absent = await isAbsent(student, getSpringSemesterCode(currentYear))
 
-      const reclaimActionNeeded = !deviceHeldUnderFiveYears || !present
-
-      const reclaimStatus = reclaimActionNeeded && student.reclaimStatus !== 'CONTACTED' ? 'OPEN' : student.reclaimStatus
-
-      try {
-        await student.update({
-          reclaimStatus,
-          present,
-          deviceReturnDeadlinePassed: !deviceHeldUnderFiveYears,
+      if (loanExpiredThisYear || absent) {
+        await ReclaimCase.create({
+          userId: student.id,
+          status: 'OPEN',
+          absent,
+          loanExpired: loanExpiredThisYear,
+          creditsUnderLimit: false,
+          year: currentYear,
+          semester: 'SPRING',
         })
-      } catch (e) {
-        logger.error(`Failed updating student reclaim status ${student.studentNumber}`, e)
       }
+
+      return Promise.resolve()
     } catch (e) {
-      logger.error(`Failed fetching oodi data for student ${student.studentNumber}`)
-      console.log(e.stack) // eslint-disable-line no-console
+      logger.error(`Failed checking reclaim status for ${student.studentNumber}`)
+      console.log('log', e.stack) // eslint-disable-line no-console
+      return Promise.reject(e)
     }
   }, Promise.resolve())
 }
