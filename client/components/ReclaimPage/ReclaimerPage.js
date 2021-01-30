@@ -7,11 +7,13 @@ import ReclaimTable from './ReclaimTable'
 import ReclaimerFilter from './ReclaimerFilter'
 import ReclaimerEmail from './ReclaimerEmail'
 import ReclaimStatusFilter from './ReclaimStatusFilter'
+import ReclaimSemesterFilter from './ReclaimSemesterFilter'
 
 const ReclaimPage = () => {
   const dispatch = useDispatch()
   const [filter, setFilter] = useState('all')
   const [reclaimStatusFilter, setReclaimStatusFilter] = useState('OPEN')
+  const [reclaimSemesterFilter, setReclaimSemesterFilter] = useState('all')
   const reclaimCases = useSelector(state => state.reclaimCases.data)
 
   useEffect(() => {
@@ -38,11 +40,13 @@ const ReclaimPage = () => {
         filtered = reclaimCases
         break
     }
-    filtered = filtered.filter(rc => rc.status === reclaimStatusFilter)
+    filtered = filtered
+      .filter(rc => rc.status === reclaimStatusFilter)
+      .filter(rc => reclaimSemesterFilter === 'all' || (reclaimSemesterFilter.includes(rc.year) && reclaimSemesterFilter.includes(rc.semester)))
     return { filteredCases: filtered }
   }
 
-  const { filteredCases } = useMemo(doFiltering, [filter, reclaimCases, reclaimStatusFilter])
+  const { filteredCases } = useMemo(doFiltering, [filter, reclaimCases, reclaimStatusFilter, reclaimSemesterFilter])
 
   return (
     <div className="tab-content" data-cy="reclaimerContent">
@@ -50,6 +54,7 @@ const ReclaimPage = () => {
       <Segment>
         <ReclaimerFilter filter={filter} setFilter={setFilter} totalCount={reclaimCases.length} filteredCount={filteredCases.length} />
         <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+          <ReclaimSemesterFilter selected={reclaimSemesterFilter} setSelected={setReclaimSemesterFilter} />
           <ReclaimStatusFilter selected={reclaimStatusFilter} setSelected={setReclaimStatusFilter} />
           <ReclaimerEmail reclaimCases={filteredCases} />
         </div>
