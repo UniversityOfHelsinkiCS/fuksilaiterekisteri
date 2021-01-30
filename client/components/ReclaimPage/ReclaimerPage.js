@@ -50,7 +50,7 @@ const ReclaimPage = () => {
 
   return (
     <div className="tab-content" data-cy="reclaimerContent">
-      <Message info>Student statuses are updated automatically twice a year. (15th of September and 31th of January)</Message>
+      <Message info>New student cases are updated automatically twice a year. (15th of September and 31th of January)</Message>
       <Segment>
         <ReclaimerFilter filter={filter} setFilter={setFilter} totalCount={reclaimCases.length} filteredCount={filteredCases.length} />
         <div style={{ display: 'flex', alignItems: 'flex-end' }}>

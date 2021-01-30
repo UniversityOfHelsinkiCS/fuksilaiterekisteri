@@ -30,7 +30,7 @@ const ReclaimSemesterFilter = ({ selected, setSelected }) => {
       display: 'flex', flexDirection: 'column', maxWidth: '20em', marginRight: '1em',
     }}
     >
-      <span>Select semester when case created</span>
+      <span>Select case semester</span>
       <Select data-cy="reclaimSemesterFilter" value={selected} onChange={handleSelect} placeholder="Select" options={semesterOptions} />
     </div>
   )

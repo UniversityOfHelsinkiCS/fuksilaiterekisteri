@@ -13,7 +13,7 @@ export default function ReclaimerFilter({
     name: 'All',
   }, {
     key: 'fresherYearCredits',
-    name: 'Less than 30 credits on fresher year',
+    name: 'Credits under limit',
   }, {
     key: 'notPresent',
     name: 'Not enrolled',
