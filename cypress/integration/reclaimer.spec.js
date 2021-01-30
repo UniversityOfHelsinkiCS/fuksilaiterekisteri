@@ -84,7 +84,7 @@ const runSharedTests = () => {
 context('Reclaimer View', () => {
   it('Redirects reclaimer to the correct page', () => {
     cy.login('reclaimer')
-    cy.contains('Student statuses')
+    cy.contains('New student cases')
   })
 
   context('After running autumn updater', () => {
