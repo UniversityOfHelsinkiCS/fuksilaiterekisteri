@@ -173,7 +173,7 @@ context('Reclaimer View', () => {
       cy.contains('Haltija Poissanen').parent().parent().contains('CLOSED')
     })
 
-    it.only('Filtering cases by semester works', () => {
+    it('Filtering cases by semester works', () => {
       cy.get('[data-cy=reclaimerContent]').should('contain', 'Laite Vanhatar')
 
       cy.get('[data-cy=reclaimSemesterFilter]').click()
