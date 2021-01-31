@@ -61,6 +61,13 @@ const ReclaimTable = ({ reclaimCases }) => {
 
   const columns = [
     {
+      key: 'id',
+      label: '#',
+      renderCell: ({ id }) => id,
+      getCellVal: ({ id }) => id,
+      width: 35,
+    },
+    {
       key: 'name',
       label: 'Name',
       renderCell: ({ student: { name } }) => (
