@@ -7,96 +7,47 @@
 - Oikeutettu opiskelija = opiskelija, jolla on oikeus fuksiläppäriin.
 - Oikeus = oikeus saada fuksiläppäri
 - Tehtävä = Oikeutettujen opiskelijoiden täytyy suorittaa osastonsa määrittelemät tehtävät jotta hän saa luvan läppäriin.
-- Lupa = Opiskelijalla, jolla on sekä oikeus, että kaikki tehtävät suoritettuna, on lupa saada fuksiläppäri.
-- Arvostelija = Päivittävät tehtävästatuksia oppilaiden suoritettua tehtäviä.
 - Jakelija = Luovuttaa koneita, tarkistettuaan hakijan henkilöllisyyden ja luvan.
+- Perijä = Laitteiden lainaehtorikkeiden selvittäjä sekä laiteperijä
+- Työntekijä = Oman tiedekunnan opiskelijoiden hallinnointi ja seuranta
+- Admin = Järjestelmähallinta, tilastojen seuranta
 
-## Roadmap
-### v0.1
-- Kannassa on lista oikeutetuista opiskelijoista.
-- Shibboleth-kirjauduttuaan opiskelija näkee onko oikeutettu...
-- ja voi ilmaista haluavansa koneen.
-- Admin voi merkitä opiskelijalle luvan.
-- Ohjelmisto kertoo jakelijalle onko opiskelijalla oikeus ja lupa
-- Admin voi merkitä koneen luovutetuksi.
-
-### v0.2
-- tehtävätuki
-
-## Käyttäjäkokemukset
+## Roolit
 
 ### Opiskelija
-**Kirjaudu Shibbolethin avulla sisään. (student id)**
+**Opiskelija kirjautuu Shibboletin avulla sisään ja voi nähdä yhden kolmesta näkymästä**
 1) 'Olet oikeutettu läppäriin. Lue ehdot ja klikkaa "Haluan fuksiläppärin".'
--> Opiskelija näkee, ja voi aina tulla tarkistamaan tehtäviensä statuksen. Arvostelijat päivittävät tehtävästatuksia suoritusten myötä.
--> Kun kaikki tehtävät on suoritettu, säpö 'olet jonotuslistalla numerolla #'. -> Opiskelija voi tarkistaa jonotusnumeronsa.
--> Kun kone on tarjolla, opiskelija saa noutotiedot säpönä.
+-> Opiskelija näkee, ja voi aina tulla tarkistamaan tehtäviensä statuksen. Statukset päivittyvät automaattisesti.
+-> Kun kaikki tehtävät on suoritettu, saa opiskelija automaattisesti sähköpostin asiasta.
 
-2) 'Et ole oikeutettu läppäriin. **Syy.** Lisätietoja opintoesimies@cs.helsinki.fi'
+2) 'Et ole oikeutettu läppäriin. **Syyt.**
 
-### Arvostelija
-**Kirjaudu Shibbolethin avulla sisään. (employee id)**
-- raportointinäkymä, valitse osasto, valitse tehtävä, pastea lista opiskelijanumeroista (yksi opiskelijanumero per rivi), vahvista lähetys
-- haku opiskelijanumerolla, näe hakijan osasto ja tehtävien status (jotta voidaan varmistaa status tarvittaessa)
+3) 'Rekisteröinti on kiinni'
 
-### Lenovon jakelija
-**Tarvitsee oman, shibbolethittoman APIn: saako tälle henkilölle (ks. henkkarit) antaa koneen?**
--> kysely hakijan opiskelijanumerolla -> jos oikeutettu, API vastaa nimellä, jos ei, API vastaa 'tehtävät suorittamatta' tai 'ei laiteoikeutta'. 
--> lisää laitteen numero ja oma luovuttajatunnus, vahvista laite luovutetuksi
+### Jakelija
+**Jakelija syöttää kenttään opiskelijanumeron, jolloin järjestelmästä tarkistetaan onko opiskelija oikeutettu laitteeseen ja onko hänellä tehtävät suoritettuna**
+* Oikeutettu:  
+	=> Opiskelijan nimi ja muut tiedot näytetään sekä pyydetään jakelijaa tarkastamaan henkilöllisyystodistus.  
+	=> Jakelija skannaa laitteen viivakoodin tai syöttää sarjanumeron viimeisen osan käsin.  
+* Ei oikeutettu
 
+### Työntekijä
+* Näkee oman tiedekunnan laitetilasot
+* Pystyy manuaalisesti merkkaamaan oman tiedekunnan opiskelijoita oikeutetuksi
+* Pystyy manuaalisesti merkkaamaan oman tiedekunnan opiskelijoiden tehtäviä valmiiksi
 
 ### Admin
-**Kaikki aiemmat. Lisäksi jonotuslistasivu, jossa myös mahdollisuus muuttaa vapaana olevien koneiden määrää. Oppilassivu, josta mahdollisuus nähdä ja muokata tehtävien statusta, oikeutta ja lupaa, luovutetun koneen tietoja.**
+* Näkee kaikki laitetilastot
+* Pystyy hallinnoimaan kättäjien eri statuksia
+* Pystyy lähettämään massasähköpostia
+* Pystyy avamaan ja sulkemaan rekisteröinnin sekä laittamaan aikarajat rekisteröimiselle ja laitteenhaulle
+* Pystyy vaihtamaan laitteen sarjanumeron muotoa
+* Pystyy vaihtamaan tiedekunnien yhteyshenkilöitä
 
-
-## Järjestelmälogiikka
-- kirjautuessa tiedot shibbosta -> saa ilmoittautua jos täyttää ehdot
-
-oikeus:
-- "aito fuksi"
-- tiedekunnalta opiskelijanumerot hyväksytyistä
-
-lupa:
--ehops
--digitaidot? DIGI100A
-
-- päivittäinen scripti tarkastaa puuttuvia lupia APIen kautta
-
-## Muuta selvitettävää
-- kuka luo tehtävät? devaajat suoraan kantaan?
-	- voiko tehtävä olla osasuoritettu, vai onko se aina boolean
-- gdpr?
-- läppäreiden takaisinperintä?
-- sovelluksen jatkokäyttö?
-- adminille override-nappi, joka lisää opiskelijalle oikeuden ja/tai luvan
-
-## Tietokanta
-user:
-- name
-- student_id
-- employee_id
-- is_eligible
-- receive_date
-- is_distributor (näitä ei taideta saada kantaan)
-- is_grader
-- is_admin
-
-distributor:
-- distributor id
-- name
-
-delivery:
-- student_id
-- device_id
-- handover_date
-- serial_number
-- handover_by (employee id or distributor id)
-
-task:
-- department
-- description
-- contact person email
-
+### Perijä
+* Näkee listan laitteen omaavista opiskelijoista, joilla on lainaehto rikkeitä
+* Pystyy lähettämään valituille opiskelijoille massasähköpostia
+* Pystyy muuttamaan perintätapausten tilaa manuaalisesti
 
 ## Below are the relevant fuksilaiterekisteri information
 - The project is split into 2 parts: client and server while index.js in root works as the main file. The project contains no database dependant parts.
