@@ -2,6 +2,9 @@
 
 ![Test and build staging-image](https://github.com/UniversityOfHelsinkiCS/fuksilaiterekisteri/workflows/Test%20and%20build%20staging-image/badge.svg) ![Build production-image](https://github.com/UniversityOfHelsinkiCS/fuksilaiterekisteri/workflows/Build%20production-image/badge.svg)
 
+## How to run
+Copy the repository to your machine and run ```npm run dev``` or ```docker-compose up```
+
 ## Sanasto
 - Opiskelija = kuka vaan jolla on HY:n (tai Avoimen) opiskelijatunnus.
 - Oikeutettu opiskelija = opiskelija, jolla on oikeus fuksiläppäriin.
@@ -48,13 +51,3 @@
 * Näkee listan laitteen omaavista opiskelijoista, joilla on lainaehto rikkeitä
 * Pystyy lähettämään valituille opiskelijoille massasähköpostia
 * Pystyy muuttamaan perintätapausten tilaa manuaalisesti
-
-## Below are the relevant fuksilaiterekisteri information
-- The project is split into 2 parts: client and server while index.js in root works as the main file. The project contains no database dependant parts.
-- ApiConnection is a custom redux middleware that is used in most toska software. It is used to simplify redux usage by wrapping axios.
-- You can see redux example using apiConnection in client/components/MessageComponent. 
-- Clone the repo, install node and run `npm install` to get started!
-	- `npm start` To start the project in production mode use this command. It builds the client and then the server.
-	- `npm run dev` To start the project in development mode use this command. It will start the server in hotloading mode.
-	- `npm run lint` To clean all the little style flaws around your code.
-	- `npm run stats` To create statistics on how big your project is.
