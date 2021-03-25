@@ -51,3 +51,17 @@ Copy the repository to your machine and run ```npm run dev``` or ```docker-compo
 * Näkee listan laitteen omaavista opiskelijoista, joilla on lainaehto rikkeitä
 * Pystyy lähettämään valituille opiskelijoille massasähköpostia
 * Pystyy muuttamaan perintätapausten tilaa manuaalisesti
+
+
+## Eligibility & Tasks
+
+**Opiskelija voi anoa laitetta, mikäli hän on oikeutettu (eligible) siihen. Opiskelija on oikeutettu, mikäli seuraavat pätee:**
+* Opiskelija on ilmoittautunut läsnäolevaksi
+* Opiskelija on hyväksytty matemaattisluonnontieteen tiedekunnan vastuulla olevaan kandiohjelmaan kuluvan vuoden päähaussa tai avoimen väylän haussa tai on hyväksytty Bachelor’s Programme in Science -kandiohjelmaan. Koneen saavat käyttöönsä myös ne, jotka ovat perustellusta syystä lykänneet opintojensa aloittamista.
+* Opiskelija on ensimmäistä kertaa läsnä oleva opiskelija tiedekunnassa
+
+**Opiskelija voi hakea laitteen, mikäli hän on oikeutettu siihen ja seuraavat tehtävät (taskit) on suoritettu:**
+* Opiskelija on suorittanut Digitaidot orientaatio kurssin esim. DIGI-100A.
+* Opiskelija on ilmoittautunut kandiohjelmansa kurssille. Eri ohjelmien vaatimien ilmoittautumislogiikka löytyy [täältä.](https://github.com/UniversityOfHelsinkiCS/fuksilaiterekisteri/blob/master/server/models/user.js#L155)
+
+Eligibility ja taskien tila tarkistetaan ja pävitetään aina oppilaan kirjautumisen yhteydessä. Lisäksi taskien tila tarkistetaan joka tasatunti, kun laitejakelu on vielä käynnissä.
