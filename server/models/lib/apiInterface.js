@@ -23,11 +23,8 @@ class ApiInterface {
 
   async getStudyRights(studentNumber) {
     if (!inProduction) return Promise.resolve(mock.findStudyrights(studentNumber))
-    const res = await this.userApi.get(`/students/${studentNumber}/studyrights`)
-    if (!SIS) {
-      return res.data
-    }
-    return res
+    const { data } = await this.userApi.get(`/students/${studentNumber}/studyrights`)
+    return data
   }
 
   async getMinMaxSemesters() {
