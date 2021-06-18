@@ -385,7 +385,7 @@ const mockData = {
 const findData = (studentNumber, field) => (mockData[studentNumber] && mockData[studentNumber][field] ? mockData[studentNumber][field] : mockData.default[field])
 
 const findSemesterEnrollments = studentNumber => findData(studentNumber, 'semesterEnrollments')
-const findStudyrights = studentNumber => findData(studentNumber, 'studyrights')
+const findStudyrights = studentNumber => findData(studentNumber, 'studyrights').data
 const findFirstYearCredits = studentNumber => findData(studentNumber, 'firstYearCredits')
 const findMinMaxSemesters = async () => {
   const settings = await ServiceStatus.getObject()
