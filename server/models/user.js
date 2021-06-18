@@ -12,7 +12,7 @@ const api = new ApiInterface()
 
 const includesValidBachelorStudyright = async (studyrights) => {
   const acceptableStudyProgramCodes = (await StudyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
-  return !!studyrights.data
+  return !!studyrights
     .reduce((pre, { elements }) => pre.concat(elements), [])
     .find(({ code, end_date }) => acceptableStudyProgramCodes.includes(code) && new Date(end_date) > new Date().getTime())
 }
@@ -26,7 +26,7 @@ const getMinMaxSemesterStartTimes = async () => {
 }
 
 const getStudyrightValidities = async (studyrights, semesterEnrollments, currentSemester) => {
-  const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
+  const mlu = studyrights.find(({ faculty_code }) => faculty_code === 'H50')
   const mluElements = mlu ? mlu.elements : []
   const { minSemesterStartTime, maxSemesterStartTime } = await getMinMaxSemesterStartTimes()
 
@@ -145,7 +145,7 @@ class User extends Model {
     if (!inProduction) return { digiSkills: !(this.studentNumber === 'fuksi_without_digiskills'), hasEnrollments: true }
     const digiSkills = await this.hasDigiSkills()
     const studyrights = await this.getStudyRights()
-    const mlu = studyrights.data.find(({ faculty_code }) => faculty_code === 'H50')
+    const mlu = studyrights.find(({ faculty_code }) => faculty_code === 'H50')
     const studyProgramCodes = (await StudyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
 
     const enrollmentPromises = mlu ? mlu.elements.map(({ code }) => (
@@ -250,7 +250,7 @@ class User extends Model {
 
     const allStudyprogramCodes = new Set(allStudyprograms.map(({ code }) => code))
 
-    const studyrightCodes = studyrights.data
+    const studyrightCodes = studyrights
       .reduce((acc, { elements }) => acc.concat(elements), [])
       .reduce((acc, { code }) => acc.concat(code), [])
 
