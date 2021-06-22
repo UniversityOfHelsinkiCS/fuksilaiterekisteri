@@ -8,7 +8,7 @@ const authentication = async (req, res, next) => {
     givenname: givenName = null,
     mail = null,
     schacdateofbirth: schacDateOfBirth = null,
-    schacpersonaluniquecode: schacPersonalUniqueCode = null,
+    hypersonstudentid: hyPersonStudentId = null,
     sn = null,
     uid = null,
   } = req.headers
@@ -44,14 +44,11 @@ const authentication = async (req, res, next) => {
     )
     if (mail !== foundUser.hyEmail) await foundUser.update({ hyEmail: mail })
     if (formattedName !== foundUser.name) await foundUser.update({ name: formattedName })
-
     req.user = foundUser
     return next()
   }
 
-  const studentNumber = schacPersonalUniqueCode
-    ? schacPersonalUniqueCode.split(':')[6]
-    : null
+  const studentNumber = hyPersonStudentId
 
   const defaultParams = {
     userId: uid,

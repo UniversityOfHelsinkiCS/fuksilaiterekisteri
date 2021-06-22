@@ -7,7 +7,7 @@ const possibleUsers = [
     givenName: 'adminEtunimi',
     mail: 'grp-toska+fail@helsinki.fi',
     schacDateOfBirth: undefined,
-    schacPersonalUniqueCode: undefined,
+    hyPersonStudentId: undefined,
     sn: 'admin',
   },
   {
@@ -16,7 +16,7 @@ const possibleUsers = [
     givenName: 'jakelijaEtunimi',
     mail: 'grp-toska+fail@helsinki.fi',
     schacDateOfBirth: undefined,
-    schacPersonalUniqueCode: undefined,
+    hyPersonStudentId: undefined,
     sn: 'jakelija',
   },
   {
@@ -25,8 +25,7 @@ const possibleUsers = [
     givenName: 'fuksiEtunimi',
     mail: 'grp-toska+fukrekfuksi@helsinki.fi',
     schacDateOfBirth: 19770501,
-    schacPersonalUniqueCode:
-      'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:fuksi',
+    hyPersonStudentId: 'fuksi',
     sn: 'fuksi',
   },
   {
@@ -35,8 +34,7 @@ const possibleUsers = [
     givenName: 'fuksiEtunimi',
     mail: 'grp-toska+fukrekfuksi@helsinki.fi',
     schacDateOfBirth: 19770501,
-    schacPersonalUniqueCode:
-      'urn:schac:personalUniqueCode:int:studentID:helsinki.fi',
+    hyPersonStudentId: undefined,
     sn: 'fuksi',
   },
   {
@@ -45,8 +43,7 @@ const possibleUsers = [
     givenName: 'non-fuksiEtunimi',
     mail: 'grp-toska+fail@helsinki.fi',
     schacDateOfBirth: 19850806,
-    schacPersonalUniqueCode:
-      'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:non-fuksi',
+    hyPersonStudentId: 'non-fuksi',
     sn: 'non-fuksi',
   },
   {
@@ -55,8 +52,7 @@ const possibleUsers = [
     givenName: 'fuksiWithoutDigi',
     mail: 'grp-toska+fuksiWithoutDiki@helsinki.fi',
     schacDateOfBirth: 19850806,
-    schacPersonalUniqueCode:
-      'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:fuksi_without_digiskills',
+    hyPersonStudentId: 'fuksi_without_digiskills',
     sn: 'fuksi_without_digiskills',
   },
   {
@@ -65,7 +61,7 @@ const possibleUsers = [
     givenName: 'non-admin-staffEtunimi',
     mail: 'grp-toska+fail@helsinki.fi',
     schacDateOfBirth: undefined,
-    schacPersonalUniqueCode: undefined,
+    hyPersonStudentId: undefined,
     sn: 'non-admin-staff',
   },
   {
@@ -74,7 +70,7 @@ const possibleUsers = [
     givenName: 'irrelevant-staffEtunimi',
     mail: 'grp-toska+fail@helsinki.fi',
     schacDateOfBirth: undefined,
-    schacPersonalUniqueCode: undefined,
+    hyPersonStudentId: undefined,
     sn: 'irrelevant-staff',
   },
   {
@@ -83,7 +79,7 @@ const possibleUsers = [
     givenName: 'reclaimerEtunimi',
     mail: 'grp-toska+fail@helsinki.fi',
     schacDateOfBirth: undefined,
-    schacPersonalUniqueCode: undefined,
+    hyPersonStudentId: undefined,
     sn: 'reclaimer',
   },
 ]
@@ -91,27 +87,27 @@ const possibleUsers = [
 const eligilityTestUsers = [
   {
     uid: 'eligible2',
-    schacPersonalUniqueCode: 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:eligible2',
+    hyPersonStudentId: 'eligible2',
     sn: 'eligible2',
   },
   {
     uid: 'eligible3',
-    schacPersonalUniqueCode: 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:eligible3',
+    hyPersonStudentId: 'eligible3',
     sn: 'eligible3',
   },
   {
     uid: 'ineligible1',
-    schacPersonalUniqueCode: 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:ineligible1',
+    hyPersonStudentId: 'ineligible1',
     sn: 'ineligible1',
   },
   {
     uid: 'ineligible2',
-    schacPersonalUniqueCode: 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:ineligible2',
+    hyPersonStudentId: 'ineligible2',
     sn: 'ineligible2',
   },
   {
     uid: 'ineligible3',
-    schacPersonalUniqueCode: 'urn:schac:personalUniqueCode:int:studentID:helsinki.fi:ineligible3',
+    hyPersonStudentId: 'ineligible3',
     sn: 'ineligible3',
   },
 
