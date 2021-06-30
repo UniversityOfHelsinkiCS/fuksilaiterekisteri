@@ -203,13 +203,13 @@ describe("Serial setting and validation works and correct part of the serial is 
     it("Non 20 length serial FULL", () => {
       setSerialValidationPattern("0123456789012345678901234XXXXXXX",26)
       findStudent('fuksi')
-      giveDevice("012345678901X345678901234custom1")
+      giveBadDevice("012345678901X345678901234custom1")
       cy.contains('fuksiEtunimi fuksi')
     })
     it("Non 20 length serial MANUAL", () => {
       setSerialValidationPattern("0123456789012345678901234XXXXXXX",22)
       findStudent('fuksi')
-      giveDevice("tooshort")
+      giveBadDevice("tooshort")
       cy.contains('fuksiEtunimi fuksi')
     })
   })

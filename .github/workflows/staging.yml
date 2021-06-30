@@ -58,14 +58,14 @@ jobs:
     if: always()
     steps:
       - name: Notify failed
-        uses:  UniversityOfHelsinkiCS/slackbot-action@vX.X
+        uses:  UniversityOfHelsinkiCS/slackbot-action@v1.3
         if: (needs.test.result != 'success' || needs.build.result != 'success')
         with:
           webhook-url: ${{ secrets.WEBHOOK_URL }}
           message-type: test-failure
           softa-url: https://study.cs.helsinki.fi/fuksilaite/
       - name: Notify success
-        uses:  UniversityOfHelsinkiCS/slackbot-action@vX.X
+        uses:  UniversityOfHelsinkiCS/slackbot-action@v1.3
         if: (needs.test.result == 'success' || needs.build.result == 'success')
         with:
           webhook-url: ${{ secrets.WEBHOOK_URL }}
