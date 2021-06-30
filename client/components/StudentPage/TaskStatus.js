@@ -4,7 +4,7 @@ import { Segment, Icon, Header } from 'semantic-ui-react'
 import { localeSelector } from 'Utilities/redux/localeReducer'
 import TranslatedMarkdown from 'Components/TranslatedMarkdown'
 import StudentInfo from './StudentInfo'
-import TaskInfo from './TaskInfo'
+// import TaskInfo from './TaskInfo'
 
 const translations = {
   taskStatus: {
@@ -65,20 +65,20 @@ const StudentStatusPage = ({ faking }) => {
         <Header as="h3" data-cy="taskStatus">{translations.taskStatus[locale]}</Header>
         <Segment.Group horizontal>
           <Task task={translations.beFuksi[locale]} completed={user.eligible} />
-          <Task
+          {/* <Task
             task={translations.registeredToRelevant[locale]}
             completed={user.courseRegistrationCompleted}
           />
           <Task
             task={translations.digiSkillsCompleted[locale]}
             completed={user.digiSkillsCompleted}
-          />
+          /> */}
         </Segment.Group>
       </Segment>
-      <TaskInfo
+      {/* <TaskInfo
         courseRegistrationCompleted={user.courseRegistrationCompleted}
         digiSkillsCompleted={user.digiSkillsCompleted}
-      />
+      /> */}
       <Segment>
         <TranslatedMarkdown textKey="distributionInfo" />
       </Segment>

@@ -338,8 +338,8 @@ class User extends Model {
       !(
         this.eligible
             && this.wantsDevice
-            && this.digiSkillsCompleted
-            && this.courseRegistrationCompleted
+            // && this.digiSkillsCompleted
+            // && this.courseRegistrationCompleted
             && !this.deviceGivenAt
             && this.signupYear === settings.currentYear
       )

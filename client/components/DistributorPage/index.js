@@ -3,7 +3,7 @@ import React, {
 } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  Button, Segment, Form, Header, Ref,
+  Button, Segment, Form, Header, Ref, Message,
 } from 'semantic-ui-react'
 import { NotificationManager } from 'react-notifications'
 import { claimDeviceAction } from 'Utilities/redux/deviceClaimReducer'
@@ -26,7 +26,7 @@ const getOs = (code) => {
         fontSize: '22px', marginLeft: '10px', fontWeight: 'bold', color: 'orange',
       }}
       >
-Cubbli
+        Cubbli
       </span>
     )
   }
@@ -35,7 +35,7 @@ Cubbli
       fontSize: '22px', marginLeft: '10px', fontWeight: 'bold', color: 'blue',
     }}
     >
-Windows
+      Windows
     </span>
   )
 }
@@ -187,15 +187,29 @@ const DistributorPage = () => {
     getStudent(studentNumber)
   }
   const inputRed = !studentNumberValid
-  const buttonDisabled = !student
+  const buttonDisabled = !student || !parseId(deviceId)
 
-  const isEligibleForDevice = () => student && student.eligible && student.digiSkillsCompleted && student.courseRegistrationCompleted && student.wantsDevice && student.signupYear === settings.currentYear
+  // const isEligibleForDevice = () => student && student.eligible && student.digiSkillsCompleted && student.courseRegistrationCompleted && student.wantsDevice && student.signupYear === settings.currentYear
+  const isEligibleForDevice = () => student && student.eligible && student.wantsDevice && student.signupYear === settings.currentYear
+
+  const getNotEligibleForDeviceMessage = () => [
+    ...!student.eligible ? ['Ei oikeutettu'] : [],
+    ...!student.wantsDevice ? ['Opiskelija ei ole merkinnyt haluavansa laitetta'] : [],
+    ...!student.signupYear !== settings.currentYear ? ['Opiskelija ei ole tämän vuoden fuksi'] : [],
+  ]
 
   const renderStudentData = () => {
     if (!student && !error) return null
     if (error) return <p>Opiskelijaa ei löytynyt!</p>
     if (student.deviceGivenAt) return <p>Opiskelija on jo saanut laitteen!</p>
-    if (!isEligibleForDevice()) return <p>Ei oikeutettu laitteeseen!</p>
+    if (!isEligibleForDevice()) {
+      return (
+        <Message
+          header="Ei oikeutettu laitteeseen!"
+          list={getNotEligibleForDeviceMessage()}
+        />
+      )
+    }
     return (
       <>
         <StudentInfo student={student} />
@@ -231,10 +245,10 @@ const DistributorPage = () => {
         {
           showParsedDeviceId
           && (
-          <>
-            <span>{`${parseId(deviceId).substring(0, settings.serialSeparatorPos)}`}</span>
-            <span style={{ color: '#a333c8' }}>{`${parseId(deviceId).substring(settings.serialSeparatorPos)}`}</span>
-          </>
+            <>
+              <span>{`${parseId(deviceId).substring(0, settings.serialSeparatorPos)}`}</span>
+              <span style={{ color: '#a333c8' }}>{`${parseId(deviceId).substring(settings.serialSeparatorPos)}`}</span>
+            </>
           )
         }
       </span>

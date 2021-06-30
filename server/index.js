@@ -7,10 +7,19 @@ const logger = require('@util/logger')
 const path = require('path')
 const { startCron } = require('@util/cron')
 const { initializeDatabaseConnection } = require('@database/connection')
+const Sentry = require('@sentry/node')
+const { errorMiddleware } = require('@middleware/errorMiddleware')
 
 initializeDatabaseConnection()
   .then(() => {
     const app = express()
+    Sentry.init({
+      dsn: process.env.SENTRY_ADDR,
+      environment: process.env.NODE_ENV,
+      release: process.env.SENTRY_RELEASE,
+    })
+    app.use(Sentry.Handlers.requestHandler())
+    app.use(errorMiddleware)
 
     app.use(express.json())
 
@@ -58,6 +67,7 @@ initializeDatabaseConnection()
 
       app.use(express.static(DIST_PATH))
       app.get('*', (req, res) => res.sendFile(INDEX_PATH))
+      app.use(Sentry.Handlers.errorHandler())
       startCron()
     }
 

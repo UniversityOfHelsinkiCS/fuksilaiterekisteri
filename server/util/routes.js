@@ -22,6 +22,10 @@ router.get('/', (req, res) => {
   res.send('root')
 })
 
+router.get('/sandbox', () => {
+  throw new Error('Fukrek exploded!')
+})
+
 router.post('/logout', userController.getLogoutUrl)
 
 if (!inProduction) {
