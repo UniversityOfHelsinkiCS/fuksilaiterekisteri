@@ -69,3 +69,4 @@ jobs:
         with:
           webhook-url: ${{ secrets.WEBHOOK_URL }}
           message-type: deployment
+          softa-url: https://toska-staging.cs.helsinki.fi/fuksilaite/
