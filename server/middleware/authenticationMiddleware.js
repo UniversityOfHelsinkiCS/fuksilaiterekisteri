@@ -78,7 +78,7 @@ const authentication = async (req, res, next) => {
     }
 
     req.user = newUser
-    Sentry.setUser(foundUser.get({ plain: true }))
+    Sentry.setUser({ ...defaultParams })
     return next()
   }
 
@@ -112,7 +112,7 @@ const authentication = async (req, res, next) => {
     })
 
     req.user = newUser
-    Sentry.setUser(foundUser.get({ plain: true }))
+    Sentry.setUser({ ...newUser })
     return next()
   } catch (e) {
     logger.error(['Creating student failed', e, e.response])
