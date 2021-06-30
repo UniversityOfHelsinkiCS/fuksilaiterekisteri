@@ -1,4 +1,5 @@
 const { inProduction, isSuperAdmin } = require('../util/common')
+const Sentry = require('@sentry/node')
 const logger = require('@util/logger')
 const { StudyProgram, User, ServiceStatus } = require('@models')
 
@@ -45,6 +46,7 @@ const authentication = async (req, res, next) => {
     if (mail !== foundUser.hyEmail) await foundUser.update({ hyEmail: mail })
     if (formattedName !== foundUser.name) await foundUser.update({ name: formattedName })
     req.user = foundUser
+    Sentry.setUser(foundUser.get({ plain: true }))
     return next()
   }
 
@@ -76,7 +78,7 @@ const authentication = async (req, res, next) => {
     }
 
     req.user = newUser
-
+    Sentry.setUser(foundUser.get({ plain: true }))
     return next()
   }
 
@@ -110,6 +112,7 @@ const authentication = async (req, res, next) => {
     })
 
     req.user = newUser
+    Sentry.setUser(foundUser.get({ plain: true }))
     return next()
   } catch (e) {
     logger.error(['Creating student failed', e, e.response])
