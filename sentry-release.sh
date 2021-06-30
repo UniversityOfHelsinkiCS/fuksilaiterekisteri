@@ -1,6 +1,7 @@
 #!/bin/bash
 export SENTRY_ORG=toska
-SENTRY_PROJECT=fuksilaite
+export SENTRY_PROJECT=fuksilaite
+export SENTRY_URL=https://sentry.cs.helsinki.fi/
 
 
 SENTRY_RELEASE=$(cat /SENTRY_RELEASE)

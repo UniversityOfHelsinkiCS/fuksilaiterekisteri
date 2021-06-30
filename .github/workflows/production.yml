@@ -35,7 +35,7 @@ jobs:
           repository: toska/fuksilaiterekisteri
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          build_args: BASE_PATH=/fuksilaite/,NODE_ENV=production,GITHUB_SHA=${{ github.sha }}
+          build_args: BASE_PATH=/fuksilaite/,NODE_ENV=production,GITHUB_SHA=${{ github.sha }},,SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
           tags: production
 
   notify:

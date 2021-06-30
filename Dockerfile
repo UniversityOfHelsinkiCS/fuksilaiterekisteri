@@ -10,6 +10,9 @@ ENV BASE_PATH=$BASE_PATH
 ARG SENTRY_IDENTIFIER
 ENV SENTRY_IDENTIFIER=$SENTRY_IDENTIFIER
 
+ARG SENTRY_AUTH_TOKEN
+ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
+
 ARG GITHUB_SHA
 ENV GITHUB_SHA=$GITHUB_SHA
 
@@ -24,14 +27,14 @@ COPY . .
 
 RUN npm ci
 
-RUN npm run build
-
 # Install Sentry
 RUN curl -sL https://sentry.io/get-cli/ | bash
 
 RUN SENTRY_RELEASE=$(sentry-cli releases propose-version) && \
     echo "${SENTRY_RELEASE}" > /SENTRY_RELEASE && \
     SENTRY_RELEASE="${SENTRY_RELEASE}" npm run build
+
+RUN ./sentry-release.sh
 
 EXPOSE 8000
 
