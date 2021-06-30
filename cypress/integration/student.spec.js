@@ -56,35 +56,37 @@ describe('Student', () => {
     cy.get('[data-cy=terms]')
   })
 
+  // Change this if digi-100a task is enabled
   it('updates task statuses on login', () => {
     cy.get('[data-cy=terms]').click()
     cy.get('[data-cy=closeTerms]').click()
     cy.get('[data-cy=acceptTerms]').click()
     cy.get('[data-cy=getDeviceSecondary]').click()
-    cy.get(".checkmark").eq(2)
+    cy.get(".checkmark").its('length').should('eq', 1)
 
     cy.login('admin')
     cy.contains('fuksiEtunimi').parent().parent().find('[data-cy="toggleDigiskills"]').click()
     cy.contains('fuksiEtunimi').parent().parent().find('[data-cy="toggleDigiskills"]').should("not.have.class","checked")
 
     cy.login('fuksi')
-    cy.get(".checkmark").eq(2)
+    cy.get(".checkmark").its('length').should('eq', 1)
   })
 
+  // Change this if digi-100a task is enabled
   it('does not update task statuses that are true', () => {
     cy.login('fuksi_without_digiskills')
     cy.get('[data-cy=terms]').click()
     cy.get('[data-cy=closeTerms]').click()
     cy.get('[data-cy=acceptTerms]').click()
     cy.get('[data-cy=getDeviceSecondary]').click()
-    cy.get(".checkmark").its('length').should('eq', 2)
+    cy.get(".checkmark").its('length').should('eq', 1)
 
     cy.login('admin')
     cy.contains('fuksiWithoutDigi').parent().parent().find('[data-cy="toggleDigiskills"]').click()
     cy.contains('fuksiWithoutDigi').parent().parent().find('[data-cy="toggleDigiskills"]').should("have.class","checked")
 
     cy.login('fuksi_without_digiskills')
-    cy.get(".checkmark").its('length').should('eq', 3)
+    cy.get(".checkmark").its('length').should('eq', 1)
   })
 
   it("non eligible students see why they are not eligible", () => {

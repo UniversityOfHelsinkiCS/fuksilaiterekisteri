@@ -12,7 +12,7 @@ const giveDevice = (serial) => {
 
 const giveBadDevice = (serial) => {
   cy.get('#device-serial-input').type(serial ? serial : "x")
-  cy.contains('Anna laite').click()
+  cy.contains('Anna laite').should('be.disabled')
 }
 
 context('Distributor', () => {

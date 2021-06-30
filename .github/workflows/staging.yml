@@ -5,32 +5,6 @@ on:
     branches: [master]
 
 jobs:
-  # sentry:
-  #   name: "Make sentry release and upload sourcemaps"
-  #   needs: build
-  #   runs-on: ubuntu-16.04
-  #   env:
-  #     SENTRY_PROJECT: fuksilaiterekisteri
-  #     SENTRY_ORG: sentry
-  #     SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-  #     SENTRY_URL: ${{ secrets.SENTRY_URL }}
-
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
-
-  #     - name: npm ci
-  #       run: npm ci
-
-  #     - name: npm run build
-  #       run: npm run build
-      
-  #     - name: Make Sentry release
-  #       run: npm run sentry-cli -- releases new --finalize fuksilaiterekisteri@$GITHUB_SHA
-
-  #     - name: Upload sourcemaps
-  #       run: npm run sentry-cli -- releases files fuksilaiterekisteri@$GITHUB_SHA upload-sourcemaps --url-prefix "~/fuksilaite/" --rewrite --validate dist
-
   test:
     name: "Run linter and Cypress tests"
     runs-on: ubuntu-16.04
@@ -77,3 +51,23 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           build_args: BASE_PATH=/fuksilaite/,SENTRY_IDENTIFIER=staging,GITHUB_SHA=${{ github.sha }}
           tags: staging
+
+  notify:
+    runs-on: ubuntu-20.04
+    needs: [test, build]
+    if: always()
+    steps:
+      - name: Notify failed
+        uses:  UniversityOfHelsinkiCS/slackbot-action@vX.X
+        if: (needs.test.result != 'success' || needs.build.result != 'success')
+        with:
+          webhook-url: ${{ secrets.WEBHOOK_URL }}
+          message-type: test-failure
+          softa-url: https://study.cs.helsinki.fi/fuksilaite/
+      - name: Notify success
+        uses:  UniversityOfHelsinkiCS/slackbot-action@vX.X
+        if: (needs.test.result == 'success' || needs.build.result == 'success')
+        with:
+          webhook-url: ${{ secrets.WEBHOOK_URL }}
+          message-type: deployment
+          softa-url: https://study.cs.helsinki.fi/fuksilaite/
