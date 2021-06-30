@@ -5,8 +5,28 @@ on:
     types: [published]
 
 jobs:
+  test:
+    name: "Run linter and Cypress tests"
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: npm ci
+        run: npm ci
+
+      - name: npm run lint
+        run: npm run lint
+
+      - name: docker-compose up -d
+        run: docker-compose up -d
+
+      - name: Run cypress tests
+        run: ./node_modules/.bin/cypress run --headless *.spec.js
+
   build:
     runs-on: ubuntu-16.04
+    needs: test
     steps:
       - uses: actions/checkout@v2
       - name: Publish to DockerHub
@@ -15,5 +35,24 @@ jobs:
           repository: toska/fuksilaiterekisteri
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          build_args: BASE_PATH=/fuksilaite/,SENTRY_IDENTIFIER=production,GITHUB_SHA=${{ github.sha }}
+          build_args: BASE_PATH=/fuksilaite/,NODE_ENV=production,GITHUB_SHA=${{ github.sha }}
           tags: production
+
+  notify:
+    runs-on: ubuntu-20.04
+    needs: [test, build]
+    if: always()
+    steps:
+      - name: Notify failed
+        uses:  UniversityOfHelsinkiCS/slackbot-action@v1.3
+        if: (needs.test.result != 'success' || needs.build.result != 'success')
+        with:
+          webhook-url: ${{ secrets.WEBHOOK_URL }}
+          message-type: test-failure
+      - name: Notify success
+        uses:  UniversityOfHelsinkiCS/slackbot-action@v1.3
+        if: (needs.test.result == 'success' || needs.build.result == 'success')
+        with:
+          webhook-url: ${{ secrets.WEBHOOK_URL }}
+          message-type: deployment
+          softa-url: https://study.cs.helsinki.fi/fuksilaite/
