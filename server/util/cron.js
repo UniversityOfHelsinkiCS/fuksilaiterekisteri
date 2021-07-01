@@ -1,7 +1,7 @@
 const { CronJob } = require('cron')
 const logger = require('@util/logger')
 const {
-  updateEligibleStudentStatuses, checkStudentEligibilities, runAutumnReclaimStatusUpdater, runSpringReclaimStatusUpdater,
+  checkStudentEligibilities, runAutumnReclaimStatusUpdater, runSpringReclaimStatusUpdater,
 } = require('@services/updaterService')
 const { ServiceStatus } = require('@models')
 
@@ -22,15 +22,16 @@ const startCron = () => {
   logger.info('Starting cron jobs')
   /* eslint-disable no-new */
 
+  // No tasks to update this year
   new CronJob({
     cronTime: '0 * * * *',
     onTick: async () => {
-      logger.info('Updating eligible student statuses...')
-      try {
-        await updateEligibleStudentStatuses()
-      } catch (e) {
-        logger.error('Failed updating eligible student statuses!', e)
-      }
+      // logger.info('Updating eligible student statuses...')
+      // try {
+      //   await updateEligibleStudentStatuses()
+      // } catch (e) {
+      //   logger.error('Failed updating eligible student statuses!', e)
+      // }
 
       logger.info('Checking deadline...')
       try {

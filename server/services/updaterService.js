@@ -1,8 +1,11 @@
 const { Op } = require('sequelize')
 const { differenceInYears } = require('date-fns')
-const { User, ServiceStatus, ReclaimCase } = require('@models')
+const {
+  User, ServiceStatus, ReclaimCase, Email,
+} = require('@models')
 const logger = require('@util/logger')
 const completionChecker = require('@util/completionChecker')
+const emailService = require('@services/emailService')
 
 const {
   inProduction,
@@ -115,8 +118,27 @@ const updateStudentEligibility = async (studentNumber) => {
     signupYear: eligible ? settings.currentYear : foundStudent.signupYear,
   })
 
+  if (eligible) {
+    if (process.env.EMAIL_ENABLED !== 'true') {
+      logger.error('Email disabled, set EMAIL_ENABLED=true to enable.')
+      return
+    }
+
+    const email = await Email.findAutosendTemplate('AUTOSEND_WHEN_READY')
+
+    const info = await emailService.sendEmail({
+      recipients: [updatedStudent.hyEmail, updatedStudent.personalEmail],
+      subject: email.subject,
+      text: email.body,
+      replyTo: email.replyTo,
+    })
+    if (info) {
+      info.accepted.forEach(accepted => logger.info(`Email sent to ${accepted}.`))
+    }
+  }
+
   logger.info(`${studentNumber} eligibility updated successfully from ${eligibilityBefore} to ${eligible}!`)
-  await completionChecker(updatedStudent)
+  // await completionChecker(updatedStudent)
 }
 
 const isAbsent = async (student, currentSemester) => {
