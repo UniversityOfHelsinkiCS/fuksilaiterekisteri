@@ -113,6 +113,12 @@ const authentication = async (req, res, next) => {
 
     req.user = newUser
     Sentry.setUser({ ...newUser })
+    if (!eligible) {
+      Sentry.withScope((scope) => {
+        scope.setUser(req.user ? req.user.get({ plain: true }) : null)
+        Sentry.captureMessage('New non eligible user registered!')
+      })
+    }
     return next()
   } catch (e) {
     logger.error(['Creating student failed', e, e.response])
