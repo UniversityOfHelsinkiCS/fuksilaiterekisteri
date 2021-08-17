@@ -121,7 +121,10 @@ const authentication = async (req, res, next) => {
     }
     return next()
   } catch (e) {
-    logger.error(['Creating student failed', e, e.response])
+    logger.error(['Creating student failed', e.toString(), e.response ? e.response.data : null])
+    Sentry.withScope(() => {
+      Sentry.captureMessage('Creating student failed!')
+    })
     return res.status(503).end()
   }
 }
