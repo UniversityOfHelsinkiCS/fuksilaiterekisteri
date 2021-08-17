@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Flag } from 'semantic-ui-react'
+import { Button, Menu } from 'semantic-ui-react'
 import { useDispatch } from 'react-redux'
 import { setLocale } from 'Utilities/redux/localeReducer'
 
@@ -8,8 +8,10 @@ export const LocaleSelector = (props) => {
 
   return (
     <div {...props}>
-      <Flag data-cy="setlocale-fi" onClick={() => dispatch(setLocale('fi'))} name="fi" />
-      <Flag data-cy="setlocale-en" onClick={() => dispatch(setLocale('en'))} name="gb" />
+      <Menu secondary>
+        <Menu.Item data-cy="setlocale-fi" onClick={() => dispatch(setLocale('fi'))} content="FI" />
+        <Menu.Item data-cy="setlocale-en" onClick={() => dispatch(setLocale('en'))} content="EN" />
+      </Menu>
     </div>
   )
 }
