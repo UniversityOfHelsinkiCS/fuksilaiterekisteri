@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 const emailService = require('@services/emailService')
 const logger = require('@util/logger')
 const { ServiceStatus, Email } = require('@models')
 
-const completionChecker = async (user) => {
+const completionChecker = async user => false
+/*
   if (user.wantsDevice && user.eligible && user.digiSkillsCompleted && user.courseRegistrationCompleted) {
     const settings = await ServiceStatus.getObject()
     const isDistributionOver = new Date().getTime() > new Date(settings.taskDeadline).getTime()
@@ -26,6 +28,7 @@ const completionChecker = async (user) => {
       info.accepted.forEach(accepted => logger.info(`Email sent to ${accepted}.`))
     }
   }
-}
+  */
+
 
 module.exports = completionChecker
