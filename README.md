@@ -72,6 +72,7 @@ Copy the repository to your machine and run ```npm run dev``` or ```docker-compo
 * Opiskelija on ensimmäistä kertaa läsnä oleva opiskelija tiedekunnassa
 
 **Opiskelija voi hakea laitteen, mikäli hän on oikeutettu siihen ja seuraavat tehtävät (taskit) on suoritettu:**
+* Toistaiseksi opiskelija voi hakea laitteen jos hän on siihen oikeutettu ilman tehtävien suorittamista (koska Sisu)
 * ~~Opiskelija on suorittanut Digitaidot orientaatio kurssin esim. DIGI-100A.~~
 * ~~Opiskelija on ilmoittautunut kandiohjelmansa kurssille. Eri ohjelmien vaatimien ilmoittautumislogiikka löytyy [täältä.](https://github.com/UniversityOfHelsinkiCS/fuksilaiterekisteri/blob/master/server/models/user.js#L155)~~
 
