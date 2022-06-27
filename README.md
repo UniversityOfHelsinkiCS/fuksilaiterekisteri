@@ -4,6 +4,13 @@
 
 ## How to run
 Copy the repository to your machine and run ```npm run dev``` or ```docker-compose up```
+^^ :acual-doubt:
+
+## How to open registration
+
+* Säädä kälissä päivämäärät oikein (kysy päivämäärät fuksilaitevastaavalta jos hän ei ole jo tehnyt tätä)
+* Vaihda `current_year` ja `current_semester` tuotantokantaan käsin
+* Avaa rekisteröityminen
 
 ## Sanasto
 - Opiskelija = kuka vaan jolla on HY:n (tai Avoimen) opiskelijatunnus.
@@ -61,7 +68,7 @@ Copy the repository to your machine and run ```npm run dev``` or ```docker-compo
 * Opiskelija on ensimmäistä kertaa läsnä oleva opiskelija tiedekunnassa
 
 **Opiskelija voi hakea laitteen, mikäli hän on oikeutettu siihen ja seuraavat tehtävät (taskit) on suoritettu:**
-* Opiskelija on suorittanut Digitaidot orientaatio kurssin esim. DIGI-100A.
-* Opiskelija on ilmoittautunut kandiohjelmansa kurssille. Eri ohjelmien vaatimien ilmoittautumislogiikka löytyy [täältä.](https://github.com/UniversityOfHelsinkiCS/fuksilaiterekisteri/blob/master/server/models/user.js#L155)
+* ~~Opiskelija on suorittanut Digitaidot orientaatio kurssin esim. DIGI-100A.~~
+* ~~Opiskelija on ilmoittautunut kandiohjelmansa kurssille. Eri ohjelmien vaatimien ilmoittautumislogiikka löytyy [täältä.](https://github.com/UniversityOfHelsinkiCS/fuksilaiterekisteri/blob/master/server/models/user.js#L155)~~
 
 Eligibility ja taskien tila tarkistetaan ja pävitetään aina oppilaan kirjautumisen yhteydessä. Lisäksi taskien tila tarkistetaan joka tasatunti, kun laitejakelu on vielä käynnissä.
