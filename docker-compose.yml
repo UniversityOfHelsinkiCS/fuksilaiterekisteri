@@ -7,9 +7,9 @@ services:
       dockerfile: config/dev.Dockerfile
     image: fuksilaiterekisteri_dev
     environment:
-      - STUDENT_API_URL=https://oodikone.cs.helsinki.fi/fukrek/mock
-      - SIS=false
-      - STUDENT_API_TOKEN=test
+      - STUDENT_API_URL=https://importer.cs.helsinki.fi
+      - SIS=true
+      - STUDENT_API_TOKEN=011iMrMangeli431Xx45t8k3ma42
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
       - EMAIL_ENABLED=false
       - SUPERADMINS=
@@ -26,6 +26,14 @@ services:
       - POSTGRES_PASSWORD=postgres
     volumes:
       - pg_data:/data
+  adminer:
+    container_name: adminer
+    environment:
+      - ADMINER_DESIGN=pepa-linha
+      - ADMINER_DEFAULT_SERVER=db
+    image: adminer:4.7.5
+    ports:
+      - 8080:8080 # localhost:8080/?pgsql=db&username=postgres&db=postgres&ns=public
 
 volumes:
   pg_data:
