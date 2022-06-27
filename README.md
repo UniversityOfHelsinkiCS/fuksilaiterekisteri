@@ -9,6 +9,8 @@ Copy the repository to your machine and run ```npm run dev``` or ```docker-compo
 2) Login as fuksi to crete user
 3) Login as admin and mark fuksi as eligible
 
+As a maintainer add your self to superadmins in the production server env (`SUPERADMINS` in dockker compose)
+
 ## How to open registration
 
 * Säädä kälissä päivämäärät oikein (kysy päivämäärät fuksilaitevastaavalta jos hän ei ole jo tehnyt tätä)
