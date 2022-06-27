@@ -4,7 +4,10 @@
 
 ## How to run
 Copy the repository to your machine and run ```npm run dev``` or ```docker-compose up```
-^^ :acual-doubt:
+
+1) Login as admin and enable registration
+2) Login as fuksi to crete user
+3) Login as admin and mark fuksi as eligible
 
 ## How to open registration
 
