@@ -10,6 +10,7 @@ Copy the repository to your machine and run ```npm run dev``` or ```docker-compo
 
 * Säädä kälissä päivämäärät oikein (kysy päivämäärät fuksilaitevastaavalta jos hän ei ole jo tehnyt tätä)
 * Vaihda `current_year` ja `current_semester` tuotantokantaan käsin
+	*  Semesterin saat Oodikoneen `sis-db`:n `semesters` taulusta, semester on aina jakelun avaamispäivän lukukausi (=vuosi 202x, syksy)
 * Avaa rekisteröityminen
 
 ## Sanasto
