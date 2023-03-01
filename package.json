@@ -82,7 +82,7 @@
   "devDependencies": {
     "@sentry/cli": "^1.55.0",
     "babel-preset-stage-2": "^6.24.1",
-    "cypress": "^4.10.0",
+    "cypress": "^4.12.1",
     "nodemon": "^1.18.10",
     "webpack-dev-middleware": "^3.5.2",
     "webpack-dev-server": "^3.11.2",
