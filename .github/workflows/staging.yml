@@ -8,6 +8,7 @@ jobs:
   test:
     name: "Run linter and Cypress tests"
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -40,22 +41,38 @@ jobs:
     name: 'Build and publish staging image'
     needs: test
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Publish to DockerHub
-        uses: docker/build-push-action@v1.1.0
+      - uses: actions/checkout@v3
+
+      - name: Build image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
         with:
-          repository: toska/fuksilaiterekisteri
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          build_args: BASE_PATH=/fuksilaite/,NODE_ENV=staging,GITHUB_SHA=${{ github.sha }},SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
-          tags: staging
+          image: fuksilaiterekisteri
+          tags: staging ${{ github.sha }}
+          containerfiles: |
+            ./Dockerfile
+          build-args: |
+            BASE_PATH=/fuksilaite
+            GIT_SHA=${{ github.sha }}
+            NODE_ENV=staging
+            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      - name: Push to quay.io
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: quay.io/toska
+          username: toska+github
+          password: ${{ secrets.QUAY_IO_TOKEN }}
 
   notify:
     runs-on: ubuntu-latest
     needs: [test, build]
     if: always()
+
     steps:
       - name: Notify failed
         uses:  UniversityOfHelsinkiCS/slackbot-action@v1.3.2
@@ -63,6 +80,7 @@ jobs:
         with:
           webhook-url: ${{ secrets.WEBHOOK_URL }}
           message-type: test-failure
+
       - name: Notify success
         uses:  UniversityOfHelsinkiCS/slackbot-action@v1.3.2
         if: (needs.test.result == 'success' || needs.build.result == 'success')
