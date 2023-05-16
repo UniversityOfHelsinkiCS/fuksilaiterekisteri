@@ -54,7 +54,7 @@ jobs:
           containerfiles: |
             ./Dockerfile
           build-args: |
-            BASE_PATH=/fuksilaite
+            BASE_PATH=/fuksilaite/
             GIT_SHA=${{ github.sha }}
             NODE_ENV=staging
             SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
