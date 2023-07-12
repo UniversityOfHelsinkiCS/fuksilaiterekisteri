@@ -1,10 +1,15 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Segment, Header } from 'semantic-ui-react'
-import TranslatedMarkdown from 'Components/TranslatedMarkdown'
+import * as ReactMarkdown from 'react-markdown'
+import { localeSelector } from 'Utilities/redux/localeReducer'
 import StudentInfo from './StudentInfo'
+import deviceTexts from './deviceTexts'
+
+const getDeviceText = (date, locale) => deviceTexts[date.getFullYear()][locale]
 
 const DeviceInfo = () => {
+  const locale = useSelector(localeSelector)
   const user = useSelector(state => state.user.data)
 
   return (
@@ -21,7 +26,7 @@ const DeviceInfo = () => {
         </div>
       </Segment>
       <Segment>
-        <TranslatedMarkdown textKey="deviceSpecs" />
+        <ReactMarkdown source={getDeviceText(user.deviceGivenAt, locale)} />
       </Segment>
     </Segment.Group>
   )

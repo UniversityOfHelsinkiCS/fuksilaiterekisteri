@@ -3,13 +3,13 @@
 ![Test and build staging-image](https://github.com/UniversityOfHelsinkiCS/fuksilaiterekisteri/workflows/Test%20and%20build%20staging-image/badge.svg) ![Build production-image](https://github.com/UniversityOfHelsinkiCS/fuksilaiterekisteri/workflows/Build%20production-image/badge.svg)
 
 ## How to run
-Copy the repository to your machine and run ```npm run dev``` or ```docker-compose up```
+Copy the repository to your machine and run ```npm run dev``` or ```docker compose up```
 
 1) Login as admin and enable registration
-2) Login as fuksi to crete user
+2) Login as fuksi to create user
 3) Login as admin and mark fuksi as eligible
 
-As a maintainer add your self to superadmins in the production server env (`SUPERADMINS` in dockker compose)
+As a maintainer, add yourself to superadmins in the production server env (`SUPERADMINS` in docker-compose.yml)
 
 ## How to open registration
 
@@ -17,6 +17,7 @@ As a maintainer add your self to superadmins in the production server env (`SUPE
 * Vaihda `current_year` ja `current_semester` tuotantokantaan käsin
 	*  Semesterin saat Oodikoneen `sis-db`:n `semesters` taulusta, semester on aina jakelun avaamispäivän lukukausi (=vuosi 202x, syksy)
 * Avaa rekisteröityminen
+* Hae käsin laitteen tekninen kuvaus näistä linkeistä: [suomeksi](https://it.cs.helsinki.fi/fi/fuksilaitteet/) ja [englanniksi](https://it.cs.helsinki.fi/en/UndergraduateLaptop/) ja laita ne tiedostoon ```components/StudentPage/deviceTexts.js``` markdown-muodossa, samaan tyyliin kuin aiemmat.
 
 ## Sanasto
 - Opiskelija = kuka vaan jolla on HY:n (tai Avoimen) opiskelijatunnus.
@@ -36,7 +37,7 @@ As a maintainer add your self to superadmins in the production server env (`SUPE
 -> Opiskelija näkee, ja voi aina tulla tarkistamaan tehtäviensä statuksen. Statukset päivittyvät automaattisesti.
 -> Kun kaikki tehtävät on suoritettu, saa opiskelija automaattisesti sähköpostin asiasta.
 
-2) 'Et ole oikeutettu läppäriin. **Syyt.**
+2) 'Et ole oikeutettu läppäriin. **Syyt.**'
 
 3) 'Rekisteröinti on kiinni'
 
