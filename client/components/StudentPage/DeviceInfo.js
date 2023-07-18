@@ -6,7 +6,7 @@ import { localeSelector } from 'Utilities/redux/localeReducer'
 import StudentInfo from './StudentInfo'
 import deviceTexts from './deviceTexts'
 
-const getDeviceText = (date, locale) => deviceTexts[date.getFullYear()][locale]
+const getDeviceText = (date, locale) => deviceTexts[new Date(date).getFullYear()][locale]
 
 const DeviceInfo = () => {
   const locale = useSelector(localeSelector)
