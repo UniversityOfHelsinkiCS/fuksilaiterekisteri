@@ -13,10 +13,8 @@ class ApiInterface {
         rejectUnauthorized: false,
       }),
       baseURL: STUDENT_API_URL,
-      headers: {
-        common: {
-          [SIS ? 'Token' : 'Authorization']: STUDENT_API_TOKEN,
-        },
+      params: {
+        token: STUDENT_API_TOKEN,
       },
     })
   }
