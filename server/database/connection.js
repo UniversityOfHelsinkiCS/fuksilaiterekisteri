@@ -1,6 +1,6 @@
 const Umzug = require('umzug')
 const logger = require('@util/logger')
-const { inProduction } = require('@util/common')
+// const { inProduction } = require('@util/common')
 const { sequelize, Sequelize } = require('@database')
 
 const DB_CONNECTION_RETRY_LIMIT = 60
@@ -21,7 +21,7 @@ const runMigrations = async () => {
   return migrator.up()
 }
 
-const runSeeders = async () => {
+/* const runSeeders = async () => {
   const migrator = new Umzug({
     storage: 'sequelize',
     storageOptions: {
@@ -35,7 +35,7 @@ const runSeeders = async () => {
     },
   })
   return migrator.up()
-}
+} */
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -43,7 +43,7 @@ const initializeDatabaseConnection = async (attempt = 1) => {
   try {
     await sequelize.authenticate()
     await runMigrations()
-    if (!inProduction) await runSeeders()
+    // if (!inProduction) await runSeeders()
     console.log('Initialized connection to database')
     return true
   } catch (e) {
