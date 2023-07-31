@@ -33,19 +33,21 @@ const myFormat = winston.format.printf(({ message, level }) => {
 
 const transports = [new winston.transports.Console()]
 
-transports.push(
-  new WinstonGelfTransporter({
-    handleExceptions: true,
-    host: 'svm-116.cs.helsinki.fi',
-    port: 9503,
-    protocol: 'udp',
-    hostName: os.hostname(),
-    additional: {
-      app: 'fuksilaite',
-      environment: 'production',
-    },
-  }),
-)
+if (inProduction) {
+  transports.push(
+    new WinstonGelfTransporter({
+      handleExceptions: true,
+      host: 'svm-116.cs.helsinki.fi',
+      port: 9503,
+      protocol: 'udp',
+      hostName: os.hostname(),
+      additional: {
+        app: 'fuksilaite',
+        environment: 'production',
+      },
+    }),
+  )
+}
 
 const productionLogger = winston.createLogger({
   format: myFormat,
