@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import {
   Button,
 } from 'semantic-ui-react'
+import deviceModelColumn from 'Components/AdminPage/UserTable/deviceModels'
 import dateFormatter from '../../../util/dateFormatter'
 import VirtualizedTable from '../../VirtualizedTable'
 import { updateStudentStatus, markStudentEligible } from '../../../util/redux/studentReducer'
@@ -96,6 +97,7 @@ const StudentTable = ({ students, hiddenColumns }) => {
       getCellVal: ({ deviceGivenAt }) => new Date(deviceGivenAt).getTime(),
       width: 160,
     },
+    deviceModelColumn,
     {
       key: 'wants_device',
       label: 'Wants device',

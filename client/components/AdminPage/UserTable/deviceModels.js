@@ -6,4 +6,15 @@ const deviceModels = {
   2023: 'Thinkpad L14 gen 3',
 }
 
-export default deviceModels
+const deviceModelColumn = {
+  key: 'device_model',
+  label: 'Device model',
+  renderCell: ({ deviceGivenAt }) => {
+    if (!deviceGivenAt) return '-'
+    const model = deviceModels[new Date(deviceGivenAt).getFullYear()]
+    if (!model) return 'Not found'
+    return model
+  },
+}
+
+export default deviceModelColumn

@@ -7,7 +7,7 @@ import {
 } from '../../../util/redux/usersReducer'
 import dateFormatter from '../../../util/dateFormatter'
 import VirtualizedTable from '../../VirtualizedTable'
-import deviceModels from './deviceModels'
+import deviceModelColumn from './deviceModels'
 
 const UserTable = ({
   users, handleAdminNoteClick, handleStaffSettingClick, hiddenColumns, filter,
@@ -158,16 +158,7 @@ const UserTable = ({
         </div>
       ),
     },
-    {
-      key: 'device_model',
-      label: 'Device model',
-      renderCell: ({ deviceGivenAt }) => {
-        if (!deviceGivenAt) return '-'
-        const model = deviceModels[new Date(deviceGivenAt).getFullYear()]
-        if (!model) return 'Not found'
-        return model
-      },
-    },
+    deviceModelColumn,
     {
       key: 'device_returned_at',
       label: 'Returned at',
