@@ -17,7 +17,7 @@ import ErrorBoundary from 'Components/ErrorBoundary'
 
 if (inProduction || inStaging) {
   Sentry.init({
-    dsn: 'https://bcb968e7b2204ae1aaae98da4c4a23bc@sentry.cs.helsinki.fi/9',
+    dsn: 'https://2395f435db55c8557d2ed0bb7eddde06@toska.cs.helsinki.fi/7',
     environment: process.env.NODE_ENV,
     release: process.env.SENTRY_RELEASE,
   })
