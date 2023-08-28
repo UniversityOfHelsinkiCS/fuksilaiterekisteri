@@ -156,7 +156,7 @@ describe("Serial setting and validation works and correct part of the serial is 
       giveDevice("0123456789012345678901234custom1")
       cy.contains('fuksiEtunimi fuksi').should('not.exist')
       cy.login("admin")
-      cy.contains('fuksiEtunimi fuksi').parent().parent().contains("custom1")
+      cy.contains('fuksiEtunimi fuksi').parent().parent().contains("CUSTOM1")
     })
 
     it("Non 20 length serial MANUAL", () => {
@@ -165,7 +165,7 @@ describe("Serial setting and validation works and correct part of the serial is 
       giveDevice("1234custom1")
       cy.contains('fuksiEtunimi fuksi').should('not.exist')
       cy.login("admin")
-      cy.contains('fuksiEtunimi fuksi').parent().parent().contains("1234custom1")
+      cy.contains('fuksiEtunimi fuksi').parent().parent().contains("1234CUSTOM1")
     })
 
   })
@@ -194,11 +194,6 @@ describe("Serial setting and validation works and correct part of the serial is 
       findStudent('fuksi')
       giveBadDevice("aaaaa012345678901234")
       cy.contains('fuksiEtunimi fuksi')
-    })
-    it("case sensitivity", () => {
-      setSerialValidationPattern("ABCXXX",4)
-      findStudent('fuksi')
-      giveBadDevice("abc123")
     })
     it("Non 20 length serial FULL", () => {
       setSerialValidationPattern("0123456789012345678901234XXXXXXX",26)
