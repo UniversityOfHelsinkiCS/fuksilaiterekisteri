@@ -4,7 +4,7 @@
 
 const inProduction = process.env.NODE_ENV === 'production'
 const inStaging = process.env.NODE_ENV === 'staging'
-const inE2EMode = process.env.NODE_ENV === 'E2E'
+const inE2EMode = process.env.E2E === 'true'
 
 module.exports = {
   inProduction,
