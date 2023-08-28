@@ -12,6 +12,7 @@ services:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
       - EMAIL_ENABLED=false
       - SUPERADMINS=
+      - E2E=$E2E
     volumes:
       - ./:/usr/src/app
     ports:
