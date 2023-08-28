@@ -1,12 +1,12 @@
 const { Model, DataTypes, Op } = require('sequelize')
 const { sequelize } = require('@database')
-const { ForbiddenError } = require('@util/errors')
+const { ParameterError, ForbiddenError } = require('@util/errors')
 const logger = require('@util/logger')
 const ServiceStatus = require('./servicestatus')
 const StudyProgram = require('./studyprogram')
 const UserStudyProgram = require('./userstudyprogram')
 const ApiInterface = require('./lib/apiInterface')
-const { inProduction } = require('../util/common')
+const { inProduction, validateSerial } = require('../util/common')
 
 const api = new ApiInterface()
 
@@ -331,10 +331,8 @@ class User extends Model {
   async claimDevice(deviceId, deviceDistributedBy) {
     const settings = await ServiceStatus.getObject()
 
-    console.log('DeviceId', deviceId)
-
-    // const validSerial = await validateSerial(deviceId, settings)
-    // if (!validSerial) throw new ParameterError('Invalid deviceId')
+    const validSerial = await validateSerial(deviceId, settings)
+    if (!validSerial) throw new ParameterError('Invalid deviceId')
 
     if (
       !(

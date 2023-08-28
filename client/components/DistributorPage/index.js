@@ -104,7 +104,7 @@ const DistributorPage = () => {
   const parseId = (rawId) => {
     if (rawId.length !== MANUAL_SERIAL_LENGTH && rawId.length !== FULL_SERIAL_LENGTH) return null
     if (rawId.length === MANUAL_SERIAL_LENGTH) return STATIC_SERIAL_PART + rawId
-    if (rawId.substring(0, settings.serialSeparatorPos).toUpperCase() === STATIC_SERIAL_PART.toUpperCase()) return rawId
+    if (rawId.substring(0, settings.serialSeparatorPos) === STATIC_SERIAL_PART) return rawId
 
     return null
   }
@@ -174,7 +174,7 @@ const DistributorPage = () => {
   }
   */
 
-  const changeDeviceId = (e, { value }) => setDeviceId(value)
+  const changeDeviceId = (e, { value }) => setDeviceId(value.toUpperCase())
 
   const handleClaimClick = () => {
     if (!student || !parseId(deviceId)) return
