@@ -251,7 +251,7 @@ context('Admin', () => {
     cy.get("[data-cy=updateSerial]").click()
     cy.reload()
     cy.get('[data-cy=servicestatus-tab]').click()
-    cy.get("[data-cy=deviceSerial] > input").should("have.value","STATICPARTcustompart")
+    cy.get("[data-cy=deviceSerial] > input").should("have.value","STATICPARTCUSTOMPART")
     cy.get('[data-cy=letter-11]').should("have.css","color","rgb(0, 128, 0)")
     cy.get('[data-cy=letter-10]').should("have.css","color","rgb(255, 0, 0)")
   })
