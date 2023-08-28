@@ -34,9 +34,9 @@ export default function DeviceSerial() {
         <span>
           Input an example of
           <b> a full-length </b>
-          serial. For example 1s20N3S2NJ00PF1XXXXX.
+          serial. For example 1S20N3S2NJ00PF1XXXXX.
         </span>
-        <Input data-cy="deviceSerial" onChange={e => setSerial(e.target.value)} value={newSerial} />
+        <Input data-cy="deviceSerial" onChange={e => setSerial(e.target.value)} value={newSerial.toUpperCase()} />
       </div>
       <Message>
         Select a location for the separator by clicking on the first letter (below) that you wish to save. If you want to include some of the &quot;static part&quot; in the database, simply make sure to include that in the green selector.
