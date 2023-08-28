@@ -332,7 +332,7 @@ class User extends Model {
     const settings = await ServiceStatus.getObject()
 
     const validSerial = await validateSerial(deviceId, settings)
-    if (!validSerial) throw new ParameterError('Invalid deviceId')
+    if (!validSerial) throw new ParameterError(`Invalid deviceId: ${deviceId}`)
 
     if (
       !(
