@@ -331,6 +331,8 @@ class User extends Model {
   async claimDevice(deviceId, deviceDistributedBy) {
     const settings = await ServiceStatus.getObject()
 
+    console.log('DeviceId', deviceId)
+
     // const validSerial = await validateSerial(deviceId, settings)
     // if (!validSerial) throw new ParameterError('Invalid deviceId')
 
