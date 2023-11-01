@@ -64,11 +64,16 @@ const authentication = async (req, res, next) => {
     admin: false || !!(uid === 'admin' && !inProduction),
   }
 
-  if (!studentNumber) {
-    if (!req.headers.employeenumber) {
-      return res.status(503).send({ errorName: 'studentnumber-missing' })
-    }
+  if (!studentNumber && !req.headers.employeenumber) {
+    return res.status(503).send({ errorName: 'studentnumber-missing' })
+  }
 
+  const settings = await ServiceStatus.getObject()
+
+  /* Temporary fix for staff not being able to register. This should be fixed better
+  for when the registration opens, because with this fix, staff is only able to register
+  when student registrations are closed */
+  if (req.headers.employeenumber && !settings.studentRegistrationOnline) {
     const newUser = await User.create({
       ...defaultParams,
     })
@@ -83,7 +88,6 @@ const authentication = async (req, res, next) => {
   }
 
   try {
-    const settings = await ServiceStatus.getObject()
     if (!settings.studentRegistrationOnline) {
       logger.info(`User with studentNumber ${studentNumber} tried to create a new account (registrations are closed)`)
       return res.status(503).send({ error: 'Registrations are closed.' })
