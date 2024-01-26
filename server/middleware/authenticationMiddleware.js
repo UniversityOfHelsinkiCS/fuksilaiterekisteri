@@ -30,6 +30,7 @@ const authentication = async (req, res, next) => {
   }
 
   console.log('hygroupcn', hygroupcn)
+  console.log('username', uid)
   req.toska = hygroupcn && hygroupcn.includes('grp-toska')
 
   const foundUser = await User.findOne({
@@ -131,6 +132,7 @@ const authentication = async (req, res, next) => {
     }
     return next()
   } catch (e) {
+    console.log('-->', e)
     logger.error(['Creating student failed', e.toString(), e.response ? e.response.data : null])
     Sentry.withScope(() => {
       Sentry.captureMessage('Creating student failed!')

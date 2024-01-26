@@ -138,7 +138,10 @@ class User extends Model {
 
     const flattenEnrolments = flattenEnrolmentsFor(studyrights.map(s => s.id), semesterEnrollments.data)
 
-    const isPresent = flattenEnrolments.some(enrollment => (
+    console.log(semesterEnrollments.data)
+    console.log(flattenEnrolments)
+
+    const isPresent = flattenEnrolments && flattenEnrolments.some(enrollment => (
       enrollment.semester_code === settings.currentSemester && enrollment.semester_enrollment_type_code === 1))
 
     return {
