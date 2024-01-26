@@ -5,6 +5,8 @@ const {
 } = require('../../util/common')
 const mock = require('./mock')
 
+const useMock = true
+
 class ApiInterface {
   constructor() {
     this.userApi = axios.create({
@@ -20,8 +22,9 @@ class ApiInterface {
   }
 
   async getStudyRights(studentNumber) {
-    if (!inProduction) return Promise.resolve(mock.findStudyrights(studentNumber))
+    if (!inProduction && useMock) return Promise.resolve(mock.findStudyrights(studentNumber))
     const { data } = await this.userApi.get(`/students/${studentNumber}/studyrights`)
+
     return data
   }
 
@@ -57,7 +60,7 @@ class ApiInterface {
   }
 
   async getSemesterEnrollments(studentNumber) {
-    if (!inProduction) return Promise.resolve(mock.findSemesterEnrollments(studentNumber))
+    if (!inProduction && useMock) return Promise.resolve(mock.findSemesterEnrollments(studentNumber))
     if (!SIS) {
       const res = await this.userApi.get(`/students/${studentNumber}/semesterEnrollments`)
       return res.data
@@ -67,7 +70,7 @@ class ApiInterface {
   }
 
   async getYearsCredits(studentNumber, startingSemester, signUpYear) {
-    if (!inProduction) return Promise.resolve(mock.findFirstYearCredits(studentNumber))
+    if (!inProduction && useMock) return Promise.resolve(mock.findFirstYearCredits(studentNumber))
     if (!SIS) {
       const res = await this.userApi.get(`/students/${studentNumber}/fuksiYearCredits/${startingSemester}`)
       return res.data

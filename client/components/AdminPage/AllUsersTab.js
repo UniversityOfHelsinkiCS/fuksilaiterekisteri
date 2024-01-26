@@ -61,21 +61,26 @@ export default () => {
     switch (filter) {
       case 'all':
         filtered = users
+        hiddenColumns = ['ext_wants_device', 'ext_eligible']
         break
       case 'deviceHolders':
         filtered = users.filter(u => !!u.deviceGivenAt && !u.deviceReturned)
-        hiddenColumns = ['admin', 'staff', 'distributor', 'reclaimer', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'mark_eligible', 'device_returned_at', 'device_returned_by']
+        hiddenColumns = ['ext_wants_device', 'ext_eligible', 'admin', 'staff', 'distributor', 'reclaimer', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'mark_eligible', 'device_returned_at', 'device_returned_by']
         break
       case 'returnedDevices':
         filtered = users.filter(u => u.deviceReturned)
-        hiddenColumns = ['admin', 'staff', 'distributor', 'reclaimer', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'mark_eligible']
+        hiddenColumns = ['ext_wants_device', 'ext_eligible', 'admin', 'staff', 'distributor', 'reclaimer', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'mark_eligible']
         break
       case 'currentYearEligible':
         filtered = users.filter(u => u.signupYear === settings.currentYear && u.eligible)
-        hiddenColumns = ['admin', 'staff', 'distributor', 'reclaimer', 'eligible', 'mark_eligible', 'device_returned_at', 'device_returned_by']
+        hiddenColumns = ['ext_wants_device', 'ext_eligible', 'admin', 'staff', 'distributor', 'reclaimer', 'eligible', 'mark_eligible', 'device_returned_at', 'device_returned_by']
         break
       case 'allStaff':
         filtered = users.filter(u => u.admin || u.staff || u.distributor || u.reclaimer)
+        hiddenColumns = ['ext_wants_device', 'ext_eligible', 'student_number', 'studyPrograms', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'device_given_at', 'device_id', 'device_distributed_by', 'mark_eligible', 'mark_returned', 'device_returned_at', 'device_returned_by']
+        break
+      case 'extendedRequester':
+        filtered = users.filter(u => u.extendedEligible || u.extendedWantsDevice)
         hiddenColumns = ['student_number', 'studyPrograms', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'device_given_at', 'device_id', 'device_distributed_by', 'mark_eligible', 'mark_returned', 'device_returned_at', 'device_returned_by']
         break
       default:

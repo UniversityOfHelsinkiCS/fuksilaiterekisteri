@@ -55,13 +55,14 @@ const mockData = {
           elements: [
             {
               code: 'KH50_005',
-              start_date: '2019-07-31T21:00:00.000Z',
+              start_date: '2023-07-31T21:00:00.000Z',
               end_date: '2025-07-30T21:00:00.000Z',
             },
           ],
-          admission_date: '2017-06-30T21:00:00.000Z',
-          end_date: '2024-07-30T21:00:00.000Z',
-          start_date: '2017-07-31T21:00:00.000Z',
+          admission_date: '2023-06-30T21:00:00.000Z',
+          end_date: '2025-07-30T21:00:00.000Z',
+          start_date: '2023-07-31T21:00:00.000Z',
+          id: 'hy-opinoik-131106475',
         },
       ],
     },
@@ -69,15 +70,158 @@ const mockData = {
       md5: '12345',
       status: 200,
       elapsed: 0.002677027,
+      data: {
+        'hy-opinoik-131106475': [
+          {
+            full_time_student: 'true',
+            semester_enrollment_type_code: 1,
+            absence_reason_code: null,
+            semester_enrollment_date: '2016-06-30T21:00:00.000Z',
+            semester_code: 139,
+          },
+          {
+            full_time_student: 'true',
+            semester_enrollment_type_code: 1,
+            absence_reason_code: null,
+            semester_enrollment_date: '2023-06-30T21:00:00.000Z',
+            semester_code: 147,
+          },
+        ],
+      },
+    },
+  },
+  'non-fuksi': {
+    studyrights: {
       data: [
         {
-          full_time_student: 'true',
-          semester_enrollment_type_code: 1,
-          absence_reason_code: null,
-          semester_enrollment_date: '2016-06-30T21:00:00.000Z',
-          semester_code: 139,
+          faculty_code: 'H50',
+          elements: [
+            {
+              code: 'KH50_005',
+              start_date: '2019-07-31T21:00:00.000Z',
+              end_date: '2025-07-30T21:00:00.000Z',
+            },
+          ],
+          admission_date: '2017-06-30T21:00:00.000Z',
+          end_date: '2024-07-30T21:00:00.000Z',
+          start_date: '2019-07-31T21:00:00.000Z',
+          id: 'hy-opinoik-131106475',
         },
       ],
+    },
+    semesterEnrollments: {
+      md5: '12345',
+      status: 200,
+      elapsed: 0.002677027,
+      data: {
+        'hy-avoin-ew-sr-C5960': [],
+        'hy-avoin-ew-sr-C5DA9': [],
+        'hy-avoin-ew-sr-C5DAA': [],
+        'hy-avoin-ew-sr-C5F09': [],
+        'hy-avoin-ew-sr-C7450': [],
+        'hy-avoin-ew-sr-C7451': [],
+        'hy-avoin-ew-sr-C7452': [],
+        'hy-avoin-ew-sr-CD0E1': [],
+        'hy-avoin-ew-sr-CD0E2': [],
+        'hy-avoin-ew-sr-D392D': [],
+        'hy-avoin-ew-sr-D3AA9': [],
+        'hy-avoin-ew-sr-D4C67': [],
+        'hy-avoin-ew-sr-D66F1': [],
+        'hy-opinoik-128685407': [
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 139,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 140,
+          },
+        ],
+        'hy-opinoik-129282918': [
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 139,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 140,
+          },
+        ],
+        'hy-opinoik-131106475': [
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 139,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 140,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 141,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 142,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 143,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 144,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 145,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 146,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 147,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 148,
+          },
+          {
+            semester_enrollment_type_code: 2,
+            semester_code: 149,
+          },
+          {
+            semester_enrollment_type_code: 2,
+            semester_code: 150,
+          },
+        ],
+        'hy-opinoik-135812691': [
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 140,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 141,
+          },
+        ],
+        'hy-opinoik-136744535': [
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 140,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 141,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 142,
+          },
+        ],
+      },
     },
   },
   fuksi_without_digiskills: {

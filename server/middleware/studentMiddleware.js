@@ -6,6 +6,7 @@ const checkStudent = async (req, _res, next) => {
   if (!studentNumber) throw new ParameterError('Studentnumber required')
 
   const student = await User.findStudent(studentNumber)
+
   if (!student) throw new NotFoundError('student not found')
 
   req.student = student

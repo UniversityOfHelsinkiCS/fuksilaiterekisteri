@@ -3,10 +3,10 @@ import callBuilder from '../apiConnection'
 /**
  * Actions and reducers are in the same file for readability
  */
-export const deviceRequestAction = ({ email }) => {
+export const deviceRequestAction = ({ email, extended }) => {
   const route = '/request_device'
   const prefix = 'NEW_DEVICE_REQUEST'
-  return callBuilder(route, prefix, 'post', { email })
+  return callBuilder(route, prefix, 'post', { email, extended })
 }
 
 // Reducer

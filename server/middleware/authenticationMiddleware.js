@@ -12,6 +12,7 @@ const authentication = async (req, res, next) => {
     hypersonstudentid: hyPersonStudentId = null,
     sn = null,
     uid = null,
+    hygroupcn,
   } = req.headers
 
   if (!uid) return res.status(403).json({ error: 'forbidden' })
@@ -27,6 +28,10 @@ const authentication = async (req, res, next) => {
     logger.warn(`Non superadmin ${uid} tried to use loginAs without permissions`)
     return res.sendStatus(403)
   }
+
+  console.log('hygroupcn', hygroupcn)
+  req.toska = hygroupcn && hygroupcn.includes('grp-toska')
+
   const foundUser = await User.findOne({
     where: { userId: uid },
     include: [
@@ -102,7 +107,7 @@ const authentication = async (req, res, next) => {
       // eligibilityReasons,
     })
 
-    const { eligible, eligibilityReasons } = await newUser.checkEligibility()
+    const { eligible, eligibilityReasons, extendedEligible } = await newUser.checkEligibility()
 
     const { digiSkills, hasEnrollments } = await newUser.getStatus()
 
@@ -113,6 +118,7 @@ const authentication = async (req, res, next) => {
       digiSkillsCompleted: digiSkills,
       courseRegistrationCompleted: hasEnrollments,
       eligibilityReasons,
+      extendedEligible: extendedEligible && req.toska,
     })
 
     req.user = newUser

@@ -26,8 +26,8 @@ services:
       - POSTGRES_PASSWORD=postgres
     volumes:
       - pg_data:/data
-  adminer:
-    container_name: adminer
+  adminer_fular:
+    container_name: adminer_fukrek
     environment:
       - ADMINER_DESIGN=pepa-linha
       - ADMINER_DEFAULT_SERVER=db

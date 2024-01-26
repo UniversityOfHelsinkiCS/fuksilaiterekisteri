@@ -14,8 +14,8 @@ const getUser = async (req, res) => {
   const userIsPotentiallyEligible = user.isStudent && !user.hasDeviceGiven && !userIsEligibleThisYear
 
   if (userIsPotentiallyEligible) {
-    await user.checkAndUpdateEligibility()
-    userIsEligibleThisYear = user.eligible && user.signupYear === settings.currentYear
+    await user.checkAndUpdateEligibility(req.toska)
+    userIsEligibleThisYear = user.extendedEligible || (user.eligible && user.signupYear === settings.currentYear)
   }
 
   if (userIsEligibleThisYear && !user.hasCompletedAllTasks) {
@@ -49,16 +49,16 @@ const getLogoutUrl = async (req, res) => {
 }
 
 const requestDevice = async (req, res) => {
-  const { email } = req.body
+  const { email, extended } = req.body
   const { user } = req
   const settings = await ServiceStatus.getObject()
 
-  const userIsEligibleThisYear = user.eligible && user.signupYear === settings.currentYear
+  const userIsEligibleThisYear = extended || (user.eligible && user.signupYear === settings.currentYear)
   if (!userIsEligibleThisYear) throw new ForbiddenError('Not eligible')
 
   if (email !== null && !validateEmail(email)) throw new ParameterError('Invalid email')
 
-  await user.requestDevice(email)
+  await user.requestDevice(email, extended)
   await completionChecker(user)
   return res.json(user)
 }

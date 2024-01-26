@@ -44,6 +44,10 @@ const translations = {
     en: 'Name',
     fi: 'Nimi',
   },
+  hasNotDeviceGiven: {
+    en: 'Has not a device given already',
+    fi: 'Et ole vielä saanut laitetta',
+  },
 }
 
 const fake = {
@@ -65,13 +69,15 @@ export default function NotEligible({ user, notCurrentYearsFuksi, faking }) {
   const EligibilityBreakdown = () => {
     if (!Object.entries(eligibilityReasons).length) return null // Only users starting from 2020 have eligibilityReasons (unless updated).
 
+    const reasons = Object.entries(eligibilityReasons).filter(r => r[0] !== 'hasNotDeviceGiven')
+
     return (
       <>
         <Header as="h3">
           {translations.header[locale]}
         </Header>
         <List>
-          {Object.entries(eligibilityReasons).map(([key, status]) => {
+          {reasons.map(([key, status]) => {
             if (key === 'signedUpForFreshmanDeviceThisYear' && notCurrentYearsFuksi) {
               // eslint-disable-next-line no-param-reassign
               status = false

@@ -114,6 +114,13 @@ const UserTable = ({
       width: 80,
     },
     {
+      key: 'ext_eligible',
+      label: 'ExtEligible',
+      renderCell: ({ extendedEligible }) => boolToString(extendedEligible),
+      getCellVal: ({ extendedEligible }) => extendedEligible,
+      width: 80,
+    },
+    {
       key: 'digitaidot',
       label: 'Digi skills',
       renderCell: user => <Checkbox data-cy="toggleDigiskills" checked={!!user.digiSkillsCompleted} onChange={() => toggleUserRole(user, 'digiSkillsCompleted')} />,
@@ -133,6 +140,13 @@ const UserTable = ({
       renderCell: user => <Checkbox data-cy="toggleWantsDevice" checked={!!user.wantsDevice} onChange={() => toggleUserRole(user, 'wantsDevice')} />,
       getCellVal: ({ wantsDevice }) => !!wantsDevice,
       width: 130,
+    },
+    {
+      key: 'ext_wants_device',
+      label: 'ExtWants',
+      renderCell: ({ extendedWantsDevice }) => boolToString(extendedWantsDevice),
+      getCellVal: ({ extendedWantsDevice }) => extendedWantsDevice,
+      width: 80,
     },
     {
       key: 'device_given_at',

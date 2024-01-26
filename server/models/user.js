@@ -12,6 +12,7 @@ const api = new ApiInterface()
 
 const includesValidBachelorStudyright = async (studyrights) => {
   const acceptableStudyProgramCodes = (await StudyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
+
   return !!studyrights
     .reduce((pre, { elements }) => pre.concat(elements), [])
     .find(({ code, end_date }) => acceptableStudyProgramCodes.includes(code) && new Date(end_date) > new Date().getTime())
@@ -39,8 +40,10 @@ const getStudyrightValidities = async (studyrights, semesterEnrollments, current
 
   const previousStudyrightIsPossiblyNew = !hasPre2008Studyright && !hasNewStudyright && hasPreviousStudyright
 
+  const flattenEnrolments = Object.values(semesterEnrollments.data).reduce((set, obj) => set.concat(obj), [])
+
   if (previousStudyrightIsPossiblyNew) {
-    const hasBeenPresentBefore = semesterEnrollments.data.some(({ semester_code, semester_enrollment_type_code }) => (
+    const hasBeenPresentBefore = flattenEnrolments.some(({ semester_code, semester_enrollment_type_code }) => (
       semester_code < currentSemester && semester_enrollment_type_code !== 2))
 
     if (!hasBeenPresentBefore) {
@@ -91,8 +94,10 @@ class User extends Model {
     })
   }
 
+
   async getStudyRights() {
     if (this.studyrights) return this.studyrights
+
     const studyrights = await api.getStudyRights(this.studentNumber)
     this.studyrights = studyrights
     return studyrights
@@ -117,7 +122,10 @@ class User extends Model {
     return api.getYearsCredits(this.studentNumber, startingSemester, this.signupYear)
   }
 
+
   async checkEligibility() {
+    const flattenEnrolmentsFor = (rights, enrollments) => rights.reduce((set, right) => set.concat(enrollments[right]), [])
+
     const settings = await ServiceStatus.getObject()
     const studyrights = await this.getStudyRights()
     const semesterEnrollments = await this.getSemesterEnrollments()
@@ -128,7 +136,9 @@ class User extends Model {
       hasValidBachelorsStudyright,
     } = await getStudyrightValidities(studyrights, semesterEnrollments, settings.currentSemester)
 
-    const isPresent = semesterEnrollments.data.some(enrollment => (
+    const flattenEnrolments = flattenEnrolmentsFor(studyrights.map(s => s.id), semesterEnrollments.data)
+
+    const isPresent = flattenEnrolments.some(enrollment => (
       enrollment.semester_code === settings.currentSemester && enrollment.semester_enrollment_type_code === 1))
 
     return {
@@ -137,7 +147,9 @@ class User extends Model {
         hasValidStudyright: hasValidBachelorsStudyright,
         hasNoPreviousStudyright: !hasPreviousStudyright,
         isPresent,
+        hasNotDeviceGiven: !this.hasDeviceGiven,
       },
+      extendedEligible: (hasPreviousStudyright && isPresent && hasValidBachelorsStudyright && !this.hasDeviceGiven),
     }
   }
 
@@ -181,11 +193,11 @@ class User extends Model {
     }
   }
 
-  async checkAndUpdateEligibility() {
+  async checkAndUpdateEligibility(inToska = false) {
     try {
       const settings = await ServiceStatus.getObject()
 
-      const { eligible, eligibilityReasons } = await this.checkEligibility()
+      const { eligible, eligibilityReasons, extendedEligible } = await this.checkEligibility()
 
       if (eligible) {
         await this.createUserStudyprograms()
@@ -194,9 +206,18 @@ class User extends Model {
         logger.info(`${this.studentNumber} eligibility updated automatically`)
       }
 
+      if (extendedEligible && inToska) {
+        await this.createUserStudyprograms()
+        this.extendedEligible = extendedEligible
+        this.signupYear = settings.currentYear
+        logger.info(`${this.studentNumber} extendedEligible updated automatically`)
+      }
+
       this.eligibilityReasons = eligibilityReasons
       await this.save()
     } catch (e) {
+      console.log(e)
+
       logger.error(`Failed checking and updating ${this.studentNumber} eligibility`)
     }
   }
@@ -324,8 +345,8 @@ class User extends Model {
     })
   }
 
-  async requestDevice(email) {
-    await this.update({ wantsDevice: true, personalEmail: email })
+  async requestDevice(email, extended = false) {
+    await this.update({ wantsDevice: !extended, extendedWantsDevice: extended, personalEmail: email })
   }
 
   async claimDevice(deviceId, deviceDistributedBy) {
@@ -465,6 +486,14 @@ User.init(
     thirdYearOrLaterStudent: {
       type: DataTypes.BOOLEAN,
       field: 'third_year_or_later_student',
+    },
+    extendedEligible: {
+      type: DataTypes.BOOLEAN,
+      field: 'extended_eligible',
+    },
+    extendedWantsDevice: {
+      type: DataTypes.BOOLEAN,
+      field: 'extended_wants_device',
     },
     isStudent: {
       type: DataTypes.VIRTUAL,

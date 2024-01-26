@@ -9,6 +9,7 @@ const possibleUsers = [
     schacDateOfBirth: undefined,
     hyPersonStudentId: undefined,
     sn: 'admin',
+    hygroupcn: 'grp-toska',
   },
   {
     uid: 'jakelija',
@@ -45,6 +46,7 @@ const possibleUsers = [
     schacDateOfBirth: 19850806,
     hyPersonStudentId: 'non-fuksi',
     sn: 'non-fuksi',
+    hygroupcn: 'grp-toska',
   },
   {
     uid: 'fuksi_without_digiskills',

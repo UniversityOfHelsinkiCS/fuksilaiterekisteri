@@ -21,6 +21,9 @@ export default function AdminFilter({
     key: 'currentYearEligible',
     name: 'Current years eligible students',
   }, {
+    key: 'extendedRequester',
+    name: 'Extended requester',
+  }, {
     key: 'allStaff',
     name: 'All staff (Admin/staff/distributor/reclaimer)',
   }]
