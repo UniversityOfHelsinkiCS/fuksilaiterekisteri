@@ -97,10 +97,95 @@ const mockData = {
     studyrights: {
       data: [
         {
-          faculty_code: 'H50',
+          faculty_code: 'H40',
           elements: [
             {
-              code: 'KH50_005',
+              code: 'KH40_005',
+              start_date: '2018-07-31T21:00:00.000Z',
+              end_date: '2025-07-30T21:00:00.000Z',
+            },
+          ],
+          admission_date: '2017-06-30T21:00:00.000Z',
+          end_date: '2024-07-30T21:00:00.000Z',
+          start_date: '2018-07-31T21:00:00.000Z',
+          id: 'hy-opinoik-131106475',
+        },
+      ],
+    },
+    semesterEnrollments: {
+      md5: '12345',
+      status: 200,
+      elapsed: 0.002677027,
+      data: {
+        'hy-opinoik-131106475': [
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 137,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 138,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 139,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 140,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 141,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 142,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 143,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 144,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 145,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 146,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 147,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 148,
+          },
+          {
+            semester_enrollment_type_code: 2,
+            semester_code: 149,
+          },
+          {
+            semester_enrollment_type_code: 2,
+            semester_code: 150,
+          },
+        ],
+      },
+    },
+  },
+  'matlu-non-fuksi': {
+    studyrights: {
+      data: [
+        {
+          faculty_code: 'H40',
+          elements: [
+            {
+              code: 'KH40_005',
               start_date: '2018-07-31T21:00:00.000Z',
               end_date: '2025-07-30T21:00:00.000Z',
             },
