@@ -138,8 +138,6 @@ class User extends Model {
 
     const flattenEnrolments = flattenEnrolmentsFor(studyrights.map(s => s.id), semesterEnrollments.data)
 
-    console.log(semesterEnrollments.data)
-    console.log(flattenEnrolments)
 
     const isPresent = flattenEnrolments && flattenEnrolments.some(enrollment => (
       enrollment.semester_code === settings.currentSemester && enrollment.semester_enrollment_type_code === 1))
@@ -219,8 +217,6 @@ class User extends Model {
       this.eligibilityReasons = eligibilityReasons
       await this.save()
     } catch (e) {
-      console.log(e)
-
       logger.error(`Failed checking and updating ${this.studentNumber} eligibility`)
     }
   }

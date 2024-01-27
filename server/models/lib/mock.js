@@ -58,13 +58,13 @@ const mockData = {
           elements: [
             {
               code: 'KH50_005',
-              start_date: '2023-07-31T21:00:00.000Z',
+              start_date: '2019-07-31T21:00:00.000Z',
               end_date: '2025-07-30T21:00:00.000Z',
             },
           ],
-          admission_date: '2023-06-30T21:00:00.000Z',
+          admission_date: '2019-06-30T21:00:00.000Z',
           end_date: '2025-07-30T21:00:00.000Z',
-          start_date: '2023-07-31T21:00:00.000Z',
+          start_date: '2019-07-31T21:00:00.000Z',
           id: 'hy-opinoik-131106475',
         },
       ],
@@ -101,13 +101,13 @@ const mockData = {
           elements: [
             {
               code: 'KH50_005',
-              start_date: '2019-07-31T21:00:00.000Z',
+              start_date: '2018-07-31T21:00:00.000Z',
               end_date: '2025-07-30T21:00:00.000Z',
             },
           ],
           admission_date: '2017-06-30T21:00:00.000Z',
           end_date: '2024-07-30T21:00:00.000Z',
-          start_date: '2019-07-31T21:00:00.000Z',
+          start_date: '2018-07-31T21:00:00.000Z',
           id: 'hy-opinoik-131106475',
         },
       ],
@@ -117,19 +117,6 @@ const mockData = {
       status: 200,
       elapsed: 0.002677027,
       data: {
-        'hy-avoin-ew-sr-C5960': [],
-        'hy-avoin-ew-sr-C5DA9': [],
-        'hy-avoin-ew-sr-C5DAA': [],
-        'hy-avoin-ew-sr-C5F09': [],
-        'hy-avoin-ew-sr-C7450': [],
-        'hy-avoin-ew-sr-C7451': [],
-        'hy-avoin-ew-sr-C7452': [],
-        'hy-avoin-ew-sr-CD0E1': [],
-        'hy-avoin-ew-sr-CD0E2': [],
-        'hy-avoin-ew-sr-D392D': [],
-        'hy-avoin-ew-sr-D3AA9': [],
-        'hy-avoin-ew-sr-D4C67': [],
-        'hy-avoin-ew-sr-D66F1': [],
         'hy-opinoik-128685407': [
           {
             semester_enrollment_type_code: 1,
@@ -151,6 +138,14 @@ const mockData = {
           },
         ],
         'hy-opinoik-131106475': [
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 137,
+          },
+          {
+            semester_enrollment_type_code: 1,
+            semester_code: 138,
+          },
           {
             semester_enrollment_type_code: 1,
             semester_code: 139,
