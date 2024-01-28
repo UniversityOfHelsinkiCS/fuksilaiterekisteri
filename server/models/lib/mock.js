@@ -433,6 +433,7 @@ const mockData = {
           admission_date: '2017-06-30T21:00:00.000Z',
           end_date: '2024-07-30T21:00:00.000Z',
           start_date: '2017-07-31T21:00:00.000Z',
+          id: 'hy-opinoik-131106475',
         },
       ],
     },
@@ -440,29 +441,31 @@ const mockData = {
       md5: '12345',
       status: 200,
       elapsed: 0.002677027,
-      data: [
-        {
-          full_time_student: 'true',
-          semester_enrollment_type_code: 2, // Valid postpone reason
-          absence_reason_code: null,
-          semester_enrollment_date: '2016-06-30T21:00:00.000Z',
-          semester_code: 137,
-        },
-        {
-          full_time_student: 'true',
-          semester_enrollment_type_code: 2, // Valid postpone reason
-          absence_reason_code: null,
-          semester_enrollment_date: '2016-06-30T21:00:00.000Z',
-          semester_code: 138,
-        },
-        {
-          full_time_student: 'true',
-          semester_enrollment_type_code: 1,
-          absence_reason_code: null,
-          semester_enrollment_date: '2016-06-30T21:00:00.000Z',
-          semester_code: 139,
-        },
-      ],
+      data: {
+        'hy-opinoik-131106475': [
+          {
+            full_time_student: 'true',
+            semester_enrollment_type_code: 2, // Valid postpone reason
+            absence_reason_code: null,
+            semester_enrollment_date: '2016-06-30T21:00:00.000Z',
+            semester_code: 137,
+          },
+          {
+            full_time_student: 'true',
+            semester_enrollment_type_code: 2, // Valid postpone reason
+            absence_reason_code: null,
+            semester_enrollment_date: '2016-06-30T21:00:00.000Z',
+            semester_code: 138,
+          },
+          {
+            full_time_student: 'true',
+            semester_enrollment_type_code: 1,
+            absence_reason_code: null,
+            semester_enrollment_date: '2016-06-30T21:00:00.000Z',
+            semester_code: 139,
+          },
+        ],
+      },
     },
   },
   eligible3: {
@@ -480,6 +483,7 @@ const mockData = {
           admission_date: '2017-06-30T21:00:00.000Z',
           end_date: '2024-07-30T21:00:00.000Z',
           start_date: '2017-07-31T21:00:00.000Z',
+          id: 'hy-opinoik-131106475',
         },
       ],
     },
@@ -487,23 +491,25 @@ const mockData = {
       md5: '12345',
       status: 200,
       elapsed: 0.002677027,
-      data: [
-        {
-          full_time_student: 'true',
-          semester_enrollment_type_code: 2, // Valid postpone reason
-          absence_reason_code: null,
-          semester_enrollment_date: '2016-06-30T21:00:00.000Z',
-          semester_code: 133,
-        },
-        // ...
-        {
-          full_time_student: 'true',
-          semester_enrollment_type_code: 1,
-          absence_reason_code: null,
-          semester_enrollment_date: '2016-06-30T21:00:00.000Z',
-          semester_code: 139,
-        },
-      ],
+      data: {
+        'hy-opinoik-131106475': [
+          {
+            full_time_student: 'true',
+            semester_enrollment_type_code: 2, // Valid postpone reason
+            absence_reason_code: null,
+            semester_enrollment_date: '2016-06-30T21:00:00.000Z',
+            semester_code: 133,
+          },
+          // ...
+          {
+            full_time_student: 'true',
+            semester_enrollment_type_code: 1,
+            absence_reason_code: null,
+            semester_enrollment_date: '2016-06-30T21:00:00.000Z',
+            semester_code: 139,
+          },
+        ],
+      },
     },
   },
   ineligible1: {
@@ -521,6 +527,7 @@ const mockData = {
           admission_date: '2017-06-30T21:00:00.000Z',
           end_date: '2024-07-30T21:00:00.000Z',
           start_date: '2017-07-31T21:00:00.000Z',
+          id: 'hy-opinoik-131106475',
         },
       ],
     },
@@ -528,15 +535,17 @@ const mockData = {
       md5: '12345',
       status: 200,
       elapsed: 0.002677027,
-      data: [
-        {
-          full_time_student: 'true',
-          semester_enrollment_type_code: 1,
-          absence_reason_code: null,
-          semester_enrollment_date: '2016-06-30T21:00:00.000Z',
-          semester_code: 139,
-        },
-      ],
+      data: {
+        'hy-opinoik-131106475': [
+          {
+            full_time_student: 'true',
+            semester_enrollment_type_code: 1,
+            absence_reason_code: null,
+            semester_enrollment_date: '2016-06-30T21:00:00.000Z',
+            semester_code: 139,
+          },
+        ],
+      },
     },
   },
   ineligible2: {
@@ -554,6 +563,7 @@ const mockData = {
           admission_date: '2017-06-30T21:00:00.000Z',
           end_date: '2024-07-30T21:00:00.000Z',
           start_date: '2017-07-31T21:00:00.000Z',
+          id: 'hy-opinoik-131106475',
         },
       ],
     },
@@ -561,15 +571,17 @@ const mockData = {
       md5: '12345',
       status: 200,
       elapsed: 0.002677027,
-      data: [
-        {
-          full_time_student: 'true',
-          semester_enrollment_type_code: 0,
-          absence_reason_code: null,
-          semester_enrollment_date: '2016-06-30T21:00:00.000Z',
-          semester_code: 139,
-        },
-      ],
+      data: {
+        'hy-opinoik-131106475': [
+          {
+            full_time_student: 'true',
+            semester_enrollment_type_code: 0,
+            absence_reason_code: null,
+            semester_enrollment_date: '2016-06-30T21:00:00.000Z',
+            semester_code: 139,
+          },
+        ],
+      },
     },
   },
   ineligible3: {
@@ -592,6 +604,7 @@ const mockData = {
           admission_date: '2017-06-30T21:00:00.000Z',
           end_date: '2024-07-30T21:00:00.000Z',
           start_date: '2017-07-31T21:00:00.000Z',
+          id: 'hy-opinoik-131106475',
         },
       ],
     },
@@ -599,15 +612,17 @@ const mockData = {
       md5: '12345',
       status: 200,
       elapsed: 0.002677027,
-      data: [
-        {
-          full_time_student: 'true',
-          semester_enrollment_type_code: 1,
-          absence_reason_code: null,
-          semester_enrollment_date: '2016-06-30T21:00:00.000Z',
-          semester_code: 139,
-        },
-      ],
+      data: {
+        'hy-opinoik-131106475': [
+          {
+            full_time_student: 'true',
+            semester_enrollment_type_code: 1,
+            absence_reason_code: null,
+            semester_enrollment_date: '2016-06-30T21:00:00.000Z',
+            semester_code: 139,
+          },
+        ],
+      },
     },
   },
 }
