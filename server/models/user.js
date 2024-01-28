@@ -29,6 +29,10 @@ const getMinMaxSemesterStartTimes = async () => {
 const getStudyrightValidities = async (studyrights, semesterEnrollments, currentSemester) => {
   const mlu = studyrights.find(({ faculty_code }) => faculty_code === 'H50')
   const mluElements = mlu ? mlu.elements : []
+  const mluStarts = mluElements.map(e => e.start_date)
+
+  const firstStartDate = mluStarts.sort((a, b) => Date.parse(a) - Date.parse(b))[0]
+
   const { minSemesterStartTime, maxSemesterStartTime } = await getMinMaxSemesterStartTimes()
 
   let hasNewStudyright = mluElements.some(element => new Date(element.start_date).getTime() >= maxSemesterStartTime)
@@ -54,7 +58,9 @@ const getStudyrightValidities = async (studyrights, semesterEnrollments, current
 
   const hasValidBachelorsStudyright = await includesValidBachelorStudyright(studyrights)
 
-  return { hasPreviousStudyright, hasNewStudyright, hasValidBachelorsStudyright }
+  return {
+    hasPreviousStudyright, hasNewStudyright, hasValidBachelorsStudyright, firstStartDate,
+  }
 }
 
 class User extends Model {
@@ -122,7 +128,6 @@ class User extends Model {
     return api.getYearsCredits(this.studentNumber, startingSemester, this.signupYear)
   }
 
-
   async checkEligibility() {
     const flattenEnrolmentsFor = (rights, enrollments) => rights.reduce((set, right) => set.concat(enrollments[right]), [])
 
@@ -134,13 +139,16 @@ class User extends Model {
       hasPreviousStudyright,
       hasNewStudyright,
       hasValidBachelorsStudyright,
+      firstStartDate,
     } = await getStudyrightValidities(studyrights, semesterEnrollments, settings.currentSemester)
 
     const flattenEnrolments = flattenEnrolmentsFor(studyrights.map(s => s.id), semesterEnrollments.data)
 
-
     const isPresent = flattenEnrolments && flattenEnrolments.some(enrollment => (
       enrollment.semester_code === settings.currentSemester && enrollment.semester_enrollment_type_code === 1))
+
+    // Magic number for limit of extended delivery
+    const notTooOld = new Date(firstStartDate).getFullYear() >= 2019
 
     return {
       eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && hasValidBachelorsStudyright),
@@ -150,7 +158,7 @@ class User extends Model {
         isPresent,
         hasNotDeviceGiven: !this.hasDeviceGiven,
       },
-      extendedEligible: (hasPreviousStudyright && isPresent && hasValidBachelorsStudyright && !this.hasDeviceGiven),
+      extendedEligible: notTooOld && (hasPreviousStudyright && isPresent && hasValidBachelorsStudyright && !this.hasDeviceGiven),
     }
   }
 
@@ -194,7 +202,7 @@ class User extends Model {
     }
   }
 
-  async checkAndUpdateEligibility(inToska = false) {
+  async checkAndUpdateEligibility() {
     try {
       const settings = await ServiceStatus.getObject()
 
@@ -207,7 +215,7 @@ class User extends Model {
         logger.info(`${this.studentNumber} eligibility updated automatically`)
       }
 
-      if (extendedEligible && inToska) {
+      if (extendedEligible) {
         await this.createUserStudyprograms()
         this.extendedEligible = extendedEligible
         this.signupYear = settings.currentYear

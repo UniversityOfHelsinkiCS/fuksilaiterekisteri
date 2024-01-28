@@ -97,10 +97,10 @@ const mockData = {
     studyrights: {
       data: [
         {
-          faculty_code: 'H40',
+          faculty_code: 'H50',
           elements: [
             {
-              code: 'KH40_005',
+              code: 'KH50_005',
               start_date: '2018-07-31T21:00:00.000Z',
               end_date: '2025-07-30T21:00:00.000Z',
             },
