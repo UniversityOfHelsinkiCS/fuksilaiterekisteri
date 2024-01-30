@@ -63,6 +63,8 @@ const getStudyrightValidities = async (studyrights, semesterEnrollments, current
   }
 }
 
+const flattenEnrolmentsFor = (rights, enrollments) => rights.reduce((set, right) => set.concat(enrollments[right]), [])
+
 class User extends Model {
   static getStudentsForStaff(userStudyProgramCodes) {
     return this.findAll({
@@ -101,6 +103,19 @@ class User extends Model {
   }
 
 
+  async isEnrolled(currentSemester) {
+    const studyrights = await this.getStudyRights()
+    const semesterEnrollments = (await this.getSemesterEnrollments()).data
+
+    const mlu = studyrights.find(({ faculty_code }) => faculty_code === 'H50')
+
+    const flattenEnrolments = semesterEnrollments[mlu.id]
+
+    const status = flattenEnrolments.some(({ semester_code, semester_enrollment_type_code }) => semester_code === currentSemester && semester_enrollment_type_code === 1)
+
+    return status
+  }
+
   async getStudyRights() {
     if (this.studyrights) return this.studyrights
 
@@ -129,8 +144,6 @@ class User extends Model {
   }
 
   async checkEligibility() {
-    const flattenEnrolmentsFor = (rights, enrollments) => rights.reduce((set, right) => set.concat(enrollments[right]), [])
-
     const settings = await ServiceStatus.getObject()
     const studyrights = await this.getStudyRights()
     const semesterEnrollments = await this.getSemesterEnrollments()
