@@ -12,6 +12,7 @@ const api = new ApiInterface()
 
 const includesValidBachelorStudyright = async (studyrights) => {
   const acceptableStudyProgramCodes = (await StudyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
+  // TODO: replace with await StudyProgram.codes()
 
   return !!studyrights
     .reduce((pre, { elements }) => pre.concat(elements), [])
@@ -102,16 +103,23 @@ class User extends Model {
     })
   }
 
-
   async isEnrolled(currentSemester) {
+    const validNow = ({ startDate, endDate }) => {
+      const today = new Date()
+      return new Date(startDate) <= today && today <= new Date(endDate)
+    }
+
     const studyrights = await this.getStudyRights()
+    const matluRight = studyrights.find(({ faculty_code, valid }) => faculty_code === 'H50' && validNow(valid))
+
+    if (!matluRight) {
+      return false
+    }
+
     const semesterEnrollments = (await this.getSemesterEnrollments()).data
+    const flattenEnrolments = semesterEnrollments[matluRight.id]
 
-    const mlu = studyrights.find(({ faculty_code }) => faculty_code === 'H50')
-
-    const flattenEnrolments = semesterEnrollments[mlu.id]
-
-    const status = flattenEnrolments.some(({ semester_code, semester_enrollment_type_code }) => semester_code === currentSemester && semester_enrollment_type_code === 1)
+    const status = flattenEnrolments.some(({ semester_code, semester_enrollment_type_code }) => semester_code === currentSemester && [1, 3].includes(semester_enrollment_type_code))
 
     return status
   }
@@ -140,7 +148,8 @@ class User extends Model {
    * @param {OODI uses semesterCode, SIS uses startYear} startingSemester
    */
   async getYearsCredits(startingSemester) {
-    return api.getYearsCredits(this.studentNumber, startingSemester, this.signupYear)
+    const credits = await api.getYearsCredits(this.studentNumber, startingSemester, this.signupYear)
+    return Math.floor(credits)
   }
 
   async checkEligibility() {

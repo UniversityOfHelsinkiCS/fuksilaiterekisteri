@@ -2,8 +2,11 @@ const { Model, DataTypes } = require('sequelize')
 const { sequelize } = require('@database')
 
 class StudyProgram extends Model {
-
+  static async codes() {
+    return (await StudyProgram.findAll({ attributes: ['code'] })).map(({ code }) => code)
+  }
 }
+
 
 StudyProgram.init(
   {

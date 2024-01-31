@@ -149,14 +149,15 @@ const isAbsent = async (student, currentSemester) => {
 const getFallSemesterCode = year => (year - 1950) * 2 + 1
 const getSpringSemesterCode = year => (year - 1950) * 2
 const getCurrentYear = () => (inProduction ? new Date().getFullYear() : 2019)
+const getCurrentSemesterCode = (new Date().getMonth() < 8 ? getSpringSemesterCode(new Date().getFullYear()) : getFallSemesterCode(new Date().getFullYear()))
 
 const getFirstYearCredits = async (student) => {
   const semesterCode = getFallSemesterCode(student.signupYear)
-  const credits = await student.getYearsCredits(semesterCode)
-  return credits
+
+  return student.getYearsCredits(semesterCode)
 }
 
-const FIRST_YEAR_CREDIT_LIMIT = 30
+const FIRST_YEAR_CREDIT_LIMIT = 20
 
 const runAutumnReclaimStatusUpdater = async () => {
   const currentYear = getCurrentYear()
@@ -245,10 +246,81 @@ const runSpringReclaimStatusUpdater = async () => {
   }, Promise.resolve())
 }
 
+const reclaimYear = async (signup_year) => {
+  const currentYear = 2024 // getCurrentYear()
+  const semester_code = getCurrentSemesterCode
+  const deviceHolders = await User.findAll({
+    where: {
+      deviceSerial: { [Op.ne]: null },
+      deviceReturned: false,
+      signup_year,
+    },
+  })
+
+  const counter = {
+    enroll: 0,
+    limit: 0,
+    reclaim: 0,
+  }
+
+  for (let i = 0; i < deviceHolders.length; i++) {
+  // for (let i = 0; i < 100; i++) {
+    const student = deviceHolders[i]
+    // eslint-disable-next-line no-await-in-loop
+
+    const isSpring = new Date().getMonth() < 7
+    const deviceHeldForAYear = currentYear - (isSpring ? 1 : 0) - new Date(student.deviceGivenAt).getFullYear() > 0
+    if (deviceHeldForAYear) {
+      // eslint-disable-next-line no-await-in-loop
+      const firstYearCredits = await getFirstYearCredits(student)
+      // eslint-disable-next-line no-await-in-loop
+      await student.update({ firstYearCredits })
+    }
+    const creditsUnderLimit = deviceHeldForAYear && student.firstYearCredits < FIRST_YEAR_CREDIT_LIMIT
+
+    // eslint-disable-next-line no-await-in-loop
+    const enrolledInFaculty = await student.isEnrolled(semester_code)
+    if (!enrolledInFaculty || creditsUnderLimit) {
+      // console.log(student.studentNumber, !enrolledInFaculty, creditsUnderLimit)
+      counter.enroll += !enrolledInFaculty
+      counter.limit += creditsUnderLimit
+      counter.reclaim += !enrolledInFaculty || creditsUnderLimit
+    }
+  }
+
+  const percentage = (100 * (counter.reclaim / deviceHolders.length)).toFixed(1)
+  console.log(signup_year, counter.reclaim, deviceHolders.length, percentage, counter.enroll, counter.limit)
+
+  // logger.info(`Checking reclaim status for ${deviceHolders.length} students, year ${currentYear}`)
+}
+
+const runReclaimStatusUpdater = async () => {
+  /*
+  const deviceHolders = await User.findAll({
+    where: {
+      deviceSerial: { [Op.ne]: null },
+      deviceReturned: false,
+      signup_year: 2020,
+    },
+  })
+
+  const student = deviceHolders.find(d => d.studentNumber === '014299629')
+  const firstYearCredits = await getFirstYearCredits(student)
+  console.log(student.studentNumber, firstYearCredits)
+  */
+
+  for (let year = 2019; year < 2024; year++) {
+  // for (let year = 2019; year < 2024; year++) {
+    // eslint-disable-next-line no-await-in-loop
+    await reclaimYear(year)
+  }
+}
+
 module.exports = {
   updateEligibleStudentStatuses,
   checkStudentEligibilities,
   updateStudentEligibility,
   runAutumnReclaimStatusUpdater,
   runSpringReclaimStatusUpdater,
+  runReclaimStatusUpdater,
 }
