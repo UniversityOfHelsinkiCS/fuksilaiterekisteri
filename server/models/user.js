@@ -110,18 +110,36 @@ class User extends Model {
     }
 
     const studyrights = await this.getStudyRights()
-    const matluRight = studyrights.find(({ faculty_code, valid }) => faculty_code === 'H50' && validNow(valid))
+    const validMatluRights = studyrights.filter(({ faculty_code, valid }) => faculty_code === 'H50' && validNow(valid))
 
-    if (!matluRight) {
+    if (!validMatluRights || validMatluRights.length === 0) {
       return false
     }
 
     const semesterEnrollments = (await this.getSemesterEnrollments()).data
-    const flattenEnrolments = semesterEnrollments[matluRight.id]
+    // console.log(semesterEnrollments)
 
-    const status = flattenEnrolments.some(({ semester_code, semester_enrollment_type_code }) => semester_code === currentSemester && [1, 3].includes(semester_enrollment_type_code))
+    const matluEnrollments = validMatluRights.reduce((set, right) => set.concat(semesterEnrollments[right.id]), [])
 
-    return status
+    // const flattenedEnrollments = semesterEnrollments[validMatluRights[0].id]
+    // console.log(matluEnrollments)
+
+    const ACCEPTABLE_TYPES = [1, 3]
+    const currentAndLegit = ({ semester_code, semester_enrollment_type_code }) => semester_code === currentSemester && ACCEPTABLE_TYPES.includes(semester_enrollment_type_code)
+
+    /*
+    const leg = matluEnrollments.some(currentAndLegit)
+
+    if (!leg) {
+      const reg = matluEnrollments.find(s => s.semester_code === currentSemester)
+      // console.log(reg.termRegistrationType)
+      if (!['NONATTENDING', 'NEGLECTED'].includes(reg.termRegistrationType)) {
+        console.log(this.studentNumber, reg.termRegistrationType)
+      }
+    }
+    */
+
+    return matluEnrollments.some(currentAndLegit)
   }
 
   async getStudyRights() {

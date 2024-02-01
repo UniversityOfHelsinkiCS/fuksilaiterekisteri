@@ -141,6 +141,8 @@ const updateStudentEligibility = async (studentNumber) => {
   // await completionChecker(updatedStudent)
 }
 
+const isSpring = new Date().getMonth() < 7
+
 const isAbsent = async (student, currentSemester) => {
   const isPresent = await student.isEnrolled(currentSemester)
   return !isPresent
@@ -149,7 +151,7 @@ const isAbsent = async (student, currentSemester) => {
 const getFallSemesterCode = year => (year - 1950) * 2 + 1
 const getSpringSemesterCode = year => (year - 1950) * 2
 const getCurrentYear = () => (inProduction ? new Date().getFullYear() : 2019)
-const getCurrentSemesterCode = (new Date().getMonth() < 8 ? getSpringSemesterCode(new Date().getFullYear()) : getFallSemesterCode(new Date().getFullYear()))
+const getCurrentSemesterCode = (isSpring ? getSpringSemesterCode(new Date().getFullYear()) : getFallSemesterCode(new Date().getFullYear()))
 
 const getFirstYearCredits = async (student) => {
   const semesterCode = getFallSemesterCode(student.signupYear)
@@ -268,28 +270,45 @@ const reclaimYear = async (signup_year) => {
     const student = deviceHolders[i]
     // eslint-disable-next-line no-await-in-loop
 
-    const isSpring = new Date().getMonth() < 7
-    const deviceHeldForAYear = currentYear - (isSpring ? 1 : 0) - new Date(student.deviceGivenAt).getFullYear() > 0
+    const deviceGiven = new Date(student.deviceGivenAt).getFullYear()
+    const deviceHeldForAYear = currentYear - (isSpring ? 1 : 0) - deviceGiven > 0
     if (deviceHeldForAYear) {
       // eslint-disable-next-line no-await-in-loop
       const firstYearCredits = await getFirstYearCredits(student)
       // eslint-disable-next-line no-await-in-loop
       await student.update({ firstYearCredits })
     }
-    const creditsUnderLimit = deviceHeldForAYear && student.firstYearCredits < FIRST_YEAR_CREDIT_LIMIT
+    const creditsUnderLimit = deviceHeldForAYear && deviceGiven > 2021 && student.firstYearCredits < FIRST_YEAR_CREDIT_LIMIT
 
     // eslint-disable-next-line no-await-in-loop
     const enrolledInFaculty = await student.isEnrolled(semester_code)
     if (!enrolledInFaculty || creditsUnderLimit) {
-      // console.log(student.studentNumber, !enrolledInFaculty, creditsUnderLimit)
       counter.enroll += !enrolledInFaculty
       counter.limit += creditsUnderLimit
       counter.reclaim += !enrolledInFaculty || creditsUnderLimit
     }
+
+    const loanExpiredThisYear = differenceInYears(new Date(`${currentYear}`), new Date(student.deviceGivenAt)) === 5
+    const absent = !enrolledInFaculty
+
+    const semester = isSpring ? 'SPRING' : 'AUTUM'
+
+    if (loanExpiredThisYear || absent) {
+      // eslint-disable-next-line no-await-in-loop
+      await ReclaimCase.create({
+        userId: student.id,
+        status: 'OPEN',
+        absent,
+        loanExpired: loanExpiredThisYear,
+        creditsUnderLimit,
+        year: currentYear,
+        semester,
+      })
+    }
   }
 
   const percentage = (100 * (counter.reclaim / deviceHolders.length)).toFixed(1)
-  console.log(signup_year, counter.reclaim, deviceHolders.length, percentage, counter.enroll, counter.limit)
+  console.log(signup_year, counter.reclaim, deviceHolders.length, Number(percentage), counter.enroll, counter.limit)
 
   // logger.info(`Checking reclaim status for ${deviceHolders.length} students, year ${currentYear}`)
 }
@@ -300,17 +319,18 @@ const runReclaimStatusUpdater = async () => {
     where: {
       deviceSerial: { [Op.ne]: null },
       deviceReturned: false,
-      signup_year: 2020,
+      signup_year: 2022,
     },
   })
 
-  const student = deviceHolders.find(d => d.studentNumber === '014299629')
-  const firstYearCredits = await getFirstYearCredits(student)
-  console.log(student.studentNumber, firstYearCredits)
+  const semester_code = getCurrentSemesterCode
+  const student = deviceHolders.find(d => d.studentNumber === '015372244')
+  const enrolledInFaculty = await student.isEnrolled(semester_code)
+  console.log(enrolledInFaculty)
   */
 
-  for (let year = 2019; year < 2024; year++) {
   // for (let year = 2019; year < 2024; year++) {
+  for (let year = 2019; year < 2020; year++) {
     // eslint-disable-next-line no-await-in-loop
     await reclaimYear(year)
   }
