@@ -178,7 +178,8 @@ const runAutumnReclaimStatusUpdater = async () => {
     await promise // We don't want to spam oodi api so we wait for previous to resolve
 
     try {
-      const deviceHeldForAYear = currentYear - new Date(student.deviceGivenAt).getFullYear() === 1
+      const gotDevice = new Date(student.deviceGivenAt).getFullYear()
+      const deviceHeldForAYear = currentYear - gotDevice === 1
       if (deviceHeldForAYear) {
         const firstYearCredits = await getFirstYearCredits(student)
         await student.update({ firstYearCredits })
@@ -186,8 +187,9 @@ const runAutumnReclaimStatusUpdater = async () => {
 
       const creditsUnderLimit = deviceHeldForAYear && student.firstYearCredits < FIRST_YEAR_CREDIT_LIMIT
       const absent = await isAbsent(student, getFallSemesterCode(currentYear))
+      const hadForFiveYears = currentYear - gotDevice === 6
 
-      if (absent || creditsUnderLimit) {
+      if (!hadForFiveYears && (absent || creditsUnderLimit)) {
         await ReclaimCase.create({
           userId: student.id,
           status: 'OPEN',

@@ -15,12 +15,16 @@ const mockData = {
             {
               code: 'KH50_005',
               start_date: '2020-07-31T21:00:00.000Z',
-              end_date: '2025-07-30T21:00:00.000Z',
+              end_date: '2026-07-30T21:00:00.000Z',
             },
           ],
           admission_date: '2017-06-30T21:00:00.000Z',
-          end_date: '2024-07-30T21:00:00.000Z',
+          end_date: '2026-07-30T21:00:00.000Z',
           start_date: '2017-07-31T21:00:00.000Z',
+          valid: {
+            end_date: '2026-07-30T21:00:00.000Z',
+            start_date: '2017-07-31T21:00:00.000Z',
+          },
           id: 'hy-opinoik-131106475',
         },
       ],
@@ -405,7 +409,7 @@ const mockData = {
         ],
       },
     },
-    firstYearCredits: 29,
+    firstYearCredits: 19,
   },
   exDeviceHolder: {
     semesterEnrollments: {
@@ -424,7 +428,7 @@ const mockData = {
         ],
       },
     },
-    firstYearCredits: 29,
+    firstYearCredits: 19,
   },
   eligible2: {
     studyrights: {
@@ -442,6 +446,10 @@ const mockData = {
           end_date: '2024-07-30T21:00:00.000Z',
           start_date: '2017-07-31T21:00:00.000Z',
           id: 'hy-opinoik-131106475',
+          valid: {
+            end_date: '2024-07-30T21:00:00.000Z',
+            start_date: '2017-07-31T21:00:00.000Z',
+          },
         },
       ],
     },
@@ -489,8 +497,10 @@ const mockData = {
             },
           ],
           admission_date: '2017-06-30T21:00:00.000Z',
-          end_date: '2024-07-30T21:00:00.000Z',
-          start_date: '2017-07-31T21:00:00.000Z',
+          valid: {
+            start_date: '2008-07-31T21:00:00.000Z',
+            end_date: '2040-07-30T21:00:00.000Z',
+          },
           id: 'hy-opinoik-131106475',
         },
       ],
@@ -533,9 +543,11 @@ const mockData = {
             },
           ],
           admission_date: '2017-06-30T21:00:00.000Z',
-          end_date: '2024-07-30T21:00:00.000Z',
-          start_date: '2017-07-31T21:00:00.000Z',
           id: 'hy-opinoik-131106475',
+          valid: {
+            start_date: '2005-07-31T21:00:00.000Z',
+            end_date: '2010-07-30T21:00:00.000Z',
+          },
         },
       ],
     },
@@ -572,6 +584,10 @@ const mockData = {
           end_date: '2024-07-30T21:00:00.000Z',
           start_date: '2017-07-31T21:00:00.000Z',
           id: 'hy-opinoik-131106475',
+          valid: {
+            start_date: '2020-07-31T21:00:00.000Z',
+            end_date: '2025-07-30T21:00:00.000Z',
+          },
         },
       ],
     },
@@ -613,6 +629,10 @@ const mockData = {
           end_date: '2024-07-30T21:00:00.000Z',
           start_date: '2017-07-31T21:00:00.000Z',
           id: 'hy-opinoik-131106475',
+          valid: {
+            end_date: '2024-07-30T21:00:00.000Z',
+            start_date: '2017-07-31T21:00:00.000Z',
+          },
         },
       ],
     },

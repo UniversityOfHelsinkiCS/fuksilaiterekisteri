@@ -104,9 +104,9 @@ class User extends Model {
   }
 
   async isEnrolled(currentSemester) {
-    const validNow = ({ startDate, endDate }) => {
+    const validNow = ({ start_date, end_date }) => {
       const today = new Date()
-      return new Date(startDate) <= today && today <= new Date(endDate)
+      return new Date(start_date) <= today && today <= new Date(end_date)
     }
 
     const studyrights = await this.getStudyRights()

@@ -68,7 +68,7 @@ const runSharedTests = () => {
     cy.get('[data-cy=reclaimerContent]').should('not.contain', 'fuksiEtunimi')
   })
 
-  it('Doesn\'t show student who is present with more than 30 credits first year and device newer than five years', () => {
+  it('Doesn\'t show student who is present with more than 20 credits first year and device newer than five years', () => {
     cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Oppilas Mallikas')
   })
 
@@ -101,11 +101,11 @@ context('Reclaimer View', () => {
       cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Laite Vanhatar')
     })
 
-    it('Shows device holder with under 30 credits first study year', () => {
+    it('Shows device holder with under 20 credits first study year', () => {
       cy.get('[data-cy=reclaimerContent]').contains('Haltija Pisteetön')
     })
   
-    it('Doesn\'t show third+ year student with under 30 credits on first study year', () => {
+    it('Doesn\'t show third+ year student with under 20 credits on first study year', () => {
       cy.get('[data-cy=reclaimerContent]').should('not.contain', 'Senior Opiskelija')
     })
 

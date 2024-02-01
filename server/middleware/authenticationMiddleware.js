@@ -29,8 +29,6 @@ const authentication = async (req, res, next) => {
     return res.sendStatus(403)
   }
 
-  console.log('hygroupcn', hygroupcn)
-  console.log('username', uid)
   req.toska = hygroupcn && hygroupcn.includes('grp-toska')
 
   const foundUser = await User.findOne({
