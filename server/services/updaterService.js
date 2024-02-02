@@ -315,6 +315,11 @@ const reclaimYear = async (signup_year) => {
   // logger.info(`Checking reclaim status for ${deviceHolders.length} students, year ${currentYear}`)
 }
 
+const reclaimForYear = async (year) => {
+  console.log('reclaiming', year)
+  await reclaimYear(year)
+}
+
 const runReclaimStatusUpdater = async () => {
   /*
   const deviceHolders = await User.findAll({
@@ -345,4 +350,5 @@ module.exports = {
   runAutumnReclaimStatusUpdater,
   runSpringReclaimStatusUpdater,
   runReclaimStatusUpdater,
+  reclaimForYear,
 }

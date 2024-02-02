@@ -3,7 +3,9 @@ const rl = require('readline').createInterface({
   input: process.stdin,
   output: process.stdout,
 })
-const { checkStudentEligibilities, updateStudentEligibility, updateEligibleStudentStatuses } = require('../services/updaterService')
+const {
+  checkStudentEligibilities, updateStudentEligibility, updateEligibleStudentStatuses, reclaimForYear,
+} = require('../services/updaterService')
 
 const commands = {
   0: {
@@ -32,6 +34,17 @@ const commands = {
       console.log('Updating eligible student statuses...')
       await updateEligibleStudentStatuses()
     },
+  },
+  4: {
+    info: 'Reclaim a year',
+    exec: () => new Promise((res) => {
+      rl.question('Year: ', async (yearStr) => {
+        const year = Number(yearStr)
+        console.log('yes, running', year)
+        await reclaimForYear(year)
+        res()
+      })
+    }),
   },
 }
 

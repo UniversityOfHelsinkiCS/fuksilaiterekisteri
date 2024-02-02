@@ -170,7 +170,7 @@ class User extends Model {
     return Math.floor(credits)
   }
 
-  async checkEligibility() {
+  async checkEligibility(inBeta = false) {
     const settings = await ServiceStatus.getObject()
     const studyrights = await this.getStudyRights()
     const semesterEnrollments = await this.getSemesterEnrollments()
@@ -188,7 +188,7 @@ class User extends Model {
       enrollment.semester_code === settings.currentSemester && enrollment.semester_enrollment_type_code === 1))
 
     // Magic number for limit of extended delivery
-    const notTooOld = new Date(firstStartDate).getFullYear() >= 2019
+    const notTooOld = inBeta && new Date(firstStartDate).getFullYear() >= 2019
 
     return {
       eligible: (!hasPreviousStudyright && hasNewStudyright && isPresent && hasValidBachelorsStudyright),
@@ -242,11 +242,11 @@ class User extends Model {
     }
   }
 
-  async checkAndUpdateEligibility() {
+  async checkAndUpdateEligibility(inBeta = false) {
     try {
       const settings = await ServiceStatus.getObject()
 
-      const { eligible, eligibilityReasons, extendedEligible } = await this.checkEligibility()
+      const { eligible, eligibilityReasons, extendedEligible } = await this.checkEligibility(inBeta)
 
       if (eligible) {
         await this.createUserStudyprograms()
