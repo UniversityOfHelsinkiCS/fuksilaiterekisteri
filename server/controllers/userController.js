@@ -14,7 +14,7 @@ const getUser = async (req, res) => {
   const userIsPotentiallyEligible = user.isStudent && !user.hasDeviceGiven && !userIsEligibleThisYear
 
   if (userIsPotentiallyEligible) {
-    await user.checkAndUpdateEligibility(req.toska)
+    await user.checkAndUpdateEligibility(req.canary)
     userIsEligibleThisYear = user.extendedEligible || (user.eligible && user.signupYear === settings.currentYear)
   }
 

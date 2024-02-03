@@ -29,7 +29,7 @@ const authentication = async (req, res, next) => {
     return res.sendStatus(403)
   }
 
-  req.toska = hygroupcn && hygroupcn.includes('grp-toska')
+  req.canary = hygroupcn && hygroupcn.includes('grp-toska')
 
   const foundUser = await User.findOne({
     where: { userId: uid },
@@ -92,10 +92,12 @@ const authentication = async (req, res, next) => {
   }
 
   try {
+    /*
     if (!settings.studentRegistrationOnline) {
       logger.info(`User with studentNumber ${studentNumber} tried to create a new account (registrations are closed)`)
       return res.status(503).send({ error: 'Registrations are closed.' })
     }
+    */
 
     const newUser = await User.create({
       ...defaultParams,
@@ -106,7 +108,7 @@ const authentication = async (req, res, next) => {
       // eligibilityReasons,
     })
 
-    const { eligible, eligibilityReasons, extendedEligible } = await newUser.checkEligibility()
+    const { eligible, eligibilityReasons, extendedEligible } = await newUser.checkEligibility(req.canary)
 
     const { digiSkills, hasEnrollments } = await newUser.getStatus()
 
@@ -117,17 +119,24 @@ const authentication = async (req, res, next) => {
       digiSkillsCompleted: digiSkills,
       courseRegistrationCompleted: hasEnrollments,
       eligibilityReasons,
-      extendedEligible: extendedEligible && req.toska,
+      extendedEligible: extendedEligible && req.canary,
     })
 
     req.user = newUser
     Sentry.setUser({ ...newUser })
-    if (!eligible) {
+
+    if (!eligible && !extendedEligible) {
       Sentry.withScope((scope) => {
         scope.setUser(req.user ? req.user.get({ plain: true }) : null)
         Sentry.captureMessage('New non eligible user registered!')
       })
     }
+
+    if (!settings.studentRegistrationOnline && !extendedEligible) {
+      logger.info(`User with studentNumber ${studentNumber} tried to create a new account (registrations are closed)`)
+      return res.status(503).send({ error: 'Registrations are closed.' })
+    }
+
     return next()
   } catch (e) {
     console.log('-->', e)

@@ -428,7 +428,7 @@ const mockData = {
         ],
       },
     },
-    firstYearCredits: 19,
+    firstYearCredits: 29,
   },
   eligible2: {
     studyrights: {
