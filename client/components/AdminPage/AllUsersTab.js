@@ -81,7 +81,7 @@ export default () => {
         break
       case 'extendedRequester':
         filtered = users.filter(u => u.extendedEligible || u.extendedWantsDevice)
-        hiddenColumns = ['student_number', 'studyPrograms', 'eligible', 'digitaidot', 'enrolled', 'wants_device', 'device_given_at', 'device_id', 'device_distributed_by', 'mark_eligible', 'mark_returned', 'device_returned_at', 'device_returned_by']
+        hiddenColumns = ['student_number', 'studyPrograms', 'digitaidot', 'enrolled', 'device_given_at', 'device_id', 'device_distributed_by', 'mark_returned', 'device_returned_at', 'device_returned_by']
         break
       default:
         filtered = users

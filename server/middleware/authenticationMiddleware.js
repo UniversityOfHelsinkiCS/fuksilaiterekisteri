@@ -56,6 +56,10 @@ const authentication = async (req, res, next) => {
 
   const studentNumber = hyPersonStudentId
 
+  if (!studentNumber && !req.headers.employeenumber) {
+    return res.status(503).send({ errorName: 'studentnumber-missing' })
+  }
+
   const defaultParams = {
     userId: uid,
     hyEmail: mail,
@@ -66,10 +70,6 @@ const authentication = async (req, res, next) => {
     reclaimer: false || !!(uid === 'reclaimer' && !inProduction),
     studentNumber,
     admin: false || !!(uid === 'admin' && !inProduction),
-  }
-
-  if (!studentNumber && !req.headers.employeenumber) {
-    return res.status(503).send({ errorName: 'studentnumber-missing' })
   }
 
   const settings = await ServiceStatus.getObject()
@@ -92,20 +92,9 @@ const authentication = async (req, res, next) => {
   }
 
   try {
-    /*
-    if (!settings.studentRegistrationOnline) {
-      logger.info(`User with studentNumber ${studentNumber} tried to create a new account (registrations are closed)`)
-      return res.status(503).send({ error: 'Registrations are closed.' })
-    }
-    */
-
     const newUser = await User.create({
       ...defaultParams,
-      // eligible,
-      // digiSkillsCompleted: digiSkills,
-      // courseRegistrationCompleted: hasEnrollments,
       signupYear: settings.currentYear,
-      // eligibilityReasons,
     })
 
     const { eligible, eligibilityReasons, extendedEligible } = await newUser.checkEligibility(req.canary)

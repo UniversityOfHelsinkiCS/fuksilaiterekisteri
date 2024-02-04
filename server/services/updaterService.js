@@ -268,9 +268,7 @@ const reclaimYear = async (signup_year) => {
   }
 
   for (let i = 0; i < deviceHolders.length; i++) {
-  // for (let i = 0; i < 100; i++) {
     const student = deviceHolders[i]
-    // eslint-disable-next-line no-await-in-loop
 
     const deviceGiven = new Date(student.deviceGivenAt).getFullYear()
     const deviceHeldForAYear = currentYear - (isSpring ? 1 : 0) - deviceGiven > 0
@@ -284,23 +282,23 @@ const reclaimYear = async (signup_year) => {
 
     // eslint-disable-next-line no-await-in-loop
     const enrolledInFaculty = await student.isEnrolled(semester_code)
-    if (!enrolledInFaculty || creditsUnderLimit) {
-      counter.enroll += !enrolledInFaculty
-      counter.limit += creditsUnderLimit
-      counter.reclaim += !enrolledInFaculty || creditsUnderLimit
-    }
 
     const loanExpiredThisYear = differenceInYears(new Date(`${currentYear}`), new Date(student.deviceGivenAt)) === 5
-    const absent = !enrolledInFaculty
 
     const semester = isSpring ? 'SPRING' : 'AUTUM'
 
-    if (loanExpiredThisYear || absent) {
+    if (loanExpiredThisYear || !enrolledInFaculty || creditsUnderLimit) {
+      if (!enrolledInFaculty || creditsUnderLimit) {
+        counter.enroll += !enrolledInFaculty
+        counter.limit += creditsUnderLimit
+        counter.reclaim += !enrolledInFaculty || creditsUnderLimit
+      }
+
       // eslint-disable-next-line no-await-in-loop
       await ReclaimCase.create({
         userId: student.id,
         status: 'OPEN',
-        absent,
+        absent: !enrolledInFaculty,
         loanExpired: loanExpiredThisYear,
         creditsUnderLimit,
         year: currentYear,
