@@ -12,8 +12,8 @@ const pateClient = axios.create({
 })
 
 const sendMail = async (targets, text) => {
-  console.log('PATE url'.process.env.PATE_URL)
-  console.log('PATE tok'.process.env.PATE_TOKEN)
+  console.log('PATE url', process.env.PATE_URL)
+  console.log('PATE tok', process.env.PATE_TOKEN)
   const subject = 'Fuksilaitteesi peritään takaisin...'
 
   const header = 'Sent by Fuksilaite-robot'
