@@ -8,3 +8,5 @@ screenshots
 videos
 backups
 my_username
+server/util/helper.js
+*.sql

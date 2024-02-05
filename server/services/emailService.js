@@ -1,7 +1,42 @@
 const nodemailer = require('nodemailer')
 const { User } = require('@models')
 const logger = require('@util/logger')
+const axios = require('axios')
 
+
+const pateClient = axios.create({
+  baseURL: process.env.PATE_URL,
+  params: {
+    token: process.env.PATE_TOKEN,
+  },
+})
+
+const sendMail = async (targets, text) => {
+  console.log('PATE url'.process.env.PATE_URL)
+  console.log('PATE tok'.process.env.PATE_TOKEN)
+  const subject = 'Fuksilaitteesi peritään takaisin...'
+
+  const header = 'Sent by Fuksilaite-robot'
+
+  const emails = targets.map(to => ({
+    to,
+    subject,
+  }))
+
+  const mail = {
+    template: {
+      text,
+    },
+    emails,
+    settings: {
+      hideToska: false,
+      disableToska: true,
+      header,
+    },
+  }
+
+  await pateClient.post('/', mail)
+}
 
 const sendEmail = async ({
   recipients, subject, text, replyTo, attachments,
@@ -87,4 +122,6 @@ const sendToUsers = async ({
   return { emailResult, successfullyContacted, failedToContact }
 }
 
-module.exports = { sendEmail, sendToAddresses, sendToUsers }
+module.exports = {
+  sendEmail, sendToAddresses, sendToUsers, sendMail,
+}
