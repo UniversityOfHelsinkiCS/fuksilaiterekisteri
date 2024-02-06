@@ -6,7 +6,7 @@ const {
 } = require('@models')
 
 const f = async () => {
-  const users = (await User.findAll()).filter(u => [4, 181].includes(u.id))
+  const users = (await User.findAll()).filter(u => [4, 181, 305].includes(u.id))
 
   console.log(JSON.stringify(users))
 
