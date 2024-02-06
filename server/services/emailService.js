@@ -11,16 +11,15 @@ const pateClient = axios.create({
   },
 })
 
-const sendMail = async (targets, text) => {
-  console.log('PATE url', process.env.PATE_URL)
-  console.log('PATE tok', process.env.PATE_TOKEN)
+const sendMailsTo = async (targets, replyTo, text) => {
   const subject = 'Fuksilaitteesi peritään takaisin...'
 
   const header = 'Sent by Fuksilaite-robot'
 
-  const emails = targets.map(to => ({
-    to,
+  const emails = targets.map(bcc => ({
+    bcc,
     subject,
+    replyTo,
   }))
 
   const mail = {
@@ -35,7 +34,15 @@ const sendMail = async (targets, text) => {
     },
   }
 
+  console.log(mail)
+
   await pateClient.post('/', mail)
+}
+
+const sendMail = async (users, replyTo, text) => {
+  const targets = users.reduce((set, u) => set.concat([u.hyEmail, u.personalEmail]).filter(m => m), [])
+
+  await sendMailsTo(targets, replyTo, text)
 }
 
 const sendEmail = async ({
