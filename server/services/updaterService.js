@@ -267,7 +267,7 @@ const reclaimYear = async (signup_year, sendMail = false) => {
     reclaim: 0,
   }
 
-  const mails = []
+  const mails = ['matti.luukkainen@gmail.com']
 
   for (let i = 0; i < deviceHolders.length; i++) {
     const student = deviceHolders[i]
