@@ -1,5 +1,8 @@
 require('module-alias/register')
 
+// require the models
+const { Email } = require('@models')
+
 const { sendMail } = require('../services/emailService')
 const {
   User,
@@ -8,15 +11,18 @@ const {
 const f = async () => {
   const users = (await User.findAll()).filter(u => [4, 181, 305].includes(u.id))
 
-  console.log(JSON.stringify(users))
+  const [reclaimMail] = await Email.findAutoReclaimerTemplates()
+
+  console.log(reclaimMail)
 
   try {
-    await sendMail(users, 'grp-toska@helsinki.fi', 'palaute laite asap')
+    const { subject, body } = reclaimMail
+
+    await sendMail(users, 'grp-toska@helsinki.fi', subject, body)
   } catch (e) {
     console.log(e)
   }
 
   process.exit(1)
 }
-
 f()

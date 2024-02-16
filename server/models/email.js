@@ -26,6 +26,10 @@ class Email extends Model {
     return this.findAll(({ where: { type: 'RECLAIM' } }))
   }
 
+  static async findAutoReclaimerTemplates() {
+    return this.findAll(({ where: { description: 'AUTO_RECLAIM' } }))
+  }
+
   static async deleteTemplate(id) {
     return this.destroy(({ where: { id }, limit: 1 }))
   }

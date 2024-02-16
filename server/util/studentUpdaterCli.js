@@ -41,7 +41,18 @@ const commands = {
       rl.question('Year: ', async (yearStr) => {
         const year = Number(yearStr)
         console.log('yes, running', year)
-        await reclaimForYear(year)
+        await reclaimForYear(year, false)
+        res()
+      })
+    }),
+  },
+  6: {
+    info: 'Acual reclaim a year',
+    exec: () => new Promise((res) => {
+      rl.question('Year: ', async (yearStr) => {
+        const year = Number(yearStr)
+        console.log('yes, running', year)
+        await reclaimForYear(year, true)
         res()
       })
     }),

@@ -11,10 +11,10 @@ const pateClient = axios.create({
   },
 })
 
-const sendMailsTo = async (targets, replyTo, text) => {
-  const subject = 'Fuksilaitteesi peritään takaisin...'
-
+const sendMailsTo = async (targets, replyTo, subject, body) => {
   const header = 'Sent by Fuksilaite-robot'
+
+  console.log(targets.length, subject, body)
 
   const emails = targets.map(bcc => ({
     bcc,
@@ -24,7 +24,7 @@ const sendMailsTo = async (targets, replyTo, text) => {
 
   const mail = {
     template: {
-      text,
+      text: body,
     },
     emails,
     settings: {
@@ -39,10 +39,9 @@ const sendMailsTo = async (targets, replyTo, text) => {
   await pateClient.post('/', mail)
 }
 
-const sendMail = async (users, replyTo, text) => {
+const sendMail = async (users, replyTo, subject, body) => {
   const targets = users.reduce((set, u) => set.concat([u.hyEmail, u.personalEmail]).filter(m => m), [])
-
-  await sendMailsTo(targets, replyTo, text)
+  await sendMailsTo(targets, replyTo, subject, body)
 }
 
 const sendEmail = async ({
@@ -130,5 +129,5 @@ const sendToUsers = async ({
 }
 
 module.exports = {
-  sendEmail, sendToAddresses, sendToUsers, sendMail,
+  sendEmail, sendToAddresses, sendToUsers, sendMail, sendMailsTo,
 }

@@ -250,7 +250,7 @@ const runSpringReclaimStatusUpdater = async () => {
   }, Promise.resolve())
 }
 
-const reclaimYear = async (signup_year) => {
+const reclaimYear = async (signup_year, sendMail = false) => {
   const currentYear = 2024 // getCurrentYear()
   const semester_code = getCurrentSemesterCode
   const deviceHolders = await User.findAll({
@@ -266,6 +266,8 @@ const reclaimYear = async (signup_year) => {
     limit: 0,
     reclaim: 0,
   }
+
+  const mails = []
 
   for (let i = 0; i < deviceHolders.length; i++) {
     const student = deviceHolders[i]
@@ -297,14 +299,25 @@ const reclaimYear = async (signup_year) => {
       // eslint-disable-next-line no-await-in-loop
       await ReclaimCase.create({
         userId: student.id,
-        status: 'OPEN',
+        status: sendMail ? 'CONTACTED' : 'OPEN',
         absent: !enrolledInFaculty,
         loanExpired: loanExpiredThisYear,
         creditsUnderLimit,
         year: currentYear,
         semester,
       })
+
+      if (sendMail) {
+        if (student.hyEmail) mails.push(student.hyEmail)
+        if (student.personalEmail) mails.push(student.personalEmail)
+      }
     }
+  }
+
+  if (sendMail) {
+    const [reclaimMail] = await Email.findAutoReclaimerTemplates()
+    const { subject, body, replyTo } = reclaimMail
+    await emailService.sendMailsTo(mails, replyTo, subject, body)
   }
 
   const percentage = (100 * (counter.reclaim / deviceHolders.length)).toFixed(1)
@@ -313,9 +326,9 @@ const reclaimYear = async (signup_year) => {
   // logger.info(`Checking reclaim status for ${deviceHolders.length} students, year ${currentYear}`)
 }
 
-const reclaimForYear = async (year) => {
+const reclaimForYear = async (year, sendMail = false) => {
   console.log('reclaiming', year)
-  await reclaimYear(year)
+  await reclaimYear(year, sendMail)
 }
 
 const runReclaimStatusUpdater = async () => {
