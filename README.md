@@ -2,14 +2,21 @@
 
 ![Test and build staging-image](https://github.com/UniversityOfHelsinkiCS/fuksilaiterekisteri/workflows/Test%20and%20build%20staging-image/badge.svg) ![Build production-image](https://github.com/UniversityOfHelsinkiCS/fuksilaiterekisteri/workflows/Build%20production-image/badge.svg)
 
-## How to run
+## How to run locally
+
 Copy the repository to your machine and run ```npm run dev``` or ```docker compose up```
+
+Unset this https://github.com/UniversityOfHelsinkiCS/fuksilaiterekisteri/blob/master/docker-compose.yml#L16 if you do not have importer running locally
 
 1) Login as admin and enable registration
 2) Login as fuksi to create user
 3) Login as admin and mark fuksi as eligible
 
 As a maintainer, add yourself to superadmins in the production server env (`SUPERADMINS` in docker-compose.yml)
+
+## How to run tests
+
+Start the app with ```docker compose -f docker-compose-test.yml up```
 
 ## How to open registration
 
