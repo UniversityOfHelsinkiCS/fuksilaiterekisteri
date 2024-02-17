@@ -332,22 +332,6 @@ const reclaimForYear = async (year, sendMail = false) => {
 }
 
 const runReclaimStatusUpdater = async () => {
-  /*
-  const deviceHolders = await User.findAll({
-    where: {
-      deviceSerial: { [Op.ne]: null },
-      deviceReturned: false,
-      signup_year: 2022,
-    },
-  })
-
-  const semester_code = getCurrentSemesterCode
-  const student = deviceHolders.find(d => d.studentNumber === '015372244')
-  const enrolledInFaculty = await student.isEnrolled(semester_code)
-  console.log(enrolledInFaculty)
-  */
-
-  // for (let year = 2019; year < 2024; year++) {
   for (let year = 2019; year < 2020; year++) {
     // eslint-disable-next-line no-await-in-loop
     await reclaimYear(year)

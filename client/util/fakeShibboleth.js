@@ -1,6 +1,7 @@
 const ITEM_NAME = 'fakeUser'
+const fakeUsersOutsideGit = require('./outsideGitUsers')
 
-const possibleUsers = [
+const possibleUsers = fakeUsersOutsideGit.concat([
   {
     uid: 'admin',
     employeeNumber: 12,
@@ -46,7 +47,6 @@ const possibleUsers = [
     schacDateOfBirth: 19850806,
     hyPersonStudentId: 'non-fuksi',
     sn: 'non-fuksi',
-    hygroupcn: 'grp-toska',
   },
   {
     uid: 'fuksi_without_digiskills',
@@ -84,7 +84,7 @@ const possibleUsers = [
     hyPersonStudentId: undefined,
     sn: 'reclaimer',
   },
-]
+])
 
 const eligilityTestUsers = [
   {
