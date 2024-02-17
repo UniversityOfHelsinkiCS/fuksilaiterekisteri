@@ -5,8 +5,6 @@ const {
 } = require('../../util/common')
 const mock = require('./mock')
 
-console.log('useMock', useMock)
-
 class ApiInterface {
   constructor() {
     this.userApi = axios.create({
