@@ -13,20 +13,11 @@ services:
       - EMAIL_ENABLED=false
       - SUPERADMINS=
       - E2E=$E2E
-      - NO_API_MOCK=true
     volumes:
       - ./:/usr/src/app
     ports:
       - 8000:8000
     container_name: fuksilaiterekisteri_dev
-  db:
-    image: postgres:11
-    container_name: fuksilaiterekisteri_db
-    environment:
-      - PGDATA=/data
-      - POSTGRES_PASSWORD=postgres
-    volumes:
-      - pg_data:/data
   adminer_fular:
     container_name: adminer_fukrek
     environment:
@@ -35,10 +26,14 @@ services:
     image: adminer:4.7.5
     ports:
       - 8080:8080 # localhost:8080/?pgsql=db&username=postgres&db=postgres&ns=public
+  db:
+    image: postgres:11
+    container_name: fuksilaiterekisteri_db
+    environment:
+      - PGDATA=/data
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - pg_data_test:/data
 
 volumes:
-  pg_data:
-
-networks:
-  default:
-    name: importer_network
+  pg_data_test:

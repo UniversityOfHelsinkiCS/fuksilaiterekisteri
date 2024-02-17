@@ -18,8 +18,15 @@ jobs:
       - name: npm run lint
         run: npm run lint
 
+      - uses: 1arp/create-a-file-action@0.3
+        with:
+          path: 'client'
+          file: 'outsideGitFakeUsers.json'
+          content: |
+            []
+
       - name: docker-compose up -d
-        run: E2E=true docker-compose up -d
+        run: E2E=true docker-compose -f docker-compose-test.yml up -d
 
       - name: Run cypress tests
         run: ./node_modules/.bin/cypress run --headless *.spec.js
