@@ -20,6 +20,8 @@ const validateSerial = async (serial, settings) => {
   return false
 }
 
+const useMock = !process.env.NO_API_MOCK
+
 module.exports = {
   ...common,
   DB_URL: process.env.DB_URL,
@@ -39,4 +41,5 @@ module.exports = {
   isSuperAdmin,
   validateEmail,
   validateSerial,
+  useMock,
 }

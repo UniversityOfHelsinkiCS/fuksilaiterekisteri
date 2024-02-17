@@ -1,11 +1,11 @@
 const axios = require('axios')
 const https = require('https')
 const {
-  STUDENT_API_URL, STUDENT_API_TOKEN, inProduction, DIGI_COURSES,
+  STUDENT_API_URL, STUDENT_API_TOKEN, inProduction, DIGI_COURSES, useMock,
 } = require('../../util/common')
 const mock = require('./mock')
 
-const useMock = true
+console.log('useMock', useMock)
 
 class ApiInterface {
   constructor() {
