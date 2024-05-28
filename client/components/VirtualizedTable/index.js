@@ -20,6 +20,8 @@ const VirtualizedTable = ({
     return new Date(aVal).getTime() - new Date(bVal).getTime()
   }
 
+  console.log('process.env.NODE_ENV', process.env.NODE_ENV)
+
   const sortedData = useMemo(() => {
     const selectedColumn = columns.find(({ key }) => sortBy === key)
     if (!selectedColumn || !(selectedColumn.getCellVal || selectedColumn.renderCell)) return data
