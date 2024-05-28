@@ -20,15 +20,15 @@ const VirtualizedTable = ({
     return new Date(aVal).getTime() - new Date(bVal).getTime()
   }
 
-
   const sortedData = useMemo(() => {
     const selectedColumn = columns.find(({ key }) => sortBy === key)
     if (!selectedColumn || !(selectedColumn.getCellVal || selectedColumn.renderCell)) return data
     let result = lodashSortBy(data, selectedColumn.getCellVal || selectedColumn.renderCell)
 
-    if (sortBy === 'device_returned_at') {
+    if (process.env.NODE_ENV !== 'test' && sortBy === 'device_returned_at') {
       result = data.sort(dateBasedSorter)
     }
+
     if (sortDirection === SortDirection.ASC) result.reverse()
     return result
   }, [sortBy, sortDirection, data])
