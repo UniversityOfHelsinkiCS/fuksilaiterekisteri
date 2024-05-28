@@ -25,7 +25,7 @@ const VirtualizedTable = ({
     if (!selectedColumn || !(selectedColumn.getCellVal || selectedColumn.renderCell)) return data
     let result = lodashSortBy(data, selectedColumn.getCellVal || selectedColumn.renderCell)
 
-    if (false && sortBy === 'device_returned_at') {
+    if (process.env.NODE_ENV === 'production' && sortBy === 'device_returned_at') {
       result = data.sort(dateBasedSorter)
     }
 
