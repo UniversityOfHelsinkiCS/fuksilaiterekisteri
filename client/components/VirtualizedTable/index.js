@@ -9,14 +9,26 @@ import './virtualizedTable.css'
 const VirtualizedTable = ({
   data, columns, rowHeight = 50, headerHeight = 30, searchable, defaultCellWidth,
 }) => {
-  const [sortBy, setSortBy] = useState(null)
+  const [sortBy, setSortBy] = useState('device_returned_at')
   const [sortDirection, setSortDirection] = useState(SortDirection.ASC)
   const [filter, setFilter] = useState('')
+
+  const dateBasedSorter = (a, b) => {
+    const aVal = a.deviceReturnedAt
+    const bVal = b.deviceReturnedAt
+
+    return new Date(aVal).getTime() - new Date(bVal).getTime()
+  }
+
 
   const sortedData = useMemo(() => {
     const selectedColumn = columns.find(({ key }) => sortBy === key)
     if (!selectedColumn || !(selectedColumn.getCellVal || selectedColumn.renderCell)) return data
-    const result = lodashSortBy(data, selectedColumn.getCellVal || selectedColumn.renderCell)
+    let result = lodashSortBy(data, selectedColumn.getCellVal || selectedColumn.renderCell)
+
+    if (sortBy === 'device_returned_at') {
+      result = data.sort(dateBasedSorter)
+    }
     if (sortDirection === SortDirection.ASC) result.reverse()
     return result
   }, [sortBy, sortDirection, data])
