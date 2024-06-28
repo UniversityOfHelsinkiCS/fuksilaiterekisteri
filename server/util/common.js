@@ -4,6 +4,7 @@ const isSuperAdmin = (userId) => {
   if (userId === 'admin' && !common.inProduction) return true
   console.log(`userId: ${userId} superAdmins: ${process.env.SUPERADMINS}`)
   if (process.env.SUPERADMINS && process.env.SUPERADMINS.split(',').find(u => u === userId)) return true
+  console.log(`userId: ${userId} not super admin`)
   return false
 }
 

@@ -1,7 +1,7 @@
-const { inProduction, isSuperAdmin } = require('../util/common')
 const Sentry = require('@sentry/node')
 const logger = require('@util/logger')
 const { StudyProgram, User, ServiceStatus } = require('@models')
+const { inProduction, isSuperAdmin } = require('../util/common')
 
 const authentication = async (req, res, next) => {
   // Headers are in by default lower case, we don't like that.
@@ -18,6 +18,7 @@ const authentication = async (req, res, next) => {
   if (!uid) return res.status(403).json({ error: 'forbidden' })
 
   const superAdmin = isSuperAdmin(uid)
+  console.log(`User ${uid}, superAdmin=${superAdmin}`)
   const loggedInAs = req.headers['x-admin-logged-in-as']
   if (loggedInAs) {
     if (superAdmin) {
@@ -30,7 +31,7 @@ const authentication = async (req, res, next) => {
   }
 
   req.canary = hygroupcn && hygroupcn.includes('grp-toska')
-
+  console.log(`canary: ${req.canary}`)
   const foundUser = await User.findOne({
     where: { userId: uid },
     include: [
