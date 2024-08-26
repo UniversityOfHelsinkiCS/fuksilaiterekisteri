@@ -210,5 +210,60 @@ texts['2023'] = {
   - Matemaattisten tieteiden kandiohjelma
   - Matematiikan, fysiikan ja kemian opettajan kandiohjelma`,
 }
+texts['2024'] = {
+  en: `Year 2024 undergraduate laptop
 
+Lenovo ThinkPad L14 gen 4
+6-core processor, 8-thread Intel Core i3-1315U
+2 Performance-cores with HyperThreading, 4 Efficiency-cores
+16 GB main memory DDR4 3200
+internal flash storage 512 GB M.2 NVMe-SSD
+iinternel ethernet RJ45, Wi-Fi 6 AX201, Bluetooth
+FullHD camera, microphone
+1920×1080 px 14” screen
+weight c. 1.5 kg
+
+The computer will be pre-installed according to the selection of the BSc Programme as follows:
+
+Cubbli 24 (Ubuntu 24.04 LTS based Linux):
+Bachelors Programme in Science
+Bachelors programme in physical sciences
+Bachelors programme in computer science
+
+Microsoft Windows 10 Home:
+Bachelors programme in geosciences
+Bachelors programme in chemistry
+Bachelors programme in geography
+Bachelors programme in mathematical sciences
+Bachelors programme in teacher in mathematics, physics, and chemistry
+
+If you encounter problems with the fresher device, please contact helpdesk@helsinki.fi or ask around in Telegram: [https://t.me/tkt_fuksilappari]`,
+  fi: `Vuoden 2024 fuksikannettava
+
+Le­no­vo Think­Pad L14 gen 4
+pro­ses­so­ri 6-yti­mi­nen, 8-säi­kei­nen In­tel Core i3-1315U
+2 suorituskykyisistä Performance-ydintä (HT) ja 4 energiatehokasta E-ydintä
+keskusmuisti 16 Gtavua DDR4 3200
+sisäinen flash-levy 512 Gtavua M.2 NVMe-SSD
+sisäinen verkkosovitin RJ45, Wi-Fi 6 AX201, Bluetooth
+FullHD kamera, mikrofoni
+näyttö 1920×1080 px, halkaisija 14"
+paino noin 1,5 kg
+
+Tietokone on esiasennettu kandiohjelman valinnan mukaisesti seuraavasti:
+
+Cubbli 24 (Ubuntu 24.04 LTS -pohjainen Linux):  
+Bachelor's Programme in Science  
+Fysikaalisten tieteiden kandiohjelma  
+Tietojenkäsittelytieteen kandiohjelma  
+ 
+Microsoft Windows 10 Home:  
+Geotieteiden kandiohjelma  
+Kemian kandiohjelma  
+Maantieteen kandiohjelma  
+Matemaattisten tieteiden kandiohjelma  
+Matematiikan, fysiikan ja kemian opettajan kandiohjelma
+
+Ongelmatilanteissa ota yhteyttä yliopiston helpdeskiin helpdesk@helsinki.fi tai kysy neuvoa Telegramissa [https://t.me/tkt_fuksilappari]`,
+}
 export default texts
