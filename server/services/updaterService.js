@@ -251,7 +251,7 @@ const runSpringReclaimStatusUpdater = async () => {
 }
 
 const reclaimYear = async (signup_year, sendMail = false) => {
-  const currentYear = 2024 // getCurrentYear()
+  const currentYear = getCurrentYear()
   const semester_code = getCurrentSemesterCode
   const deviceHolders = await User.findAll({
     where: {
