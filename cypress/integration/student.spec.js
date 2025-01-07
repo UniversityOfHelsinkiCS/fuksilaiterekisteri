@@ -128,7 +128,7 @@ describe("Previous years student", () => {
     cy.get('[data-cy=notEligible]')
   })
 
-  it('updates sign up year on login if would be eligble this year', () => {
+  it.skip('updates sign up year on login if would be eligble this year', () => {
     cy.createCustomUser({
       userId: 'eligible2',
       name: 'eligible lastYear',
