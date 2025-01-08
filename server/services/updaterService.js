@@ -285,9 +285,9 @@ const reclaimYear = async (signup_year, sendMail = false) => {
     // eslint-disable-next-line no-await-in-loop
     const enrolledInFaculty = await student.isEnrolled(semester_code)
 
-    const loanExpiredThisYear = differenceInYears(new Date(`${currentYear}`), new Date(student.deviceGivenAt)) === 5
-
     const semester = isSpring ? 'SPRING' : 'AUTUM'
+
+    const loanExpiredThisYear = !isSpring && differenceInYears(new Date(`${currentYear}`), new Date(student.deviceGivenAt)) === 5
 
     if (loanExpiredThisYear || !enrolledInFaculty || creditsUnderLimit) {
       if (!enrolledInFaculty || creditsUnderLimit) {
