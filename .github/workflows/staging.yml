@@ -64,7 +64,7 @@ jobs:
             BASE_PATH=/fuksilaite/
             GIT_SHA=${{ github.sha }}
             NODE_ENV=staging
-            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_TOKEN=${{ secrets.SENTRY_TOKEN }}
 
       - name: Push to quay.io
         uses: redhat-actions/push-to-registry@v2
