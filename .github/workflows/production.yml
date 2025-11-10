@@ -18,7 +18,7 @@ jobs:
       - name: npm run lint
         run: npm run lint
 
-      - uses: 1arp/create-a-file-action@0.3
+      - uses: 1arp/create-a-file-action@0.4
         with:
           path: 'client'
           file: 'outsideGitFakeUsers.json'
