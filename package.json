@@ -81,7 +81,7 @@
     "winston-gelf-transporter": "^1.0.2"
   },
   "devDependencies": {
-    "@sentry/cli": "^1.55.0",
+    "@sentry/cli": "^2.0.0",
     "babel-preset-stage-2": "^6.24.1",
     "cypress": "^4.10.0",
     "nodemon": "^1.18.10",
