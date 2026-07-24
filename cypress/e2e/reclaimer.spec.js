@@ -92,6 +92,9 @@ context('Reclaimer View', () => {
       cy.resetReclaimCases()
       createTestUsers()
       cy.request("GET", '/api/test/run_autumn_updater')
+    })
+
+    beforeEach(() => {
       cy.login('reclaimer')
       cy.get('[data-cy=reclaimerContent]')
     })
@@ -121,10 +124,13 @@ context('Reclaimer View', () => {
       cy.createUser('fuksi')
       createTestUsers()
       cy.request("GET", '/api/test/run_spring_updater')
+    })
+
+    beforeEach(() => {
       cy.login('reclaimer')
       cy.get('[data-cy=reclaimerContent]')
     })
-  
+
     it('Shows student with device loan time expired', () => {
       cy.get('[data-cy=reclaimerContent]').contains('Laite Vanhatar')
     })

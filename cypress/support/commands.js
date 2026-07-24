@@ -28,7 +28,10 @@ import { setHeaders } from "../../client/util/fakeShibboleth"
 
 Cypress.Commands.add("login", (uid) => {
   cy.log("Logging in as", uid)
-  setHeaders(uid)
+  cy.session(uid, () => {
+    setHeaders(uid)
+    cy.visit("/")
+  })
   cy.visit("/")
  })
 
