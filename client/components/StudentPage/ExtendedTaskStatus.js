@@ -12,7 +12,7 @@ const StudentStatusPage = ({ faking }) => (
         digiSkillsCompleted={user.digiSkillsCompleted}
       /> */}
     <Segment>
-        You will get an email when the device is ready!
+      You will get an email when the device is ready!
     </Segment>
     <Segment>
       <TranslatedMarkdown textKey="deviceSpecs" />

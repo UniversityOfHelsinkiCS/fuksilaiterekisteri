@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
 
 const env = process.env.NODE_ENV || 'development'
-const config = require('@root/config/config.js')[env]
+const config = require('@root/config/config')[env]
 
 
 let sequelize

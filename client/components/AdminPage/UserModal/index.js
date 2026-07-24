@@ -29,12 +29,12 @@ const UserModal = ({
         <Button color="red" onClick={handleClose} inverted>
           <Icon name="cancel" />
           {' '}
-Peruuta
+          Peruuta
         </Button>
         <Button color="green" onClick={onSubmit} inverted>
           <Icon name="save" />
           {' '}
-Tallenna
+          Tallenna
         </Button>
       </Modal.Actions>
     </Modal>

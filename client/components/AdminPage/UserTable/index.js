@@ -261,7 +261,7 @@ const UserTable = ({
         userId,
       }) => (
         <Button data-cy="loginAs" onClick={() => loginAs(userId)} color="blue">
-        Login as
+          Login as
         </Button>
       ),
       disableSort: true,

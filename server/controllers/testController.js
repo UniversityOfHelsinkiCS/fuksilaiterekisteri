@@ -3,9 +3,9 @@ const {
 } = require('@models')
 const logger = require('@util/logger')
 
+const _ = require('lodash')
 const defaultTranslations = require('../../util/defaultTranslations.json')
 
-const _ = require('lodash')
 const fakeShibboleth = require('../../client/util/fakeShibboleth')
 
 const resetTestUsers = async (req, res) => {

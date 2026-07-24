@@ -101,7 +101,7 @@ export default function ServiceStatus() {
       onClick={handleServiceStart}
       disabled={pending || !!settingsErrorMsg}
     >
-    Enable registrations
+      Enable registrations
     </Button>
   )
 
@@ -112,7 +112,7 @@ export default function ServiceStatus() {
       onClick={handleServiceStop}
       disabled={pending}
     >
-    Disable registrations
+      Disable registrations
     </Button>
   )
 
