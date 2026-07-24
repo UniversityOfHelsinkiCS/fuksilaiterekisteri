@@ -15,6 +15,9 @@ jobs:
       - name: npm ci
         run: npm ci
 
+      - name: install cypress binary
+        run: npx cypress install
+
       - name: npm run lint
         run: npm run lint
 
@@ -29,7 +32,7 @@ jobs:
         run: E2E=true docker compose -f docker-compose-test.yml up -d
 
       - name: Run cypress tests
-        run: ./node_modules/.bin/cypress run --headless *.spec.js
+        run: ./node_modules/.bin/cypress run
 
   build:
     # needs: test # return this after tests fix'd

@@ -89,7 +89,6 @@ context('Reclaimer View', () => {
 
   context('After running autumn updater', () => {
     before(() => {
-      cy.server()
       cy.resetReclaimCases()
       createTestUsers()
       cy.request("GET", '/api/test/run_autumn_updater')
@@ -118,7 +117,6 @@ context('Reclaimer View', () => {
 
   context('After running spring updater', () => {
     before(() => {
-      cy.server()
       cy.resetReclaimCases()
       cy.createUser('fuksi')
       createTestUsers()
@@ -136,7 +134,6 @@ context('Reclaimer View', () => {
 
   context('Actions', () => {
     beforeEach(() => {
-      cy.server()
       cy.resetReclaimCases()
       cy.createUser('fuksi')
       cy.request("GET", '/api/test/run_autumn_updater')

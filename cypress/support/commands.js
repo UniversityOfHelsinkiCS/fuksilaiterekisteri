@@ -35,7 +35,7 @@ Cypress.Commands.add("login", (uid) => {
 // Simulate how a user account would normally be generated:
 Cypress.Commands.add("createUser", (uid) => {
   setHeaders(uid)
-  cy.route("POST",'/api/login').as('createUser')
+  cy.intercept("POST",'/api/login').as('createUser')
   cy.visit("/")
   cy.wait("@createUser")
 })

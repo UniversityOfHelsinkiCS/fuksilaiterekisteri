@@ -22,7 +22,6 @@ import './commands'
 function seedAndInit() {
   cy.request('localhost:8000/api/test/reset/serviceStatus')
   cy.request('localhost:8000/api/test/reset/user')
-  cy.server()
 }
 
 beforeEach(seedAndInit)

@@ -134,12 +134,12 @@ context('Admin', () => {
     cy.get('input').eq(0).type("fuksi")
     cy.contains('Hae').click()
 
-    cy.route("POST",'/api/claim_device').as('claimDevice')
+    cy.intercept("POST",'/api/claim_device').as('claimDevice')
     cy.get('#device-serial-input').type('XXXRAB12')
     cy.contains('Anna laite').click()
-    cy.wait("@claimDevice").then(res => 
-      cy.log(res.responseBody.debug?.toString())
-        .then(() => expect(res.status).to.eq(200))
+    cy.wait("@claimDevice").then(res =>
+      cy.log(res.response.body.debug?.toString())
+        .then(() => expect(res.response.statusCode).to.eq(200))
     )
 
     cy.login("admin")
