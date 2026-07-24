@@ -50,7 +50,6 @@ jobs:
 
   build:
     name: 'Build and publish staging image'
-    needs: test
     runs-on: ubuntu-latest
     if: ${{ github.actor != 'renovate[bot]' }}
 
