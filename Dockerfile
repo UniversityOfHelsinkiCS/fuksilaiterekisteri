@@ -1,5 +1,4 @@
-FROM registry.access.redhat.com/ubi9/nodejs-24
-
+FROM node:24
 ENV TZ="Europe/Helsinki"
 
 WORKDIR /opt/app-root/src
@@ -20,8 +19,8 @@ ARG NODE_ENV
 ENV NODE_ENV=$NODE_ENV
 
 # Setup
-COPY package* ./
-RUN npm ci -f --omit-dev --ignore-scripts
+COPY package.json package-lock.json .npmrc ./
+RUN npm ci --omit=dev
 COPY . .
 
 RUN npm run build

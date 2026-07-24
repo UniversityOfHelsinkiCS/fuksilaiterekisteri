@@ -6,9 +6,9 @@ RUN dpkg-reconfigure -f noninteractive tzdata
 
 # Setup
 WORKDIR /usr/src/app
-COPY . .
-
+COPY package.json package-lock.json .npmrc ./
 RUN npm ci
+COPY . .
 
 EXPOSE 8000
 

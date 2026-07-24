@@ -89,6 +89,9 @@
     "webpack-dev-server": "^3.11.2",
     "webpack-hot-middleware": "^2.23.1"
   },
+  "overrides": {
+    "generator-function": "2.0.0"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "npm run lint"
