@@ -15,7 +15,8 @@ const giveBadDevice = (serial) => {
   cy.contains('Anna laite').should('be.disabled')
 }
 
-context('Distributor', () => {
+// this app will soon be depricated since fuksilaitteet are not distributed anymore
+context.skip('Distributor', () => {
   beforeEach(() => {
 
     cy.createUser("fuksi")
@@ -90,7 +91,8 @@ context('Distributor', () => {
   })
 })
 
-describe("Serial setting and validation works and correct part of the serial is stored in the database", () => {
+// this app will soon be depricated since fuksilaitteet are not distributed anymore
+describe.skip("Serial setting and validation works and correct part of the serial is stored in the database", () => {
 
   const setSerialValidationPattern = (pattern,startOfCustompart) => {
     cy.login("admin")

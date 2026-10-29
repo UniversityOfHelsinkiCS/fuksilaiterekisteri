@@ -5,14 +5,16 @@ describe('Student', () => {
     cy.login("fuksi")
   })
 
-  it('doesnt allow eligible students to proceed without accepting terms', () => {
+  // this app will soon be depricated since fuksilaitteet are not distributed anymore
+  it.skip('doesnt allow eligible students to proceed without accepting terms', () => {
     cy.get('[data-cy=otherEmailInput]').type('fuksi@fuksi.fuksi')
     
     cy.get('[data-cy=getDevicePrimary]').should('have.class', 'disabled')
     cy.get('[data-cy=getDeviceSecondary]').should('have.class', 'disabled')
   })
 
-  it('allows eligible students to sign up with email AND localization works', () => {
+  // this app will soon be depricated since fuksilaitteet are not distributed anymore
+  it.skip('allows eligible students to sign up with email AND localization works', () => {
     cy.get('[data-cy=terms]').click()
     cy.get('[data-cy=closeTerms]').click()
     cy.get('[data-cy=acceptTerms]').click()
@@ -34,7 +36,8 @@ describe('Student', () => {
 
   })
 
-  it('allows eligible students to sign up without email', () => {
+  // this app will soon be depricated since fuksilaitteet are not distributed anymore
+  it.skip('allows eligible students to sign up without email', () => {
     cy.get('[data-cy=terms]').click()
     cy.get('[data-cy=closeTerms]').click()
     cy.get('[data-cy=acceptTerms]').click()
@@ -43,7 +46,8 @@ describe('Student', () => {
     cy.contains('Tehtävien tila:')
   })
 
-  it('updates eligibility on login', () => {
+  // this app will soon be depricated since fuksilaitteet are not distributed anymore
+  it.skip('updates eligibility on login', () => {
     cy.get('[data-cy=terms]')
     cy.login('admin')
     cy.window().then((win) => {
@@ -57,7 +61,8 @@ describe('Student', () => {
   })
 
   // Change this if digi-100a task is enabled
-  it('updates task statuses on login', () => {
+  // this app will soon be depricated since fuksilaitteet are not distributed anymore
+  it.skip('updates task statuses on login', () => {
     cy.get('[data-cy=terms]').click()
     cy.get('[data-cy=closeTerms]').click()
     cy.get('[data-cy=acceptTerms]').click()
@@ -73,7 +78,8 @@ describe('Student', () => {
   })
 
   // Change this if digi-100a task is enabled
-  it('does not update task statuses that are true', () => {
+  // this app will soon be depricated since fuksilaitteet are not distributed anymore
+  it.skip('does not update task statuses that are true', () => {
     cy.login('fuksi_without_digiskills')
     cy.get('[data-cy=terms]').click()
     cy.get('[data-cy=closeTerms]').click()
@@ -89,7 +95,8 @@ describe('Student', () => {
     cy.get(".checkmark").its('length').should('eq', 1)
   })
 
-  it("non eligible students see why they are not eligible", () => {
+  // this app will soon be depricated since fuksilaitteet are not distributed anymore
+  it.skip("non eligible students see why they are not eligible", () => {
     cy.login("non_fuksi_student")
     cy.get('[data-cy=notEligible]')
 
