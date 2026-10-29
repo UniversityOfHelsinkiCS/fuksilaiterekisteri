@@ -128,6 +128,7 @@ describe("Previous years student", () => {
     cy.get('[data-cy=notEligible]')
   })
 
+  // this app will soon be depricated since fuksilaitteet are not distributed anymore
   it.skip('updates sign up year on login if would be eligble this year', () => {
     cy.createCustomUser({
       userId: 'eligible2',

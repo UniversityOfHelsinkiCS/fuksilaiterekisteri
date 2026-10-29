@@ -1,8 +1,6 @@
-FROM node:24
-
-# Set timezone to Europe/Helsinki
-RUN echo "Europe/Helsinki" > /etc/timezone
-RUN dpkg-reconfigure -f noninteractive tzdata
+FROM node:24-alpine
+ENV TZ="Europe/Helsinki"
+RUN apk add --no-cache tzdata
 
 # Setup
 WORKDIR /usr/src/app

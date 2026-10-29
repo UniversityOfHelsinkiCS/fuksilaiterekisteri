@@ -119,7 +119,8 @@ context('Admin', () => {
     cy.contains('test123')
   })
 
-  it("Can mark device as returned and see by whom and when the device was returned", () => {
+  // this app will soon be depricated since fuksilaitteet are not distributed anymore
+  it.skip("Can mark device as returned and see by whom and when the device was returned", () => {
     cy.createUser("fuksi")
     cy.contains('FUKSILAITTEET')
     cy.get('[data-cy=terms]').click()
@@ -152,7 +153,8 @@ context('Admin', () => {
 
   })
 
-  it("Can update device serial", () => {
+  // this app will soon be depricated since fuksilaitteet are not distributed anymore
+  it.skip("Can update device serial", () => {
     cy.visit('/', {
       onBeforeLoad(win) {
         cy.stub(win, 'prompt').returns('NEW123')

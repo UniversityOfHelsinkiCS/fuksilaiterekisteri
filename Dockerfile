@@ -1,7 +1,8 @@
-FROM node:24
+FROM node:24-alpine
 ENV TZ="Europe/Helsinki"
+RUN apk add --no-cache tzdata
 
-WORKDIR /opt/app-root/src
+WORKDIR /usr/src/app
 
 ARG BASE_PATH
 ENV BASE_PATH=$BASE_PATH
