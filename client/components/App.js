@@ -4,7 +4,6 @@ import { Loader } from 'semantic-ui-react'
 import { getUserAction } from 'Utilities/redux/userReducer'
 import { parseUserRights } from 'Utilities/useAuth'
 import { initShibbolethPinger } from 'unfuck-spa-shibboleth-session'
-import * as Sentry from '@sentry/browser'
 import AuthCheck from 'Components/AuthCheck'
 import Sidebar from 'Components/Sidebar'
 import NavBar from 'Components/NavBar'
@@ -38,7 +37,6 @@ const App = () => {
     dispatch(getServiceStatus())
     dispatch(getStudyProgrammesAction())
     if (inProduction) initShibbolethPinger(60000) // 1 minute
-    if (user && user.data) Sentry.setUser({ ...user.data })
   }, [])
 
   const handleSidebarOpen = () => setSidebarVisible(true)

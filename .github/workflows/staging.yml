@@ -75,7 +75,6 @@ jobs:
             BASE_PATH=/fuksilaite/
             GIT_SHA=${{ github.sha }}
             NODE_ENV=staging
-            SENTRY_TOKEN=${{ secrets.SENTRY_TOKEN }}
 
   notify:
     runs-on: ubuntu-latest

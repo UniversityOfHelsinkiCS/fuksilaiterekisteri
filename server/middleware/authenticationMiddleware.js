@@ -1,4 +1,3 @@
-const Sentry = require('@sentry/node')
 const logger = require('@util/logger')
 const { StudyProgram, User, ServiceStatus } = require('@models')
 const { inProduction, isSuperAdmin } = require('../util/common')
@@ -51,7 +50,6 @@ const authentication = async (req, res, next) => {
     if (mail !== foundUser.hyEmail) await foundUser.update({ hyEmail: mail })
     if (formattedName !== foundUser.name) await foundUser.update({ name: formattedName })
     req.user = foundUser
-    Sentry.setUser(foundUser.get({ plain: true }))
     return next()
   }
 
@@ -88,7 +86,6 @@ const authentication = async (req, res, next) => {
     }
 
     req.user = newUser
-    Sentry.setUser({ ...defaultParams })
     return next()
   }
 
@@ -113,14 +110,6 @@ const authentication = async (req, res, next) => {
     })
 
     req.user = newUser
-    Sentry.setUser({ ...newUser })
-
-    if (!eligible && !extendedEligible) {
-      Sentry.withScope((scope) => {
-        scope.setUser(req.user ? req.user.get({ plain: true }) : null)
-        Sentry.captureMessage('New non eligible user registered!')
-      })
-    }
 
     if (!settings.studentRegistrationOnline && !extendedEligible) {
       logger.info(`User with studentNumber ${studentNumber} tried to create a new account (registrations are closed)`)
@@ -131,9 +120,6 @@ const authentication = async (req, res, next) => {
   } catch (e) {
     console.log('-->', e)
     logger.error(['Creating student failed', e.toString(), e.response ? e.response.data : null])
-    Sentry.withScope(() => {
-      Sentry.captureMessage('Creating student failed!')
-    })
     return res.status(503).end()
   }
 }
